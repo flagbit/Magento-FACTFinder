@@ -4,7 +4,7 @@
  * suggest adapter using the xml interface. expects a xml formated string from the dataprovider
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: SuggestAdapter.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Xml65
  */
 class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter

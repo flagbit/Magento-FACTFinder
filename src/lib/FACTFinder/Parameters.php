@@ -5,7 +5,7 @@
  * so it represents a state of a factfinder result
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: Parameters.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  */
 class FACTFinder_Parameters

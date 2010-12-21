@@ -4,7 +4,7 @@
  * represents the fact-finder product-per-page-options
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: ProductsPerPageOptions.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  **/
 class FACTFinder_ProductsPerPageOptions implements IteratorAggregate

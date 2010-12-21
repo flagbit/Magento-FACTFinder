@@ -5,7 +5,7 @@
  * server. it can be seen as a parameter factory.
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: ParametersParser.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  */
 class FACTFinder_ParametersParser

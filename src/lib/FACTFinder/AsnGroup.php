@@ -4,7 +4,7 @@
  * represents a group in the ASN which contains several filters
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: AsnGroup.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @category  Collection
  * @package   FACTFinder\Common
  */

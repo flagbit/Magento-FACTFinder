@@ -3,7 +3,7 @@
  * adapter for the factfinder search
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: SearchAdapter.php 25935 2010-06-29 15:04:45Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Adapter

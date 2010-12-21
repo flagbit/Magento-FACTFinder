@@ -4,7 +4,7 @@
  * represents a tag item for the tagcloud
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: TagQuery.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  */
 class FACTFinder_TagQuery extends FACTFinder_Item

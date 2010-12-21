@@ -3,7 +3,7 @@
  * represents a factfinder campaign
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: Campaign.php 25985 2010-06-30 15:31:53Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  */
 class FACTFinder_Campaign

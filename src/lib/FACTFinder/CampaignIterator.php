@@ -3,7 +3,7 @@
  * represents the whole collection of campaigns. decorates some campaign functions to execute on every campaign
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: CampaignIterator.php 25985 2010-06-30 15:31:53Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  */
 class FACTFinder_CampaignIterator extends ArrayIterator

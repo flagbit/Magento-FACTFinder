@@ -4,7 +4,7 @@
  * this suggest adapter requests the raw suggest data
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: SuggestAdapter.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Http
  */
 class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter

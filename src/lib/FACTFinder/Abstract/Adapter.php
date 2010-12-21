@@ -6,7 +6,7 @@
  * the useable, unique objects
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: Adapter.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_Adapter

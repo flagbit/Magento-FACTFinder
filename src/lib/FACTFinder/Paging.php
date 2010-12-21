@@ -4,7 +4,7 @@
  * Class for creating pagelinks on a search result page
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: Paging.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @package   FACTFinder\Common
  **/
 class FACTFinder_Paging implements IteratorAggregate

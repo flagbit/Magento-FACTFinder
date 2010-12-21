@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: AsnFilterItem.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  */
 class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_Mysql4_Fulltext {
 

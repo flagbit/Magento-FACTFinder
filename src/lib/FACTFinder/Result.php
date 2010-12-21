@@ -4,7 +4,7 @@
  * this class represents a fact-finder search result
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: Result.php 25893 2010-06-29 08:19:43Z rb $
+ * @version   $Id$
  * @category  Collection
  * @package   FACTFinder\Common
  */
