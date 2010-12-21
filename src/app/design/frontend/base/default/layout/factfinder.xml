@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
+
+/**
+ * Module Layout Config
+ * 
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Joerg Weller <weller@flagbit.de>
+ * @version   $Id: AsnFilterItem.php 25893 2010-06-29 08:19:43Z rb $
+ */
+-->
+<layout version="0.1.0">
+	<default>
+		<reference name="head">
+			<action method="addJs"><script>factfinder/jXHR.js</script></action>
+			<action method="addJs"><script>factfinder/suggest.js</script></action>
+		</reference>
+		<reference name="top.search">
+			<action method="setTemplate"><template>factfinder/form.mini.phtml</template></action>
+		</reference>
+	</default>
+</layout>

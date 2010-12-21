@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
+ <name>FactFinder</name>
+ <channel>connect.magentocommerce.com/community</channel>
+ <summary>Integrates the FACT-Finder for improved product search functionality.</summary>
+ <description>Integrates the FACT-Finder for improved product search functionality.</description>
+ <lead>
+  <name>Flagbit GmbH  Co. KG</name>
+  <user>flagbit</user>
+  <email>magento@flagbit.de</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-12-03</date>
+ <time>16:49:51</time>
+ <version>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license>GPL</license>
+ <notes>
+- initial Release
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="Flagbit">
+    <dir name="FactFinder">
+     <dir name="controllers">
+      <file md5sum="c2160fbe1e434acd0e445ad55b634962" name="ExportController.php" role="magecommunity" />
+     </dir> <!-- /Flagbit/FactFinder/controllers -->
+     <dir name="etc">
+      <file md5sum="29bc3da4380c11aba66cef970575dcc6" name="config.xml" role="magecommunity" />
+     </dir> <!-- /Flagbit/FactFinder/etc -->
+     <dir name="Model">
+      <dir name="Export">
+       <file md5sum="dfaa6d8fbf6b4142d3f31cc0c528c7d2" name="Price.php" role="magecommunity" />
+       <file md5sum="2ffe2115263eec98842d1ec6c205fbd2" name="Product.php" role="magecommunity" />
+       <file md5sum="dbaef0b8223c3cee1580fac349375435" name="Stock.php" role="magecommunity" />
+      </dir> <!-- /Flagbit/FactFinder/Model/Export -->
+     </dir> <!-- /Flagbit/FactFinder/Model -->
+    </dir> <!-- /Flagbit/FactFinder -->
+   </dir> <!-- /Flagbit -->
+   <dir name="modules">
+    <file md5sum="99c6b4e5981ac7592830a9fb3f5e5a0e" name="Flagbit_FactFinder.xml" role="mageetc" />
+   </dir> <!-- /modules -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.0</min>
+    <max>6.0.0</max>
+   </php>
+   <pearinstaller>
+    <min>1.6.2</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-12-03</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+ </changelog>
+</package>

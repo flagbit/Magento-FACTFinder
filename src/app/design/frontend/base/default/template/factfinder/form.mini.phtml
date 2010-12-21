@@ -1,0 +1,33 @@
+<?php
+/**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
+
+/**
+ * Template to replace Javascript Suguest
+ * 
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Joerg Weller <weller@flagbit.de>
+ * @version   $Id: AsnFilterItem.php 25893 2010-06-29 08:19:43Z rb $
+ */
+?>
+<form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
+    <div class="form-search">
+        <label for="search"><?php echo $this->__('Search:') ?></label>
+        <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>" value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text" />
+        <button type="submit" title="<?php echo $this->__('Search') ?>" class="button"><span><span><?php echo $this->__('Search') ?></span></span></button>
+        <div id="search_autocomplete" class="search-autocomplete"></div>
+        <script type="text/javascript">
+        //<![CDATA[
+	        var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
+	        searchForm.initAutocomplete('<?php echo $this->helper('factfinder/search')->getSuggestUrl() ?>', 'search_autocomplete');
+        //]]>
+        </script>
+    </div>
+</form>
