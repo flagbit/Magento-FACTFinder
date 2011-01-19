@@ -76,7 +76,7 @@ class Flagbit_FactFinder_Model_Export_Stock extends Mage_Core_Model_Mysql4_Abstr
         $store  = Mage::app()->getStore($storeId);
         $select = $this->_getWriteAdapter()->select()
             ->from(
-                array('e' => $this->getTable('cataloginventory/stock_status_indexer_idx')),
+                array('e' => $this->getTable('cataloginventory/stock_status')),
                 $this->_exportColumns);
 
         if($storeId !== null){

@@ -45,9 +45,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param array $data
      */
     protected function _addCsvRow($data)
-    {   	
+    {       	
     	foreach($data as &$item){
-    		$item = str_replace(array("\r", "\n", "\""), ' ', addcslashes(strip_tags($item), '"'));
+    		$item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), strip_tags($item));
     	}
 
     	echo '"'.implode('";"', $data).'"'."\n"; 
@@ -87,8 +87,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     public function doExport($storeId = null)
     {
     	
-    	$header = array('id', 'parent_id', 'sku', 'category');
-    	foreach($this->_getSearchableAttributes() as $attribute){
+    	$header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
+    	foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
     		if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
 				continue;
 			}    		
@@ -99,7 +99,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     	
         // preparesearchable attributes
         $staticFields   = array();
-        foreach ($this->_getSearchableAttributes('static') as $attribute) {
+        foreach ($this->_getSearchableAttributes('static', 'system') as $attribute) {
             $staticFields[] = $attribute->getAttributeCode();
         }
         $dynamicFields  = array(
@@ -152,7 +152,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     continue;
                 }
 
-                $productIndex = array($productData['entity_id'], $productData['entity_id'], $productData['sku'], $this->_getCategoryPath($productData['entity_id'], $storeId));
+                $productIndex = array(
+                		$productData['entity_id'], 
+                		$productData['entity_id'], 
+                		$productData['sku'], 
+                		$this->_getCategoryPath($productData['entity_id']),
+                		$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $protductAttr, $storeId),
+                		$this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $protductAttr, $storeId)
+                	);
+
 				$this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
@@ -171,14 +179,41 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             }
         }
     }
+    
+    protected function _formatSearchableAttributes($attributes, $values, $storeId=null)
+    {
+    	$returnArray = array();
+		foreach($attributes as $attribute){
+			$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+			if(!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))){
+				continue;
+			}
+			$returnArray[] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+		}    	
+    	return implode(',', $returnArray);  
+    }
 
+    protected function _formatFilterableAttributes($attributes, $values, $storeId=null)
+    {
+    	$returnArray = array();
+		foreach($attributes as $attribute){
+			$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+			if(!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))){
+				continue;
+			}			
+			$returnArray[] = $attribute->getAttributeCode().'='.$this->_getAttributeValue($attribute->getId(), $value, $storeId);
+		}    	
+    	return implode('|', $returnArray);    	  	
+    }
     
     /**
      * Retrieve Searchable attributes
      *
+     * @param string $backendType 
+     * @param string $type possible Types: system, sortable, filterable, searchable
      * @return array
      */
-    protected function _getSearchableAttributes($backendType = null)
+    protected function _getSearchableAttributes($backendType = null, $type = null)
     {
         if (is_null($this->_searchableAttributes)) {
             $this->_searchableAttributes = array();
@@ -198,6 +233,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 )
                 ->where('main_table.entity_type_id=?', $entityType->getEntityTypeId())
                 ->where(join(' OR ', $whereCond));
+                
             $attributesData = $this->_getWriteAdapter()->fetchAll($select);
             $this->getEavConfig()->importAttributesData($entityType, $attributesData);
             foreach ($attributesData as $attributeData) {
@@ -208,14 +244,48 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             }
             unset($attributesData);
         }
-        if (!is_null($backendType)) {
+
+        if(!is_null($type) || !is_null($backendType)){
             $attributes = array();
             foreach ($this->_searchableAttributes as $attribute) {
-                if ($attribute->getBackendType() == $backendType) {
-                    $attributes[$attribute->getId()] = $attribute;
-                }
+            	
+            	if(!is_null($backendType) 
+            		&& $attribute->getBackendType() != $backendType){
+            			continue;
+            		}
+            	
+				switch($type){
+					
+					case "system":
+						if($attribute->getIsUserDefined() 
+							&& !$attribute->getUsedForSortBy()){							
+							continue 2;
+						}
+						break;
+
+					case "sortable":
+						if(!$attribute->getUsedForSortBy()){
+							continue 2;
+						}						
+						break;
+
+					case "filterable":
+						if(!$attribute->getIsFilterableInSearch()){
+							continue 2;
+						}						
+						break;
+
+					case "searchable":
+						if(!$attribute->getIsUserDefined()
+							|| !$attribute->getIsSearchable()){
+							continue 2;
+						}						
+						break;						
+				}
+				
+				$attributes[$attribute->getId()] = $attribute;
             }
-            return $attributes;
+            return $attributes;        	
         }
         return $this->_searchableAttributes;
     }    
@@ -318,8 +388,19 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         }
 
         return null;
-    }    
-    
+    }
+/*
+    protected function _getAttributeValue(Mage_Catalog_Model_Resource_Eav_Attribute $attribute, $values){
+
+    	$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : '';
+		if($attribute->getFrontendInput() == 'select' 
+			&& $attribute->getSourceModel() == 'eav/entity_attribute_source_table'){
+				
+			$value = $this->_getAttributeOptionText($value, $storeId);
+		}    	
+    	return $value;
+    }
+  */  
     /**
      * get Attribute Row Array
      * 
@@ -327,21 +408,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param array $attributes Attributes Array
      * @param int $storeId Store ID
      */
-	protected function _getAttributesRowArray(&$dataArray, $attributes, $storeId=null)
+	protected function _getAttributesRowArray(&$dataArray, $values, $storeId=null)
 	{	
-		foreach($this->_getSearchableAttributes() as $attribute){
+		foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
 			
 			if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
 				continue;
 			}
-			
-			$value = isset($attributes[$attribute->getId()]) ? $attributes[$attribute->getId()] : '';
-			if($attribute->getFrontendInput() == 'select' 
-				&& $attribute->getSourceModel() == 'eav/entity_attribute_source_table'){
-					
-				$value = $this->_getAttributeOptionText($value, $storeId);
-			}
-			$dataArray[$attribute->getAttributeCode()] = $value;                	
+			$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+			$dataArray[$attribute->getAttributeCode()] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);                	
 		}		
 	}    
 }

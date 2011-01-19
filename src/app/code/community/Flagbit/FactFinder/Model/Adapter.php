@@ -7,6 +7,8 @@
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
 
+require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+
 /**
  * Model class
  * 
@@ -18,8 +20,6 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
-
 class Flagbit_FactFinder_Model_Adapter
 {
 
@@ -64,7 +64,7 @@ class Flagbit_FactFinder_Model_Adapter
      * 
      * @return FACTFinder_Abstract_SearchAdapter
      */
-    protected function _getSearchAdapter()
+    protected function _getSearchAdapter($collectParams = true)
     {
         if ($this->_searchAdapter == null) {
             $config              = $this->_getConfiguration();
@@ -77,33 +77,81 @@ class Flagbit_FactFinder_Model_Adapter
             	$encodingHandler
             );
 			
-            // search Helper
-            $helper = Mage::helper('factfinder/search');
-    		
-            // add Default Params
-	    	$this->_setParam('idsOnly', 'true')
-	    		->_setParam('productsPerPage', $helper->getPageLimit())
-	    		->_setParam('query', $helper->getQuery()->getQueryText())
-	    		->_setParam('page', $helper->getCurrentPage());
-	    	
-	    	// add Sorting Param
-	    	if($helper->getCurrentOrder() 
-	    		&& $helper->getCurrentDirection()
-	    		&& $helper->getCurrentOrder() != 'position'){
-	    			$this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection());
-	    	}
-
-	    	// add Filter Params
-	    	$params = Mage::app()->getRequest()->getParams();
-	    	foreach($params as $key => $value){  		
-	    		if(strpos($value, '|')){
-	    			$param = explode('|', $value);
-	    			$this->_setParam('filter'.$param[0], $param[1]);
-	    		}
-	    	}            
+            if($collectParams == true){
+            
+	            // search Helper
+	            $helper = Mage::helper('factfinder/search');
+	    		
+	            // add Default Params
+		    	$this->_setParam('idsOnly', 'true')
+		    		->_setParam('productsPerPage', $helper->getPageLimit())
+		    		->_setParam('query', $helper->getQuery()->getQueryText())
+		    		->_setParam('page', $helper->getCurrentPage());
+		    	
+		    	// add Sorting Param
+		    	if($helper->getCurrentOrder() 
+		    		&& $helper->getCurrentDirection()
+		    		&& $helper->getCurrentOrder() != 'position'){
+		    			$this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection());
+		    	}
+	
+		    	// add Filter Params
+		    	$params = Mage::app()->getRequest()->getParams();
+		    	foreach($params as $key => $value){  		
+		    		if(strpos($value, '|')){
+		    			$param = explode('|', $value);
+		    			switch($param[1]){
+		    				
+		    				case 'slider':
+		    					$subparam = explode(':', $param[2]);
+		    					$this->_setParam($subparam[0], $subparam[1]);
+		    					$subparam = explode(':', $param[3]);
+		    					$this->_setParam($subparam[0], $subparam[1]);	    					
+		    					break;
+		    					
+		    				default:
+		    					$this->_setParam('filter'.$param[0], $param[1]);		
+		    					break;
+		    			}
+		    		}
+		    	} 
+            }           
         }
         
         return $this->_searchAdapter;
+    }
+    
+    /**
+     * execute search
+     */
+    public function checkStatus($configarray = null)
+    {
+        $status = false;
+        try {
+        	$this->_getConfiguration($configarray);
+            $this->_setParam('query', 'FACT-Finder Version');
+            $this->_setParam('productsPerPage', '1');
+
+            $status = $this->_getSearchAdapter(false)->getStatus() == 'resultsFound';
+        } catch (Exception $e) {
+            $status = false;
+        }
+        return $status;
+    }    
+    
+    /**
+     * get Redirect URL if there is set one
+     * 
+     * @return string
+     */
+    public function getRedirect()
+    {
+    	$url = null;
+ 		$campaigns = $this->_getSearchAdapter()->getCampaigns();
+		if (!empty($campaigns) && $campaigns->hasRedirect()) {
+			$url = $campaigns->getRedirectUrl();
+		} 
+    	return $url;	
     }
     
     /**
@@ -146,12 +194,13 @@ class Flagbit_FactFinder_Model_Adapter
 	        	&& count($result)){
 	    		
 	        	foreach ($result as $row) {
-	        		
+      		
 	        		$this->_afterSearchNavigation[] = array(
 	                	'attribute_code' => $row->getName(),
 	                	'name' => $row->getName(),
 	                	'items' => $this->_getAttributeOptions($row->getArrayCopy()),
 	                	'count' => $row->count(), 
+	        			'type'	=> $this->_getFilterType($row->getArrayCopy()),
 	                	'store_label' => $row->getName() 
 	                );
 	        	}    		 
@@ -159,6 +208,25 @@ class Flagbit_FactFinder_Model_Adapter
     	}
 
     	return $this->_afterSearchNavigation;
+    }
+    
+    /**
+     * get Filter Type by FACT-Finder FilterItem
+     * 
+     * @param array $options
+     * @return string
+     */
+    protected function _getFilterType($options)
+    {	
+    	$defaultType = 'item';
+    	foreach($options as $option){
+    		if(!$option->getType()){
+    			continue;
+    		}
+    		$defaultType = $option->getType();
+    		break;
+    	}
+    	return $defaultType;
     }
     
     /**
@@ -172,14 +240,38 @@ class Flagbit_FactFinder_Model_Adapter
     	$selectOptions = $this->_getSearchAdapter()->getSearchParams()->getFilters();
     	$attributeOption = array();
     	foreach($options as $option){
-    		if (Mage::helper('core/string')->strlen($option->getValue())) {		
-				$attributeOption[] = array(
-					'label' => $option->getValue(),
-					'value' => $option->getField().'|'.$option->getValue().(isset($selectOptions[$option->getField()])?'~'.$selectOptions[$option->getField()]:''),
-					'count' => $option->getMatchCount(),
-					'selected' => $option->isSelected()
-				);
-    		}	
+    		
+    		switch ($option->getType()){
+				
+    			case "slider":
+					$attributeOption[] = array(
+						'type'	=> $option->getType(),
+						'label' => 'slider',
+						'value' => $option->getField().'|'.$option->getType().'|'.str_replace(array('&', '='), array('|', ':'), $option->getValue()).'[VALUE]',
+						'absolute_min' => $option->getAbsoluteMin(),
+						'absolute_max' => $option->getAbsoluteMax(),
+						'selected_min' => $option->getSelectedMin(),
+						'selected_max' => $option->getSelectedMax(),
+						'count' => true,
+						'selected' => false //$option->isSelected()
+					);
+    				break;
+    				
+    			default:
+		    		if (!Mage::helper('core/string')->strlen($option->getValue())) {	
+		    			continue;
+		    		}	
+					$attributeOption[] = array(
+						'type'	=> 'attribute',
+						'label' => $option->getValue(),
+						'value' => $option->getField().'|'.$option->getValue().(isset($selectOptions[$option->getField()])?'~'.$selectOptions[$option->getField()]:''),
+						'count' => $option->getMatchCount(),
+						'selected' => $option->isSelected()
+					);
+		    			    				
+    				break;    				
+    			
+    		}
 		}
 		return $attributeOption;    	
     }
@@ -263,10 +355,10 @@ class Flagbit_FactFinder_Model_Adapter
      * 
      * @return FACTFinder_Abstract_Configuration config
      */
-    protected function _getConfiguration()
+    protected function _getConfiguration($configarray = null)
     {
         if ($this->_config == null) {
-            $this->_config = FF::getSingleton('configuration');
+            $this->_config = FF::getSingleton('configuration', $configarray);
         }
         return $this->_config;
     }

@@ -10,7 +10,7 @@
 /**
  * Block class
  * 
- * This class is used to disable Magento´ default Price and Category Filter Output  
+ * This class is used to disable Magento´s default Price and Category Filter Output  
  * 
  * @category  Mage
  * @package   Flagbit_FactFinder
@@ -27,22 +27,44 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
      * @return Mage_Catalog_Block_Layer_View
      */
     protected function _prepareLayout()
-    {
+    {  	
+    	if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::_prepareLayout();
+    	}
+    	
+    	// handle redirects
+    	$redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
+    	if($redirect){
+    		Mage::app()->getResponse()->setRedirect($redirect);
+    	}
+    	
         $stateBlock = $this->getLayout()->createBlock('catalog/layer_state')
             ->setLayer($this->getLayer());
 
         $this->setChild('layer_state', $stateBlock);
-
-
+    
         $filterableAttributes = $this->_getFilterableAttributes();
         foreach ($filterableAttributes as $attribute) {
             $filterBlockName = $this->_getAttributeFilterBlockName();
+            
 
-            $this->setChild($attribute->getAttributeCode().'_filter',
-                $this->getLayout()->createBlock($filterBlockName)
+            $filterBlock = $this->getLayout()->createBlock($filterBlockName)
                     ->setLayer($this->getLayer())
                     ->setAttributeModel($attribute)
-                    ->init());
+                    ->init();
+
+            switch($attribute->getType()){
+            	          	
+            	case 'slider':
+            		if(!($this->getLayout()->getBlock('ffslider') instanceof  Flagbit_FactFinder_Block_Filter_Slider)){
+            			$this->getLayout()->getBlock('head')->setChild('ffslider', $this->getLayout()->createBlock('factfinder/filter_slider'));
+            		}
+            		$filterBlock->setTemplate('factfinder/filter/slider.phtml');
+					$filterBlock->setData((current($attribute->getItems())));
+            		break;
+            }
+            
+            $this->setChild($attribute->getAttributeCode().'_filter', $filterBlock);
         }
 
         $this->getLayer()->apply();
@@ -56,6 +78,9 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
      */
     protected function _getCategoryFilter()
     {
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::_getCategoryFilter();
+    	}    	
         return false;
     }
 
@@ -66,6 +91,9 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
      */
     protected function _getPriceFilter()
     {
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::_getPriceFilter();
+    	}    	
         return false;
     }
 }

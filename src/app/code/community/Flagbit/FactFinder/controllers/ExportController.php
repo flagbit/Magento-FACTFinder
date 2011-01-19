@@ -21,6 +21,24 @@
  */
 class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Action {
 	
+    const XML_AUTH_PASSWORD_PATH	= 'factfinder/search/auth_password';		
+	
+    /**
+     * handle Export Authentification
+     * 
+     * @return Mage_Core_Controller_Varien_Action
+     */
+    public function preDispatch()
+    {
+    	$password = md5(Mage::getStoreConfig(self::XML_AUTH_PASSWORD_PATH));
+    	
+    	if($password != $this->getRequest()->getParam('key')){			
+    		$this->setFlag('', self::FLAG_NO_DISPATCH, true);
+    	}       	
+
+        return parent::preDispatch();
+    }		
+	
 	/**
 	 * get current Store ID
 	 * 

@@ -11,6 +11,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     const HTTP_AUTH     = 'http';
     const SIMPLE_AUTH   = 'simple';
     const ADVANCED_AUTH = 'advanced';
+    const XML_CONFIG_PATH = 'factfinder/search/';
     
     private $config;
     private $authType;
@@ -21,83 +22,97 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     private $requiredPageParams;
     private $requiredServerParams;
     
+    public function __construct($config = null)
+    {
+    	$this->config = new Varien_Object($config); 
+    	if(is_array($config)){  		
+    		$this->config->setData($config);
+    	}
+    }
     
     /**
      * @return string
      */
     public function getVersion() {
-        return Mage::getStoreConfig('factfinder/search/version');
+        return $this->getCustomValue('version');
     }
     
     /**
      * @return boolean
      */
     public function isDebugEnabled() {
-        return Mage::getStoreConfig('factfinder/search/debug') == 'true';
+        return $this->getCustomValue('debug') == 'true';
     }
     
     /**
      * @param string name
      * @return string value
      */
-    public function getCustomValue($name) {
-        return Mage::getStoreConfig('factfinder/'.$name);
+    public function getCustomValue($name) 
+    {
+    	$value = null;
+    	if($this->config->getData($name)){
+    		$value = $this->config->getData($name);
+    	}else{
+    		$value = Mage::getStoreConfig(self::XML_CONFIG_PATH.$name);
+    	}
+    	return $value;    	
     }
     
     /**
      * @return string
      */
     public function getRequestProtokoll() {
-    	return Mage::getStoreConfig('factfinder/search/protokoll');
+    	return $this->getCustomValue('protokoll');
     }
     
     /**
      * @return string
      */
     public function getServerAddress() {
-		return Mage::getStoreConfig('factfinder/search/address');    	
+		return $this->getCustomValue('address');    	
     }
     
     /**
      * @return int
      */
     public function getServerPort() {
-		return Mage::getStoreConfig('factfinder/search/port');    	
+		return $this->getCustomValue('port');    	
     }
     
     /**
      * @return string
      */
     public function getContext() {
-		return Mage::getStoreConfig('factfinder/search/context');    	
+		return $this->getCustomValue('context');    	
     }
     
     /**
      * @return string
      */
     public function getChannel() {
-        return Mage::getStoreConfig('factfinder/search/channel');
+        return $this->getCustomValue('channel');
     }
     
     /**
      * @return string
      */
     public function getLanguage() {
-		return Mage::getStoreConfig('factfinder/search/language');    	
+		return $this->getCustomValue('language');    	
     }
     
     /**
      * @return string
      */
     public function getAuthUser() {
-		return Mage::getStoreConfig('factfinder/search/auth_user');    	
+		return $this->getCustomValue('auth_user');    	
     }
     
     /**
      * @return string
      */
     public function getAuthPasswort() {
-		return Mage::getStoreConfig('factfinder/search/auth_password');    	
+		return $this->getCustomValue('auth_password');    	
     }
     
     /**
@@ -123,7 +138,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     
     private function getAuthType() {
         if ($this->authType == null) {
-            $this->authType = Mage::getStoreConfig('factfinder/search/auth_type');
+            $this->authType = $this->getCustomValue('auth_type');
             if ( $this->authType != self::HTTP_AUTH
                     && $this->authType != self::SIMPLE_AUTH
                     && $this->authType != self::ADVANCED_AUTH ) {
@@ -137,14 +152,14 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return string
      */
     public function getAdvancedAuthPrefix() {
-    	return Mage::getStoreConfig('factfinder/search/auth_advancedPrefix');
+    	return $this->getCustomValue('auth_advancedPrefix');
     }
     
     /**
      * @return string
      */
     public function getAdvancedAuthPostfix(){
-		return Mage::getStoreConfig('factfinder/search/auth_advancedPostfix');    	
+		return $this->getCustomValue('auth_advancedPostfix');    	
     }
     
     /**
@@ -212,7 +227,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return string
      */
     function getPageContentEncoding() {
-    	return Mage::getStoreConfig('factfinder/encoding/pageContent');
+    	return $this->getCustomValue('pageContent');
     }
     
     /**
@@ -221,7 +236,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return string
      */
     function getPageUrlEncoding() {
-    	return Mage::getStoreConfig('factfinder/encoding/pageURI');
+    	return $this->getCustomValue('pageURI');
     }
     
     /**
@@ -230,6 +245,6 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return string
      */
     function getServerUrlEncoding() {
-    	return Mage::getStoreConfig('factfinder/encoding/serverURI');
+    	return $this->getCustomValue('serverURI');
     }
 }

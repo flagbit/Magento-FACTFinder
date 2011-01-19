@@ -1,0 +1,46 @@
+<?php
+/**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
+
+/**
+ * Slider HTML Template
+ * 
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Joerg Weller <weller@flagbit.de>
+ * @version   $Id: form.mini.phtml 601 2010-12-21 14:07:41Z weller $
+ */
+?>
+<ol>
+<?php foreach ($this->getItems() as $_item): ?>
+    <li>	
+		<div id="preisSlider" style="width: 170px;padding:10px 0px;"></div>
+		<script type="text/javascript" language="javascript"> 
+		//<![CDATA[
+		
+			Event.observe(document, 'ffslider:init', function(event){	
+					oneTouchSlider.addSlider({
+						hostElementId:'preisSlider',
+						leftBorder: <?php echo $this->getAbsoluteMin();?>,
+						rightBorder: <?php echo $this->getAbsoluteMax();?>,
+						currentLeft: <?php echo $this->getSelectedMin();?>,
+						currentRight: <?php echo $this->getSelectedMax();?>,
+						unit:"",
+						callback:function(left, right){
+							var url = unescape('<?php echo $_item->getUrl() ?>'); 
+							window.location.href= url.replace('[VALUE]',left + '+-+' + right);
+						}
+					});	
+				}
+			);
+		//]]>
+		</script>		
+    </li>
+<?php endforeach ?>
+</ol>

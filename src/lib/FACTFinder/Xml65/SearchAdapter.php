@@ -30,6 +30,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
 	 */
 	protected function getData()
 	{
+		
 		if ($this->xmlData == null) {
 			libxml_use_internal_errors(true);
 			$data = parent::getData();

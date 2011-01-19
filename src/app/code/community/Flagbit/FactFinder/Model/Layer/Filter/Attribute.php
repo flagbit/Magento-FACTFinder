@@ -41,6 +41,10 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
      */
     public function apply(Zend_Controller_Request_Abstract $request, $filterBlock)
     {
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::apply($request, $filterBlock);
+    	}     	
+    	
 		$this->_getItemsData();
 		$_attributeCode = $filterBlock->getAttributeModel()->getAttributeCode();
         if (isset($this->_selectedFilterItems[$_attributeCode])
@@ -61,6 +65,10 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
      */
     protected function _getItemsData()
     {
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::_getItemsData();
+    	}    	
+    	
     	if($this->_filterItems === null){
 	        $attribute = $this->getAttributeModel();
 	        $this->_requestVar = $attribute->getAttributeCode();

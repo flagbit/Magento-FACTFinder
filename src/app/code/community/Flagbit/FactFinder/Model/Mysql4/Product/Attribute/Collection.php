@@ -18,7 +18,6 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-
 class Flagbit_FactFinder_Model_Mysql4_Product_Attribute_Collection extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Attribute_Collection {
 	
 	protected $_result = null;
