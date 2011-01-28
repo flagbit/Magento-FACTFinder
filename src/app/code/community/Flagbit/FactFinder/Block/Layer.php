@@ -32,6 +32,11 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
     		return parent::_prepareLayout();
     	}
     	
+    	// set default sort Order
+    	if(Mage::getSingleton('catalog/session')->getSortOrder()){
+    		Mage::getSingleton('catalog/session')->setSortOrder('relevance');
+    	}
+    	
     	// handle redirects
     	$redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
     	if($redirect){

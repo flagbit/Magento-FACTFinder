@@ -52,7 +52,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     {
 
     	$productIds = $this->_getAdapter()->getSearchResultProductIds();
-    	
+
         if (!empty($productIds)) {
 	
 	        $this->addIdFilter($productIds);

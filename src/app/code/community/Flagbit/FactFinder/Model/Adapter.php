@@ -30,6 +30,12 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_searchAdapter = null;
     
 	/**
+	 * FACT-Finder Suggestadapter
+	 * @var FACTFinder_Abstract_SuggestAdapter
+	 */
+    protected $_suggestAdapter = null;    
+    
+	/**
 	 * FACT-Finder Config
 	 * @var FACTFinder_Abstract_Configuration
 	 */    
@@ -78,11 +84,53 @@ class Flagbit_FactFinder_Model_Adapter
             );
 			
             if($collectParams == true){
-            
-	            // search Helper
-	            $helper = Mage::helper('factfinder/search');
-	    		
-	            // add Default Params
+            	$this->_collectParams();
+            }           
+        }
+        
+        return $this->_searchAdapter;
+    }
+    
+    protected function _collectParams()
+    {
+        // search Helper
+        $helper = Mage::helper('factfinder/search');    	
+    	$_request = Mage::app()->getRequest();
+    	
+    	switch($_request->getModuleName()){
+    		
+    		case "xmlconnect":
+		    	$this->_setParam('idsOnly', 'true')
+		    		->_setParam('productsPerPage', $_request->getParam('count'))
+		    		->_setParam('query', $helper->getQuery()->getQueryText())
+		    		->_setParam('page', ($_request->getParam('offset') / $_request->getParam('count')) + 1);   
+		    		
+				// add Sorting Param
+				$params = Mage::app()->getRequest()->getParams();		    		
+				foreach($params as $key => $value){
+					if(substr($key, 0, 6) == 'order_'){
+						$key = substr($key, 6);
+						if(!in_array($key, array('position', 'relevance'))){
+							$this->_setParam('sort'.$key, $value);
+						}
+					}
+				}	
+
+    			 // add Filter Params
+		    	$params = Mage::app()->getRequest()->getParams();
+		    	foreach($params as $key => $value){
+		    		$value = base64_decode($value);  		
+		    		if(strpos($value, '|')){
+		    			$param = explode('|', $value);
+		    			$this->_setParam('filter'.$param[0], $param[1]);
+		    		}
+		    	}		    		
+		    		
+    			break;
+    			
+    		case "catalogsearch":
+    		default:	    	
+		            // add Default Params
 		    	$this->_setParam('idsOnly', 'true')
 		    		->_setParam('productsPerPage', $helper->getPageLimit())
 		    		->_setParam('query', $helper->getQuery()->getQueryText())
@@ -91,10 +139,11 @@ class Flagbit_FactFinder_Model_Adapter
 		    	// add Sorting Param
 		    	if($helper->getCurrentOrder() 
 		    		&& $helper->getCurrentDirection()
-		    		&& $helper->getCurrentOrder() != 'position'){
+		    		&& $helper->getCurrentOrder() != 'position'
+		    		&& $helper->getCurrentOrder() != 'relevance'){		    		
 		    			$this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection());
 		    	}
-	
+		
 		    	// add Filter Params
 		    	$params = Mage::app()->getRequest()->getParams();
 		    	foreach($params as $key => $value){  		
@@ -114,11 +163,10 @@ class Flagbit_FactFinder_Model_Adapter
 		    					break;
 		    			}
 		    		}
-		    	} 
-            }           
-        }
-        
-        return $this->_searchAdapter;
+		    	}      			
+    			break;
+    		
+    	}
     }
     
     /**
@@ -167,6 +215,37 @@ class Flagbit_FactFinder_Model_Adapter
     				
     	return $dataprovider->getNonAuthenticationUrl(); 	
     }
+    
+    /**
+     * get Suggest Adapter
+     * 
+     * @return FACTFinder_Abstract_SuggestAdapter
+     */
+    protected function _getSuggestAdapter()
+    {
+        if ($this->_suggestAdapter == null) {
+            $config               = $this->_getConfiguration();
+            $encodingHandler      = FF::getSingleton('encodingHandler', $config);
+            $params               = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider         = $this->_getDataProvider();
+            $this->_suggestAdapter = FF::getSingleton('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+        }
+        return $this->_suggestAdapter;
+    }
+
+    /**
+     * 
+     * 
+     * @param unknown_type $query
+     */
+    public function getSuggestResult($query)
+    {
+		$this->_setParam('query', $query);
+		$this->_setParam('format', 'json');
+
+		return Zend_Json_Decoder::decode($this->_getSuggestAdapter()->getSuggestions());		
+    }
+    
     
     /**
      * get Search Result Count

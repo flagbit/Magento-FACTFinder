@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Collection.php 601 2010-12-21 14:07:41Z weller $
+ * @version   $Id$
  */
 class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_Model_Config_Data {
 	

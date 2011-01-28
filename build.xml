@@ -53,5 +53,47 @@
         </copy>
     </target>
 	
+	<target name="deploy_to_dev.mshop.brack.ch">
+	  <antcall target="deploy_scp">
+	    <param name="ssh.user" value="${mshop.ssh.user}"/>
+	  	<param name="ssh.pass" value="${mshop.ssh.pass}"/>
+	    <param name="ssh.server" value="${mshop.ssh.server}"/>
+	  	<param name="ssh.path" value="${mshop.ssh.path}"/>
+	  	<param name="ssh.cache" value="${mshop.ssh.cache}"/>
+	  </antcall>
+	</target>		
+	
+	
+    <target name="deploy_scp">
+        <scp
+            todir="${ssh.user}@${ssh.server}:${ssh.path}" 
+            password="${ssh.pass}"
+        	trust="true"
+        	verbose="true"
+            >
+            <fileset dir="${srcdir}/">
+                <include name="**/*"/>
+                <modified>
+                	 <param name="cache.cachefile" value="${ssh.cache}.cache.properties"/>
+                </modified>
+                <exclude name="**/.svn"/>
+                <exclude name=".buildpath"/>
+                <exclude name=".project"/>
+                <exclude name=".settings/**"/>
+            	<exclude name=".cache/**"/>
+            	<exclude name="webserver/**"/>
+            	<exclude name=".externalToolBuilders/**"/>
+                <exclude name="downloader/**"/>
+            	<exclude name="pear"/>
+                <exclude name="*cache.properties"/>
+                <exclude name="build.default.properties"/>
+                <exclude name="build.properties"/>
+                <exclude name="build.xml"/>
+                <exclude name="TODO"/>
+            	<exclude name="var/**" />
+            	<exclude name="Thumbs.db" />
+            </fileset>
+        </scp>
+    </target>	
 
 </project>

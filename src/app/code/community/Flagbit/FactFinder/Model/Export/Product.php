@@ -86,7 +86,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     public function doExport($storeId = null)
     {
-    	
+
     	$header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
     	foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
     		if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
@@ -156,7 +156,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 		$productData['entity_id'], 
                 		$productData['entity_id'], 
                 		$productData['sku'], 
-                		$this->_getCategoryPath($productData['entity_id']),
+                		$this->_getCategoryPath($productData['entity_id'], $storeId),
                 		$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $protductAttr, $storeId),
                 		$this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $protductAttr, $storeId)
                 	);
@@ -169,7 +169,14 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
 
-                        	$subProductIndex = array($productChild['entity_id'], $productData['entity_id'], $productChild['sku'], $this->_getCategoryPath($productData['entity_id'], $storeId));
+                        	$subProductIndex = array(
+                        			$productChild['entity_id'],
+                        			$productData['entity_id'],
+                        			$productChild['sku'],
+                        			$this->_getCategoryPath($productData['entity_id'], $storeId),
+                					$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
+                					$this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId)                        			
+                        		);
                         	$this->_getAttributesRowArray($subProductIndex, $productAttributes[$productChild['entity_id']], $storeId);
 
                             $this->_addCsvRow($subProductIndex);
@@ -342,6 +349,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 				$categoryIds = explode('/', $path);
 				$categoryIdsCount = count($categoryIds);
 				for($i=2;$i < $categoryIdsCount;$i++){
+					if(!isset($this->_categoryNames[$categoryIds[$i]])){
+						continue;
+					}
 					$value .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
 				}
 				if($categoryIdsCount > 2){
