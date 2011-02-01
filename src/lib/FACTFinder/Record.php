@@ -13,8 +13,8 @@ class FACTFinder_Record
     protected $similarity;
     protected $position;
     protected $origPosition;
-	protected $fieldValues;
-	protected $fieldNames;
+    protected $fieldValues;
+    protected $fieldNames;
 
     /**
      * class constructor - creates a record using the given values. if the array contains fieldnames as array-keys, they
@@ -27,23 +27,23 @@ class FACTFinder_Record
     **/
     public function __construct($id, $similarity, $position = 0, $origPosition = 0, array $fieldValues = null)
     {
-    	$this->id = trim($id);
-    	$this->similarity = doubleval($similarity);
-    	if ($this->similarity > 100.0) {
-    		$this->similarity = 100.0;
-    	} else if ($this->similarity < 0.0) {
-    		$this->similarity = 0.0;
-    	}
-    	
-    	$this->position = intval($position);
-    	$this->origPosition = intval($origPosition);
-    	
-    	if (empty($fieldValues)) {
-    		$this->fieldNames = array();
-    		$this->fieldValues = array();
-    	} else {
-	    	$this->setValues($fieldValues);
-	    }
+        $this->id = trim($id);
+        $this->similarity = doubleval($similarity);
+        if ($this->similarity > 100.0) {
+            $this->similarity = 100.0;
+        } else if ($this->similarity < 0.0) {
+            $this->similarity = 0.0;
+        }
+        
+        $this->position = intval($position);
+        $this->origPosition = intval($origPosition);
+        
+        if (empty($fieldValues)) {
+            $this->fieldNames = array();
+            $this->fieldValues = array();
+        } else {
+            $this->setValues($fieldValues);
+        }
     }
     
     /**
@@ -51,7 +51,7 @@ class FACTFinder_Record
      */
     public function getId()
     {
-    	return $this->id;
+        return $this->id;
     }
     
     /**
@@ -61,7 +61,7 @@ class FACTFinder_Record
      */
     public function getSimilarity()
     {
-    	return $this->similarity;
+        return $this->similarity;
     }
     
     /**
@@ -71,7 +71,7 @@ class FACTFinder_Record
      */
     public function getOriginalPosition()
     {
-    	return $this->origPosition;
+        return $this->origPosition;
     }
         
     /**
@@ -81,7 +81,7 @@ class FACTFinder_Record
      */
     public function getPosition()
     {
-    	return $this->position;
+        return $this->position;
     }
     
     /**
@@ -94,14 +94,14 @@ class FACTFinder_Record
      */
     public function getValue($field)
     {
-    	$returnValue = null;
-    	if (is_int($field)) {
-    		$returnValue = isset($this->fieldValues[$field]) ? $this->fieldValues[$field] : null;
-    	} else if (is_string($field)) {
-    		//get value by number and the number by name (mapping from name to value)
-    		$returnValue = isset($this->fieldNames[$field]) ? $this->fieldValues[$this->fieldNames[$field]] : null;
-    	}
-    	return $returnValue;
+        $returnValue = null;
+        if (is_int($field)) {
+            $returnValue = isset($this->fieldValues[$field]) ? $this->fieldValues[$field] : null;
+        } else if (is_string($field)) {
+            //get value by number and the number by name (mapping from name to value)
+            $returnValue = isset($this->fieldNames[$field]) ? $this->fieldValues[$this->fieldNames[$field]] : null;
+        }
+        return $returnValue;
     }
     
     /**
@@ -110,7 +110,7 @@ class FACTFinder_Record
      */
     public function __get($name)
     {
-    	return $this->getValue($name);
+        return $this->getValue($name);
     }
     
     /**
@@ -123,19 +123,19 @@ class FACTFinder_Record
      */
     public function setValue($field, $value)
     {
-    	if (is_int($field)) {
-    		$this->fieldValues[$field] = $value;
-    	} else if (is_string($field)) {
-    		if (!isset($this->fieldNames[$field])) {
-    			// create a new field
-    			$this->fieldNames[$field] = sizeof($this->fieldValues);
-    			$this->fieldValues[] = $value;
-    		} else {
-    			$this->fieldValues[$this->fieldNames[$field]] = $value;
-    		}
-    	} else {
-    		throw new Exception("it is not (yet) possible to refer to a field using ".gettype($field));
-    	}
+        if (is_int($field)) {
+            $this->fieldValues[$field] = $value;
+        } else if (is_string($field)) {
+            if (!isset($this->fieldNames[$field])) {
+                // create a new field
+                $this->fieldNames[$field] = sizeof($this->fieldValues);
+                $this->fieldValues[] = $value;
+            } else {
+                $this->fieldValues[$this->fieldNames[$field]] = $value;
+            }
+        } else {
+            throw new Exception("it is not (yet) possible to refer to a field using ".gettype($field));
+        }
     }
     
     /**
@@ -149,7 +149,7 @@ class FACTFinder_Record
      */
     public function __set($name, $value)
     {
-    	return $this->setValue($name, $value);
+        return $this->setValue($name, $value);
     }
     
     /**
@@ -161,8 +161,8 @@ class FACTFinder_Record
      */
     public function setValues(array $fieldValues)
     {
-		foreach ($fieldValues AS $name => $value) {
-			$this->setValue($name, $value);
-		}
+        foreach ($fieldValues AS $name => $value) {
+            $this->setValue($name, $value);
+        }
     }
 }

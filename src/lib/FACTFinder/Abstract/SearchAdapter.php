@@ -8,7 +8,7 @@
  */
 abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Adapter
 {
-	private $searchParams;
+    private $searchParams;
     private $result;
     private $asn;
     private $sorting;

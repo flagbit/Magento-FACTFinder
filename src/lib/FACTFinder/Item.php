@@ -10,39 +10,39 @@
 **/
 class FACTFinder_Item
 {
-	private $value;
-	private $url;
-	private $isSelected;
-	
-	/**
-	 * @param string value
-	 * @param string url
-	 * @param boolean is selected (default: false)
-	 */
-	public function __construct($value, $url, $isSelected = false){
-		$this->value = strval($value);
-		$this->url = strval($url);
-		$this->isSelected = $isSelected == true;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getValue() {
-		return $this->value;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getUrl() {
-		return $this->url;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function isSelected() {
-		return $this->isSelected;
-	}
+    private $value;
+    private $url;
+    private $isSelected;
+    
+    /**
+     * @param string value
+     * @param string url
+     * @param boolean is selected (default: false)
+     */
+    public function __construct($value, $url, $isSelected = false){
+        $this->value = strval($value);
+        $this->url = strval($url);
+        $this->isSelected = $isSelected == true;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getValue() {
+        return $this->value;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getUrl() {
+        return $this->url;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function isSelected() {
+        return $this->isSelected;
+    }
 }

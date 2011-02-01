@@ -20,18 +20,18 @@
 <ol>
 <?php foreach ($this->getItems() as $_item): ?>
     <li>	
-		<div id="preisSlider" style="width: 170px;padding:10px 0px;"></div>
+		<div id="<?php echo base64_encode($this->getValue());?>" style="width: 170px;padding:10px 0px;"></div>
 		<script type="text/javascript" language="javascript"> 
 		//<![CDATA[
 		
 			Event.observe(document, 'ffslider:init', function(event){	
 					oneTouchSlider.addSlider({
-						hostElementId:'preisSlider',
+						hostElementId:'<?php echo base64_encode($this->getValue());?>',
 						leftBorder: <?php echo $this->getAbsoluteMin();?>,
 						rightBorder: <?php echo $this->getAbsoluteMax();?>,
 						currentLeft: <?php echo $this->getSelectedMin();?>,
 						currentRight: <?php echo $this->getSelectedMax();?>,
-						unit:"",
+						unit:"<?php echo $this->getUnit();?>",
 						callback:function(left, right){
 							var url = unescape('<?php echo $_item->getUrl() ?>'); 
 							window.location.href= url.replace('[VALUE]',left + '+-+' + right);

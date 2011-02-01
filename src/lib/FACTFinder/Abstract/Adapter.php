@@ -1,4 +1,7 @@
 <?php
+/**
+ * contains the FACTFinder_Abstract_Adapter class only
+ */
 
 /**
  * handles the issue to create useable object from the data delivered by the dataprovider.
@@ -14,9 +17,9 @@ abstract class FACTFinder_Abstract_Adapter
     private $paramsParser;
     private $dataProvider;
     private $encodingHandler;
-	
+    
     final public function __construct(FACTFinder_Abstract_DataProvider $dataProvider, FACTFinder_ParametersParser $paramsParser,
-    	FACTFinder_EncodingHandler $encodingHandler)
+        FACTFinder_EncodingHandler $encodingHandler)
     {
         $this->setDataProvider($dataProvider);
         $this->setParamsParser($paramsParser);
@@ -38,7 +41,7 @@ abstract class FACTFinder_Abstract_Adapter
      */
     protected function getData()
     {
-    	return $this->getDataProvider()->getData();
+        return $this->getDataProvider()->getData();
     }
     
     /**
@@ -59,7 +62,7 @@ abstract class FACTFinder_Abstract_Adapter
     **/
     protected function getDataProvider()
     {
-    	return $this->dataProvider;
+        return $this->dataProvider;
     }
 
     /**
@@ -69,7 +72,7 @@ abstract class FACTFinder_Abstract_Adapter
     **/
     public function setParamsParser(FACTFinder_ParametersParser $paramsParser)
     {
-		$this->paramsParser = $paramsParser;
+        $this->paramsParser = $paramsParser;
     }
 
     /**
@@ -89,7 +92,7 @@ abstract class FACTFinder_Abstract_Adapter
     **/
     public function setEncodingHandler(FACTFinder_EncodingHandler $encodingHandler)
     {
-		$this->encodingHandler = $encodingHandler;
+        $this->encodingHandler = $encodingHandler;
     }
 
     /**

@@ -273,10 +273,10 @@ class Flagbit_FactFinder_Model_Adapter
 	        	&& count($result)){
 	    		
 	        	foreach ($result as $row) {
-      		
 	        		$this->_afterSearchNavigation[] = array(
 	                	'attribute_code' => $row->getName(),
 	                	'name' => $row->getName(),
+	        			'unit' => $row->getUnit(),
 	                	'items' => $this->_getAttributeOptions($row->getArrayCopy()),
 	                	'count' => $row->count(), 
 	        			'type'	=> $this->_getFilterType($row->getArrayCopy()),

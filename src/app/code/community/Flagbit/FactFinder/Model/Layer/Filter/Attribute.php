@@ -79,14 +79,15 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
 			$options = $attribute->getItems();
 			$optionsCount = $attribute->getCount();
 			$this->_filterItems = array();
-			
-			foreach ($options as $option) {
-				
-				if($option['selected'] == true){					
-					$this->_selectedFilterItems[$attribute->getAttributeCode()][] = $option;
-					continue;				
+			if(is_array($options)){
+				foreach ($options as $option) {
+					
+					if($option['selected'] == true){					
+						$this->_selectedFilterItems[$attribute->getAttributeCode()][] = $option;
+						continue;				
+					}
+					$this->_filterItems[] = $option;	
 				}
-				$this->_filterItems[] = $option;	
 			}
     	}
         return $this->_filterItems;

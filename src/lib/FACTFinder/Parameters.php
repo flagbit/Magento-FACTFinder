@@ -2,7 +2,7 @@
 
 /**
  * the factfinder parameters contains all relevant parameter which makes effect to the factfinder search result.
- * so it represents a state of a factfinder result
+ * It does NOT contain all request parameters. The parameters represents a state of a factfinder result.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$
@@ -17,7 +17,7 @@ class FACTFinder_Parameters
     private $filters;
     private $sortings;
     private $isNavigation;
-	private $followSearch;
+    private $followSearch;
 
     /**
      * @param string query
@@ -27,7 +27,7 @@ class FACTFinder_Parameters
      * @param array filters
      * @param array sortings
      * @param boolean isNavigation
-	 * @param int followSearch
+     * @param int followSearch
      */
     public function __construct($query, $channel, $productsPerPage = null, $page = 1, array $filters = array(), array $sortings = array(), $isNavigation = false, $followSearch = 10000) {
         $this->query           = strval($query);
@@ -37,7 +37,7 @@ class FACTFinder_Parameters
         $this->filters         = $filters;
         $this->sortings        = $sortings;
         $this->isNavigation    = $isNavigation == true;
-		$this->followSearch    = intval($followSearch);
+        $this->followSearch    = intval($followSearch);
     }
 
     /**
@@ -95,12 +95,12 @@ class FACTFinder_Parameters
     {
         return $this->isNavigation;
     }
-	
+    
     /**
      * @return int follow search value
      */
-	public function getFollowSearch()
-	{
-		return $this->followSearch;
-	}
+    public function getFollowSearch()
+    {
+        return $this->followSearch;
+    }
 }

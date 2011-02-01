@@ -51,7 +51,6 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
         $filterableAttributes = $this->_getFilterableAttributes();
         foreach ($filterableAttributes as $attribute) {
             $filterBlockName = $this->_getAttributeFilterBlockName();
-            
 
             $filterBlock = $this->getLayout()->createBlock($filterBlockName)
                     ->setLayer($this->getLayer())
@@ -66,6 +65,7 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
             		}
             		$filterBlock->setTemplate('factfinder/filter/slider.phtml');
 					$filterBlock->setData((current($attribute->getItems())));
+					$filterBlock->setUnit($attribute->getUnit());
             		break;
             }
             

@@ -15,7 +15,7 @@ class FACTFinder_Paging implements IteratorAggregate
     private $params;
     private $iterator;
     private $displayPageCount = 9;
-	
+    
     /**
      * class constructor - puts paging data from the SimpleXMLElement object
      * into usefull structure
@@ -32,22 +32,22 @@ class FACTFinder_Paging implements IteratorAggregate
         $this->params          = $paramsParser->getRequestParams();
     }
 
-	/**
-	 * get iterator to iterate over all paging items around the current page, altogether not more than set
-	 * by "setDisplayPageCount" (default: 9). each item is an object of FACTFinder_Item
-	 *
-	 * @return Traversable
-	 */
-	public function getIterator()
-	{
-		$iterator = new ArrayIterator();
-		for($page = $this->getFirstPageNumberShown(); $page <= $this->getLastPageNumberShown(); $page++) {
-			$iterator->append(
-				FF::getInstance('item', $page, $this->getPageLink($page), ($page == $this->currentPage))
-			);
-		}
-		return $iterator;
-	}
+    /**
+     * get iterator to iterate over all paging items around the current page, altogether not more than set
+     * by "setDisplayPageCount" (default: 9). each item is an object of FACTFinder_Item
+     *
+     * @return Traversable
+     */
+    public function getIterator()
+    {
+        $iterator = new ArrayIterator();
+        for($page = $this->getFirstPageNumberShown(); $page <= $this->getLastPageNumberShown(); $page++) {
+            $iterator->append(
+                FF::getInstance('item', $page, $this->getPageLink($page), ($page == $this->currentPage))
+            );
+        }
+        return $iterator;
+    }
 
     /**
      * returns the numer of all existing pages for the current result
@@ -117,15 +117,15 @@ class FACTFinder_Paging implements IteratorAggregate
         return $this->getPageLink($previous_page_number, $link_target);
     }
     
-	/**
-	 * set maximum count of pages to display
-	 *
-	 * @param int count of pages to display
-	 * @return void
-	 */
+    /**
+     * set maximum count of pages to display
+     *
+     * @param int count of pages to display
+     * @return void
+     */
     public function setDisplayPageCount($displayPageCount)
     {
-    	$this->displayPageCount = intval($displayPageCount);
+        $this->displayPageCount = intval($displayPageCount);
     }
 
     /**
