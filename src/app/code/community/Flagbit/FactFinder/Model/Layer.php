@@ -3,7 +3,7 @@
 class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
 {
     const XML_PATH_DISPLAY_LAYER_COUNT    = 'catalog/search/use_layered_navigation_count';
- 
+
     /**
      * Get current layer product collection
      *
@@ -12,27 +12,27 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
     public function getProductCollection()
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
-    		return parent::getProductCollection();
-    	}    	
-    	
+            return parent::getProductCollection();
+        }
+
         if (isset($this->_productCollections[$this->getCurrentCategory()->getId()])) {
             $collection = $this->_productCollections[$this->getCurrentCategory()->getId()];
         }
         else {
-        	$_helper = Mage::helper('catalogsearch');
-        	if(method_exists($_helper, 'getEngine')){
-            	$engine = Mage::helper('catalogsearch')->getEngine();
-        	}else{
-        		$collection = Mage::getResourceModel('factfinder/search_collection');
-        	}
-            $collection = $engine->getResultCollection();
+            $_helper = Mage::helper('catalogsearch');
+            if(method_exists($_helper, 'getEngine')){
+                $engine = Mage::helper('catalogsearch')->getEngine();
+                $collection = $engine->getResultCollection();
+            }else{
+                $collection = Mage::getResourceModel('factfinder/search_collection');
+            }
             $this->prepareProductCollection($collection);
             $this->_productCollections[$this->getCurrentCategory()->getId()] = $collection;
         }
 
         return $collection;
-    }    
-    
+    }
+
     /**
      * Get collection of all filterable attributes for layer products set
      *
@@ -40,11 +40,11 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
      */
     public function getFilterableAttributes()
     {
-    	
+
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
-    		return parent::getFilterableAttributes();
-    	}    	
-    	
+            return parent::getFilterableAttributes();
+        }
+
         /* @var $collection Flagbit_FactFinder_Model_Mysql4_Product_Attribute_Collection */
         $collection = Mage::getResourceModel('factfinder/product_attribute_collection')
             ->setItemObjectClass('catalog/resource_eav_attribute')
