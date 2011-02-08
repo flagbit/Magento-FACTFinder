@@ -28,7 +28,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 */
 	public function getIsEnabled()
 	{
-		return (Mage::getStoreConfig('factfinder/search/enabled') && !Mage::getStoreConfig('advanced/modules_disable_output/Flagbit_FactFinder')) ? true : false;
+		return (
+					Mage::getStoreConfig('factfinder/search/enabled') 
+					&& !Mage::getStoreConfig('advanced/modules_disable_output/Flagbit_FactFinder')
+					&& Mage::app()->getRequest()->getModuleName() == 'catalogsearch'
+				) ? true : false;
 	}
 	
     /**

@@ -31,7 +31,7 @@ class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_M
 			
 			$data = new Varien_Object($this->getFieldsetData());		
 		    $errors  = array();
-
+		    
 	        if (stripos($data->getAddress(), 'http://') === 0 || strpos($data->getAddress(), '/') !== false) {
 	            $errors[] = Mage::helper('factfinder')->__('servername should only contain the IP address or the domain - no "http://" or any slashes!');
 	        }

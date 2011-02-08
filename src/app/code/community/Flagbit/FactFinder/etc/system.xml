@@ -38,7 +38,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <enabled translate="label">
-                            <label>enabled</label>
+                            <label>Enabled</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <backend_model>factfinder/system_config_backend_enabled</backend_model>                            							
@@ -101,7 +101,7 @@
                         <language translate="label">
                             <label>Language</label>
                             <comment>Some text snippets come directly from FACT-Finder. Set the language code here.
-                                Leave empty to use the language of the useres browser.</comment>
+                                Leave empty to use the language of the users browser.</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>7</sort_order>
                             <show_in_default>1</show_in_default>

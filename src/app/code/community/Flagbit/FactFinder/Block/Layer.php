@@ -18,7 +18,7 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
+class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abstract
 {
 
     /**
@@ -31,7 +31,7 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
     	if(!Mage::helper('factfinder/search')->getIsEnabled()){
     		return parent::_prepareLayout();
     	}
-    	
+
     	// set default sort Order
     	if(Mage::getSingleton('catalog/session')->getSortOrder()){
     		Mage::getSingleton('catalog/session')->setSortOrder('relevance');
@@ -47,7 +47,7 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
             ->setLayer($this->getLayer());
 
         $this->setChild('layer_state', $stateBlock);
-    
+
         $filterableAttributes = $this->_getFilterableAttributes();
         foreach ($filterableAttributes as $attribute) {
             $filterBlockName = $this->_getAttributeFilterBlockName();
@@ -101,4 +101,24 @@ class Flagbit_FactFinder_Block_Layer extends Mage_CatalogSearch_Block_Layer
     	}    	
         return false;
     }
+    
+    /**
+     * Check availability display layer block
+     *
+     * @return bool
+     */
+    public function canShowBlock()
+    {
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+    		return parent::canShowBlock();
+    	}  
+        $availableResCount = (int) Mage::app()->getStore()
+            ->getConfig(Mage_CatalogSearch_Model_Layer::XML_PATH_DISPLAY_LAYER_COUNT);
+
+        if (!$availableResCount
+            || ($availableResCount>=$this->getLayer()->getProductCollection()->getSize())) {
+            return parent::canShowBlock();
+        }
+        return false;
+    }    
 }

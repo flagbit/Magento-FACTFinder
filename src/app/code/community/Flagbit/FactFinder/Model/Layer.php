@@ -15,20 +15,8 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
             return parent::getProductCollection();
         }
 
-        if (isset($this->_productCollections[$this->getCurrentCategory()->getId()])) {
-            $collection = $this->_productCollections[$this->getCurrentCategory()->getId()];
-        }
-        else {
-            $_helper = Mage::helper('catalogsearch');
-            if(method_exists($_helper, 'getEngine')){
-                $engine = Mage::helper('catalogsearch')->getEngine();
-                $collection = $engine->getResultCollection();
-            }else{
-                $collection = Mage::getResourceModel('factfinder/search_collection');
-            }
-            $this->prepareProductCollection($collection);
-            $this->_productCollections[$this->getCurrentCategory()->getId()] = $collection;
-        }
+        $collection = Mage::getResourceModel('factfinder/search_collection');
+		$this->prepareProductCollection($collection);
 
         return $collection;
     }
