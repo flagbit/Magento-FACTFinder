@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Layer.php 614 2011-02-01 16:08:47Z weller $
+ * @version   $Id$
  */
 
 if(Mage::helper('factfinder')->isModuleActive('Enterprise_Search')){

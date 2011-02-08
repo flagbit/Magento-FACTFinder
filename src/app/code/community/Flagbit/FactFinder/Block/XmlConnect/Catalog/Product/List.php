@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Layer.php 610 2011-01-19 14:13:34Z weller $
+ * @version   $Id$
  */
 class Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List extends Mage_XmlConnect_Block_Catalog_Product_List {
 	

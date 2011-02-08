@@ -21,7 +21,14 @@
 class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
 {
-
+	
+	/**
+	 * XML Config Path to Product Identifier Setting
+	 * 
+	 * @var string
+	 */
+    const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';	
+	
     /**
      * Get collection size
      *
@@ -50,14 +57,18 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
-
+		// get product Ids from Fact-Finder
     	$productIds = $this->_getAdapter()->getSearchResultProductIds();
 
         if (!empty($productIds)) {
-	
-	        $this->addIdFilter($productIds);
-	        $this->_pageSize = null;
-	        
+
+        	// add Filter to Query
+        	$this->addFieldToFilter(
+        		Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER),
+        		array('in'=>$productIds)
+        	);
+
+	        $this->_pageSize = null;      
 	        $entity = $this->getEntity();
 	
 	        $this->printLogQuery($printQuery, $logQuery);

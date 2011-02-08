@@ -163,6 +163,9 @@
 	            <channel></channel>
 	            <language></language>
 	        </search>
+			<config>
+				<identifier>entity_id</identifier>
+			</config>
 	
 	        <!-- parameter settings -->
 	        <params>
