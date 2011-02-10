@@ -343,7 +343,7 @@ class Flagbit_FactFinder_Model_Adapter
 					$attributeOption[] = array(
 						'type'	=> 'attribute',
 						'label' => $option->getValue(),
-						'value' => $option->getField().'|'.$option->getValue().(isset($selectOptions[$option->getField()])?'~'.$selectOptions[$option->getField()]:''),
+						'value' => $option->getField().'|'.$option->getValue().(isset($selectOptions[$option->getField()])?'~~~'.$selectOptions[$option->getField()]:''),
 						'count' => $option->getMatchCount(),
 						'selected' => $option->isSelected()
 					);

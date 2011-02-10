@@ -85,7 +85,7 @@
                     <frontName>factfinder</frontName>
                 </args>
             </factfinder>
-        </routers>	        
+        </routers>       
     </frontend>        
     <adminhtml>
         <acl>

@@ -25,7 +25,7 @@
         <div id="search_autocomplete" class="search-autocomplete"></div>
         <script type="text/javascript">
         //<![CDATA[
-        	<?php if(Mage::helper('factfinder/search')->getIsEnabled()):?>
+        	<?php if(Mage::helper('factfinder/search')->getIsEnabled(false)):?>
 	        var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
 	        searchForm.initAutocomplete('<?php echo $this->helper('factfinder/search')->getSuggestUrl() ?>', 'search_autocomplete');
 	        <?php else:?>

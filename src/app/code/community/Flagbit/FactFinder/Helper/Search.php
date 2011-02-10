@@ -26,14 +26,20 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 * 
 	 * @return boolean
 	 */
-	public function getIsEnabled()
+	public function getIsEnabled($searchPageCheck = true)
 	{
 		return (
 					Mage::getStoreConfig('factfinder/search/enabled') 
 					&& !Mage::getStoreConfig('advanced/modules_disable_output/Flagbit_FactFinder')
-					&& Mage::app()->getRequest()->getModuleName() == 'catalogsearch'
+					&& ($searchPageCheck == false || $this->getIsOnSearchPage())
 				) ? true : false;
 	}
+	
+	public function getIsOnSearchPage()
+	{
+		return Mage::app()->getRequest()->getModuleName() == 'catalogsearch';	
+	}
+	
 	
     /**
      * get Toolbar Block
