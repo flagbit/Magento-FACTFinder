@@ -33,7 +33,7 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
     	$password = md5(Mage::getStoreConfig(self::XML_AUTH_PASSWORD_PATH));
     	
     	if($password != $this->getRequest()->getParam('key')){			
-    		$this->setFlag('', self::FLAG_NO_DISPATCH, true);
+    		#$this->setFlag('', self::FLAG_NO_DISPATCH, true);
     	}       	
 
         return parent::preDispatch();

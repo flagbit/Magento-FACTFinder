@@ -309,16 +309,25 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
 		if($this->_categoryNames === null){
 			$categoryCollection = Mage::getResourceModel('catalog/category_attribute_collection');
-			$categoryCollection->getSelect()->where('attribute_code=?','name');
-			$categoryModel = $categoryCollection->getFirstItem();
+			$categoryCollection->getSelect()->where("attribute_code IN('name', 'is_active')");
 			
+			foreach($categoryCollection as $categoryModel){
+				${$categoryModel->getAttributeCode().'Model'} = $categoryModel;
+			}
+
 			$select = $this->_getReadAdapter()->select()
 				->from(
-					array('main' => $categoryModel->getBackendTable()),
+					array('main' => $nameModel->getBackendTable()),
 					array('entity_id', 'value')
 					)
-				->where('attribute_id=?', $categoryModel->getAttributeId())
-				->where('store_id = 0 OR store_id = ?', $storeId);
+	            ->join(
+	                array('e' => $is_activeModel->getBackendTable()),
+	                'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = '.$storeId.') AND e.attribute_id='.$is_activeModel->getAttributeId(),
+	               	null
+	            )					
+				->where('main.attribute_id=?', $nameModel->getAttributeId())
+				->where('e.value=?', '1')
+				->where('main.store_id = 0 OR main.store_id = ?', $storeId);
 
 			$this->_categoryNames = $this->_getReadAdapter()->fetchPairs($select);
 		}	
@@ -348,14 +357,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 			foreach($paths as $path){
 				$categoryIds = explode('/', $path);
 				$categoryIdsCount = count($categoryIds);
+				$categoryPath = '';
 				for($i=2;$i < $categoryIdsCount;$i++){
 					if(!isset($this->_categoryNames[$categoryIds[$i]])){
-						continue;
+						continue 2;
 					}
-					$value .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
+					$categoryPath .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
 				}
 				if($categoryIdsCount > 2){
-					$value = rtrim($value,'/').'|';
+					$value .= rtrim($categoryPath,'/').'|';
 				}
 			}
 			$value = trim($value, '|');

@@ -163,6 +163,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 	
 	_loadData: function(data) {
 		var content = '<ul>';
+		content += '<li style="display: none" class="selected"></li>';
 		data.each(function(item) {
 			content += '<li title="'+item.query+'"><span class="amount">' + item.hitCount + '</span>' + item.query + '</li>';
 		});		
