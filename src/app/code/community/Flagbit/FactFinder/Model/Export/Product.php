@@ -195,7 +195,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 			if(!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))){
 				continue;
 			}
-			$returnArray[] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+			$attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+			if (strval($attributeValue) != "") {
+				$returnArray[] = $attributeValue;
+			}
 		}    	
     	return implode(',', $returnArray);  
     }
@@ -208,7 +211,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 			if(!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))){
 				continue;
 			}			
-			$returnArray[] = $attribute->getAttributeCode().'='.$this->_getAttributeValue($attribute->getId(), $value, $storeId);
+			$attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+			if (strval($attributeValue) != "") {
+				$returnArray[] = $attribute->getAttributeCode().'='.$attributeValue;
+			}
 		}    	
     	return implode('|', $returnArray);    	  	
     }
@@ -409,18 +415,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
         return null;
     }
-/*
-    protected function _getAttributeValue(Mage_Catalog_Model_Resource_Eav_Attribute $attribute, $values){
 
-    	$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : '';
-		if($attribute->getFrontendInput() == 'select' 
-			&& $attribute->getSourceModel() == 'eav/entity_attribute_source_table'){
-				
-			$value = $this->_getAttributeOptionText($value, $storeId);
-		}    	
-    	return $value;
-    }
-  */  
     /**
      * get Attribute Row Array
      * 
