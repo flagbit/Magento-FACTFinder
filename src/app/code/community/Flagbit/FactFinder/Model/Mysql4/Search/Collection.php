@@ -48,7 +48,20 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     {
     	return Mage::getSingleton('factfinder/adapter');	
     }
-    
+     
+    /**
+     * get Entity ID Field Name by Configuration or via Entity
+     * 
+     * @return string
+     */
+    protected function _getIdFieldName()
+    {
+    	$idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
+    	if(!$idFieldName){
+    		$idFieldName = $this->getEntity()->getIdFieldName();
+    	}	
+    	return $idFieldName;
+    }
     
     /**
      * Load entities records into items
@@ -57,6 +70,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
+
 		// get product Ids from Fact-Finder
     	$productIds = $this->_getAdapter()->getSearchResultProductIds();
 
@@ -64,10 +78,10 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
 
         	// add Filter to Query
         	$this->addFieldToFilter(
-        		Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER),
+        		$this->_getIdFieldName(),
         		array('in'=>$productIds)
         	);
-
+ 
 	        $this->_pageSize = null;      
 	        $entity = $this->getEntity();
 	
@@ -83,7 +97,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
 	
 	        $items = array();
 	        foreach ($rows as $v) {        	
-				$items[$v[$this->getEntity()->getIdFieldName()]] = $v;
+				$items[$v[$this->_getIdFieldName()]] = $v;
 	        }
 
 	        foreach ($productIds as $productId){

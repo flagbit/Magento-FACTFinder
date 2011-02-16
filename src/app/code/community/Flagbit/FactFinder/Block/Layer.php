@@ -71,7 +71,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
             
             $this->setChild($attribute->getAttributeCode().'_filter', $filterBlock);
         }
-
+        
         $this->getLayer()->apply();
         return Mage_Core_Block_Template::_prepareLayout();
     }	
@@ -112,12 +112,10 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
     		return parent::canShowBlock();
     	}  
-        $availableResCount = (int) Mage::app()->getStore()
-            ->getConfig(Mage_CatalogSearch_Model_Layer::XML_PATH_DISPLAY_LAYER_COUNT);
 
-        if (!$availableResCount
-            || ($availableResCount>=$this->getLayer()->getProductCollection()->getSize())) {
-            return parent::canShowBlock();
+        if ($this->getLayer()->getFilterableAttributes()->count()
+            && $this->getLayer()->getProductCollection()->getSize()) {
+            return true;
         }
         return false;
     }    

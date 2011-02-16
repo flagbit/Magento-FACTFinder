@@ -372,6 +372,7 @@ class Flagbit_FactFinder_Model_Adapter
 				$this->_searchResultProductIds = array_unique($this->_searchResultProductIds);
 	    	}
     	}    	
+
     	return $this->_searchResultProductIds;
     }
     

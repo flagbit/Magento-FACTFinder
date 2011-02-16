@@ -48,6 +48,13 @@ class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_M
 	            $errors[] = Mage::helper('factfinder')->__('there must be a username, if a password should be used');
 	        }
 	        
+	        $conflicts = Mage::helper('factfinder/debug')->getRewriteConflicts();
+	        if(count($conflicts)){
+	        	foreach($conflicts as $moduleClass => $externalClass){
+	        		$errors[] = Mage::helper('factfinder')->__('There is a Class Rewrite Conflict with %s (%s)', $moduleClass, $externalClass);
+	        	}
+	        }
+	        
 	        if (count($errors) == 0) {
 	            $adapter = Mage::getSingleton('factfinder/adapter');
 	            if(!$adapter->checkStatus($this->getFieldsetData())){

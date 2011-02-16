@@ -4,6 +4,8 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
 {
     const XML_PATH_DISPLAY_LAYER_COUNT    = 'catalog/search/use_layered_navigation_count';
 
+    protected $_searchCollection = null;
+    
     /**
      * Get current layer product collection
      *
@@ -14,11 +16,12 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
             return parent::getProductCollection();
         }
-
-        $collection = Mage::getResourceModel('factfinder/search_collection');
-		$this->prepareProductCollection($collection);
-
-        return $collection;
+		
+        if(is_null($this->_searchCollection)){
+			$this->_searchCollection = Mage::getResourceModel('factfinder/search_collection');
+			$this->prepareProductCollection($this->_searchCollection);
+        }
+        return $this->_searchCollection;
     }
 
     /**
