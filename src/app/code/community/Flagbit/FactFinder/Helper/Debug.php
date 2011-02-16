@@ -57,8 +57,7 @@ class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract {
 						$rewriteConflicts[$rewriteClassName] = $instance;
                     } 
                 }
-            }
-				
+            }	
 		}
 		return $rewriteConflicts;
 	}

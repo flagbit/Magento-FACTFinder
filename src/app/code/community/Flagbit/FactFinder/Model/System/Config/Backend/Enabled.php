@@ -51,7 +51,7 @@ class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_M
 	        $conflicts = Mage::helper('factfinder/debug')->getRewriteConflicts();
 	        if(count($conflicts)){
 	        	foreach($conflicts as $moduleClass => $externalClass){
-	        		$errors[] = Mage::helper('factfinder')->__('There is a Class Rewrite Conflict with %s (%s)', $moduleClass, $externalClass);
+	        		$errors[] = Mage::helper('factfinder')->__('There is a Class Rewrite Conflict: "%s" already overwritten by "%s"', $moduleClass, $externalClass);
 	        	}
 	        }
 	        
@@ -68,16 +68,7 @@ class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_M
             	$this->setValue('0');
 	        }			
 		}
-
-		
-//        $config = Mage::getModel('core/config');
-//        /* @var $config Mage_Core_Model_Config */
-//        $config->saveConfig('advanced/modules_disable_output/Flagbit_FactFinder', ($this->getValue() ? 0 : 1), $this->getScope(), $this->getScopeId());		
-//        
-//        // reinit configuration
-//        Mage::getConfig()->reinit();
-//        Mage::app()->reinitStores();				
-
+				
         return $this;
     }
 }
