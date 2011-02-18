@@ -86,7 +86,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     public function doExport($storeId = null)
     {
-
+		$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
     	$header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
     	foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
     		if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
@@ -154,7 +154,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
                 $productIndex = array(
                 		$productData['entity_id'], 
-                		$productData['entity_id'], 
+                		$productData[$idFieldName], 
                 		$productData['sku'], 
                 		$this->_getCategoryPath($productData['entity_id'], $storeId),
                 		$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $protductAttr, $storeId),
@@ -171,7 +171,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
                         	$subProductIndex = array(
                         			$productChild['entity_id'],
-                        			$productData['entity_id'],
+                        			$productData[$idFieldName],
                         			$productChild['sku'],
                         			$this->_getCategoryPath($productData['entity_id'], $storeId),
                 					$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),

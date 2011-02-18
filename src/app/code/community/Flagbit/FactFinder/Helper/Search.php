@@ -22,6 +22,13 @@
 class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	
 	/**
+	 * XML Config Path to Product Identifier Setting
+	 * 
+	 * @var string
+	 */
+    const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';	
+	
+	/**
 	 * if FACT-Finder enabled?
 	 * 
 	 * @return boolean
@@ -56,6 +63,20 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     	}
   	
     	return $toolbarBlock;
+    }
+     
+    /**
+     * get Entity ID Field Name by Configuration or via Entity
+     * 
+     * @return string
+     */
+    public function getIdFieldName()
+    {
+    	$idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
+    	if(!$idFieldName){
+    		$idFieldName = $this->getEntity()->getIdFieldName();
+    	}	
+    	return $idFieldName;
     }
     
     /**
