@@ -85,7 +85,7 @@ class Flagbit_FactFinder_Model_Adapter
 			
             if($collectParams == true){
             	$this->_collectParams();
-            }           
+            }                    
         }
         
         return $this->_searchAdapter;
@@ -384,6 +384,7 @@ class Flagbit_FactFinder_Model_Adapter
      */
     protected function _setParam($name, $value)
     {
+    	Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
         $this->_getDataProvider()->setParam($name, $value);
         return $this;
     }

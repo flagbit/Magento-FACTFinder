@@ -21,7 +21,31 @@
  */
 class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract {
 	
-	const MODULE_CONFIG_FILE = "config.xml";
+	const MODULE_CONFIG_FILE = 'config.xml';
+	const LOG_FILE_NAME = 'factfinder.log';
+	
+	/**
+	 * XML Config Path to Product Identifier Setting
+	 * 
+	 * @var string
+	 */
+    const XML_CONFIG_PATH_DEBUG_MODE = 'factfinder/config/debug';
+	
+	/**
+	 * Debug Log to file var/log/factfinder.log
+	 * 
+	 * @param $message
+	 * @param $level
+	 * @param $file
+	 * @param $forceLog
+	 */
+	public function log($message)
+	{
+		if(Mage::getStoreConfig(self::XML_CONFIG_PATH_DEBUG_MODE)) {
+			return Mage::log($message, null, self::LOG_FILE_NAME, true);
+		}
+		return $this;
+	}
 	
 	/**
 	 * get Class Rewrite Conflicts for the current Modul
@@ -54,6 +78,14 @@ class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract {
                         $completePath
                     );
                     if($instance != $rewriteClassName){
+                    	
+						try{
+							$reflector = new $instance();
+							if($reflector instanceof $rewriteClassName){
+								continue;
+							}
+						}catch (Exception $e){}
+
 						$rewriteConflicts[$rewriteClassName] = $instance;
                     } 
                 }

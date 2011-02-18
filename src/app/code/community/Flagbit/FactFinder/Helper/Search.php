@@ -42,9 +42,14 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 				) ? true : false;
 	}
 	
+	/**
+	 * get Module Status depending on Module
+	 * 
+	 * @return boolean
+	 */
 	public function getIsOnSearchPage()
 	{
-		return Mage::app()->getRequest()->getModuleName() == 'catalogsearch';	
+		return Mage::app()->getRequest()->getModuleName() == 'catalogsearch' || Mage::app()->getRequest()->getModuleName() == 'xmlconnect';	
 	}
 	
 	
