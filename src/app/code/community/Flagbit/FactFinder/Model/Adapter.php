@@ -96,7 +96,7 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');    	
     	$_request = Mage::app()->getRequest();
-    	
+
     	switch($_request->getModuleName()){
     		
     		case "xmlconnect":
@@ -122,13 +122,22 @@ class Flagbit_FactFinder_Model_Adapter
 		    		$value = base64_decode($value);  		
 		    		if(strpos($value, '|')){
 		    			$param = explode('|', $value);
-		    			$this->_setParam('filter'.$param[0], $param[1]);
+    					if($key == 'category'){
+    						$categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
+    						$filterkey = '';
+    						foreach($categories as $category){
+    							$this->_setParam('filtercategoryROOT'.$filterkey, $category);
+    							$filterkey .= '/'.$category;
+    						}
+    					}else{
+    						$this->_setParam('filter'.$param[0], $param[1]);
+    					}	
 		    		}
 		    	}		    		
 		    		
     			break;
     			
-    		case "catalogsearch":
+    		case "catalogsearch": 
     		default:	    	
 		            // add Default Params
 		    	$this->_setParam('idsOnly', 'true')
@@ -159,7 +168,16 @@ class Flagbit_FactFinder_Model_Adapter
 		    					break;
 		    					
 		    				default:
-		    					$this->_setParam('filter'.$param[0], $param[1]);		
+		    					if($key == 'category'){
+		    						$categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
+		    						$filterkey = '';
+		    						foreach($categories as $category){
+		    							$this->_setParam('filtercategoryROOT'.$filterkey, $category);
+		    							$filterkey .= '/'.$category;
+		    						}
+		    					}else{
+		    						$this->_setParam('filter'.$param[0], $param[1]);
+		    					}		
 		    					break;
 		    			}
 		    		}
