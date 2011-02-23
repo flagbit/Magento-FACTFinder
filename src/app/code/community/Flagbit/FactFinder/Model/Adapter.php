@@ -392,7 +392,13 @@ class Flagbit_FactFinder_Model_Adapter
 	    				if(strpos($option->getField(), 'categoryROOT') === false){
 	    					$value .= '~~~'.$selectOptions[$option->getField()];
 	    				}else{
-	    					$value = str_replace($selectOptions[$option->getField()], '', $value);
+	    					$values = explode('/',str_replace('|'.$selectOptions[$option->getField()], '', $value));
+	    					$value = '';
+	    					if(count($values) > 1){
+	    						for($i=0;count($values) > $i;$i++){
+	    							$value .= ($i != 0 ? ($i == count($values)-1 ? '|' : '/') : '').$values[$i];
+	    						}
+	    					}
 	    				}
 	    			}					
 				}else{
