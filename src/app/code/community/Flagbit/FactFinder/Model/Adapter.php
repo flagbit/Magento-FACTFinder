@@ -155,7 +155,6 @@ class Flagbit_FactFinder_Model_Adapter
 		
 		    	// add Filter Params
 		    	$params = Mage::app()->getRequest()->getParams();
-		    	var_dump($params);
 		    	foreach($params as $key => $value){  		
 		    		if(strpos($value, '|')){
 		    			$param = explode('|', $value);
@@ -373,6 +372,11 @@ class Flagbit_FactFinder_Model_Adapter
 		return $attributeOption;    	
     }
     
+    /**
+     * 
+     * 
+     * @param string $option
+     */
     protected function _getAttributeOptionValue($option)
     {
     	$selectOptions = $this->_getSearchAdapter()->getSearchParams()->getFilters();
@@ -390,13 +394,17 @@ class Flagbit_FactFinder_Model_Adapter
 	    			// handle multiselectable Attributes				
 	    			if(!empty($selectOptions[$option->getField()]) ){
 	    				if(strpos($option->getField(), 'categoryROOT') === false){
-	    					$value .= '~~~'.$selectOptions[$option->getField()];
+	    					$values = explode('~~~', $selectOptions[$option->getField()]);
+	    					unset($values[array_search($option->getValue(), $values)]);
+	    					$value .= '|'.implode('~~~', $values);
+	    					
 	    				}else{
 	    					$values = explode('/',str_replace('|'.$selectOptions[$option->getField()], '', $value));
+	    					$valueCount = count($values);
 	    					$value = '';
-	    					if(count($values) > 1){
-	    						for($i=0;count($values) > $i;$i++){
-	    							$value .= ($i != 0 ? ($i == count($values)-1 ? '|' : '/') : '').$values[$i];
+	    					if($valueCount > 1){
+	    						for($i=0 ; $valueCount > $i ; $i++){
+	    							$value .= ($i != 0 ? ($i == $valueCount-1 ? '|' : '/') : '').$values[$i];
 	    						}
 	    					}
 	    				}

@@ -8,8 +8,7 @@ class Flagbit_Factfinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
      * @return string
      */
     public function getRemoveUrl()
-    {
-    	
+    {	
         $query = array($this->getFilter()->getRequestVar()=>$this->getValue());
         $params['_current']     = true;
         $params['_use_rewrite'] = true;
