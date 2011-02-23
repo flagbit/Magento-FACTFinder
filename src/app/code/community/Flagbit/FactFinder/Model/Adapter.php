@@ -155,6 +155,7 @@ class Flagbit_FactFinder_Model_Adapter
 		
 		    	// add Filter Params
 		    	$params = Mage::app()->getRequest()->getParams();
+		    	var_dump($params);
 		    	foreach($params as $key => $value){  		
 		    		if(strpos($value, '|')){
 		    			$param = explode('|', $value);
@@ -334,7 +335,6 @@ class Flagbit_FactFinder_Model_Adapter
      */
     protected function _getAttributeOptions($options)
     {	
-    	$selectOptions = $this->_getSearchAdapter()->getSearchParams()->getFilters();
     	$attributeOption = array();
     	foreach($options as $option){
     		
@@ -344,7 +344,7 @@ class Flagbit_FactFinder_Model_Adapter
 					$attributeOption[] = array(
 						'type'	=> $option->getType(),
 						'label' => 'slider',
-						'value' => $option->getField().'|'.$option->getType().'|'.str_replace(array('&', '='), array('|', ':'), $option->getValue()).'[VALUE]',
+						'value' => $this->_getAttributeOptionValue($option),
 						'absolute_min' => $option->getAbsoluteMin(),
 						'absolute_max' => $option->getAbsoluteMax(),
 						'selected_min' => $option->getSelectedMin(),
@@ -361,7 +361,7 @@ class Flagbit_FactFinder_Model_Adapter
 					$attributeOption[] = array(
 						'type'	=> 'attribute',
 						'label' => $option->getValue(),
-						'value' => $option->getField().'|'.$option->getValue().(isset($selectOptions[$option->getField()])?'~~~'.$selectOptions[$option->getField()]:''),
+						'value' => $this->_getAttributeOptionValue($option),
 						'count' => $option->getMatchCount(),
 						'selected' => $option->isSelected()
 					);
@@ -372,6 +372,41 @@ class Flagbit_FactFinder_Model_Adapter
 		}
 		return $attributeOption;    	
     }
+    
+    protected function _getAttributeOptionValue($option)
+    {
+    	$selectOptions = $this->_getSearchAdapter()->getSearchParams()->getFilters();
+    	$value = null;
+    	switch ($option->getType()) {
+    		
+    		case "slider";
+				$value = $option->getField().'|'.$option->getType().'|'.str_replace(array('&', '='), array('|', ':'), $option->getValue()).'[VALUE]';
+    			break;
+    		
+    		default:
+    			$value = $option->getField();
+				if($option->isSelected()){
+
+	    			// handle multiselectable Attributes				
+	    			if(!empty($selectOptions[$option->getField()]) ){
+	    				if(strpos($option->getField(), 'categoryROOT') === false){
+	    					$value .= '~~~'.$selectOptions[$option->getField()];
+	    				}else{
+	    					$value = str_replace($selectOptions[$option->getField()], '', $value);
+	    				}
+	    			}					
+				}else{
+	    			$value .= '|'.$option->getValue();
+	    			// handle multiselectable Attributes				
+	    			if(!empty($selectOptions[$option->getField()])){
+	    				$value .= '~~~'.$selectOptions[$option->getField()];
+	    			}
+				}	
+    			break;
+    	}
+  		return $value;
+    }
+    
     
     /**
      * get Search Result Product Ids
