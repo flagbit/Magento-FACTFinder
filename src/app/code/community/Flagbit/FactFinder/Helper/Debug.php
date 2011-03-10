@@ -19,8 +19,8 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract {
-	
+class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
+{
 	const MODULE_CONFIG_FILE = 'config.xml';
 	const LOG_FILE_NAME = 'factfinder.log';
 	

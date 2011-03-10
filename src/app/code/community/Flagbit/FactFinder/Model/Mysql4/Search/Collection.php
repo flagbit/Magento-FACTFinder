@@ -63,8 +63,12 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
  
 	        $this->_pageSize = null;      
 	        $entity = $this->getEntity();
+	        
+			$this->getSelect()->reset(Zend_Db_Select::LIMIT_COUNT);
+           	$this->getSelect()->reset(Zend_Db_Select::LIMIT_OFFSET);	        
 	
 	        $this->printLogQuery($printQuery, $logQuery);
+	        Mage::helper('factfinder/debug')->log('Search SQL Query: '.$this->getSelect()->__toString());
 	
 	        try {
 	            $rows = $this->_fetchAll($this->getSelect());
