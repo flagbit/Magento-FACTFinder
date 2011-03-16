@@ -54,6 +54,12 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_dataProvider = null;
     
 	/**
+	 * FACT-Finder Scic Adapter
+	 * @var FACTFinder_Abstract_ScicAdapter
+	 */    
+    protected $_scicAdapter = null;    
+    
+	/**
 	 * FACT-Finder After Search Navigation
 	 * @var array
 	 */    
@@ -187,6 +193,7 @@ class Flagbit_FactFinder_Model_Adapter
     	}
     }
     
+    
     /**
      * execute search
      */
@@ -214,6 +221,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
     	$url = null;
  		$campaigns = $this->_getSearchAdapter()->getCampaigns();
+ 		
 		if (!empty($campaigns) && $campaigns->hasRedirect()) {
 			$url = $campaigns->getRedirectUrl();
 		} 
@@ -248,13 +256,15 @@ class Flagbit_FactFinder_Model_Adapter
             $dataProvider         = $this->_getDataProvider();
             $this->_suggestAdapter = FF::getSingleton('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
+
         return $this->_suggestAdapter;
     }
 
     /**
+     * get Suggest Results as Array
      * 
-     * 
-     * @param unknown_type $query
+     * @param string $query
+     * @return array
      */
     public function getSuggestResult($query)
     {
@@ -264,6 +274,36 @@ class Flagbit_FactFinder_Model_Adapter
 		return Zend_Json_Decoder::decode($this->_getSuggestAdapter()->getSuggestions());		
     }
     
+    /**
+     * get Suggest Results as JSON
+     * 
+     * @param string $query
+     * @return string json
+     */
+    public function getSuggestResultJsonp($query, $jqueryCallback)
+    {
+		$this->_setParam('query', $query, false);
+		$this->_setParam('format', 'json', false);
+		
+		return $jqueryCallback.'('.$this->_getSuggestAdapter()->getSuggestions().')';		
+    }    
+    
+    /**
+     * get Scic Adapter
+     * 
+     * @return FACTFinder_Abstract_ScicAdapter
+     */
+    public function getScicAdapter()
+    {
+        if ($this->_scicAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getDataProvider();
+            $this->_scicAdapter = FF::getSingleton('http/scicAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+        }
+        return $this->_scicAdapter;
+    }    
     
     /**
      * get Search Result Count
@@ -373,9 +413,10 @@ class Flagbit_FactFinder_Model_Adapter
     }
     
     /**
-     * 
+     * get Attribute option Value
      * 
      * @param string $option
+     * @return string
      */
     protected function _getAttributeOptionValue($option)
     {
@@ -383,10 +424,12 @@ class Flagbit_FactFinder_Model_Adapter
     	$value = null;
     	switch ($option->getType()) {
     		
+    		// handle Slider Attributes
     		case "slider";
 				$value = $option->getField().'|'.$option->getType().'|'.str_replace(array('&', '='), array('|', ':'), $option->getValue()).'[VALUE]';
     			break;
     		
+    		// handle default Attributes
     		default:
     			$value = $option->getField();
 				if($option->isSelected()){
@@ -449,9 +492,11 @@ class Flagbit_FactFinder_Model_Adapter
      * @param string name
      * @param string value
      */
-    protected function _setParam($name, $value)
+    protected function _setParam($name, $value, $log = true)
     {
-    	Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
+    	if($log){
+    		Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
+    	}
         $this->_getDataProvider()->setParam($name, $value);
         return $this;
     }
@@ -499,12 +544,22 @@ class Flagbit_FactFinder_Model_Adapter
     }
     
     /**
+     * set FactFinder Configuration
+     * 
+     * @param array $configarray
+     */
+    public function setConfiguration($configarray)
+    {
+    	$this->_config = FF::getSingleton('configuration', $configarray);
+    }
+    
+    /**
      * get FactFinder Configuration
      * 
      * @return FACTFinder_Abstract_Configuration config
      */
     protected function _getConfiguration($configarray = null)
-    {
+    {	
         if ($this->_config == null) {
             $this->_config = FF::getSingleton('configuration', $configarray);
         }

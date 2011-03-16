@@ -27,6 +27,13 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 * @var string
 	 */
     const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';	
+    
+	/**
+	 * XML Config Path to Product Identifier Setting
+	 * 
+	 * @var string
+	 */
+    const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';    
 	
 	/**
 	 * if FACT-Finder enabled?
@@ -91,7 +98,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getSuggestUrl()
     {
-    	return Mage::getSingleton('factfinder/adapter')->getSuggestUrl();
+    	$url = Mage::getSingleton('factfinder/adapter')->getSuggestUrl();
+    	if(Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)){
+    		$url = $this->_getUrl('factfinder/proxy/suggest');
+    	}
+    	return $url;
     }
     
 

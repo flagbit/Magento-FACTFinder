@@ -1,5 +1,4 @@
 <?php
-
 /**
  * this class handles the different issues of encoding between the values of page-url, server-url, result and pagecontent
  *
@@ -14,11 +13,11 @@ class FACTFinder_EncodingHandler
     private $serverUrlEncoding;
     
     public function __construct(FACTFinder_Abstract_Configuration $config)
-    {
+    {	
         $this->pageContentEncoding = $config->getPageContentEncoding();
         $this->pageUrlEncoding     = $config->getPageUrlEncoding();
         $this->serverUrlEncoding   = $config->getServerUrlEncoding();
-		
+
         if (function_exists('iconv')) {
             $this->convertMethod = 'iConvert';
         } else {

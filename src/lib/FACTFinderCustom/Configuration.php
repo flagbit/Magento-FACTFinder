@@ -50,13 +50,26 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      */
     public function getCustomValue($name) 
     {
-    	$value = null;
-    	if($this->config->getData($name)){
-    		$value = $this->config->getData($name);
-    	}else{
-    		$value = Mage::getStoreConfig(self::XML_CONFIG_PATH.$name);
+    	if(!$this->config->hasData($name)){
+    		try{
+    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.$name));
+    		}catch (Exception $e){
+    			$this->config->setData($name, null);
+    		}
     	}
-    	return $value;    	
+    	return $this->config->getData($name);    	
+    }
+    
+    public function __sleep() {
+
+    	foreach(get_class_methods($this) as $method){
+    		if(substr($method, 0, 3) != 'get' 
+    			|| $method == 'getCustomValue'){
+    			continue;
+    		}
+    		call_user_func(array(&$this, $method));
+    	} 
+    	return array('config');	
     }
     
     /**

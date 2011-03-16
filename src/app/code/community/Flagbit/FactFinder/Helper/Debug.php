@@ -21,7 +21,18 @@
  */
 class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
 {
+	/**
+	 * Module Configuration File
+	 * 
+	 * @var string
+	 */
 	const MODULE_CONFIG_FILE = 'config.xml';
+	
+	/**
+	 * Module Log File
+	 * 
+	 * @var string
+	 */
 	const LOG_FILE_NAME = 'factfinder.log';
 	
 	/**
@@ -41,9 +52,15 @@ class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
 	 */
 	public function log($message)
 	{
-		if(Mage::getStoreConfig(self::XML_CONFIG_PATH_DEBUG_MODE)) {
-			return Mage::log($message, null, self::LOG_FILE_NAME, true);
-		}
+	    if (!Mage::getConfig()) {
+            return;
+        }
+        try{		
+			if(Mage::getStoreConfig(self::XML_CONFIG_PATH_DEBUG_MODE)) {
+				return Mage::log($message, null, self::LOG_FILE_NAME, true);
+			}
+        }catch (Exception $e){}
+        
 		return $this;
 	}
 	
