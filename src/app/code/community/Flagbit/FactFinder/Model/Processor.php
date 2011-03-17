@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Adapter.php 635 2011-02-23 17:16:14Z weller $
+ * @version   $Id$
  */
 class Flagbit_Factfinder_Model_Processor 
 {

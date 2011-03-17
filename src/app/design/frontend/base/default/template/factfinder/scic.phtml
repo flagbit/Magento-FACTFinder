@@ -14,11 +14,11 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: logo.phtml 615 2011-02-02 15:43:11Z rudolf_batt $
+ * @version   $Id$
  */
 ?>
 <script type="text/javascript">
-var factfinderSCIC = new FactfinderSCIC($H(<?php echo $this->getJsonDataObject();?>), $H(<?php echo $this->getJsonUrlToIdMappingObject();?>), '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>');
+var factfinderSCIC = new FactfinderSCIC('.col-main', $H(<?php echo $this->getJsonDataObject();?>), $H(<?php echo $this->getJsonUrlToIdMappingObject();?>), '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>');
 Event.observe(document, 'dom:loaded', function(event) {
 	factfinderSCIC.init();
 });

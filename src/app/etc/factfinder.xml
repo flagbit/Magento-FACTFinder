@@ -15,7 +15,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: config.xml 640 2011-03-10 08:53:41Z weller $
+ * @version   $Id$
  */
 -->
 <config>

@@ -1,17 +1,19 @@
 var FactfinderSCIC = Class.create({
 	url:  null,
 	data: null,
+	classname: null,
 	mapping: null,
 	request: null,
 	regex: new RegExp(/product\/([0-9]+)\//),
-	initialize: function(data, mapping, url) {
+	initialize: function(classname, data, mapping, url) {
+		this.classname = classname;
 		this.data = data;
 		this.mapping = mapping;
 		this.url = url;
 	},
 	
 	init: function() {
-		$$('.col-main a','.col-main button').each(function(element) {
+		$$(this.classname+' a',this.classname+' button').each(function(element) {
 			this.mapping.each(function(pair, index) {
 				if(element.readAttribute('href') && element.readAttribute('href') == pair.key){
 					return this.prepareElement(element, pair.value, 'click');

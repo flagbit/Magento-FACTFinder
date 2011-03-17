@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Layer.php 623 2011-02-16 08:22:10Z weller $
+ * @version   $Id$
  */
 class Flagbit_FactFinder_Block_Scic extends Mage_Core_Block_Template
 {
@@ -24,7 +24,7 @@ class Flagbit_FactFinder_Block_Scic extends Mage_Core_Block_Template
 	/**
 	 * get Product Result Collection
 	 * 
-	 * @return Flagbit_FactFinder_Model_Layer
+	 * @return Flagbit_FactFinder_Model_Mysql4_Search_Collection
 	 */
 	protected function _getProductResultCollection()
 	{

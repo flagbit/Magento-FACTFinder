@@ -63,9 +63,10 @@ class Flagbit_FactFinder_Model_System_Config_Backend_Enabled extends Mage_Core_M
 	        }
 	        
 	        if (count($errors) > 0) {
-
 	            Mage::getSingleton('adminhtml/session')->addError(Mage::helper('factfinder')->__('FACT-Finder cannot be activated:').' <br/>'. implode('<br/>', $errors));
             	$this->setValue('0');
+	        }else{
+	        	Mage::app()->cleanCache(array(Flagbit_Factfinder_Model_Processor::CACHE_TAG));
 	        }			
 		}
 				
