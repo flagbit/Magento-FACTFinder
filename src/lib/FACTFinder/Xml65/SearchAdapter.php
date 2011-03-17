@@ -173,14 +173,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                 // get current position
                 $position = $positionOffset + $positionCounter;
                 $positionCounter++;
-
-                // get original position
-                if (isset($fieldValues['__ORIG_POSITION__'])) {
-                    $origPosition = $fieldValues['__ORIG_POSITION__'];
-                    unset($fieldValues['__ORIG_POSITION__']);
-                } else {
-                    $origPosition = $position;
-                }
                 
                 // fetch record values
                 $fieldValues = array();
@@ -189,6 +181,14 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                     $fieldValues[$currentFieldname] = (string) $current_field;
                 }
 
+                // get original position
+                if (isset($fieldValues['__ORIG_POSITION__'])) {
+                    $origPosition = $fieldValues['__ORIG_POSITION__'];
+                    unset($fieldValues['__ORIG_POSITION__']);
+                } else {
+                    $origPosition = $position;
+                }                
+                
                 $result[] = FF::getInstance('record',
                     $currentRecord->attributes()->id,
                     floatval($currentRecord->attributes()->relevancy),

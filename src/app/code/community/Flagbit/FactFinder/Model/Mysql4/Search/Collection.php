@@ -58,7 +58,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
         	// add Filter to Query
         	$this->addFieldToFilter(
         		$idFieldName,
-        		array('in'=>$productIds)
+        		array('in'=>array_keys($productIds))
         	);
  
 	        $this->_pageSize = null;      
@@ -83,12 +83,12 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
 				$items[$v[$idFieldName]] = $v;
 	        }
 
-	        foreach ($productIds as $productId){
+	        foreach ($productIds as $productId => $additionalData){
 	        	
 	        	if(empty($items[$productId])){
 	        		continue;
 	        	}
-	        	$v = $items[$productId];
+	        	$v = array_merge($items[$productId], $additionalData->toArray());
 	            $object = $this->getNewEmptyItem()
 	                ->setData($v);
   

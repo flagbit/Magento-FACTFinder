@@ -466,7 +466,7 @@ class Flagbit_FactFinder_Model_Adapter
     
     
     /**
-     * get Search Result Product Ids
+     * get Search Result Product Ids and additional Data
      * 
      * @return array Products Ids
      */
@@ -477,9 +477,17 @@ class Flagbit_FactFinder_Model_Adapter
 	    	$this->_searchResultProductIds = array();
 	    	if($result instanceof FACTFinder_Result){
 	    		foreach ($result AS $record){
-					$this->_searchResultProductIds[] = $record->getId();
+	    			if(isset($this->_searchResultProductIds[$record->getId()])){
+	    				continue;
+	    			}
+					$this->_searchResultProductIds[$record->getId()] = new Varien_Object(
+						array(
+							'similarity' => $record->getSimilarity(),
+							'position' => $record->getPosition(),
+							'original_position' => $record->getOriginalPosition()																	
+						)
+					);
 				}
-				$this->_searchResultProductIds = array_unique($this->_searchResultProductIds);
 	    	}
     	}    	
 

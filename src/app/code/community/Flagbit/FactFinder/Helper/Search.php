@@ -76,7 +76,17 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
   	
     	return $toolbarBlock;
     }
-     
+
+     /**
+     * Retrieve default per page values
+     *
+     * @return string (comma separated)
+     */
+    public function getDefaultPerPageValue()
+    {
+    	return $this->_getToolbarBlock()->getDefaultPerPageValue();
+    }    
+    
     /**
      * get Entity ID Field Name by Configuration or via Entity
      * 
