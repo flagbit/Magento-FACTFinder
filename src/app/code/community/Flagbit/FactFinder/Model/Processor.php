@@ -18,7 +18,7 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-class Flagbit_Factfinder_Model_Processor 
+class Flagbit_FactFinder_Model_Processor 
 {
 	
     const CACHE_TAG  = 'FACTFINDER';  // Cache Tag

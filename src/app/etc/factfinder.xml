@@ -22,7 +22,7 @@
     <global>
         <cache>
             <request_processors>
-                <factfinder>Flagbit_Factfinder_Model_Processor</factfinder>
+                <factfinder>Flagbit_FactFinder_Model_Processor</factfinder>
             </request_processors>
         </cache>
     </global>

@@ -1,5 +1,5 @@
 <?php 
-class Flagbit_Factfinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Layer_Filter_Item {
+class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Layer_Filter_Item {
 	
 	
     /**
