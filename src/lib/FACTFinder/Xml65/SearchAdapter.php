@@ -33,6 +33,11 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         if ($this->xmlData == null) {
             libxml_use_internal_errors(true);
             $data = parent::getData();
+            /*
+            header('content-type: text/xml');
+            echo $data;
+            die(); 
+            */
             $this->xmlData = new SimpleXMLElement($data); //throws exception on error
         }
         return $this->xmlData;

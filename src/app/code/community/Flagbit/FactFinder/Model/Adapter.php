@@ -221,11 +221,19 @@ class Flagbit_FactFinder_Model_Adapter
     {
     	$url = null;
  		$campaigns = $this->_getSearchAdapter()->getCampaigns();
- 		
+
 		if (!empty($campaigns) && $campaigns->hasRedirect()) {
 			$url = $campaigns->getRedirectUrl();
 		} 
     	return $url;	
+    }
+    
+    /**
+     * 
+     */
+    public function getCampaigns()
+    {
+		return $this->_getSearchAdapter()->getCampaigns();  	
     }
     
     /**
