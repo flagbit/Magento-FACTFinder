@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="FactFinder" default="deploy-dev.local" basedir=".">
+<project name="Flagbit_Factfinder" default="deploy-dev.local" basedir=".">
     
     <property file="build.properties"/>
     <property file="build.default.properties"/>

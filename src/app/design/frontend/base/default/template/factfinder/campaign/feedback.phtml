@@ -1,3 +1,9 @@
 <div class="ffcampaigntext"><?php echo $this->getText(); ?></div>
 
-<?php var_dump($this->getPushedProductsCollection()->load()->toArray());?>
+<?php
+	$pushedProducts = $this->getPushedProductsCollection()->load()->toArray();
+	if (!empty($pushedProducts)) {
+		//customize here the pushed products output
+		var_dump($pushedProducts);
+	}
+?>
