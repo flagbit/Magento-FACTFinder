@@ -33,11 +33,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         if ($this->xmlData == null) {
             libxml_use_internal_errors(true);
             $data = parent::getData();
-            /*
-            header('content-type: text/xml');
-            echo $data;
-            die(); 
-            */
             $this->xmlData = new SimpleXMLElement($data); //throws exception on error
         }
         return $this->xmlData;
@@ -192,8 +187,8 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                     unset($fieldValues['__ORIG_POSITION__']);
                 } else {
                     $origPosition = $position;
-                }                
-                
+                }
+
                 $result[] = FF::getInstance('record',
                     $currentRecord->attributes()->id,
                     floatval($currentRecord->attributes()->relevancy),

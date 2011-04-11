@@ -59,7 +59,7 @@
 						global.jXHR[icb] = null;
 					};
 				})(internal_callback);
-				script_url = url.replace(/=\?/,"=jXHR."+internal_callback);
+				script_url = url.replace(/=\?/g,"=jXHR."+internal_callback);
 				fireReadyStateChange(1);
 			},
 			send:function(){

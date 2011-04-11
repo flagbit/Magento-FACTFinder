@@ -70,7 +70,7 @@ FactFinderAjax.Request = Class.create(Ajax.Request, {
     if (params = Object.toQueryString(params)) {
       // when GET, append parameters to URL
       if (this.method == 'get')
-        this.url += (this.url.include('?') ? '&' : '?') + params + '&jquery_callback=?';
+        this.url += (this.url.include('?') ? '&' : '?') + params + '&jquery_callback=?&callback=?';
       else if (/Konqueror|Safari|KHTML/.test(navigator.userAgent))
         params += '&_=';
     }
@@ -172,8 +172,11 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 		this.request.updateChoices(content);
 	},
 
-    _selectAutocompleteItem : function(element){
-        if(element.title){
+    _selectAutocompleteItem : function(element){		
+        if(element.title){		
+			this.form.insert('<input type="hidden" name="queryFromSuggest" value="true" />');
+			this.form.insert('<input type="hidden" name="userInput" value="'+this.field.value+'" />');
+			
             this.field.value = element.title;
         }
         this.form.submit();
