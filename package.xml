@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2011-04-11</date>
- <time>14:50:48</time>
+ <date>2011-05-02</date>
+ <time>10:48:45</time>
  <version>
-  <release>3.1.2</release>
-  <api>3.1.2</api>
+  <release>3.1.3</release>
+  <api>3.1.3</api>
  </version>
  <stability>
   <release>stable</release>
@@ -81,7 +81,7 @@
     <file md5sum="aa28ab005b5a3c768672ce6f4fb18139" name="SearchAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml64 -->
    <dir name="\FACTFinder\Xml65">
-    <file md5sum="65a274676a03f4ca1256bee197aaa156" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="a1c51dfcb70aa7615ee554e2f222ff2e" name="SearchAdapter.php" role="magelib" />
     <file md5sum="deb1396e6e58489aea73e50d76401e09" name="SuggestAdapter.php" role="magelib" />
     <file md5sum="8cd920342136cb7849bd0fab65942122" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml65 -->
@@ -119,7 +119,7 @@
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="3d262871a3a3afe71d7218a0ba43fb50" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="59a2a87fd363bc5243038add4e737302" name="config.xml" role="magecommunity" />
+    <file md5sum="300052c16dd6aaa64540a0ce1462587f" name="config.xml" role="magecommunity" />
     <file md5sum="de949ff10b4ef5d14deafb9e36f90552" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -204,7 +204,7 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2011-04-11</date>
+   <date>2011-05-02</date>
    <license>GPL</license>
    <notes>
 - initial Release
