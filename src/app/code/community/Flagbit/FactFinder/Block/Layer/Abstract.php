@@ -19,12 +19,15 @@
  * @version   $Id$
  */
 
-if(Mage::helper('factfinder')->isModuleActive('Enterprise_Search')){
-	class Flagbit_FactFinder_Block_Layer_Abstract extends Enterprise_Search_Block_Catalogsearch_Layer {}
+if(Mage::helper('factfinder/search')->getIsOnSearchPage()){
+    if(Mage::helper('factfinder')->isModuleActive('Enterprise_Search')){
+    	class Flagbit_FactFinder_Block_Layer_Abstract extends Enterprise_Search_Block_Catalogsearch_Layer {}
+    }else{
+    	class Flagbit_FactFinder_Block_Layer_Abstract extends Mage_CatalogSearch_Block_Layer {}	
+    }
 }else{
-	class Flagbit_FactFinder_Block_Layer_Abstract extends Mage_CatalogSearch_Block_Layer {}	
+    class Flagbit_FactFinder_Block_Layer_Abstract extends Mage_Catalog_Block_Layer_View {}
 }
-
 
 
 

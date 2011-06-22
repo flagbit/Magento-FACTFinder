@@ -40,6 +40,11 @@
 					<layer>Flagbit_FactFinder_Block_Layer</layer>
 				</rewrite>
 			</catalogsearch>
+			<catalog>
+				<rewrite>
+					<layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
+				</rewrite>
+			</catalog>			
 			<enterprise_search>
 				<rewrite>
 					<catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
@@ -66,7 +71,13 @@
 					<layer>Flagbit_FactFinder_Model_Layer</layer>
 					<layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
 				</rewrite>
-			</catalogsearch>					
+			</catalogsearch>
+			<catalog>
+				<rewrite>
+					<layer>Flagbit_FactFinder_Model_Layer</layer>
+					<layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
+				</rewrite>
+			</catalog>								
         </models>    
     </global>
     <frontend>
@@ -165,6 +176,7 @@
 	        </search>
 			<config>
 				<identifier>entity_id</identifier>
+				<navigation>0</navigation>
 			</config>
 	
 	        <!-- parameter settings -->

@@ -1,10 +1,10 @@
 <?php
 
-class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
+class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abstract
 {
     const XML_PATH_DISPLAY_LAYER_COUNT    = 'catalog/search/use_layered_navigation_count';
 
-    protected $_searchCollection = null;
+    protected $_productCollection = null;
     
     /**
      * Get current layer product collection
@@ -16,12 +16,30 @@ class Flagbit_FactFinder_Model_Layer extends Mage_CatalogSearch_Model_Layer
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
             return parent::getProductCollection();
         }
-		
-        if(is_null($this->_searchCollection)){
-			$this->_searchCollection = Mage::getResourceModel('factfinder/search_collection');
-			$this->prepareProductCollection($this->_searchCollection);
-        }
-        return $this->_searchCollection;
+
+        // handle search
+        if($this instanceof Mage_CatalogSearch_Model_Layer){
+            if(is_null($this->_productCollection)){
+			    $this->_productCollection = Mage::getResourceModel('factfinder/search_collection');
+			    $this->prepareProductCollection($this->_productCollection);
+            }
+            $collection = $this->_productCollection;
+                    
+        // handle category listing    
+        }else{
+            if (isset($this->_productCollections[$this->getCurrentCategory()->getId()])) {
+                $collection = $this->_productCollections[$this->getCurrentCategory()->getId()];
+            }
+            else {
+                //$collection = $this->getCurrentCategory();
+                $collection = Mage::getResourceModel('factfinder/search_collection');
+                $this->prepareProductCollection($collection);
+                $this->_productCollections[$this->getCurrentCategory()->getId()] = $collection;
+            }
+        }        
+        
+
+        return $collection;
     }
 
     /**

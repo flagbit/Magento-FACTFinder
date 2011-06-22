@@ -75,7 +75,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         $this->getLayer()->apply();
         return Mage_Core_Block_Template::_prepareLayout();
     }	
-	
+	  
     /**
      * Get category filter block
      *
@@ -99,6 +99,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
     		return parent::_getPriceFilter();
     	}    	
+    	
         return false;
     }
     
@@ -112,7 +113,6 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
     		return parent::canShowBlock();
     	}  
-
         if ($this->getLayer()->getFilterableAttributes()->count()
             && $this->getLayer()->getProductCollection()->getSize()) {
             return true;

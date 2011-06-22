@@ -70,6 +70,12 @@ class Flagbit_FactFinder_Model_Adapter
 	 * @var array
 	 */    
     protected $_searchResultProductIds = null;
+    
+    /**
+     * current FACT-Finder Category Path 
+     * @var string
+     */
+    protected $_currentFactfinderCategoryPath = null;
 
     /**
      * get FactFinder SearchAdapter
@@ -102,6 +108,7 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');    	
     	$_request = Mage::app()->getRequest();
+    	$_query = $helper->getQuery()->getQueryText();
 
     	switch($_request->getModuleName()){
     		
@@ -143,14 +150,19 @@ class Flagbit_FactFinder_Model_Adapter
 		    		
     			break;
     			
+    		case "catalog":
+                $_query = '*';	                  
+                Mage::app()->getRequest()->setParam('category', $this->_getCurrentFactfinderCategoryPath());
+    		    
+    			
     		case "catalogsearch": 
-    		default:	    	
+    		default:
 		            // add Default Params
 		    	$this->_setParam('idsOnly', 'true')
 		    		->_setParam('productsPerPage', $helper->getPageLimit())
-		    		->_setParam('query', $helper->getQuery()->getQueryText())
+		    		->_setParam('query', $_query)
 		    		->_setParam('page', $helper->getCurrentPage());
-		    	
+		    		    		    
 		    	// add Sorting Param
 		    	if($helper->getCurrentOrder() 
 		    		&& $helper->getCurrentDirection()
@@ -404,20 +416,66 @@ class Flagbit_FactFinder_Model_Adapter
     			default:
 		    		if (!Mage::helper('core/string')->strlen($option->getValue())) {	
 		    			continue;
-		    		}	
+		    		}
+		    		// remove Categories from top Level Navigation
+		    		$_value = $this->_getAttributeOptionValue($option);
+		    		if(Mage::getStoreConfigFlag('factfinder/config/navigation')
+		    		    && ( 
+		    		    empty($_value) === true 
+		    		    || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true)) === true
+		    		    )){
+		    		        continue;
+		    		}      
+		    		            
 					$attributeOption[] = array(
 						'type'	=> 'attribute',
 						'label' => $option->getValue(),
-						'value' => $this->_getAttributeOptionValue($option),
+						'value' => $_value,
 						'count' => $option->getMatchCount(),
 						'selected' => $option->isSelected()
-					);
-		    			    				
+					);	    				
     				break;    				
     			
     		}
 		}
 		return $attributeOption;    	
+    }
+    
+    /**
+     * get current FACT-Finder Catgory Path
+     * 
+     * @return string 
+     */
+    protected function _getCurrentFactfinderCategoryPath($all = false)
+    {
+        $returnValue = '';
+        $this->_currentFactfinderCategoryPath = array();
+        if(Mage::getStoreConfigFlag('factfinder/config/navigation') && Mage::registry('current_category')){
+            /* @var $category Mage_Catalog_Model_Category */
+            $category = Mage::registry('current_category');
+            
+            $pathInStore = $category->getPathInStore();
+            $pathIds = array_reverse(explode(',', $pathInStore));
+    
+            $categories = $category->getParentCategories();
+            $mainCategoriesString = '';
+            foreach ($pathIds as $categoryId) {
+                if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
+                    if(empty($mainCategoriesString)){
+                        $this->_currentFactfinderCategoryPath[] = 'categoryROOT|'.$categories[$categoryId]->getName();
+                    }else{
+                       $this->_currentFactfinderCategoryPath[] = 'categoryROOT'.$mainCategoriesString.'|'.$categories[$categoryId]->getName();
+                    }
+                    $mainCategoriesString .= '/'.$categories[$categoryId]->getName();
+                }
+            }                           
+        }
+        if($all === false){
+            $returnValue = $this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1];
+        }else{
+            $returnValue = $this->_currentFactfinderCategoryPath;
+        }
+        return $returnValue;        
     }
     
     /**
