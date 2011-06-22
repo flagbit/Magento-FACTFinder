@@ -22,7 +22,7 @@
     <modules>
         <Flagbit_FactFinder>
             <active>true</active>
-            <version>3.1.2</version>
+            <version>3.1.3</version>
         </Flagbit_FactFinder>
     </modules>
     <global>
@@ -48,6 +48,7 @@
 			<enterprise_search>
 				<rewrite>
 					<catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
+					<catalog_layer_view>Flagbit_FactFinder_Block_Layer</catalog_layer_view>
 				</rewrite>
 			</enterprise_search>
 			<xmlconnect>

@@ -25,7 +25,7 @@ if(Mage::helper('factfinder/search')->getIsOnSearchPage()){
     }else{
     	class Flagbit_FactFinder_Block_Layer_Abstract extends Mage_CatalogSearch_Block_Layer {}	
     }
-}else{
+}else{    
     class Flagbit_FactFinder_Block_Layer_Abstract extends Mage_Catalog_Block_Layer_View {}
 }
 
