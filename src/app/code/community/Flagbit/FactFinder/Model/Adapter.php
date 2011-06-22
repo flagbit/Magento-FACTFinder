@@ -73,7 +73,7 @@ class Flagbit_FactFinder_Model_Adapter
     
     /**
      * current FACT-Finder Category Path 
-     * @var string
+     * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
 
@@ -152,7 +152,7 @@ class Flagbit_FactFinder_Model_Adapter
     			
     		case "catalog":
                 $_query = '*';	                  
-                Mage::app()->getRequest()->setParam('category', $this->_getCurrentFactfinderCategoryPath());
+                Mage::app()->getRequest()->setParam('category', Mage::app()->getRequest()->getParam('category') ? Mage::app()->getRequest()->getParam('category') : $this->_getCurrentFactfinderCategoryPath());
     		    
     			
     		case "catalogsearch": 
@@ -395,6 +395,7 @@ class Flagbit_FactFinder_Model_Adapter
     protected function _getAttributeOptions($options)
     {	
     	$attributeOption = array();
+    	$_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
     	foreach($options as $option){
     		
     		switch ($option->getType()){
@@ -422,7 +423,8 @@ class Flagbit_FactFinder_Model_Adapter
 		    		if(Mage::getStoreConfigFlag('factfinder/config/navigation')
 		    		    && ( 
 		    		    empty($_value) === true 
-		    		    || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true)) === true
+		    		    || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true))
+		    		        && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
 		    		    )){
 		    		        continue;
 		    		}      
@@ -435,7 +437,6 @@ class Flagbit_FactFinder_Model_Adapter
 						'selected' => $option->isSelected()
 					);	    				
     				break;    				
-    			
     		}
 		}
 		return $attributeOption;    	
