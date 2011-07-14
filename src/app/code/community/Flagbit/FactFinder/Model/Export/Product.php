@@ -234,7 +234,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             $entity     = $entityType->getEntity();
 
             $whereCond  = array(
-                $this->_getWriteAdapter()->quoteInto('additional_table.is_searchable=? or additional_table.is_filterable=?', 1),
+                $this->_getWriteAdapter()->quoteInto('additional_table.is_searchable=? or additional_table.is_filterable=? or additional_table.used_for_sort_by=?', 1),
                 $this->_getWriteAdapter()->quoteInto('main_table.attribute_code IN(?)', array('status', 'visibility'))
             );
 
@@ -246,7 +246,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 )
                 ->where('main_table.entity_type_id=?', $entityType->getEntityTypeId())
                 ->where(join(' OR ', $whereCond));
-                
+
             $attributesData = $this->_getWriteAdapter()->fetchAll($select);
             $this->getEavConfig()->importAttributesData($entityType, $attributesData);
             foreach ($attributesData as $attributeData) {
@@ -425,13 +425,13 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
 	protected function _getAttributesRowArray(&$dataArray, $values, $storeId=null)
 	{	
-		foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
-			
+		//add system attributes
+		foreach($this->_getSearchableAttributes(null, 'system') as $attribute){			
 			if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
 				continue;
 			}
 			$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
 			$dataArray[$attribute->getAttributeCode()] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);                	
-		}		
+		}	
 	}    
 }

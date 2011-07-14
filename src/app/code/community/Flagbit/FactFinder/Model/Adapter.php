@@ -163,12 +163,16 @@ class Flagbit_FactFinder_Model_Adapter
 		    		->_setParam('query', $_query)
 		    		->_setParam('page', $helper->getCurrentPage());
 		    		    		    
-		    	// add Sorting Param
-		    	if($helper->getCurrentOrder() 
+		    	// add Sorting Param, but only if it was set explicit via url
+				$params = Mage::app()->getRequest()->getParams();		    		
+				foreach($params as $key => $value){
+					if($key == 'order'
+					&& $helper->getCurrentOrder() 
 		    		&& $helper->getCurrentDirection()
 		    		&& $helper->getCurrentOrder() != 'position'
 		    		&& $helper->getCurrentOrder() != 'relevance'){		    		
 		    			$this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection());
+					}
 		    	}
 		
 		    	// add Filter Params
