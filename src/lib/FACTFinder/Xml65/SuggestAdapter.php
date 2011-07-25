@@ -49,7 +49,8 @@ class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter
                     $encodingHandler->encodeServerContentForPage($query),
                     $paramsParser->createPageLink(array('query' => $query)),
                     strval($xmlSuggestQuery->attributes()->hitcount),
-                    $encodingHandler->encodeServerContentForPage(strval($xmlSuggestQuery->attributes()->type))
+                    $encodingHandler->encodeServerContentForPage(strval($xmlSuggestQuery->attributes()->type)),
+					isset($xmlSuggestQuery->attributes()->hitcount) ? strval($xmlSuggestQuery->attributes()->hitcount) : ''
                 );
             }
         }

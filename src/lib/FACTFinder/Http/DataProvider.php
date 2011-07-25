@@ -77,13 +77,15 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         if ($this->type == null) {
             throw new Exception('request type not set! can not do a request without knowing the type.');
         }
-        $params = $this->getParams();
         $config = $this->getConfig();
         if ($config->getLanguage() != '') {
             $this->addHttpHeaderFields(array('Accept-Language: ' . $config->getLanguage()));
         }
 
         $url = $this->getAuthenticationUrl();
+		if ($this->getConfig()->isDebugEnabled()) {
+			$url .= '&verbose=true';
+		}
         return $this->sendRequest($url);
     }
 
@@ -163,7 +165,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
         . '&password=' . md5($prefix . $ts . md5($config->getAuthPasswort()) . $postfix);
             
-        $url = $config->getRequestProtokoll() . '://'
+        $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
@@ -187,7 +189,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
             . '&password=' . md5($config->getAuthPasswort());
             
-        $url = $config->getRequestProtokoll() . '://'
+        $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
@@ -210,7 +212,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $auth = $config->getAuthUser() . ':' . $config->getAuthPasswort() . '@';
         if ($auth == ':@') $auth = '';
         
-        $url = $config->getRequestProtokoll() . '://' . $auth
+        $url = $config->getRequestProtocol() . '://' . $auth
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
@@ -230,7 +232,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             $params['channel'] = $config->getChannel();
         }
         
-        $url = $config->getRequestProtokoll() . '://'
+        $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');

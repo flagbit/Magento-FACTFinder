@@ -1,7 +1,8 @@
 <?php
 
 /**
- * this class represents a fact-finder search result
+ * this class represents a fact-finder search result. By iterating over a result object, you will get
+ * FACTFinder_Record objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

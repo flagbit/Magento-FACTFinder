@@ -2,7 +2,7 @@
 
 /**
  * an factfinder item is a simple selectable item on a website, so it is represented by a value and an url
- * it is NOT defined yet, how this item affects on the website
+ * it is NOT defined in this class, what this item affects on the website
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

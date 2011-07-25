@@ -83,7 +83,7 @@ class FACTFinder_Campaign
     }
     
     /**
-     * @return array of records
+     * @return array of FACTFinder_Record objects
      */
     public function getPushedProducts() {
         return $this->pushedProducts;

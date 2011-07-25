@@ -1,7 +1,7 @@
 <?php
 
 /**
- * search adapter using the xml interface. expects a xml formated string from the dataprovider
+ * search adapter using the xml interface. expects a xml formatted string from the data-provider
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

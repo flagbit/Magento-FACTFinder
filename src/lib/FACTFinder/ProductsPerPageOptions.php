@@ -1,7 +1,8 @@
 <?php
 
 /**
- * represents the fact-finder product-per-page-options
+ * represents the fact-finder product-per-page-options. by iterating over an FACTFinder_ProductsPerPageOptions
+ * object, you will get FACTFinder_Item objects, where each represents one products-per-page option.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

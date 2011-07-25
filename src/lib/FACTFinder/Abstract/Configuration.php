@@ -27,8 +27,8 @@ interface FACTFinder_Abstract_Configuration
     /**
      * @return string
      */
-    function getRequestProtokoll();
-    
+	function getRequestProtocol();
+	
     /**
      * @return string
      */

@@ -37,7 +37,7 @@ class FACTFinder_ParametersParser
      */
     final public static function runWorkaround283751()
     {
-        if (self::$w283751Done === false) {
+        if (self::$w283751Done === false && isset($_SERVER['QUERY_STRING'])) {
             $params = self::parseParamsFromString($_SERVER['QUERY_STRING']);
             $_GET = array();
             $_GLOBALS['_GET'] = $_GET;
@@ -73,7 +73,7 @@ class FACTFinder_ParametersParser
      */
     private function parseRequest()
     {
-        $params = $this->encodingHandler->encodeUrlForPage(array_merge($_POST, $_GET)); // dont use $_REQUEST, because it also containts $_COOKIE; 
+        $params = $this->encodingHandler->encodeUrlForPage(array_merge($_POST, $_GET)); // dont use $_REQUEST, because it also contains $_COOKIE; 
         return $params;
     }
     
@@ -293,10 +293,23 @@ class FACTFinder_ParametersParser
      *
      * @return string request target
      */
-    private function getRequestTarget()
+    protected function getRequestTarget()
     {
         if ($this->requestTarget == null) {
-            $this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+			// workaround for some servers (IIS) which do not provide '$_SERVER['REQUEST_URI']'
+			if (!isset($_SERVER['REQUEST_URI'])) {
+				$arr = explode("/", $_SERVER['PHP_SELF']);
+				$_SERVER['REQUEST_URI'] = "/" . $arr[count($arr)-1];
+				if (isset($_SERVER['argv'][0]) && $_SERVER['argv'][0]) {
+					$_SERVER['REQUEST_URI'] .= "?" . $_SERVER['argv'][0];
+				}
+			}
+
+			if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
+				$this->requestTarget = $_SERVER['REQUEST_URI'];
+			} else {
+				$this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+			}
         }
         return $this->requestTarget;
     }
@@ -320,7 +333,8 @@ class FACTFinder_ParametersParser
      * @param array paramters
      * @return array mapped parameters
      */
-    private function doServerMappings(array $params) {
+    private function doServerMappings(array $params)
+	{
         return $this->doMapping($params, $this->config->getServerMappings());
     }
     

@@ -1,6 +1,7 @@
 <?php
 /**
- * represents the whole collection of campaigns. decorates some campaign functions to execute on every campaign
+ * represents the whole collection of campaigns. decorates some campaign functions to execute on every campaign.
+ * By iterating over an CampaignIterator you get FACTFinder_Campaign objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

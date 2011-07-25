@@ -1,7 +1,8 @@
 <?php
 
 /**
- * represents a group in the ASN which contains several filters
+ * represents a group in the ASN which contains several filters. By iterating over an AsnGroup object, you will
+ * get AsnFilterItem objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

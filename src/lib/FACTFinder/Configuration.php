@@ -49,10 +49,18 @@ class FACTFinder_Configuration implements FACTFinder_Abstract_Configuration
     }
     
     /**
+	 * @deprecated because of wrong spelling. use "getRequestProtocol()" instead
      * @return string
      */
     public function getRequestProtokoll() {
         return $this->zendConfig->search->protokoll;
+    }
+	
+	/**
+     * @return string
+     */
+    public function getRequestProtocol() {
+        return $this->zendConfig->search->protocol;
     }
     
     /**

@@ -1,13 +1,4 @@
 <?php
-
-/**
- * handles different loading tasks
- *
- * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
- * @package   FACTFinder\Common
- */
- 
 // init
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -25,6 +16,14 @@ if (function_exists('__autoload') && array_search('__autoload', spl_autoload_fun
 }
 
 final class FF extends FACTFinder_Loader{} //shortcut for the loader class
+
+/**
+ * handles different loading tasks
+ *
+ * @author    Rudolf Batt <rb@omikron.net>
+ * @version   $Id$
+ * @package   FACTFinder\Common
+ */
 class FACTFinder_Loader
 {
     private static $singletons = array();
@@ -101,7 +100,7 @@ class FACTFinder_Loader
     }
     
     /**
-     * check whether there is a custom class with the prefix "Custom_" instead of "FACTFinder_"
+     * check whether there is a custom class with the prefix "FACTFinderCustom_" instead of "FACTFinder_"
      * if non of them exists, it also checks if the name is the classname itselft
      */
     private static function getClassName($name)

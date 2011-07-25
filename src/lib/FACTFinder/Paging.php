@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Class for creating pagelinks on a search result page
+ * Class for creating pagelinks on a search result page. by iterating over an paging object, you will get FACTFinder_Item
+ * objects which represent the link for each page, beginning from "getFirtPageNumberShown()" to "getLastPageNumberShown()".
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$

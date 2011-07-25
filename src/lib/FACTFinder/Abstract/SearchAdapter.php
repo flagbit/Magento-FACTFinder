@@ -1,4 +1,5 @@
 <?php
+
 /**
  * adapter for the factfinder search
  *
@@ -220,9 +221,10 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
     
     /**
      * if the result was not good and there are more than one queries used for it, this method will return an array of 
-     * FACTFinder_AsnFilter objects, for each word a single item. by clicking at a singleWordSearch item, the result
-     * should get better
-     * please notice, that this feature has to be actived in the FACT-Finder search environment
+     * FACTFinder_SuggestQuery objects, for each word a single item. by clicking at a singleWordSearch item, the result
+     * will get better
+     * please notice, that this feature has to be actived in the FACT-Finder search environment, so this method returns
+	 * an empty array, if there are no singleWordSearch items
      *
      * @return array of FACTFinder_SuggestQuery objects
      */

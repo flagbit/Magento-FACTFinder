@@ -1,7 +1,8 @@
 <?php
 
 /**
- * represents a group in the ASN which contains several filters
+ * represents a group in the ASN which contains several filters. By iterating over an ASN object, you will
+ * get FACTFinder_AsnGroup objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$
