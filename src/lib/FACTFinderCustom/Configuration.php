@@ -73,11 +73,24 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     }
     
     /**
+	 * @deprecated because of wrong spelling; use getRequestProtocol() instead
      * @return string
      */
     public function getRequestProtokoll() {
-    	return $this->getCustomValue('protokoll');
+    	return $this->getRequestProtocol();
     }
+	
+    /**
+     * @return string
+     */
+	public function getRequestProtocol() {
+		$protocol = $this->getCustomValue('protocol');
+		// legacy code because of wrong spelling
+		if (!$protocol) {
+			$protocol = $this->getCustomValue('protokoll');
+		}
+		return $protocol;
+	}
     
     /**
      * @return string

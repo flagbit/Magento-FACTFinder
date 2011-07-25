@@ -163,7 +163,7 @@
 	        <search>
 	            <address>magento.fact-finder.de</address>
 	            <port>8080</port>
-	            <protokoll>http</protokoll> <!-- possible values: http, https -->
+	            <protocol>http</protocol> <!-- possible values: http, https -->
 
                 <auth_user>client</auth_user>
                 <auth_password>magento</auth_password>
