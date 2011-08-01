@@ -54,7 +54,7 @@
 				</status>
 				-->
                 <search translate="label">
-                    <label>FACT-Finder Accessdata</label>
+                    <label>FACT-Finder Access Data</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>10</sort_order>
                     <show_in_default>1</show_in_default>
@@ -88,7 +88,7 @@
                         </port>
                         <context translate="label">
                             <label>Context Name</label>
-                            <comment>Name of the FACT-Finder Application</comment>
+                            <comment>Name of the FACT-Finder application</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
@@ -97,7 +97,7 @@
                         </context>
                         <auth_user translate="label">
                             <label>User Name</label>
-                            <comment>Username for Authentication</comment>
+                            <comment>User name for authentication</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
@@ -114,8 +114,8 @@
                         </auth_password>
                         <channel translate="label">
                             <label>Channel</label>
-                            <comment>FACT-Finder can provide multiple search indices, each represented by a "channel".
-                                Leave empty to use default channel.</comment>
+                            <comment>FACT-Finder can provide multiple search indexes, each represented by a "channel".
+                                Leave empty to use the default channel.</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
@@ -124,8 +124,8 @@
                         </channel>
                         <language translate="label">
                             <label>Language</label>
-                            <comment>Some text snippets come directly from FACT-Finder. Set the language code here.
-                                Leave empty to use the language of the users browser.</comment>
+                            <comment>Some text strings come directly from FACT-Finder. Enter the language code here.
+                                Leave empty to use the language specified by the user's browser.</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
@@ -144,7 +144,7 @@
                         <auth_advancedPrefix>
                             <label>Advanced Authentication Prefix</label>
                             <frontend_type>text</frontend_type>
-                            <comment>The advanced authentication post- and prefix are only used if the authentication
+                            <comment>The advanced authentication post- and prefix are only used when the authentication
                                 type is "advanced".</comment>
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
@@ -162,7 +162,7 @@
                     </fields>
                 </search>
                 <config translate="label">
-                    <label>FACT-Finder Configdata</label>
+                    <label>FACT-Finder Config Data</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>20</sort_order>
                     <show_in_default>1</show_in_default>
