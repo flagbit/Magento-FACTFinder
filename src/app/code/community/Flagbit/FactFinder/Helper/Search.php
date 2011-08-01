@@ -143,7 +143,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getPageLimit()
     {
-    	return $this->_getToolbarBlock()->getLimit();	
+    	$limit = $this->_getToolbarBlock()->getLimit();	
+		if ($limit == 'all') {
+			$limit = 2*3*4*5*6; //a lot of products working for each layout
+		}
+		return $limit;
     }
     
     /**
