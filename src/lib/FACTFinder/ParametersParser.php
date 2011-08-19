@@ -14,8 +14,8 @@ class FACTFinder_ParametersParser
     private $requestParams;
     private $requestTarget;
     
-    private $config;
-    private $encodingHandler;
+    protected $config;
+    protected $encodingHandler;
     
     /**
      * @param FACTFinder_Abstract_IConfiguration config

@@ -10,12 +10,12 @@
  **/
 class FACTFinder_Paging implements IteratorAggregate
 {
+    private $iterator;
     private $currentPage;
     private $pageCount;
-    private $paramsParser;
-    private $params;
-    private $iterator;
-    private $displayPageCount = 9;
+    protected $paramsParser;
+    protected $params;
+    protected $displayPageCount = 9;
     
     /**
      * class constructor - puts paging data from the SimpleXMLElement object

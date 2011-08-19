@@ -9,8 +9,8 @@
  */
 abstract class FACTFinder_Abstract_DataProvider
 {
-    private $params = array();
-    private $config = array();
+    protected $params = array();
+    protected $config = array();
     protected $type;
     
     public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null)

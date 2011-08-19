@@ -34,7 +34,7 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
 				$id = $requestParams['id'];
 			}
 			if (empty($id)) {
-				trigger_error('recommendations can not be loaded without id', E_USER_WARNING);
+				trigger_error('recommendations can not be loaded without id. could not load id from request', E_USER_WARNING);
 				return array();
 			}
 		}

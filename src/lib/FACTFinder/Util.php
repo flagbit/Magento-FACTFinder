@@ -9,8 +9,8 @@
  **/
 class FACTFinder_Util
 {
-    private $searchAdapter;
-    private $ffparams;
+    protected $searchAdapter;
+    protected $ffparams;
     
     public function __construct(FACTFinder_Parameters $ffparams, FACTFinder_Abstract_SearchAdapter $searchAdapter) {
         $this->ffparams = $ffparams;

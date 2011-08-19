@@ -11,9 +11,9 @@
  */
 abstract class FACTFinder_Abstract_Adapter
 {
-    private $paramsParser;
-    private $dataProvider;
-    private $encodingHandler;
+    protected $paramsParser;
+    protected $dataProvider;
+    protected $encodingHandler;
     
     final public function __construct(FACTFinder_Abstract_DataProvider $dataProvider, FACTFinder_ParametersParser $paramsParser,
         FACTFinder_EncodingHandler $encodingHandler)

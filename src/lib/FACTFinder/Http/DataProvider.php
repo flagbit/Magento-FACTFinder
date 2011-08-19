@@ -9,11 +9,18 @@
  */
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
-    private $data;
-    private $previousType;
-    private $previousParams;
-    private $httpHeader = array();
-    private $curlOptions = array();
+    protected $data;
+    protected $previousType;
+    protected $previousParams;
+    protected $httpHeader = array();
+    protected $curlOptions = array(
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_MAXREDIRS => 2,
+                CURLOPT_CONNECTTIMEOUT => 2,
+                CURLOPT_TIMEOUT => 4
+            );
 
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
@@ -26,15 +33,33 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $this->type = $type;
     }
 
+	/**
+	 * set a option for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}.
+	 * The second parameter can be set to false, so the option will not be overwritten if it already exists
+	 *
+     * @link http://php.net/manual/en/function.curl-setopt.php
+     * @param the option key (should be a cURL constant)
+	 * @param the option value
+	 * @param boolean whether to overwrite existing options or not. optional, default = true
+     * @return void
+	 */
+	public function setCurlOption($option, $value, $overwriteExisting = true) {
+		if ($overwriteExisting || !isset($this->curlOptions[$option])) {
+			$this->curlOptions[$option] = $value;
+		}
+	}
+	
     /**
-     * Set multiple options for a cURL transfer like described at {@link http://php.net/manual/en/function.curl-setopt.php}
+     * Set multiple options for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}
      *
      * @link http://php.net/manual/en/function.curl-setopt.php
      * @param array of options
      * @return void
      */
     public function setCurlOptions(array $options) {
-        $this->curlOptions = $options;
+		foreach($options AS $option => $value) {
+			$this->setCurlOption($option, $value);
+		}
     }
 
     /**
@@ -85,6 +110,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $url = $this->getAuthenticationUrl();
 		if ($this->getConfig()->isDebugEnabled()) {
 			$url .= '&verbose=true';
+			if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
 		}
         return $this->sendRequest($url);
     }
@@ -117,18 +143,11 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function sendRequest($url)
     {
         $cResource = curl_init($url);
-        curl_setopt_array($cResource, array(
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_MAXREDIRS => 2,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_TIMEOUT => 4,
-                CURLOPT_USERAGENT => 'FACT-Finder PHP Framework V' . $this->getConfig()->getVersion(),
-                CURLOPT_HTTPHEADER => $this->httpHeader
-            )
-        );
+		
+		if (!empty($this->httpHeader)) {
+			$this->curlOptions[CURLOPT_HTTPHEADER] = $this->httpHeader;
+		}
+		
         if (sizeof($this->curlOptions) > 0) {
             curl_setopt_array($cResource, $this->curlOptions);
         }
@@ -151,7 +170,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      *
      * @return string url
      */
-    private function getAdvancedAuthenticationUrl() {
+    protected function getAdvancedAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
         
@@ -177,7 +196,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      *
      * @return string url
      */
-    private function getSimpleAuthenticationUrl() {
+    protected function getSimpleAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
         
@@ -201,7 +220,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      *
      * @return string url
      */
-    private function getHttpAuthenticationUrl() {
+    protected function getHttpAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
         

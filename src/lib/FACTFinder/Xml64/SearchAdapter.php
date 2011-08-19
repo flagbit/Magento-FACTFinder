@@ -9,9 +9,6 @@
  */
 class FACTFinder_Xml64_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
 {
-    private $status = null;
-    private $isArticleNumberSearch;
-
     /**
      * {@inheritdoc}
      * the parameter for the xml result changed in FACT-Finder 6.5, so here it is set different
@@ -107,7 +104,7 @@ class FACTFinder_Xml64_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
         return $pppOptions;
     }
     
-    private function getProductsPerPageLink($pppOption) {
+    protected function getProductsPerPageLink($pppOption) {
         $params = $this->getParamsParser()->getRequestParams();
         return $this->getParamsParser()->createPageLink($params, array('productsPerPage' => $pppOption));
     }

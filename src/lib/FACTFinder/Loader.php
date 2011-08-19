@@ -26,8 +26,8 @@ final class FF extends FACTFinder_Loader{} //shortcut for the loader class
  */
 class FACTFinder_Loader
 {
-    private static $singletons = array();
-    private static $classNames = array();
+    protected static $singletons = array();
+    protected static $classNames = array();
     
     public static function autoload($classname)
     {
@@ -103,7 +103,7 @@ class FACTFinder_Loader
      * check whether there is a custom class with the prefix "FACTFinderCustom_" instead of "FACTFinder_"
      * if non of them exists, it also checks if the name is the classname itselft
      */
-    private static function getClassName($name)
+    protected static function getClassName($name)
     {
         $name = trim(str_replace('factfinder/', '', $name));
         $name = str_replace(' ', '_', ucwords(str_replace('/', ' ', $name)));

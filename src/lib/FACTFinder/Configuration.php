@@ -12,7 +12,7 @@ class FACTFinder_Configuration implements FACTFinder_Abstract_Configuration
     const SIMPLE_AUTH   = 'simple';
     const ADVANCED_AUTH = 'advanced';
     
-    private $zendConfig;
+    protected $zendConfig;
     private $authType;
     private $pageMappings;
     private $serverMappings;

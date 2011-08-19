@@ -9,9 +9,9 @@
  */
 class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
 {
-    private $status = null;
-    private $isArticleNumberSearch;
-    private $xmlData = null;
+    protected $status = null;
+    protected $isArticleNumberSearch;
+    protected $xmlData = null;
 
     /**
      * {@inheritdoc}

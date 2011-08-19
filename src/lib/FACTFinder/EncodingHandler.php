@@ -7,11 +7,11 @@
  */
 class FACTFinder_EncodingHandler
 {
-    private $convertMethod;
+    protected $convertMethod;
     
-    private $pageContentEncoding;
-    private $pageUrlEncoding;
-    private $serverUrlEncoding;
+    protected $pageContentEncoding;
+    protected $pageUrlEncoding;
+    protected $serverUrlEncoding;
     
     public function __construct(FACTFinder_Abstract_Configuration $config)
     {
@@ -26,12 +26,45 @@ class FACTFinder_EncodingHandler
         }
     }
     
-    private function iConvert($inCharset, $outCharset, $string)
+	/**
+	 * converts the string from "inCharset" encoding into "outCharset" encoding. if the running php have no iconv support,
+	 * the utf8_encode/decode are used, so only the encodings "utf-8" and "iso-8859-?" can be used
+	 *
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 * @throws exception for not supported charset
+	 */
+	public function convert($inCharset, $outCharset, $string)
+	{
+		return $this->{$this->convertMethod}($inCharset, $outCharset, $string);
+	}
+	
+	/**
+	 * uses iconvert to convert string
+	 *
+	 * @link http://bg.php.net/manual/en/book.iconv.php
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 */
+    protected function iConvert($inCharset, $outCharset, $string)
     {
         return ($inCharset == $outCharset || empty($inCharset) || empty($outCharset)) ? $string : iconv($inCharset, $outCharset, $string);
     }
     
-    private function utf8Convert($inCharset, $outCharset, $string)
+	/**
+	 * uses utf8-convert functions to convert string
+	 *
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 * @throws exception for not supported charset
+	 */
+    protected function utf8Convert($inCharset, $outCharset, $string)
     {
         if (strtolower($inCharset) != strtolower($outCharset) && !empty($inCharset) && !empty($outCharset)) {
 			if (strtolower($inCharset) == 'utf-8') {
@@ -58,11 +91,11 @@ class FACTFinder_EncodingHandler
             if (is_array($data)) {
                 $returnData = array();
                 foreach ($data AS $key => $value) {
-                    $key = $this->{$this->convertMethod}($this->pageUrlEncoding, $this->pageContentEncoding, $key);
-                    $returnData[$key] = $this->{$this->convertMethod}($this->pageUrlEncoding, $this->pageContentEncoding, $value);
+                    $key = $this->convert($this->pageUrlEncoding, $this->pageContentEncoding, $key);
+                    $returnData[$key] = $this->convert($this->pageUrlEncoding, $this->pageContentEncoding, $value);
                 }
             } else if (is_string($data)) {
-                $returnData = $this->{$this->convertMethod}($this->pageUrlEncoding, $this->pageContentEncoding, $data);
+                $returnData = $this->convert($this->pageUrlEncoding, $this->pageContentEncoding, $data);
             }
         } else {
             $returnData = $data;
@@ -83,11 +116,11 @@ class FACTFinder_EncodingHandler
             if (is_array($data)) {
                 $returnData = array();
                 foreach ($data AS $key => $value) {
-                    $key = $this->{$this->convertMethod}($this->serverUrlEncoding, $this->pageUrlEncoding, $key);
-                    $returnData[$key] = $this->{$this->convertMethod}($this->serverUrlEncoding, $this->pageUrlEncoding, $value);
+                    $key = $this->convert($this->serverUrlEncoding, $this->pageUrlEncoding, $key);
+                    $returnData[$key] = $this->convert($this->serverUrlEncoding, $this->pageUrlEncoding, $value);
                 }
             } else if (is_string($data)) {
-                $returnData = $this->{$this->convertMethod}($this->serverUrlEncoding, $this->pageUrlEncoding, $data);
+                $returnData = $this->convert($this->serverUrlEncoding, $this->pageUrlEncoding, $data);
             }
         } else {
             $returnData = $data;
@@ -108,11 +141,11 @@ class FACTFinder_EncodingHandler
             if (is_array($data)) {
                 $returnData = array();
                 foreach ($data AS $key => $value) {
-                    $key = $this->{$this->convertMethod}('UTF-8', $this->pageContentEncoding, $key);
-                    $returnData[$key] = $this->{$this->convertMethod}('UTF-8', $this->pageContentEncoding, $value);
+                    $key = $this->convert('UTF-8', $this->pageContentEncoding, $key);
+                    $returnData[$key] = $this->convert('UTF-8', $this->pageContentEncoding, $value);
                 }
             } else if (is_string($data)) {
-                $returnData = $this->{$this->convertMethod}('UTF-8', $this->pageContentEncoding, $data);
+                $returnData = $this->convert('UTF-8', $this->pageContentEncoding, $data);
             }
         } else {
             $returnData = $data;
@@ -132,11 +165,11 @@ class FACTFinder_EncodingHandler
             if (is_array($data)) {
                 $returnData = array();
                 foreach ($data AS $key => $value) {
-                    $key = $this->{$this->convertMethod}($this->pageContentEncoding, $this->serverUrlEncoding, $key);
-                    $returnData[$key] = $this->{$this->convertMethod}($this->pageContentEncoding, $this->serverUrlEncoding, $value);
+                    $key = $this->convert($this->pageContentEncoding, $this->serverUrlEncoding, $key);
+                    $returnData[$key] = $this->convert($this->pageContentEncoding, $this->serverUrlEncoding, $value);
                 }
             } else if (is_string($data)) {
-                $returnData = $this->{$this->convertMethod}($this->pageContentEncoding, $this->serverUrlEncoding, $data);
+                $returnData = $this->convert($this->pageContentEncoding, $this->serverUrlEncoding, $data);
             }
         } else {
             $returnData = $data;
@@ -156,11 +189,11 @@ class FACTFinder_EncodingHandler
             if (is_array($data)) {
                 $returnData = array();
                 foreach ($data AS $key => $value) {
-                    $key = $this->{$this->convertMethod}($this->pageContentEncoding, $this->pageUrlEncoding, $key);
-                    $returnData[$key] = $this->{$this->convertMethod}($this->pageContentEncoding, $this->pageUrlEncoding, $value);
+                    $key = $this->convert($this->pageContentEncoding, $this->pageUrlEncoding, $key);
+                    $returnData[$key] = $this->convert($this->pageContentEncoding, $this->pageUrlEncoding, $value);
                 }
             } else if (is_string($data)) {
-                $returnData = $this->{$this->convertMethod}($this->pageContentEncoding, $this->pageUrlEncoding, $data);
+                $returnData = $this->convert($this->pageContentEncoding, $this->pageUrlEncoding, $data);
             }
         } else {
             $returnData = $data;

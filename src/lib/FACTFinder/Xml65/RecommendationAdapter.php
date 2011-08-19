@@ -9,8 +9,6 @@
  */
 class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_RecommendationAdapter
 {
-    private $recommendations;
-   
 	/**
      * {@inheritdoc}
      */
