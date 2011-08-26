@@ -175,6 +175,9 @@
 	            <channel></channel>
 	            <language></language>
 	        </search>
+			<export>
+				<urls>0</urls>
+			</export>
 			<config>
 				<identifier>entity_id</identifier>
 				<navigation>0</navigation>

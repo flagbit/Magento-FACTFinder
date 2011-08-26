@@ -88,7 +88,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     {
 		$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
     	$header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
-    	foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
+		
+		//TODO: make this configurable and use specified value
+		$exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls');	
+		if ($exportImageAndDeeplink) {
+			$header[] = 'image';
+			$header[] = 'deeplink';
+		}
+    	
+		foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
     		if(in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))){
 				continue;
 			}    		
@@ -151,7 +159,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 if (!isset($protductAttr[$status->getId()]) || !in_array($protductAttr[$status->getId()], $statusVals)) {
                     continue;
                 }
-
+				
                 $productIndex = array(
                 		$productData['entity_id'], 
                 		$productData[$idFieldName], 
@@ -161,6 +169,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 		$this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $protductAttr, $storeId)
                 	);
 
+				if ($exportImageAndDeeplink) {
+					$product = Mage::getModel("catalog/product");
+					$product->load($productData['entity_id']);
+					$helper = Mage::helper('catalog/image');
+					
+					$productIndex[] = $helper->init($product, 'image')->resize(120)->__toString();
+					$productIndex[] = $product->getProductUrl();
+				}
+				
 				$this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
@@ -177,6 +194,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 					$this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
                 					$this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId)                        			
                         		);
+							if ($exportImageAndDeeplink) {
+								//dont need to add image and deeplink to child product, just add empty values
+								$subProductIndex[] = '';
+								$subProductIndex[] = '';
+							}
                         	$this->_getAttributesRowArray($subProductIndex, $productAttributes[$productChild['entity_id']], $storeId);
 
                             $this->_addCsvRow($subProductIndex);
