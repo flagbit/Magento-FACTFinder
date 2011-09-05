@@ -9,7 +9,7 @@
 
 /**
  * Add FACT-Finder SCIC
- * 
+ *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
@@ -18,7 +18,13 @@
  */
 ?>
 <script type="text/javascript">
-var factfinderSCIC = new FactfinderSCIC('.col-main', $H(<?php echo $this->getJsonDataObject();?>), $H(<?php echo $this->getJsonUrlToIdMappingObject();?>), '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>');
+var factfinderSCIC = new FactfinderSCIC(
+    '.col-main',
+    $H(<?php echo $this->getJsonDataObject();?>),
+    $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
+    '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>'
+);
+
 Event.observe(document, 'dom:loaded', function(event) {
 	factfinderSCIC.init();
 });

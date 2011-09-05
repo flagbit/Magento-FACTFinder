@@ -152,7 +152,12 @@ class Flagbit_FactFinder_Model_Adapter
 
     		case "catalog":
                 $_query = '*';
-                Mage::app()->getRequest()->setParam('category', Mage::app()->getRequest()->getParam('category') ? Mage::app()->getRequest()->getParam('category') : $this->_getCurrentFactfinderCategoryPath());
+                Mage::app()->getRequest()->setParam(
+                	'category',
+                	Mage::app()->getRequest()->getParam('category')
+                		? Mage::app()->getRequest()->getParam('category')
+                		: $this->_getCurrentFactfinderCategoryPath()
+                );
 
 
     		case "catalogsearch":
