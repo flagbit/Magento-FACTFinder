@@ -15,7 +15,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @return boolean $success
      */
     abstract protected function applyTracking();
-    
+
     /**
      * if all needed parameters are available at the request like described in the documentation, just use this method to
      * fetch the needed parameters and track them
@@ -36,7 +36,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
         $this->getDataProvider()->setParams($params);
         return $this->applyTracking();
     }
-    
+
     /**
      * track a detail click on a product
      *
@@ -58,7 +58,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
         if (empty($sid)) $sid  = session_id();
         if ($origPos == -1) $origPos = $pos;
         if ($origPageSize == -1) $origPageSize = $pageSize;
-        
+
         $this->getDataProvider()->setParams(
             array(
                 'query' => $query,
@@ -76,7 +76,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
         );
         return $this->applyTracking();
     }
-    
+
     /**
      * track a product which was added to the cart
      *
@@ -86,7 +86,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @param double $price this is the single unit price (optional)
      * @return boolean $success
      */
-    public function trackCart($id, $sid = null, $count = 1, $price = null)
+    public function trackCart($id, $sid = null, $count = 1, $price = null, $userid = null)
     {
         if (empty($sid)) $sid  = session_id();
         $params = array(
@@ -95,11 +95,14 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
                 'count' => $count,
                 'event' => 'cart'
             );
+
         if (!empty($price)) $params['price'] = $price;
+        if (!empty($userid)) $params['userid'] = $userid;
+
         $this->getDataProvider()->setParams($params);
         return $this->applyTracking();
     }
-    
+
     /**
      * track a product which was purchased
      *
@@ -109,7 +112,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @param double $price this is the single unit price (optional)
      * @return boolean $success
      */
-    public function trackCheckout($id, $sid = null, $count = 1, $price = null)
+    public function trackCheckout($id, $sid = null, $count = 1, $price = null, $userid = null)
     {
         if (empty($sid)) $sid  = session_id();
         $params = array(
@@ -118,11 +121,14 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
                 'count' => $count,
                 'event' => 'checkout'
             );
+
         if (!empty($price)) $params['price'] = $price;
+        if (!empty($userid)) $params['userid'] = $userid;
+
         $this->getDataProvider()->setParams($params);
         return $this->applyTracking();
     }
-    
+
     /**
      * track a click on a recommended product
      *
