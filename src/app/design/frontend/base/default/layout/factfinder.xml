@@ -31,7 +31,7 @@
         	<block type="factfinder/campaign_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaign/feedback.phtml">
         		<action method="setTextNumber"><number>1</number></action>
 			</block>
-		</reference>		
+		</reference>
 	</default>
 	
     <catalogsearch_result_index> 

@@ -22,7 +22,7 @@
     <modules>
         <Flagbit_FactFinder>
             <active>true</active>
-            <version>3.1.3</version>
+            <version>3.2.0</version>
         </Flagbit_FactFinder>
     </modules>
     <global>
@@ -66,7 +66,10 @@
             </factfinder>
             <factfinder_mysql4>
                 <class>Flagbit_FactFinder_Model_Mysql4</class>
-            </factfinder_mysql4>	
+                <entities>
+                    <scic_queue><table>flagbit_factfinder_scic_queue</table></scic_queue>
+                </entities>
+            </factfinder_mysql4>
 			<catalogsearch>
 				<rewrite>
 					<layer>Flagbit_FactFinder_Model_Layer</layer>
@@ -78,8 +81,28 @@
 					<layer>Flagbit_FactFinder_Model_Layer</layer>
 					<layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
 				</rewrite>
-			</catalog>								
-        </models>    
+			</catalog>
+        </models>
+        <resources>
+            <factfinder_setup>
+                <setup>
+                    <module>Flagbit_FactFinder</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </factfinder_setup>
+        </resources>
+        <events>
+            <controller_action_predispatch_adminhtml_system_config_save>
+                <observers>
+                    <setEnabledFlagInFactFinderConfig>
+                        <class>factfinder/observer</class>
+                        <method>setEnabledFlagInFactFinderConfig</method>
+                    </setEnabledFlagInFactFinderConfig>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_config_save>
+        </events>
     </global>
     <frontend>
         <layout>
@@ -97,7 +120,25 @@
                     <frontName>factfinder</frontName>
                 </args>
             </factfinder>
-        </routers>       
+        </routers>
+        <events>
+            <checkout_cart_product_add_after>
+                <observers>
+                    <addToCartSendSCIC>
+                        <class>factfinder/observer</class>
+                        <method>addToCartSendSCIC</method>
+                    </addToCartSendSCIC>
+                </observers>
+            </checkout_cart_product_add_after>
+            <sales_order_place_after>
+                <observers>
+                    <addOrderDetailsToSCICQueue>
+                        <class>factfinder/observer</class>
+                        <method>addOrderDetailsToSCICQueue</method>
+                    </addOrderDetailsToSCICQueue>
+                </observers>
+            </sales_order_place_after>
+        </events>
     </frontend>        
     <adminhtml>
         <acl>
@@ -146,7 +187,15 @@
                 </args>
             </adminhtml>
         </routers>
-    </admin>	
+    </admin>
+    <crontab>
+        <jobs>
+            <factfinder_scic_queue_processing>
+                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <run><model>factfinder/observer::processScicOrderQueue</model></run>
+            </factfinder_scic_queue_processing>
+        </jobs>
+    </crontab>
     <default>
     	<catalog>
     		<search>
