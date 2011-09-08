@@ -157,6 +157,14 @@ class Flagbit_FactFinder_Model_Observer
 
         $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields']);
         $groups['search']['fields']['enabled']['errors'] = $errors;
+
+
+        // if we have an error - unset inherit field so that Backend model processing is activated
+        if (!empty($errors) && isset($groups['search']['fields']['enabled']['inherit'])) {
+        	unset($groups['search']['fields']['enabled']['inherit']);
+        	$groups['search']['fields']['enabled']['value'] = $value;
+        }
+
         $request->setPost('groups', $groups);
     }
 
