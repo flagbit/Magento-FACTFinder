@@ -10,7 +10,7 @@
 abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abstract_Adapter
 {
     private $recommendations = array();
-   
+
     /**
      * creates the recommendation-records
      *
@@ -38,7 +38,7 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
 				return array();
 			}
 		}
-        if ($this->recommendations[$id] == null) {
+        if (!isset($this->recommendations[$id]) || $this->recommendations[$id] == null) {
             $this->recommendations[$id] = $this->createRecommendations($id);
         }
         return $this->recommendations[$id];

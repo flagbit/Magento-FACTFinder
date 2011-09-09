@@ -9,6 +9,9 @@
  */
 class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_RecommendationAdapter
 {
+
+	protected $xmlData = null;
+
 	/**
      * {@inheritdoc}
      */
@@ -18,8 +21,8 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
         $this->getDataProvider()->setParam('do', 'getRecommendation');
 		$this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Recommender.ff');
-    }	
-    
+    }
+
     /**
      * try to parse data as xml
      *
@@ -49,7 +52,7 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
     protected function createRecommendations($id) {
 		$this->getDataProvider()->setParam('id', $id);
 		$xmlResult = $this->getData(); //throws exception on error
-	
+
 		$records = array();
 		if (!empty($xmlResult->results)) {
             $count = (int) $xmlResult->results->attributes()->count;
@@ -57,7 +60,7 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
 
             //load result
             foreach($xmlResult->results->record AS $xmlRecord){
-                
+
                 // fetch record values
                 $fieldValues = array();
                 foreach($xmlRecord->field AS $xmlField){
