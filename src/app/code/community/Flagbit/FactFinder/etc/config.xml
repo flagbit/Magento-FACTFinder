@@ -43,8 +43,15 @@
 			<catalog>
 				<rewrite>
 					<layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
+                    <product_list_upsell>Flagbit_FactFinder_Block_Product_List_Upsell</product_list_upsell>
+                    <product_list_crosssell>Flagbit_FactFinder_Block_Product_List_Crosssell</product_list_crosssell>
 				</rewrite>
-			</catalog>			
+			</catalog>
+            <checkout>
+                <rewrite>
+                    <cart_crosssell>Flagbit_FactFinder_Block_Cart_Crosssell</cart_crosssell>
+                </rewrite>
+            </checkout>
 			<enterprise_search>
 				<rewrite>
 					<catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>

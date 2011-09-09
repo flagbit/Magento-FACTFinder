@@ -27,32 +27,8 @@
             <frontend_type>text</frontend_type>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>			
+            <show_in_store>1</show_in_store>            
             <groups>
-            	<!--
-            	<status>
-                    <label>FACT-Finder Status</label>
-                    <frontend_type>text</frontend_type>				
-                    <frontend_model>paypal/adminhtml_system_config_fieldset_global</frontend_model>								
-                    <sort_order>10</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <enabled translate="label comment">
-                            <label>Use FACT-Finder Search</label>
-                            <comment>Test FACT-Finder for 30 days at no charge, either using your own product data in our demo system</comment>
-                            <demo_url><![CDATA[https://merchant.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=merchant/demo_express_checkout]]></demo_url>
-                            <more_url><![CDATA[http://www.fact-finder.com/Contact.html]]></more_url>
-                            <config_path>factfinder/search/enabled</config_path>
-                            <frontend_type>checkbox</frontend_type>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                        </enabled>  
-					</fields>          		
-				</status>
-				-->
                 <search translate="label">
                     <label>FACT-Finder Access Data</label>
                     <frontend_type>text</frontend_type>
@@ -65,11 +41,11 @@
                             <label>Enabled</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <backend_model>factfinder/system_config_backend_enabled</backend_model>                            							
+                            <backend_model>factfinder/system_config_backend_enabled</backend_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </enabled>						                    	
+                        </enabled>
                         <address translate="label">
                             <label>Server URL</label>
                             <frontend_type>text</frontend_type>
@@ -86,7 +62,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </port>
-                        <context translate="label">
+                        <context translate="label comment">
                             <label>Context Name</label>
                             <comment>Name of the FACT-Finder application</comment>
                             <frontend_type>text</frontend_type>
@@ -95,7 +71,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </context>
-                        <auth_user translate="label">
+                        <auth_user translate="label comment">
                             <label>User Name</label>
                             <comment>User name for authentication</comment>
                             <frontend_type>text</frontend_type>
@@ -112,7 +88,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </auth_password>
-                        <channel translate="label">
+                        <channel translate="label comment">
                             <label>Channel</label>
                             <comment>FACT-Finder can provide multiple search indexes, each represented by a "channel".
                                 Leave empty to use the default channel.</comment>
@@ -122,7 +98,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </channel>
-                        <language translate="label">
+                        <language translate="label comment">
                             <label>Language</label>
                             <comment>Some text strings come directly from FACT-Finder. Enter the language code here.
                                 Leave empty to use the language specified by the user's browser.</comment>
@@ -141,7 +117,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </auth_type>
-                        <auth_advancedPrefix>
+                        <auth_advancedPrefix translate="label comment">
                             <label>Advanced Authentication Prefix</label>
                             <frontend_type>text</frontend_type>
                             <comment>The advanced authentication post- and prefix are only used when the authentication
@@ -161,14 +137,14 @@
                         </auth_advancedPostfix>
                     </fields>
                 </search>
-				<export translate="label">
-					<label>FACT-Finder Export Configuration</label>
+                <export translate="label">
+                    <label>FACT-Finder Export Configuration</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>20</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-					<fields>
+                    <fields>
                         <urls translate="label">
                             <label>Export images and deeplinks</label>
                             <frontend_type>select</frontend_type>
@@ -196,8 +172,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </track_checkout>
-					</fields>
-				</export>
+                    </fields>
+                </export>
                 <config translate="label">
                     <label>FACT-Finder Config Data</label>
                     <frontend_type>text</frontend_type>
@@ -209,7 +185,8 @@
                         <identifier translate="label">
                             <label>Product Identifier</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>factfinder/system_config_source_identifier</source_model>                       							
+                            <source_model>factfinder/system_config_source_identifier</source_model>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -217,15 +194,17 @@
                         <proxy translate="label">
                             <label>Use Proxy for Suggest</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>                      							
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </proxy>						
-						<debug translate="label">
+                        </proxy>
+                        <debug translate="label">
                             <label>Debug Log</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>                         							
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -233,13 +212,32 @@
                         <navigation translate="label">
                             <label>Use Fact-Finder for Product Listing Navigation</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>                      							
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </navigation>                        	
+                        </navigation>
+                        <upsell translate="label">
+                            <label>Use Fact-Finder for Product Upsells</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </upsell>
+                        <crosssell translate="label">
+                            <label>Use Fact-Finder for Product Crosssells</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </crosssell>
                     </fields>
-                </config>				
+                </config>
             </groups>
         </factfinder>
     </sections>
