@@ -1,11 +1,30 @@
 <?php
+/**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
 
+/**
+ * Block class for upselling
+ *
+ * Rewritten block - data is now caught by FACT-Finder, passed to normal collection, works quite as if it was the
+ * default behavior.
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Jörg Weller <weller@flagbit.de>
+ * @version   $Id$
+ */
 class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abstract
 {
     const XML_PATH_DISPLAY_LAYER_COUNT    = 'catalog/search/use_layered_navigation_count';
 
     protected $_productCollection = null;
-    
+
     /**
      * Get current layer product collection
      *
@@ -24,8 +43,8 @@ class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abst
 			    $this->prepareProductCollection($this->_productCollection);
             }
             $collection = $this->_productCollection;
-                    
-        // handle category listing    
+
+        // handle category listing
         }else{
             if (isset($this->_productCollections[$this->getCurrentCategory()->getId()])) {
                 $collection = $this->_productCollections[$this->getCurrentCategory()->getId()];
@@ -36,8 +55,8 @@ class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abst
                 $this->prepareProductCollection($collection);
                 $this->_productCollections[$this->getCurrentCategory()->getId()] = $collection;
             }
-        }        
-        
+        }
+
 
         return $collection;
     }
