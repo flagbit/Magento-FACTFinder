@@ -17,7 +17,6 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_MAXREDIRS => 2,
                 CURLOPT_CONNECTTIMEOUT => 2,
                 CURLOPT_TIMEOUT => 4
             );

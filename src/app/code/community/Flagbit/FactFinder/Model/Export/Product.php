@@ -89,7 +89,6 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 		$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
     	$header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
 		
-		//TODO: make this configurable and use specified value
 		$exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls');	
 		if ($exportImageAndDeeplink) {
 			$header[] = 'image';
