@@ -36,10 +36,10 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
                     $idFieldName = $searchHelper->getIdFieldName();
 
                     $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-                    $product = Mage::getModel('catalog/product')->load($lastAdded);
+                    $attributeValue = Mage::getModel('catalog/product')->getResource()->getAttributeRawValue($lastAdded, $idFieldName, Mage::app()->getStore()->getId());
 
                     $collection = $this->_getCollection()
-                        ->setRecommendations($recommendationAdapter->getRecommendations($product->getData($idFieldName)));
+                        ->setRecommendations($recommendationAdapter->getRecommendations($attributeValue));
                     if (!empty($ninProductIds)) {
                         $collection->addExcludeProductFilter($ninProductIds);
                     }

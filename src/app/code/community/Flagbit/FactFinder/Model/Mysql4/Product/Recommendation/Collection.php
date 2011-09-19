@@ -25,7 +25,8 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Recommendation_Collection extends 
      *
      * @param array $recommendations Array with id information in Objects.
      */
-    public function setRecommendations($recommendations) {
+    public function setRecommendations($recommendations)
+    {
         $ids = array();
         foreach ($recommendations as $recommendationItem) {
             $ids[] = $recommendationItem->getId();
@@ -50,7 +51,7 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Recommendation_Collection extends 
      */
     public function addExcludeProductFilter($ninIds)
     {
-        $this->addAttributeToFilter('entity_id', array('nin' => $ninIds));
+        $this->addAttributeToFilter($this->getIdFieldName(), array('nin' => $ninIds));
 
         return $this;
     }
