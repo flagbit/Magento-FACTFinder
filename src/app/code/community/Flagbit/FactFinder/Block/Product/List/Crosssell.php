@@ -25,26 +25,36 @@
      */
     protected function _prepareData()
     {
-        $product = Mage::registry('product');
-        /* @var $product Mage_Catalog_Model_Product */
 
-        $searchHelper = Mage::helper('factfinder/search');
-        $idFieldName = $searchHelper->getIdFieldName();
+        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+            return parent::_prepareData();
+        }
+        try {
+            $product = Mage::registry('product');
+            /* @var $product Mage_Catalog_Model_Product */
 
-        $this->_itemCollection = Mage::getResourceModel('factfinder/product_recommendation_collection')
-            ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
-            ->addStoreFilter();
+            $searchHelper = Mage::helper('factfinder/search');
+            $idFieldName = $searchHelper->getIdFieldName();
 
-        $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-        $this->_itemCollection->setRecommendations($recommendationAdapter->getRecommendations($product->getData($idFieldName)));
+            $this->_itemCollection = Mage::getResourceModel('factfinder/product_recommendation_collection')
+                ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
+                ->addStoreFilter();
 
-//        Mage::getSingleton('catalog/product_status')->addSaleableFilterToCollection($this->_itemCollection);
-        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);
+            $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
+            $recommendations = $recommendationAdapter->getRecommendations($product->getData($idFieldName));
+            $this->_itemCollection->setRecommendations($recommendations);
 
-        $this->_itemCollection->load();
+            Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);
 
-        foreach ($this->_itemCollection as $product) {
-            $product->setDoNotUseCategoryId(true);
+            $this->_itemCollection->load();
+
+            foreach ($this->_itemCollection as $product) {
+                $product->setDoNotUseCategoryId(true);
+            }
+        }
+        catch (Exception $e) {
+            Mage::logException($e);
+        	$this->_itemCollection = new Varien_Data_Collection();
         }
 
         return $this;

@@ -25,30 +25,40 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
      */
     public function getItems()
     {
+        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+            return parent::getItems();
+        }
+
         $items = $this->getData('items');
         if (is_null($items)) {
-            $items = array();
-            $ninProductIds = $this->_getCartProductIds();
-            if ($ninProductIds) {
-                $lastAdded = (int) $this->_getLastAddedProductId();
-                if ($lastAdded) {
-                    $searchHelper = Mage::helper('factfinder/search');
-                    $idFieldName = $searchHelper->getIdFieldName();
+            try {
+                $items = array();
+                $ninProductIds = $this->_getCartProductIds();
+                if ($ninProductIds) {
+                    $lastAdded = (int) $this->_getLastAddedProductId();
+                    if ($lastAdded) {
+                        $searchHelper = Mage::helper('factfinder/search');
+                        $idFieldName = $searchHelper->getIdFieldName();
 
-                    $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-                    $attributeValue = Mage::getModel('catalog/product')->getResource()->getAttributeRawValue($lastAdded, $idFieldName, Mage::app()->getStore()->getId());
+                        $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
+                        $attributeValue = Mage::getModel('catalog/product')->getResource()->getAttributeRawValue($lastAdded, $idFieldName, Mage::app()->getStore()->getId());
 
-                    $collection = $this->_getCollection()
-                        ->setRecommendations($recommendationAdapter->getRecommendations($attributeValue));
-                    if (!empty($ninProductIds)) {
-                        $collection->addExcludeProductFilter($ninProductIds);
+                        $collection = $this->_getCollection()
+                            ->setRecommendations($recommendationAdapter->getRecommendations($attributeValue));
+                        if (!empty($ninProductIds)) {
+                            $collection->addExcludeProductFilter($ninProductIds);
+                        }
+
+                        foreach ($collection as $item) {
+                            $items[] = $item;
+                        }
                     }
 
-                    foreach ($collection as $item) {
-                        $items[] = $item;
-                    }
                 }
-
+            }
+            catch (Exception $e) {
+                Mage::logException($e);
+                $items = array();
             }
 
             $this->setData('items', $items);
@@ -63,6 +73,10 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
      */
     protected function _getCollection()
     {
+        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+            return parent::_getCollection();
+        }
+
         $collection = Mage::getResourceModel('factfinder/product_recommendation_collection')
             ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
             ->setStoreId(Mage::app()->getStore()->getId())
