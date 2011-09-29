@@ -68,8 +68,16 @@ class FACTFinder_ParametersParser
     public function getRequestParams()
     {
         if ($this->requestParams == null) {
-            $originalGetParams = self::parseParamsFromString($_SERVER['QUERY_STRING']);
-            $this->requestParams = $this->encodingHandler->encodeUrlForPage(array_merge($_POST, $originalGetParams)); // dont use $_REQUEST, because it also contains $_COOKIE;
+            if (isset($_SERVER['QUERY_STRING'])) {
+                $requestParams = array_merge($_POST, self::parseParamsFromString($_SERVER['QUERY_STRING']));
+            } else if (isset($_GET)) {
+                $requestParams = array_merge($_POST, $_GET); // dont use $_REQUEST, because it also contains $_COOKIE;
+            } else {
+                // for cli
+                $requestParams = array();
+            }
+
+            $this->requestParams = $this->encodingHandler->encodeUrlForPage($requestParams);
         }
         return $this->requestParams;
     }

@@ -31,7 +31,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
     {
         $params = $this->getDataProvider()->getParams();
         if (empty($params['query']) && empty($params['seoPath'])
-            && empty($params['catalog']) && $params['catalog'] != 'true') {
+            && (empty($params['catalog']) || $params['catalog'] != 'true')) {
             throw new Exception(self::NO_QUERY);
         }
         return $this->getDataProvider()->getData();
