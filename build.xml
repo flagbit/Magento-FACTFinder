@@ -5,7 +5,61 @@
     <property file="build.default.properties"/>
     <property name="targetdir" value="${dev.local.deployDir}"/>
     <property name="srcdir" value="${basedir}/src"/>
-    <property name="builddir" value="${basedir}/build"/>    
+    <property name="builddir" value="${basedir}/build"/>   
+	<property name="vagrantdir" value="${basedir}/.vagrant"/>
+ 
+	<target name="01 vagrant init">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant init ${vagrant.basebox}"/>
+		  </exec>
+ 
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant up"/>
+		  </exec>
+ 
+	</target>
+
+	<target name="02 vagrant up">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant up"/>
+		  </exec>
+	</target>
+ 
+	<target name="03 vagrant reload">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant reload"/>
+		  </exec>
+	</target>
+ 	
+	<target name="04 vagrant suspend">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant halt"/>
+		  </exec>
+	</target>
+	
+	<target name="05 vagrant resume">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant halt"/>
+		  </exec>
+	</target>
+
+	<target name="06 vagrant halt">
+		  <exec dir="${vagrantdir}" executable="cmd">
+			  <arg line="/c vagrant halt"/>
+		  </exec>
+	</target>
+	
+	<target name="08 vagrant configure mageinstall">	
+
+		  <sshexec host="${vagrant.ip}"
+			username="${vagrant.user}"
+			port="${vagrant.port}"
+			password="${vagrant.pass}"
+			trust="true"
+			verbose="true"
+			command="wget http://web13.site.flagbit.com/mageinstall/vagrant-magento.tgz -P /usr/local/src/magento; cd /usr/local/src/magento; tar xfz vagrant-magento.tgz"/>
+			
+    </target> 
 	   	
 	
     <target name="prepare">
