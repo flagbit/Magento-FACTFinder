@@ -28,4 +28,4 @@ class Flagbit_FactFinder_Model_Mysql4_Scic_Queue extends Mage_Core_Model_Mysql4_
         $this->_init('factfinder/scic_queue', 'id');
     }
 
-}s
+}
