@@ -1,5 +1,4 @@
 <?php
-<?php
 /**
  * Flagbit_FactFinder
  *
@@ -18,7 +17,8 @@
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Michael Türk <tuerk@flagbit.de>
  * @version   $Id: Processor.php 647 2011-03-21 10:32:14Z rudolf_batt $
- */Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block_Product_List_Crosssell
+ */
+class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block_Product_List_Crosssell
 {
     /**
      * Method overwritten. Data is not read from product link collection but from FACT-Finder interface instead.
