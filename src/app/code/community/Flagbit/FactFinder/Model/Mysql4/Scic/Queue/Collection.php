@@ -22,6 +22,7 @@ class Flagbit_FactFinder_Model_Mysql4_Scic_Queue_Collection extends Mage_Core_Mo
 {
 	protected function _construct()
 	{
-		$this->_init('factfinder/scic_queue');
+		$this->_init('factfinder/scic_queue')
+		    ->setOrder('store_id', 'ASC');
 	}
 }

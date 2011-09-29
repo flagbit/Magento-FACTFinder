@@ -82,6 +82,7 @@ class Flagbit_FactFinder_Model_Observer
                 continue;
             }
 
+
             try {
                 Mage::getModel('factfinder/scic_queue')
                     ->setProductId($item->getData($idFieldName))
@@ -89,6 +90,7 @@ class Flagbit_FactFinder_Model_Observer
                     ->setUserid($customerId)
                     ->setPrice($item->getPrice())
                     ->setCount($item->getQtyOrdered())
+                    ->setStoreId(Mage::app()->getStore()->getId())
                     ->save();
             }
             catch (Exception $e) {
@@ -106,10 +108,17 @@ class Flagbit_FactFinder_Model_Observer
     public function processScicOrderQueue()
     {
         $queue = Mage::getModel('factfinder/scic_queue');
-        $collection = $queue->getCollection();
-        $scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
+        $collection = $queue->getCollection()->addOrder('store_id', 'ASC');
+
+        $storeId = null;
+        $scic = null;
         foreach ($collection as $item) {
             try {
+                if ($item->getStoreId() != $storeId) {
+                    $scic = Mage::getModel('factfinder/adapter')->setStoreId($item->getStoreId())->getScicAdapter();
+                    $storeId = $item->getStoreId();
+                }
+
                 $scic->trackCheckout($item->getProductId(), $item->getSid(), $item->getCount(), $item->getPrice(), $item->getUserid());
                 $item->delete($item);
             }

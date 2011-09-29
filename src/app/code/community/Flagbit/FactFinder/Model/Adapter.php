@@ -96,7 +96,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml66/searchAdapter',
+                'xml65/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -684,5 +684,17 @@ class Flagbit_FactFinder_Model_Adapter
             $this->_config = FF::getSingleton('configuration', $configarray);
         }
         return $this->_config;
+    }
+
+
+    /**
+     * Set StoreId for current configuration
+     *
+     * @param unknown_type $storeId
+     */
+    public function setStoreId($storeId) {
+        $this->_getConfiguration()->setStoreId($storeId);
+
+        return $this;
     }
 }
