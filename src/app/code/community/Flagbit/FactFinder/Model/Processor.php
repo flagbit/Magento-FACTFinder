@@ -9,29 +9,29 @@
 
 /**
  * Model class
- * 
- * Request Processor for fast handling 
- * 
+ *
+ * Request Processor for fast handling
+ *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-class Flagbit_FactFinder_Model_Processor 
+class Flagbit_FactFinder_Model_Processor
 {
-	
-    const CACHE_TAG  = 'FACTFINDER';  // Cache Tag
-    const REQUEST_ID_PREFIX = 'FACTFINDER_';    	
-    const XML_CONFIG_PATH = 'factfinder/search/';  
 
-    
+    const CACHE_TAG  = 'FACTFINDER';  // Cache Tag
+    const REQUEST_ID_PREFIX = 'FACTFINDER_';
+    const XML_CONFIG_PATH = 'factfinder/search/';
+
+
     /**
      * Search Adapter
      * @var Flagbit_FactFinder_Model_Adapter
      */
     protected $_searchAdapter;
-	
+
     /**
      * Class constructor
      */
@@ -42,22 +42,22 @@ class Flagbit_FactFinder_Model_Processor
         $this->_requestId       = $uri;
         $this->_requestCacheId  = $this->prepareCacheId($this->_requestId);
         $this->_requestTags     = array(self::CACHE_TAG);
-    }    
-    
+    }
+
     /**
      * get Fact-Finder Search Adapter
-     * 
+     *
      * @return Flagbit_FactFinder_Model_Adapter
      */
     public function getSearchAdapter()
-    { 	
+    {
     	if($this->_searchAdapter === null){
     		$this->_searchAdapter = new Flagbit_FactFinder_Model_Adapter();
     	}
     	return $this->_searchAdapter;
     }
-    
-    
+
+
     /**
      * Get page content from cache storage
      *
@@ -67,40 +67,40 @@ class Flagbit_FactFinder_Model_Processor
     public function extractContent($content)
     {
     	// handle in App Request if "factfinder" in Request path
-        if (!$content 
+        if (!$content
         	&& strpos($this->_requestId, 'factfinder')
         	&& $this->isAllowed()) {
-        		
+
             $requestCacheId = $this->prepareCacheId($this->getRequestId().'request');
-            $request = Mage::app()->loadCache($requestCacheId);   
+            $request = Mage::app()->loadCache($requestCacheId);
             if ($request) {
 				$content = $this->handleWithoutAppRequest($request);
             }
 
         }
         return $content;
-    }    
-    
+    }
+
     /**
      * handle in App Requests
-     * 
+     *
      * @param string $request
      * @return string
      */
     public function handleInAppRequest($request)
     {
         $requestCacheId = $this->prepareCacheId($this->getRequestId().'request');
-        Mage::app()->saveCache($request, $requestCacheId, $this->getRequestTags());	
+        Mage::app()->saveCache($request, $requestCacheId, $this->getRequestTags());
 
         $configCacheId = $this->prepareCacheId($this->getRequestId().'config');
-        Mage::app()->saveCache(serialize(Mage::getStoreConfig('factfinder/search')), $configCacheId, $this->getRequestTags());	        
-	
+        Mage::app()->saveCache(serialize(Mage::getStoreConfig('factfinder/search')), $configCacheId, $this->getRequestTags());
+
     	return $this->_handleRequest($request);
     }
-    
+
     /**
      * hanlde without App Requests
-     * 
+     *
      * @param string $request
      * @return string
      */
@@ -112,39 +112,39 @@ class Flagbit_FactFinder_Model_Processor
     		$config = unserialize(Mage::app()->loadCache($configCacheId));
     	} catch (Exception $e){
     		return;
-    	} 
+    	}
     	if(!is_array($config) || empty($config)){
     		return;
     	}
     	$this->getSearchAdapter()->setConfiguration($config);
-    	return $this->_handleRequest($request);	
-    }    
-    
+    	return $this->_handleRequest($request);
+    }
+
     /**
-     * handle Requests 
-     * 
+     * handle Requests
+     *
      * @param unknown_type $request
      * @return string
      */
     protected function _handleRequest($request)
     {
-		switch ($request){			
-			
+		switch ($request){
+
 			case 'factfinder_proxy_scic':
 		        $scic = $this->getSearchAdapter()->getScicAdapter();
-		        return $scic->doTrackingFromRequest();				
+		        return $scic->doTrackingFromRequest();
 				break;
-				
+
 			case 'factfinder_proxy_suggest':
-		        return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));	
-				break;				
-			
+		        return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
+				break;
+
 		}
     }
-    
+
     /**
      * get Request Param by Key
-     * 
+     *
      * @param unknown_type $key
      * @return string
      */
@@ -156,7 +156,7 @@ class Flagbit_FactFinder_Model_Processor
     	}
     	return $value;
     }
-    
+
     /**
      * Return current page base url
      *
@@ -189,12 +189,12 @@ class Flagbit_FactFinder_Model_Processor
                 }
             }
         }
-        
+
         $pieces = explode('?', $uri);
         $uri = array_shift($pieces);
-        
+
         return $uri;
-    }      
+    }
 
     /**
      * Prepare page identifier
