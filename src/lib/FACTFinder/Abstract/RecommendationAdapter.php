@@ -14,7 +14,7 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
     /**
      * creates the recommendation-records
      *
-	 * @param string id
+     * @param string id
      * @return array of FACTFinder_Record objects
     **/
     abstract protected function createRecommendations($id);
@@ -28,16 +28,16 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
      *
      */
     public function getRecommendations($id = '') {
-		if (empty($id)) {
-			$requestParams = $this->getParamsParser()->getRequestParams();
-			if (isset($requestParams['id'])) {
-				$id = $requestParams['id'];
-			}
-			if (empty($id)) {
-				trigger_error('recommendations can not be loaded without id. could not load id from request', E_USER_WARNING);
-				return array();
-			}
-		}
+        if (empty($id)) {
+            $requestParams = $this->getParamsParser()->getRequestParams();
+            if (isset($requestParams['id'])) {
+                $id = $requestParams['id'];
+            }
+            if (empty($id)) {
+                trigger_error('recommendations can not be loaded without id. could not load id from request', E_USER_WARNING);
+                return array();
+            }
+        }
         if (!isset($this->recommendations[$id]) || $this->recommendations[$id] == null) {
             $this->recommendations[$id] = $this->createRecommendations($id);
         }

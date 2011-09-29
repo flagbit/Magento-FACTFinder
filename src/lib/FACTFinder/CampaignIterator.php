@@ -8,10 +8,10 @@
  * @package   FACTFinder\Common
  */
 class FACTFinder_CampaignIterator extends ArrayIterator
-{    
+{
     /**
      * true if a redirect link exists at one of all campaigns
-     * 
+     *
      * @see FACTFinder_Campaign::hasRedirect()
      * @return boolean
      */
@@ -26,10 +26,10 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $hasRedirect;
     }
-    
+
     /**
      * return the first redirect of all campaigns or null if non exists
-     * 
+     *
      * @see FACTFinder_Campaign::getRedirectUrl()
      * @return string url
      */
@@ -46,7 +46,7 @@ class FACTFinder_CampaignIterator extends ArrayIterator
 
     /**
      * true if pushed products exist in of all campaigns
-     * 
+     *
      * @see FACTFinder_Campaign::hasPushedProducts()
      * @return boolean
      */
@@ -60,10 +60,10 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $hasPushedProducts;
     }
-    
+
     /**
      * decorates FACTFinder_Campaign::getPushedProducts() for all campaigns
-     * 
+     *
      * @see FACTFinder_Campaign::getPushedProducts()
      * @return array of records
      */
@@ -76,11 +76,11 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $pushedProducts;
     }
-    
+
     /**
      * decorates FACTFinder_Campaign::hasFeedback() for each campaign. return true, if one of all campaigns has feedback
      * text snippets
-     * 
+     *
      * @see FACTFinder_Campaign::hasFeedback()
      * @return boolean
      */
@@ -94,11 +94,11 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $hasFeedback;
     }
-    
+
     /**
      * decorates FACTFinder_Campaign::getFeedback() for each campaign. returnes a string of each feedback from all
      * campaigns, glued together with PHP_EOL
-     * 
+     *
      * @see FACTFinder_Campaign::getFeedback()
      * @param int $nr of feedback text
      * @return string

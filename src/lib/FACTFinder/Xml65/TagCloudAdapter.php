@@ -19,7 +19,7 @@ class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapt
         $this->getDataProvider()->setType('WhatsHot.ff');
         $this->getDataProvider()->setParam('do', 'getTagCloud');
     }
-    
+
     /**
      * try to parse data as xml
      *
@@ -31,7 +31,7 @@ class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapt
         libxml_use_internal_errors(true);
         return new SimpleXMLElement(parent::getData()); //throws exception on error
     }
-    
+
     /**
      * {@inheritdoc}
      *

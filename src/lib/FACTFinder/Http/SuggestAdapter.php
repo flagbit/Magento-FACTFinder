@@ -8,7 +8,7 @@
  * @package   FACTFinder\Http
  */
 class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
-{    
+{
     /**
      * {@inheritdoc}
      */
@@ -20,11 +20,11 @@ class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
             CURLOPT_TIMEOUT => 2
         ));
     }
-    
+
     /**
      * {@inheritdoc}
      * this implementation returns raw suggestions strings
-     * 
+     *
      * @return string raw data
      */
     protected function createSuggestions()

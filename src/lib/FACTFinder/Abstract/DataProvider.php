@@ -12,13 +12,13 @@ abstract class FACTFinder_Abstract_DataProvider
     protected $params = array();
     protected $config = array();
     protected $type;
-    
+
     public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null)
     {
         if ($params != null) $this->setParams($params);
         if ($config != null) $this->setConfig($config);
     }
-    
+
     /**
      * set type to identify which data should be loaded. that could be a request path or any source identifier
      *
@@ -28,7 +28,7 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         $this->type = $type;
     }
-    
+
     /**
      * return the data for the current config and params; the return type depends on the implementation
      *
@@ -46,7 +46,7 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         $this->params = $params;
     }
-    
+
     /**
      * set single param
      *
@@ -58,7 +58,7 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         $this->params[$name] = $value;
     }
-    
+
     /**
      * @param FACTFinder_Abstract_IConfiguration config
      */
@@ -70,7 +70,7 @@ abstract class FACTFinder_Abstract_DataProvider
     /**
      * @return array
     **/
-    protected function getParams()
+    public function getParams()
     {
         return $this->params;
     }

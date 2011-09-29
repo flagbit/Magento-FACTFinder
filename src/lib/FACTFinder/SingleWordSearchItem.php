@@ -9,31 +9,31 @@
  */
 class FACTFinder_SingleWordSearchItem extends FACTFinder_SuggestQuery
 {
-	private $previewRecords = array();
-	
-	/**
-	 * @param array of FACTFinder_Record objects
-	 * @return void
-	 */
-	public function addPreviewRecords(array $previewRecords)
-	{
-		$this->previewRecords += $previewRecords;
-	}
-	
-	/**
-	 * @param FACTFinder_Record object
-	 * @return void
-	 */
-	public function addPreviewRecord(FACTFinder_Record $record)
-	{
-		$this->previewRecords[] = $record;
-	}
-	
-	/**
-	 * @return array of FACTFinder_Record objects or empty array if there are no preview objects
-	 */
-	public function getPreviewRecords()
-	{
-		return $this->previewRecords;
-	}
+    private $previewRecords = array();
+
+    /**
+     * @param array of FACTFinder_Record objects
+     * @return void
+     */
+    public function addPreviewRecords(array $previewRecords)
+    {
+        $this->previewRecords += $previewRecords;
+    }
+
+    /**
+     * @param FACTFinder_Record object
+     * @return void
+     */
+    public function addPreviewRecord(FACTFinder_Record $record)
+    {
+        $this->previewRecords[] = $record;
+    }
+
+    /**
+     * @return array of FACTFinder_Record objects or empty array if there are no preview objects
+     */
+    public function getPreviewRecords()
+    {
+        return $this->previewRecords;
+    }
 }

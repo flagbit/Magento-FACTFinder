@@ -87,7 +87,7 @@ class FACTFinder_Parameters
     {
         return $this->sortings;
     }
-    
+
     /**
      * @return boolean true if navigation is enabled
      */
@@ -95,7 +95,7 @@ class FACTFinder_Parameters
     {
         return $this->isNavigation;
     }
-    
+
     /**
      * @return int follow search value
      */

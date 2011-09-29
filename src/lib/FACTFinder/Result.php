@@ -9,10 +9,10 @@
  * @category  Collection
  * @package   FACTFinder\Common
  */
-class FACTFinder_Result extends ArrayIterator 
+class FACTFinder_Result extends ArrayIterator
 {
     private $foundRecordsCount;
-    
+
     /**
      * @param array record (default: empty array)
      * @param int number of records factfinder found for the according query (default: 0)
@@ -21,11 +21,11 @@ class FACTFinder_Result extends ArrayIterator
         parent::__construct($records);
         $this->foundRecordsCount = intval($foundRecordsCount);
     }
-    
+
     /**
      * return number of records found in the whole FACT-Finder result.
      * this object only contains the records for the current page, that must not be the same count
-     * 
+     *
      * @return int found records count
      */
     public function getFoundRecordsCount(){

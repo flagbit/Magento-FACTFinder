@@ -22,17 +22,17 @@ class FACTFinder_AsnFilterItem extends FACTFinder_Item
         $this->field = strval($field);
     }
 
-	public function getType() {
-		return 'item';
-	}
-	
+    public function getType() {
+        return 'item';
+    }
+
     /**
      * @return String
      */
     public function getField() {
         return $this->field;
     }
-    
+
     /**
      * @return int
      */

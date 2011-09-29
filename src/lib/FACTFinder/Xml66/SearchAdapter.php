@@ -46,69 +46,70 @@ class FACTFinder_Xml66_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
      * @return array of FACTFinder_SingleWordSearchItem objects
      */
     protected function createSingleWordSearch()
-	{
+    {
         $xmlResult = $this->getData();
         $singleWordSearch = array();
         if (isset($xmlResult->singleWordSearch)) {
+            $encodingHandler = $this->getEncodingHandler();
             foreach ($xmlResult->singleWordSearch->item AS $item) {
-                $query = strval($item->attributes()->word);
+                $query = $encodingHandler->encodeServerContentForPage(strval($item->attributes()->word));
                 $singleWordSearchItem = FF::getInstance('singleWordSearchItem',
                     $query,
                     $this->getParamsParser()->createPageLink(array('query' => $query)),
                     intval(trim($item->attributes()->count))
                 );
 
-				//add preview records
-				if (isset($item->record)) {
-					$position = 1;
-					foreach($item->record AS $rawRecord) {
-						$record = $this->getRecordFromRawRecord($rawRecord, $position);
-						$singleWordSearchItem->addPreviewRecord($record);
-						$position++;
-					}
-				}
+                //add preview records
+                if (isset($item->record)) {
+                    $position = 1;
+                    foreach($item->record AS $rawRecord) {
+                        $record = $this->getRecordFromRawRecord($rawRecord, $position);
+                        $singleWordSearchItem->addPreviewRecord($record);
+                        $position++;
+                    }
+                }
 
-				$singleWordSearch[] = $singleWordSearchItem;
+                $singleWordSearch[] = $singleWordSearchItem;
             }
         }
         return $singleWordSearch;
     }
-	
-	protected function getRecordFromRawRecord(SimpleXmlElement $rawRecord, $position)
-	{
-		// fetch record values
-		$fieldValues = array();
-		foreach($rawRecord->field AS $current_field){
-			$currentFieldname = (string) $current_field->attributes()->name;
-			$fieldValues[$currentFieldname] = (string) $current_field;
-		}
 
-		// get original position
-		if (isset($fieldValues['__ORIG_POSITION__'])) {
-			$origPosition = $fieldValues['__ORIG_POSITION__'];
-			unset($fieldValues['__ORIG_POSITION__']);
-		} else {
-			$origPosition = $position;
-		}
+    protected function getRecordFromRawRecord(SimpleXmlElement $rawRecord, $position)
+    {
+        // fetch record values
+        $fieldValues = array();
+        foreach($rawRecord->field AS $current_field){
+            $currentFieldname = (string) $current_field->attributes()->name;
+            $fieldValues[$currentFieldname] = (string) $current_field;
+        }
 
-		$record = FF::getInstance('record',
-			$rawRecord->attributes()->id,
-			floatval($rawRecord->attributes()->relevancy),
-			$position,
-			$origPosition,
-			$this->getEncodingHandler()->encodeServerContentForPage($fieldValues)
-		);
-		
-		if (isset($rawRecord->seoPath)) {
-			$record->setSeoPath(strval($rawRecord->seoPath));
-		}
-		
-		if (isset($rawRecord->keywords)) {
-			foreach($rawRecord->keywords->keyword AS $keyword) {
-				$record->addKeyword(strval($keyword));
-			}
-		}
-		
-		return $record;
-	}
+        // get original position
+        if (isset($fieldValues['__ORIG_POSITION__'])) {
+            $origPosition = $fieldValues['__ORIG_POSITION__'];
+            unset($fieldValues['__ORIG_POSITION__']);
+        } else {
+            $origPosition = $position;
+        }
+
+        $record = FF::getInstance('record',
+            $rawRecord->attributes()->id,
+            floatval($rawRecord->attributes()->relevancy),
+            $position,
+            $origPosition,
+            $this->getEncodingHandler()->encodeServerContentForPage($fieldValues)
+        );
+
+        if (isset($rawRecord->seoPath)) {
+            $record->setSeoPath(strval($rawRecord->seoPath));
+        }
+
+        if (isset($rawRecord->keywords)) {
+            foreach($rawRecord->keywords->keyword AS $keyword) {
+                $record->addKeyword(strval($keyword));
+            }
+        }
+
+        return $record;
+    }
 }

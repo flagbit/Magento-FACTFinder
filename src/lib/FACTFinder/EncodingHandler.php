@@ -8,76 +8,76 @@
 class FACTFinder_EncodingHandler
 {
     protected $convertMethod;
-    
+
     protected $pageContentEncoding;
     protected $pageUrlEncoding;
     protected $serverUrlEncoding;
-    
+
     public function __construct(FACTFinder_Abstract_Configuration $config)
     {
         $this->pageContentEncoding = $config->getPageContentEncoding();
         $this->pageUrlEncoding     = $config->getPageUrlEncoding();
         $this->serverUrlEncoding   = $config->getServerUrlEncoding();
-		
+
         if (function_exists('iconv')) {
             $this->convertMethod = 'iConvert';
         } else {
             $this->convertMethod = 'utf8Convert';
         }
     }
-    
-	/**
-	 * converts the string from "inCharset" encoding into "outCharset" encoding. if the running php have no iconv support,
-	 * the utf8_encode/decode are used, so only the encodings "utf-8" and "iso-8859-?" can be used
-	 *
-	 * @param input charset
-	 * @param output charset
-	 * @param string which should be converted
-	 * @return string in specified output charset
-	 * @throws exception for not supported charset
-	 */
-	public function convert($inCharset, $outCharset, $string)
-	{
-		return $this->{$this->convertMethod}($inCharset, $outCharset, $string);
-	}
-	
-	/**
-	 * uses iconvert to convert string
-	 *
-	 * @link http://bg.php.net/manual/en/book.iconv.php
-	 * @param input charset
-	 * @param output charset
-	 * @param string which should be converted
-	 * @return string in specified output charset
-	 */
+
+    /**
+     * converts the string from "inCharset" encoding into "outCharset" encoding. if the running php have no iconv support,
+     * the utf8_encode/decode are used, so only the encodings "utf-8" and "iso-8859-?" can be used
+     *
+     * @param input charset
+     * @param output charset
+     * @param string which should be converted
+     * @return string in specified output charset
+     * @throws exception for not supported charset
+     */
+    public function convert($inCharset, $outCharset, $string)
+    {
+        return $this->{$this->convertMethod}($inCharset, $outCharset, $string);
+    }
+
+    /**
+     * uses iconvert to convert string
+     *
+     * @link http://bg.php.net/manual/en/book.iconv.php
+     * @param input charset
+     * @param output charset
+     * @param string which should be converted
+     * @return string in specified output charset
+     */
     protected function iConvert($inCharset, $outCharset, $string)
     {
         return ($inCharset == $outCharset || empty($inCharset) || empty($outCharset)) ? $string : iconv($inCharset, $outCharset, $string);
     }
-    
-	/**
-	 * uses utf8-convert functions to convert string
-	 *
-	 * @param input charset
-	 * @param output charset
-	 * @param string which should be converted
-	 * @return string in specified output charset
-	 * @throws exception for not supported charset
-	 */
+
+    /**
+     * uses utf8-convert functions to convert string
+     *
+     * @param input charset
+     * @param output charset
+     * @param string which should be converted
+     * @return string in specified output charset
+     * @throws exception for not supported charset
+     */
     protected function utf8Convert($inCharset, $outCharset, $string)
     {
         if (strtolower($inCharset) != strtolower($outCharset) && !empty($inCharset) && !empty($outCharset)) {
-			if (strtolower($inCharset) == 'utf-8') {
-				$string = utf8_decode($string);
-			} else if (strtolower($outCharset) == 'utf-8') {
-				$string = utf8_encode($string);
-			} else {
-				throw new Exception("can not handle $inCharset to $outCharset conversion!");
-			}
-		}
+            if (strtolower($inCharset) == 'utf-8') {
+                $string = utf8_decode($string);
+            } else if (strtolower($outCharset) == 'utf-8') {
+                $string = utf8_encode($string);
+            } else {
+                throw new Exception("can not handle $inCharset to $outCharset conversion!");
+            }
+        }
         return $string;
     }
-    
+
     /**
      * converts the url data, to display correctly at the page
      *
@@ -102,7 +102,7 @@ class FACTFinder_EncodingHandler
         }
         return $returnData;
     }
-    
+
     /**
      * converts the url data from the server result for the page url
      *
@@ -127,7 +127,7 @@ class FACTFinder_EncodingHandler
         }
         return $returnData;
     }
-    
+
     /**
      * converts the data from the server result for the page content
      *
@@ -152,7 +152,7 @@ class FACTFinder_EncodingHandler
         }
         return $returnData;
     }
-    
+
     /**
      * converts the data for the server url
      *
@@ -176,7 +176,7 @@ class FACTFinder_EncodingHandler
         }
         return $returnData;
     }
-    
+
     /**
      * converts the data from the page for the page url
      *

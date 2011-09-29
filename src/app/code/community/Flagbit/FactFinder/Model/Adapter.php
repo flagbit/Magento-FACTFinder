@@ -96,7 +96,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml65/searchAdapter',
+                'xml66/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler

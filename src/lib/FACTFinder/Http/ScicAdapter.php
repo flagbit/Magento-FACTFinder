@@ -15,7 +15,7 @@ class FACTFinder_Http_ScicAdapter extends FACTFinder_Abstract_ScicAdapter
     protected function init() {
         $this->getDataProvider()->setType('SCIC.ff');
     }
-    
+
     /**
      * {@inheritdoc}
      *

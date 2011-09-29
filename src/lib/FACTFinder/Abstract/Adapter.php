@@ -14,7 +14,7 @@ abstract class FACTFinder_Abstract_Adapter
     protected $paramsParser;
     protected $dataProvider;
     protected $encodingHandler;
-    
+
     final public function __construct(FACTFinder_Abstract_DataProvider $dataProvider, FACTFinder_ParametersParser $paramsParser,
         FACTFinder_EncodingHandler $encodingHandler)
     {
@@ -23,7 +23,7 @@ abstract class FACTFinder_Abstract_Adapter
         $this->setEncodingHandler($encodingHandler);
         $this->init();
     }
-    
+
     /**
      * can be overwritten to do initialising issues, that would normaly done by the constructor. it will be called at
      * the end of the constructor
@@ -31,7 +31,7 @@ abstract class FACTFinder_Abstract_Adapter
      * @return void
      */
     protected function init(){}
-    
+
     /**
      * returns the data from the dataprovider. decorates the dataprovider::getData method so a inheriting class does not
      * have to use the dataprovider
@@ -40,7 +40,7 @@ abstract class FACTFinder_Abstract_Adapter
     {
         return $this->getDataProvider()->getData();
     }
-    
+
     /**
      * set data provider
      *
@@ -51,7 +51,7 @@ abstract class FACTFinder_Abstract_Adapter
     {
         $this->dataProvider = $dataProvider;
     }
-    
+
     /**
      * get data provider
      *

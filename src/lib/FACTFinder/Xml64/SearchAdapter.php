@@ -71,7 +71,7 @@ class FACTFinder_Xml64_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
         }
         return FF::getInstance('asn', $asn);
     }
-    
+
     /**
      * {@inheritdoc}
      * until version 6.4 of FACT-Finder, the products per page options are not delivered, so this method creates an
@@ -86,24 +86,24 @@ class FACTFinder_Xml64_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
 
         if (!empty($xmlResult->paging)) {
             $params = $this->getParamsParser()->getRequestParams();
-            
+
             $selectedOption = intval($xmlResult->paging->attributes()->productsPerPage);
             $defaultOption = 12;
             $options = array();
-            
+
             if ($selectedOption < $defaultOption) {
                 $defaultOption = $selectedOption;
             }
             $options[$defaultOption] = $this->getProductsPerPageLink($defaultOption);
             if ($selectedOption != $defaultOption) {
                 $options[$selectedOption] = $this->getProductsPerPageLink($selectedOption);
-            }            
-            
+            }
+
             $pppOptions = FF::getInstance('productsPerPageOptions', $options, $defaultOption, $selectedOption);
         }
         return $pppOptions;
     }
-    
+
     protected function getProductsPerPageLink($pppOption) {
         $params = $this->getParamsParser()->getRequestParams();
         return $this->getParamsParser()->createPageLink($params, array('productsPerPage' => $pppOption));

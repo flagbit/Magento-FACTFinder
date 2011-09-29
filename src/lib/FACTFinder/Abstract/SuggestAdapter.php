@@ -10,7 +10,7 @@
 abstract class FACTFinder_Abstract_SuggestAdapter extends FACTFinder_Abstract_Adapter
 {
     private $suggestions;
-    
+
     /**
      * get suggestions created by createSuggesions()
      *
@@ -23,11 +23,11 @@ abstract class FACTFinder_Abstract_SuggestAdapter extends FACTFinder_Abstract_Ad
         }
         return $this->suggestions;
     }
-    
+
     /**
      * create and return suggestions. dependend to the implementation this can be any type
-     * 
-     * @return mixed 
+     *
+     * @return mixed
      */
     abstract protected function createSuggestions();
 }

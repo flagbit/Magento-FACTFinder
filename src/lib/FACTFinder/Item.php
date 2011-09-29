@@ -13,7 +13,7 @@ class FACTFinder_Item
     private $value;
     private $url;
     private $isSelected;
-    
+
     /**
      * @param string value
      * @param string url
@@ -24,21 +24,21 @@ class FACTFinder_Item
         $this->url = strval($url);
         $this->isSelected = $isSelected == true;
     }
-    
+
     /**
      * @return string
      */
     public function getValue() {
         return $this->value;
     }
-    
+
     /**
      * @return string
      */
     public function getUrl() {
         return $this->url;
     }
-    
+
     /**
      * @return boolean
      */

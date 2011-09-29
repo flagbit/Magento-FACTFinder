@@ -8,7 +8,7 @@
  * @package   FACTFinder\Xml66
  */
 class FACTFinder_Xml66_SuggestAdapter extends FACTFinder_Xml65_SuggestAdapter
-{    
+{
     /**
      * there are no special new features in FF6.6
      */

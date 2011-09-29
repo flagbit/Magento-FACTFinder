@@ -13,7 +13,7 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
     private $options;
     private $selectedOption = null;
     private $defaultOption = null;
-    
+
     /**
      * @param array int to string map; the integer is product-per-page option and the string is the according url
      * @param int default option (default: first option)
@@ -22,7 +22,7 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
     public function __construct(array $options, $defaultOption = -1, $selectedOption = -1) {
         $defaultOption = intval($defaultOption);
         $selectedOption = intval($selectedOption);
-        
+
         $this->options = new ArrayIterator();
         foreach($options AS $option => $url) {
             $item = FF::getInstance('item', intval($option), $url, ($option == $selectedOption));
@@ -34,7 +34,7 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
             }
             $this->options->append($item);
         }
-        
+
         if ($this->defaultOption == null && $this->options->count() > 0) {
             $this->defaultOption = $this->options[0];
         }
@@ -52,7 +52,7 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
     {
         return $this->options;
     }
-    
+
     /**
      * @return FACTFinder_Item default products per page option
      */
@@ -68,7 +68,7 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
     public function isDefaultOption(FACTFinder_Item $option) {
         return $this->defaultOption->getValue() == $option->getValue();
     }
-    
+
     /**
      * @return FACTFinder_Item selected products per page option
      */

@@ -1,6 +1,8 @@
+<?php if(Mage::helper('factfinder/search')->getIsEnabled()):?>
 <div class="ffcampaigntext"><?php echo $this->getText(); ?></div>
 
 <?php
+	// this is an example, how to use the pushed products
 	$pushedProducts = $this->getPushedProductsCollection()->load()->toArray();
 	if (!empty($pushedProducts)) {
 		//customize here the pushed products output
@@ -9,3 +11,4 @@
 		echo ' --> ';
 	}
 ?>
+<?php endif;?>

@@ -16,11 +16,11 @@ class FACTFinder_Paging implements IteratorAggregate
     protected $paramsParser;
     protected $params;
     protected $displayPageCount = 9;
-    
+
     /**
      * class constructor - puts paging data from the SimpleXMLElement object
      * into usefull structure
-     * 
+     *
      * @param int $currentPage
      * @param int $pageCount
      * @param FACTFinder_ParametersParser $paramsParser because this class is creating its urls
@@ -117,7 +117,7 @@ class FACTFinder_Paging implements IteratorAggregate
         }
         return $this->getPageLink($previous_page_number, $link_target);
     }
-    
+
     /**
      * set maximum count of pages to display
      *

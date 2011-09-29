@@ -10,16 +10,16 @@
 class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_RecommendationAdapter
 {
 
-	protected $xmlData = null;
+    protected $xmlData = null;
 
-	/**
+    /**
      * {@inheritdoc}
      */
     protected function init()
     {
-		parent::init();
+        parent::init();
         $this->getDataProvider()->setParam('do', 'getRecommendation');
-		$this->getDataProvider()->setParam('format', 'xml');
+        $this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Recommender.ff');
     }
 
@@ -50,11 +50,11 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
      *
      */
     protected function createRecommendations($id) {
-		$this->getDataProvider()->setParam('id', $id);
-		$xmlResult = $this->getData(); //throws exception on error
+        $this->getDataProvider()->setParam('id', $id);
+        $xmlResult = $this->getData(); //throws exception on error
 
-		$records = array();
-		if (!empty($xmlResult->results)) {
+        $records = array();
+        if (!empty($xmlResult->results)) {
             $count = (int) $xmlResult->results->attributes()->count;
             $encodingHandler = $this->getEncodingHandler();
 
@@ -65,14 +65,14 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
                 $fieldValues = array();
                 foreach($xmlRecord->field AS $xmlField){
                     $fieldName = (string) $xmlField->attributes()->name;
-					$fieldValues[$fieldName] = (string) $xmlField;
+                    $fieldValues[$fieldName] = (string) $xmlField;
                 }
 
                 $record = FF::getInstance('record', $xmlRecord->attributes()->id, 100.0, $xmlRecord->attributes()->nr);
-				$record->setValues($fieldValues);
-				$records[] = $record;
+                $record->setValues($fieldValues);
+                $records[] = $record;
             }
         }
-		return FF::getInstance('result', $records, $count);
-	}
+        return FF::getInstance('result', $records, $count);
+    }
 }

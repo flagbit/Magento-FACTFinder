@@ -24,7 +24,7 @@ class FACTFinder_TagQuery extends FACTFinder_Item
         $this->weight = floatval($weight);
         $this->searchCount = intval($searchCount);
     }
-    
+
     /**
      * @return double value between 0.0 and 1.0 to calculate the importance of the query
      */

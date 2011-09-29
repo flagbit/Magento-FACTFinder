@@ -10,8 +10,7 @@
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
-    protected $previousType;
-    protected $previousParams;
+    protected $previousUrl;
     protected $httpHeader = array();
     protected $curlOptions = array(
                 CURLOPT_RETURNTRANSFER => true,
@@ -24,7 +23,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
      * please insure that this is the full action name, i.e. "Search.ff"
-     * 
+     *
      * @param string type
      */
     public function setType($type)
@@ -32,22 +31,22 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $this->type = $type;
     }
 
-	/**
-	 * set a option for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}.
-	 * The second parameter can be set to false, so the option will not be overwritten if it already exists
-	 *
+    /**
+     * set a option for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}.
+     * The second parameter can be set to false, so the option will not be overwritten if it already exists
+     *
      * @link http://php.net/manual/en/function.curl-setopt.php
      * @param the option key (should be a cURL constant)
-	 * @param the option value
-	 * @param boolean whether to overwrite existing options or not. optional, default = true
+     * @param the option value
+     * @param boolean whether to overwrite existing options or not. optional, default = true
      * @return void
-	 */
-	public function setCurlOption($option, $value, $overwriteExisting = true) {
-		if ($overwriteExisting || !isset($this->curlOptions[$option])) {
-			$this->curlOptions[$option] = $value;
-		}
-	}
-	
+     */
+    public function setCurlOption($option, $value, $overwriteExisting = true) {
+        if ($overwriteExisting || !isset($this->curlOptions[$option])) {
+            $this->curlOptions[$option] = $value;
+        }
+    }
+
     /**
      * Set multiple options for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}
      *
@@ -56,9 +55,9 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      * @return void
      */
     public function setCurlOptions(array $options) {
-		foreach($options AS $option => $value) {
-			$this->setCurlOption($option, $value);
-		}
+        foreach($options AS $option => $value) {
+            $this->setCurlOption($option, $value);
+        }
     }
 
     /**
@@ -70,7 +69,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     public function addHttpHeaderFields(array $httpHeader) {
         $this->httpHeader = array_merge($this->httpHeader, $httpHeader);
     }
-    
+
     /**
      * {@inheritdoc}
      * this implementation returns the data as string, no mather what content type set at the http response
@@ -79,17 +78,13 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getData()
     {
-        if ($this->data == null
-                || $this->type != $this->previousType
-                || count(array_diff_assoc($this->getParams(), $this->previousParams)) > 0
-            ) {
-            $this->previousParams = $this->getParams();
-            $this->previousType = $this->type;
+        if ($this->data == null || $this->getAuthenticationUrl() != $this->previousUrl) {
+            $this->previousUrl = $this->getAuthenticationUrl();
             $this->data = $this->loadResponse();
         }
         return $this->data;
     }
-    
+
     /**
      * this function sends the request to the server and loads the response data
      *
@@ -101,16 +96,17 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         if ($this->type == null) {
             throw new Exception('request type not set! can not do a request without knowing the type.');
         }
+
         $config = $this->getConfig();
         if ($config->getLanguage() != '') {
             $this->addHttpHeaderFields(array('Accept-Language: ' . $config->getLanguage()));
         }
 
         $url = $this->getAuthenticationUrl();
-		if ($this->getConfig()->isDebugEnabled()) {
-			$url .= '&verbose=true';
-			if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
-		}
+        if ($this->getConfig()->isDebugEnabled()) {
+            $url .= '&verbose=true';
+            if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
+        }
         return $this->sendRequest($url);
     }
 
@@ -132,7 +128,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         }
         return $url;
     }
-    
+
     /**
      * send request and return response data
      *
@@ -142,11 +138,11 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function sendRequest($url)
     {
         $cResource = curl_init($url);
-		
-		if (!empty($this->httpHeader)) {
-			$this->curlOptions[CURLOPT_HTTPHEADER] = $this->httpHeader;
-		}
-		
+
+        if (!empty($this->httpHeader)) {
+            $this->curlOptions[CURLOPT_HTTPHEADER] = $this->httpHeader;
+        }
+
         if (sizeof($this->curlOptions) > 0) {
             curl_setopt_array($cResource, $this->curlOptions);
         }
@@ -172,17 +168,17 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function getAdvancedAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
-        
-        if ($config->getChannel() != '') {
+
+        if (empty($params['channel']) && $config->getChannel() != '') {
             $params['channel'] = $config->getChannel();
         }
-            
+
         $ts         = time() . '000'; //millisecondes needed
         $prefix     = $config->getAdvancedAuthPrefix();
         $postfix    = $config->getAdvancedAuthPostfix();
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
         . '&password=' . md5($prefix . $ts . md5($config->getAuthPasswort()) . $postfix);
-            
+
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
@@ -198,15 +194,15 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function getSimpleAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
-        
+
         if ($config->getChannel() != '') {
             $params['channel'] = $config->getChannel();
         }
-        
+
         $ts = time() . '000'; //millisecondes needed but won't be considered
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
             . '&password=' . md5($config->getAuthPasswort());
-            
+
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
@@ -222,14 +218,14 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function getHttpAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
-        
+
         if ($config->getChannel() != '') {
             $params['channel'] = $config->getChannel();
         }
-        
+
         $auth = $config->getAuthUser() . ':' . $config->getAuthPasswort() . '@';
         if ($auth == ':@') $auth = '';
-        
+
         $url = $config->getRequestProtocol() . '://' . $auth
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
@@ -245,16 +241,16 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     public function getNonAuthenticationUrl() {
         $config = $this->getConfig();
         $params = $this->getParams();
-        
+
         if ($config->getChannel() != '') {
             $params['channel'] = $config->getChannel();
         }
-        
+
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
-        
+
         return $url;
     }
 }

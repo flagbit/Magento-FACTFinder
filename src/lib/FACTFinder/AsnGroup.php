@@ -17,10 +17,10 @@ class FACTFinder_AsnGroup extends ArrayIterator
     private $hasPreviewImages = false;
     private $hasSelectedItems = false;
     private $isSliderStyle = false;
-    
+
     /**
      * constructor
-     * 
+     *
      * @param array asn filters to add to this group (default: empty array)
      * @param string name of the group (default: empty string)
      * @param int number of detail links to show (default: 0)
@@ -32,11 +32,11 @@ class FACTFinder_AsnGroup extends ArrayIterator
         $this->detailedLinkCount = intval($detailedLinkCount);
         $this->unit = strval($unit);
         $this->style = $style;
-        
+
         parent::__construct();
         $this->addFilters($asnFilters);
     }
-    
+
     /**
      * return true if group filtering should be done in slider style
      *
@@ -45,21 +45,21 @@ class FACTFinder_AsnGroup extends ArrayIterator
     public function isSliderStyle() {
         return $this->style == 'SLIDER';
     }
-    
+
     /**
      * @return boolean
      */
     public function isColorStyle() {
         return $this->style == 'COLOR';
     }
-    
+
     /**
      * @return boolean
      */
     public function isDefaultStyle() {
         return !$this->isSliderStyle() && !$this->isColorStyle();
     }
-    
+
     /**
      * return boolean true if one or more items has a preview image
      */
@@ -67,7 +67,7 @@ class FACTFinder_AsnGroup extends ArrayIterator
     {
         return $this->hasPreviewImages;
     }
-    
+
     /**
      * return boolean true if one or more items are selected
      */
@@ -75,8 +75,8 @@ class FACTFinder_AsnGroup extends ArrayIterator
     {
         return $this->hasSelectedItems;
     }
-    
-    /** 
+
+    /**
      * add every filter from the given array to this group
      *
      * @param array of filter objects
@@ -88,7 +88,7 @@ class FACTFinder_AsnGroup extends ArrayIterator
             $this->addFilter($filter);
         }
     }
-    
+
     /**
      * @param filter object
      * @return void
@@ -104,21 +104,21 @@ class FACTFinder_AsnGroup extends ArrayIterator
         }
         parent::append($filter);
     }
-    
+
     /**
      * @return string name
      */
     public function getName() {
         return $this->name;
     }
-        
+
     /**
      * @return string unit
      */
     public function getUnit() {
         return $this->unit;
     }
-    
+
     /**
      * @return int
      */

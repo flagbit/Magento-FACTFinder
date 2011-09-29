@@ -18,10 +18,24 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
     private $breadCrumbTrail;
     private $campaigns;
     private $singleWordSearch;
-    
+
+    const NO_QUERY      = 'noQuery';
     const NO_RESULT     = 'noResult';
     const RESULTS_FOUND = 'resultsFound';
     const NOTHING_FOUND = 'nothingFound';
+
+    /**
+     * @throws Exception if there is no query or no catalog-parameter set at the dataprovider
+     */
+    protected function getData()
+    {
+        $params = $this->getDataProvider()->getParams();
+        if (empty($params['query']) && empty($params['seoPath'])
+            && empty($params['catalog']) && $params['catalog'] != 'true') {
+            throw new Exception(self::NO_QUERY);
+        }
+        return $this->getDataProvider()->getData();
+    }
 
     /**
      * returns the search status of the article number search, which is one of this class constants:
@@ -41,7 +55,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * @return boolean isArticleNumberSearch
     **/
     abstract public function isArticleNumberSearch();
-    
+
     /**
      * returns true when search timed out. even if true, nevertheless result records may exist
      *
@@ -87,42 +101,42 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * @return FACTFinder_Paging object
     **/
     abstract protected function createPaging();
-    
+
     /**
      * creates the paging object
      *
      * @return FACTFinder_ProductsPerPageOptions object
     **/
     abstract protected function createProductsPerPageOptions();
-    
+
     /**
      * create breadcrumbtrail
      *
      * @return array of FACTFinder_BreadCrumbItem objects
      */
     abstract protected function createBreadCrumbTrail();
-    
+
     /**
      * create campaigns
      *
      * @return FACTFinder_CampaignIterator
      */
     abstract protected function createCampaigns();
-    
+
     /**
      * create sindle word search
      *
      * @return array of FACTFinder_SuggestQuery objects
      */
     abstract protected function createSingleWordSearch();
-    
+
     /**
      * returns the search params object
      *
      * @return FACTFinder_Parameters result
     **/
     abstract protected function createSearchParams();
-    
+
     /**
      * returns the search params object
      *
@@ -134,7 +148,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
         }
         return $this->searchParams;
     }
-    
+
     /**
      * returns the result object
      *
@@ -182,7 +196,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
         }
         return $this->paging;
     }
-    
+
     /**
      * return products-per-page-options
      *
@@ -194,7 +208,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
         }
         return $this->productsPerPageOptions;
     }
-    
+
     /**
      * returns the breadcrumbtrail
      *
@@ -206,7 +220,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
         }
         return $this->breadCrumbTrail;
     }
-    
+
     /**
      * returns the campaigns
      *
@@ -218,13 +232,13 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
         }
         return $this->campaigns;
     }
-    
+
     /**
-     * if the result was not good and there are more than one queries used for it, this method will return an array of 
+     * if the result was not good and there are more than one queries used for it, this method will return an array of
      * FACTFinder_SuggestQuery objects, for each word a single item. by clicking at a singleWordSearch item, the result
      * will get better
      * please notice, that this feature has to be actived in the FACT-Finder search environment, so this method returns
-	 * an empty array, if there are no singleWordSearch items
+     * an empty array, if there are no singleWordSearch items
      *
      * @return array of FACTFinder_SuggestQuery objects
      */

@@ -11,11 +11,11 @@ class FACTFinder_BreadCrumbItem extends FACTFinder_Item
 {
     const SEARCH_TYPE = 'search';
     const FILTER_TYPE = 'filter';
-    
+
     private $type;
     private $fieldName;
     private $fieldUnit;
-    
+
     /**
      * @param string value
      * @param string url
@@ -33,7 +33,7 @@ class FACTFinder_BreadCrumbItem extends FACTFinder_Item
             $this->fieldUnit = strval($fieldUnit);
         }
     }
-    
+
     /**
      * @return boolean
      */
@@ -41,7 +41,7 @@ class FACTFinder_BreadCrumbItem extends FACTFinder_Item
     {
         return $this->type == self::FILTER_TYPE;
     }
-    
+
     /**
      * @return boolean
      */
@@ -49,7 +49,7 @@ class FACTFinder_BreadCrumbItem extends FACTFinder_Item
     {
         return $this->type == self::SEARCH_TYPE;
     }
-    
+
     /**
      * @return string
      */
@@ -57,7 +57,7 @@ class FACTFinder_BreadCrumbItem extends FACTFinder_Item
     {
         return $this->fieldName;
     }
-    
+
     /**
      * @return string
      */

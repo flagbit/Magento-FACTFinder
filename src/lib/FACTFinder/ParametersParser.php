@@ -1,22 +1,25 @@
 <?php
-
 /**
- * this class handels the parameters conversion between the client url, the links on the webpage and the url for the
- * server. it can be seen as a parameter factory.
+ * contains the FACTFinder_ParametersParser class
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id$
  * @package   FACTFinder\Common
+ */
+
+/**
+ * this class handels the parameters conversion between the client url, the links on the webpage and the url for the
+ * server. it can be seen as a parameter factory.
  */
 class FACTFinder_ParametersParser
 {
     private static $w283751Done = false;
     private $requestParams;
     private $requestTarget;
-    
+
     protected $config;
     protected $encodingHandler;
-    
+
     /**
      * @param FACTFinder_Abstract_IConfiguration config
      * @param FACTFinder_EncodingHandler $encodingHandler
@@ -26,13 +29,18 @@ class FACTFinder_ParametersParser
         $this->config = $config;
         $this->encodingHandler = $encodingHandler;
     }
-    
+
     /**
+     * DEPRECATED, because it also might destroy other components of the system which rely on the standard PHP. For example this
+     * method don't manage array-parameters e.g. "foo[0]=bar" like expected.
+     * This method is not in internal use any more
+     *
      * runs a workaround for php to restore the original parameter names from the url respectively $_SERVER['QUERY_STRING'].
      * this method will only run once and change the global variables $GLOBALS, $_GET and $_REQUEST. parameters which are
      * transformed by php will be left at the $_REQUEST array, the $_GET array will only contain the correct parameters
      *
      * @link http://stackoverflow.com/questions/283751/php-replaces-spaces-with-underlines
+     * @deprecated and not in interal use any more
      * @return void
      */
     final public static function runWorkaround283751()
@@ -50,43 +58,33 @@ class FACTFinder_ParametersParser
             self::$w283751Done = true;
         }
     }
-    
+
     /**
-     * returns the params of the request as string to string array
+     * loads the parameters from request and returns them as string-to-string array
+     * also conciders the mapping and ignore rules
      *
      * @return array of params
      */
     public function getRequestParams()
     {
         if ($this->requestParams == null) {
-            self::runWorkaround283751();
-            $this->requestParams = $this->parseRequest();
+            $originalGetParams = self::parseParamsFromString($_SERVER['QUERY_STRING']);
+            $this->requestParams = $this->encodingHandler->encodeUrlForPage(array_merge($_POST, $originalGetParams)); // dont use $_REQUEST, because it also contains $_COOKIE;
         }
         return $this->requestParams;
     }
-    
-    /**
-     * loads the parameters from request and returns them as array
-     * also conciders the mapping and ignore rules
-     *
-     * @return array parameters
-     */
-    private function parseRequest()
-    {
-        $params = $this->encodingHandler->encodeUrlForPage(array_merge($_POST, $_GET)); // dont use $_REQUEST, because it also contains $_COOKIE; 
-        return $params;
-    }
-    
+
     /**
      * @param array parameters. if null, using the request parameters (default: null)
-     * @return FACTFinder_Parameteres object
+     * @return FACTFinder_Parameters object
      */
     public function getFactfinderParams(array $params = null)
     {
         if ($params == null) {
             $params = $this->getServerRequestParams();
+            $params = $this->encodingHandler->encodeServerUrlForPageUrl($params);
         }
-        
+
         $filters = array();
         $sortings = array();
         foreach($params AS $key => $value) {
@@ -109,34 +107,34 @@ class FACTFinder_ParametersParser
             isset($params['followSearch']) ? $params['followSearch'] : 10000
         );
     }
-    
+
     /**
      * @param String parameters
-     * @return FACTFinder_Parameteres object
+     * @return FACTFinder_Parameters object
      */
     public function getFactfinderParamsFromString($paramString)
     {
         $params = self::parseParamsFromString($paramString);
         return $this->getFactfinderParams($params);
     }
-    
+
     /**
      * converts the factfinder parameters object into a params array
      *
      * @return array params
      */
-    public function parseFactfinderParams(FACTFinder_Parameteres $ffparams)
+    public function parseFactfinderParams(FACTFinder_Parameters $ffparams)
     {
         $filters = array();
         foreach($ffparams->getFilters() AS $key => $value) {
             $filters['filter'.$key] = $value;
         }
-        
+
         $sortings = array();
         foreach($ffparams->getSortings() AS $key => $value) {
             $sortings['sort'.$key] = $value;
         }
-        
+
         return array_merge(
             array(
                 'query' => $ffparams->getQuery(),
@@ -149,10 +147,11 @@ class FACTFinder_ParametersParser
             $sortings
         );
     }
-    
+
     /**
      * extracts a paramenter array with name=>value pairs from an url string.
      * also only url encoding is done but no further encodings.
+     * this method does not handle array variables such like "foo[0]=bar"
      *
      * @param string url
      * @return array of parameter variables
@@ -172,12 +171,12 @@ class FACTFinder_ParametersParser
 
             $a_pair[0] = urldecode($a_pair[0]);
             $a_pair[1] = urldecode($a_pair[1]);
-            
+
             $paramsArray[$a_pair[0]] = $a_pair[1];
         }
         return $paramsArray;
     }
-    
+
     /**
      * the FACT-Finder result is UTF-8 encoded, so this method parses a url string from the request and also does
      * utf-decoding if needed
@@ -191,7 +190,7 @@ class FACTFinder_ParametersParser
         $params = $this->encodingHandler->encodeServerUrlForPageUrl($params);
         return $params;
     }
-    
+
     /**
      * get a single value from the request or the default value, if this value does not exist
      *
@@ -204,7 +203,7 @@ class FACTFinder_ParametersParser
         $params = $this->getRequestParams();
         return isset($params[$name]) ? trim($params[$name]) : $defaultValue;
     }
-    
+
     /**
      * returns the params array but with the server mappings and removed ignored server parameters . if params array is
      * not set, the request params will be used
@@ -216,15 +215,15 @@ class FACTFinder_ParametersParser
         if ($params == null) {
             $params = $this->getRequestParams();
         }
-        
+
         $params = $this->doServerMappings($params);
         $params = $this->removeIgnoredParams($params, $this->config->getIgnoredServerParams());
         $params = $this->addRequiredParams($params, $this->config->getRequiredServerParams());
         $params = $this->encodingHandler->encodeForServerUrl($params);
-        
+
         return $params;
     }
-    
+
     /**
      * creates the link-url for the webpage (no html code!). see {@link http://de3.php.net/manual/en/function.array-merge.php array_merge}
      * and {@link http://de3.php.net/manual/en/function.http-build-query.php http_build_query} to know, how the two arrays
@@ -241,16 +240,16 @@ class FACTFinder_ParametersParser
         if ($target == null) {
             $target = $this->getRequestTarget();
         }
-        
+
         $linkParams = array_merge($params, $addParams);
-        
+
         $linkParams = $this->doPageMappings($linkParams);
         $linkParams = $this->removeIgnoredParams($linkParams, $this->config->getIgnoredPageParams());
         $linkParams = $this->addRequiredParams($linkParams, $this->config->getRequiredPageParams());
-        
+
         return $target.'?'.http_build_query($linkParams, '', '&');
     }
-    
+
     /**
      * remove the ignored params from the params array if set
      *
@@ -269,7 +268,7 @@ class FACTFinder_ParametersParser
         }
         return $returnParams;
     }
-    
+
     /**
      * adds the params from the required params map to the params array if not already set
      *
@@ -287,7 +286,7 @@ class FACTFinder_ParametersParser
         }
         return $params;
     }
-    
+
     /**
      * get target of the current request url, from "$_SERVER['REQUEST_URI']".
      *
@@ -296,24 +295,24 @@ class FACTFinder_ParametersParser
     protected function getRequestTarget()
     {
         if ($this->requestTarget == null) {
-			// workaround for some servers (IIS) which do not provide '$_SERVER['REQUEST_URI']'
-			if (!isset($_SERVER['REQUEST_URI'])) {
-				$arr = explode("/", $_SERVER['PHP_SELF']);
-				$_SERVER['REQUEST_URI'] = "/" . $arr[count($arr)-1];
-				if (isset($_SERVER['argv'][0]) && $_SERVER['argv'][0]) {
-					$_SERVER['REQUEST_URI'] .= "?" . $_SERVER['argv'][0];
-				}
-			}
+            // workaround for some servers (IIS) which do not provide '$_SERVER['REQUEST_URI']'
+            if (!isset($_SERVER['REQUEST_URI'])) {
+                $arr = explode("/", $_SERVER['PHP_SELF']);
+                $_SERVER['REQUEST_URI'] = "/" . $arr[count($arr)-1];
+                if (isset($_SERVER['argv'][0]) && $_SERVER['argv'][0]) {
+                    $_SERVER['REQUEST_URI'] .= "?" . $_SERVER['argv'][0];
+                }
+            }
 
-			if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
-				$this->requestTarget = $_SERVER['REQUEST_URI'];
-			} else {
-				$this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
-			}
+            if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
+                $this->requestTarget = $_SERVER['REQUEST_URI'];
+            } else {
+                $this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+            }
         }
         return $this->requestTarget;
     }
-    
+
     /**
      * do mapping for a params array with the page mapping settings from the config. so this method expects server params
      * and return params for the page
@@ -325,7 +324,7 @@ class FACTFinder_ParametersParser
     {
         return $this->doMapping($params, $this->config->getPageMappings());
     }
-    
+
     /**
      * do mapping for a params array with the server mapping settings from the config. so this method expects page params
      * and return params for the server
@@ -334,10 +333,10 @@ class FACTFinder_ParametersParser
      * @return array mapped parameters
      */
     private function doServerMappings(array $params)
-	{
+    {
         return $this->doMapping($params, $this->config->getServerMappings());
     }
-    
+
     /**
      * maps the keys in the array using the rules. if a "from" parameter does not exist, but the according "to" parameter
      * exist, the "from" will be create - so this mapping normaly works for both directions

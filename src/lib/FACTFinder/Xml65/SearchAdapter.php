@@ -21,7 +21,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         $this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Search.ff');
     }
-    
+
     /**
      * try to parse data as xml
      *
@@ -133,7 +133,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         }
         return $this->status;
     }
-    
+
     /**
      * {@inheritdoc}
      **/
@@ -173,7 +173,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                 // get current position
                 $position = $positionOffset + $positionCounter;
                 $positionCounter++;
-                
+
                 // fetch record values
                 $fieldValues = array();
                 foreach($currentRecord->field AS $current_field){
@@ -241,7 +241,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                         $params = $this->getParamsParser()->parseParamsFromResultString(trim($xmlFilter->searchParams));
                         end($params);
                         $filterLink .= '&'.key($params).'=';
-                        
+
                         $filter = FF::getInstance('asnSliderFilter',
                             $filterLink,
                             strval($xmlFilter->attributes()->absoluteMin),
@@ -320,7 +320,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         }
         return $paging;
     }
-    
+
     /**
      * {@inheritdoc}
      *
@@ -334,7 +334,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         if (!empty($xmlResult->productsPerPageOptions)) {
             $defaultOption = intval(trim($xmlResult->productsPerPageOptions->attributes()->default));
             $selectedOption = intval(trim($xmlResult->productsPerPageOptions->attributes()->selected));
-            
+
             $options = array();
             foreach($xmlResult->productsPerPageOptions->option AS $option) {
                 $value = intval(trim($option->attributes()->value));
@@ -367,7 +367,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                 $link = $this->getParamsParser()->createPageLink(
                     $this->getParamsParser()->parseParamsFromResultString(trim($item->searchParams))
                 );
-                
+
                 $fieldName = '';
                 $fieldUnit = '';
                 $breadCrumbType = $encodingHandler->encodeServerContentForPage(strval($item->attributes()->type));
@@ -384,7 +384,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                     $fieldName,
                     $fieldUnit
                 );
-                
+
                 $breadCrumbTrail[] = $breadCrumb;
                 $i++;
             }
@@ -411,7 +411,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                 if (!empty($xmlCampaign->target->destination)) {
                     $redirectUrl = $encodingHandler->encodeServerUrlForPageUrl(strval($xmlCampaign->target->destination));
                 }
-                                
+
                 $campaign = FF::getInstance('campaign',
                     $encodingHandler->encodeServerContentForPage(strval($xmlCampaign->attributes()->name)),
                     $encodingHandler->encodeServerContentForPage(strval($xmlCampaign->attributes()->category)),
@@ -462,8 +462,9 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         $xmlResult = $this->getData();
         $singleWordSearch = array();
         if (isset($xmlResult->singleWordSearch)) {
+            $encodingHandler = $this->getEncodingHandler();
             foreach ($xmlResult->singleWordSearch->item AS $item) {
-                $query = strval($item->attributes()->word);
+                $query = $encodingHandler->encodeServerContentForPage(strval($item->attributes()->word));
                 $singleWordSearch[] = FF::getInstance('suggestQuery',
                     $query,
                     $this->getParamsParser()->createPageLink(array('query' => $query)),

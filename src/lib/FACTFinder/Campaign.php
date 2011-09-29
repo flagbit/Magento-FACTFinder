@@ -29,31 +29,31 @@ class FACTFinder_Campaign
         $this->addPushedProducts($pushedProducts);
         $this->addFeedback($feedback);
     }
-    
+
     /**
      * @return string name
      */
     public function getName() {
         return $this->name;
     }
-    
+
     /**
      * @return string url
      */
     public function getCategory(){
         return $this->category;
     }
-    
+
     /**
      * true if a redirect link was set
-     * 
+     *
      * @return boolean
      */
     public function hasRedirect()
     {
         return !empty($this->redirectUrl);
     }
-    
+
     /**
      * @return string url
      */
@@ -72,23 +72,23 @@ class FACTFinder_Campaign
             $this->pushedProducts[] = $product;
         }
     }
-    
+
     /**
      * true if pushed products exist
-     * 
+     *
      * @return boolean
      */
     public function hasPushedProducts() {
         return sizeof($this->pushedProducts) > 0;
     }
-    
+
     /**
      * @return array of FACTFinder_Record objects
      */
     public function getPushedProducts() {
         return $this->pushedProducts;
     }
-    
+
     /**
      * set the feedback strings. if a feedback with the same key (number) exist, it will be overwritten
      *
@@ -100,12 +100,12 @@ class FACTFinder_Campaign
             $this->feedback[$nr] = trim($text);
         }
     }
-    
+
     /**
      * returns true if feedback exists. if no number is given as argument, this methods checks, whether there is any
      * feedback text available. if a number is given, then this method only returns true, if there is a feedback text
      * for this number
-     * 
+     *
      * @param int number of feedback (default: null)
      * @return boolean
      */
@@ -115,13 +115,13 @@ class FACTFinder_Campaign
         } else {
             $hasFeedback = sizeof($this->feedback) > 0 && implode('', $this->feedback) != '';
         }
-        return $hasFeedback;        
+        return $hasFeedback;
     }
-    
+
     /**
      * when number is given, only the wished feedback text will be returned or an empty string, if this text does not exist.
      * if no number is set, the complete feedback array will be returned
-     * 
+     *
      * @param int $nr
      * @return array|string
      */

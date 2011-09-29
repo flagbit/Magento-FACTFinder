@@ -81,15 +81,4 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 			$this->_getStoreId()
 		);		
 	}
-
-    /**
-     * Initialize Order Export 
-     */	
-	public function orderAction()
-	{	
-		$exportModel = Mage::getModel('factfinder/export_order');
-		$exportModel->doExport(
-			$this->_getStoreId()
-		);
-	}
 }
