@@ -35,41 +35,41 @@
             <factfinder>
                 <class>Flagbit_FactFinder_Block</class>
             </factfinder>
-			<catalogsearch>
-				<rewrite>
-					<layer>Flagbit_FactFinder_Block_Layer</layer>
-				</rewrite>
-			</catalogsearch>
-			<catalog>
-				<rewrite>
-					<layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
+            <catalogsearch>
+                <rewrite>
+                    <layer>Flagbit_FactFinder_Block_Layer</layer>
+                </rewrite>
+            </catalogsearch>
+            <catalog>
+                <rewrite>
+                    <layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
                     <product_list_upsell>Flagbit_FactFinder_Block_Product_List_Upsell</product_list_upsell>
                     <product_list_crosssell>Flagbit_FactFinder_Block_Product_List_Crosssell</product_list_crosssell>
-				</rewrite>
-			</catalog>
+                </rewrite>
+            </catalog>
             <checkout>
                 <rewrite>
                     <cart_crosssell>Flagbit_FactFinder_Block_Cart_Crosssell</cart_crosssell>
                 </rewrite>
             </checkout>
-			<enterprise_search>
-				<rewrite>
-					<catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
-					<catalog_layer_view>Flagbit_FactFinder_Block_Layer</catalog_layer_view>
-				</rewrite>
-			</enterprise_search>
-			<xmlconnect>
-				<rewrite>
-					<catalog_search>Flagbit_FactFinder_Block_XmlConnect_Catalog_Search</catalog_search>
-					<catalog_search_suggest>Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest</catalog_search_suggest>
-					<catalog_product_list>Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List</catalog_product_list>					
-				</rewrite>
-			</xmlconnect>
+            <enterprise_search>
+                <rewrite>
+                    <catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
+                    <catalog_layer_view>Flagbit_FactFinder_Block_Layer</catalog_layer_view>
+                </rewrite>
+            </enterprise_search>
+            <xmlconnect>
+                <rewrite>
+                    <catalog_search>Flagbit_FactFinder_Block_XmlConnect_Catalog_Search</catalog_search>
+                    <catalog_search_suggest>Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest</catalog_search_suggest>
+                    <catalog_product_list>Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List</catalog_product_list>                    
+                </rewrite>
+            </xmlconnect>
         </blocks>     
         <models>
             <factfinder>
                 <class>Flagbit_FactFinder_Model</class>
-				<resourceModel>factfinder_mysql4</resourceModel>
+                <resourceModel>factfinder_mysql4</resourceModel>
             </factfinder>
             <factfinder_mysql4>
                 <class>Flagbit_FactFinder_Model_Mysql4</class>
@@ -77,18 +77,18 @@
                     <scic_queue><table>flagbit_factfinder_scic_queue</table></scic_queue>
                 </entities>
             </factfinder_mysql4>
-			<catalogsearch>
-				<rewrite>
-					<layer>Flagbit_FactFinder_Model_Layer</layer>
-					<layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
-				</rewrite>
-			</catalogsearch>
-			<catalog>
-				<rewrite>
-					<layer>Flagbit_FactFinder_Model_Layer</layer>
-					<layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
-				</rewrite>
-			</catalog>
+            <catalogsearch>
+                <rewrite>
+                    <layer>Flagbit_FactFinder_Model_Layer</layer>
+                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
+                </rewrite>
+            </catalogsearch>
+            <catalog>
+                <rewrite>
+                    <layer>Flagbit_FactFinder_Model_Layer</layer>
+                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
+                </rewrite>
+            </catalog>
         </models>
         <resources>
             <factfinder_setup>
@@ -116,7 +116,7 @@
             <updates>
                 <factfinder>
                     <file>factfinder.xml</file>
-                </factfinder>			
+                </factfinder>            
             </updates>
         </layout>
         <routers>
@@ -146,6 +146,15 @@
                 </observers>
             </sales_order_place_after>
         </events>
+        <translate>
+            <modules>
+                <Flagbit_FactFinder>
+                    <files>
+                        <default>Flagbit_FactFinder.csv</default>
+                    </files>
+                </Flagbit_FactFinder>
+            </modules>
+        </translate>
     </frontend>        
     <adminhtml>
         <acl>
@@ -204,22 +213,22 @@
         </jobs>
     </crontab>
     <default>
-    	<catalog>
-    		<search>
-    			<engine>factfinder/search_engine</engine>
-			</search>
-		</catalog>
-		<factfinder>
-			<version>2.3.15</version>
-			<revision>$Rev: 25896 $</revision>
-	        <debug>true</debug>
-	
-	        <!-- search settings: WARNING: dont change settings here, please use the Magento backoffice ... 
-	            if you still have to change something here, dont forget to clear the configuration cache -->
-	        <search>
-	            <address>magento.fact-finder.de</address>
-	            <port>8080</port>
-	            <protocol>http</protocol> <!-- possible values: http, https -->
+        <catalog>
+            <search>
+                <engine>factfinder/search_engine</engine>
+            </search>
+        </catalog>
+        <factfinder>
+            <version>2.3.15</version>
+            <revision>$Rev: 25896 $</revision>
+            <debug>true</debug>
+    
+            <!-- search settings: WARNING: dont change settings here, please use the Magento backoffice ... 
+                if you still have to change something here, dont forget to clear the configuration cache -->
+            <search>
+                <address>magento.fact-finder.de</address>
+                <port>8080</port>
+                <protocol>http</protocol> <!-- possible values: http, https -->
 
                 <auth_user>client</auth_user>
                 <auth_password>magento</auth_password>
@@ -227,45 +236,45 @@
                 <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
                 <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
 
-	            <context>MagentoSearch65</context>
-	            <channel></channel>
-	            <language></language>
-	        </search>
-			<export>
-				<urls>0</urls>
-			</export>
-			<config>
-				<identifier>entity_id</identifier>
-				<navigation>0</navigation>
-			</config>
-	
-	        <!-- parameter settings -->
-	        <params>
-	            <!-- parameter settings for the server -->
-	            <server>
-	                <mapping from="q" to="query" />
-	                <mapping from="p" to="page" />
-	            </server>
-	
-	            <!-- parameter settings for the client -->
-	            <client>
-	                <ignore name="xml" />
-	                <ignore name="format" />
-	                <ignore name="x" />
-	                <ignore name="y" />
-	                <ignore name="channel" />
-	                <ignore name="productsPerPage" />
-	                <mapping from="query" to="q" />
-	                <mapping from="page" to="p" />
-	            </client>
-	        </params>
-	
-	        <!-- encoding settings -->
-	        <encoding>
-	            <pageContent>UTF-8</pageContent>
-	            <serverURI>UTF-8</serverURI>
-	            <pageURI>UTF-8</pageURI>
-	        </encoding>
+                <context>MagentoSearch65</context>
+                <channel></channel>
+                <language></language>
+            </search>
+            <export>
+                <urls>0</urls>
+            </export>
+            <config>
+                <identifier>entity_id</identifier>
+                <navigation>0</navigation>
+            </config>
+    
+            <!-- parameter settings -->
+            <params>
+                <!-- parameter settings for the server -->
+                <server>
+                    <mapping from="q" to="query" />
+                    <mapping from="p" to="page" />
+                </server>
+    
+                <!-- parameter settings for the client -->
+                <client>
+                    <ignore name="xml" />
+                    <ignore name="format" />
+                    <ignore name="x" />
+                    <ignore name="y" />
+                    <ignore name="channel" />
+                    <ignore name="productsPerPage" />
+                    <mapping from="query" to="q" />
+                    <mapping from="page" to="p" />
+                </client>
+            </params>
+    
+            <!-- encoding settings -->
+            <encoding>
+                <pageContent>UTF-8</pageContent>
+                <serverURI>UTF-8</serverURI>
+                <pageURI>UTF-8</pageURI>
+            </encoding>
         </factfinder>
     </default>    
 </config>
