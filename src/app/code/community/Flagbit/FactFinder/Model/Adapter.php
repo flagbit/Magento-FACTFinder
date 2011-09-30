@@ -248,7 +248,7 @@ class Flagbit_FactFinder_Model_Adapter
     public function getRedirect()
     {
         $url = null;
-         $campaigns = $this->_getSearchAdapter()->getCampaigns();
+        $campaigns = $this->getCampaigns();
 
         if (!empty($campaigns) && $campaigns->hasRedirect()) {
             $url = $campaigns->getRedirectUrl();
@@ -261,7 +261,14 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getCampaigns()
     {
-        return $this->_getSearchAdapter()->getCampaigns();
+        $campaigns = null;
+        try {
+            $campaigns = $this->_getSearchAdapter()->getCampaigns();
+        }
+        catch (Exception $e) {
+            Mage::logException($e);
+        }
+        return $campaigns;
     }
 
     /**
@@ -366,7 +373,15 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSearchResultCount()
     {
-        return $this->_getSearchAdapter()->getResult()->getFoundRecordsCount();
+        $count = 0;
+        try {
+            $count = $this->_getSearchAdapter()->getResult()->getFoundRecordsCount();
+        }
+        catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        return $count;
     }
 
     /**
@@ -379,7 +394,15 @@ class Flagbit_FactFinder_Model_Adapter
     {
         if($this->_afterSearchNavigation == null){
             $this->_afterSearchNavigation = array();
-            $result = $this->_getSearchAdapter()->getAsn();
+
+            $result = array();
+            try {
+                $result = $this->_getSearchAdapter()->getAsn();
+            }
+            catch (Exception $e) {
+                Mage::logException($e);
+            }
+
 
             if ($result instanceof FACTFinder_Asn
                 && count($result)){
@@ -581,6 +604,7 @@ class Flagbit_FactFinder_Model_Adapter
         if($this->_searchResultProductIds == null){
             try {
                 $result = $this->_getSearchAdapter()->getResult();
+
                 $this->_searchResultProductIds = array();
                 if($result instanceof FACTFinder_Result){
                     foreach ($result AS $record){

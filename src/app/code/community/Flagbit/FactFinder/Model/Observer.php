@@ -82,7 +82,6 @@ class Flagbit_FactFinder_Model_Observer
                 continue;
             }
 
-
             try {
                 Mage::getModel('factfinder/scic_queue')
                     ->setProductId($item->getData($idFieldName))
