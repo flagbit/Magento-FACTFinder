@@ -19,6 +19,7 @@
 "http", "http"
 "Language", "Sprache"
 "Name of the FACT-Finder application", "Name der FACT-Finder-Applikation"
+"No", "Nein"
 "Password", "Passwort"
 "Product ID (default)", "Produkt-ID (Standard)"
 "Product Identifier", "Produkt Identifizierung"
@@ -45,4 +46,5 @@
 "Use Proxy for Suggest", "Proxy für Autovervollständigung nutzen"
 "User Name", "Benutzername"
 "User name for authentication", "Benutzername für Authentifizierung"
+"Yes", "Ja"
 "WARNING: was not able to connect to FACT-Finder.", "WARNUNG: Konnte nicht mit dem FACT-Finder-Server verbinden."

@@ -231,7 +231,7 @@
                 <protocol>http</protocol> <!-- possible values: http, https -->
 
                 <auth_user>client</auth_user>
-                <auth_password>magento</auth_password>
+                <auth_password></auth_password>
                 <auth_type>advanced</auth_type> <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
                 <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
                 <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
@@ -242,10 +242,16 @@
             </search>
             <export>
                 <urls>0</urls>
+                <track_carts>1</track_carts>
+                <track_checkout>1</track_checkout>
             </export>
             <config>
                 <identifier>entity_id</identifier>
+                <proxy>0</proxy>
+                <debug>0</debug>
                 <navigation>0</navigation>
+                <upsell>0</upsell>
+                <crosssell>0</crosssell>
             </config>
     
             <!-- parameter settings -->
