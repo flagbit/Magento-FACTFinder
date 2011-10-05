@@ -93,6 +93,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 		if ($exportImageAndDeeplink) {
 			$header[] = 'image';
 			$header[] = 'deeplink';
+			$imageHelper = Mage::helper('catalog/image');
 		}
     	
 		foreach($this->_getSearchableAttributes(null, 'system') as $attribute){
@@ -171,9 +172,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 				if ($exportImageAndDeeplink) {
 					$product = Mage::getModel("catalog/product");
 					$product->load($productData['entity_id']);
-					$helper = Mage::helper('catalog/image');
 					
-					$productIndex[] = $helper->init($product, 'image')->resize(120)->__toString();
+					$productIndex[] = $imageHelper->init($product, 'image')->resize(120)->__toString();
 					$productIndex[] = $product->getProductUrl();
 				}
 				
