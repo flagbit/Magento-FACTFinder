@@ -14,10 +14,10 @@
   <active>yes</active>
  </lead>
  <date>2011-10-06</date>
- <time>17:40:14</time>
+ <time>17:52:16</time>
  <version>
-  <release>3.2.0</release>
-  <api>3.2.0</api>
+  <release>3.2.1</release>
+  <api>3.2.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -31,6 +31,7 @@
   <dir name="/">
    <dir name="\">
     <file md5sum="1541c633280be62f74ba1da7aeb6f677" name="factfinder.xml" role="mageetc" />
+    <file md5sum="7386544870c854120cb702d579c06976" name="Flagbit_Factfinder-3.2.0.tgz" role="mage" />
    </dir> <!-- /\ -->
    <dir name="\adminhtml\default\default\layout">
     <file md5sum="0389b14e8f5f3a491e1d21ff06fda964" name="factfinder.xml" role="magedesign" />
@@ -130,7 +131,7 @@
     <file md5sum="77e20bb08a96dd9e29a39879f307c934" name="Suggest.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\XmlConnect\Catalog\Search -->
    <dir name="\Flagbit\FactFinder\controllers">
-    <file md5sum="d3c6fb97df40f2deffda6801b3619742" name="ExportController.php" role="magecommunity" />
+    <file md5sum="2e088588b371dd66320ef5be578f7f74" name="ExportController.php" role="magecommunity" />
     <file md5sum="77feffcda776772764a81924254529af" name="ProxyController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers -->
    <dir name="\Flagbit\FactFinder\controllers\Adminhtml\Factfinder">
@@ -257,6 +258,21 @@
    <version>
     <release>3.2.0</release>
     <api>3.2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-10-06</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.1</release>
+    <api>3.2.1</api>
    </version>
    <stability>
     <release>stable</release>
