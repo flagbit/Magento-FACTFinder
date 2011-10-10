@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2011-10-06</date>
- <time>17:52:16</time>
+ <date>2011-10-10</date>
+ <time>14:56:53</time>
  <version>
-  <release>3.2.1</release>
-  <api>3.2.1</api>
+  <release>3.2.2</release>
+  <api>3.2.2</api>
  </version>
  <stability>
   <release>stable</release>
@@ -31,7 +31,6 @@
   <dir name="/">
    <dir name="\">
     <file md5sum="1541c633280be62f74ba1da7aeb6f677" name="factfinder.xml" role="mageetc" />
-    <file md5sum="7386544870c854120cb702d579c06976" name="Flagbit_Factfinder-3.2.0.tgz" role="mage" />
    </dir> <!-- /\ -->
    <dir name="\adminhtml\default\default\layout">
     <file md5sum="0389b14e8f5f3a491e1d21ff06fda964" name="factfinder.xml" role="magedesign" />
@@ -138,7 +137,7 @@
     <file md5sum="7369f2fff764a51328e1c712d122d68d" name="CockpitController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\documentation">
-    <file md5sum="062829e4d9e880c2c93503f418f4f450" name="Installation_FACT-Finder_Magento.pdf" role="magecommunity" />
+    <file md5sum="560aade6f1618fa9bdf0d844b645d68c" name="Installation_FACT-Finder_Magento.pdf" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="3d262871a3a3afe71d7218a0ba43fb50" name="adminhtml.xml" role="magecommunity" />
@@ -279,6 +278,21 @@
     <api>stable</api>
    </stability>
    <date>2011-10-06</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.2</release>
+    <api>3.2.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-10-10</date>
    <license>GPL</license>
    <notes>
 - initial Release
