@@ -233,8 +233,17 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 				continue;
 			}			
 			$attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-			if (strval($attributeValue) != "") {
-				$returnArray[] = $attribute->getAttributeCode().'='.$attributeValue;
+			$attributeValues = array();
+			if (strpos($attributeValue, '|') !== false) {
+				$attributeValues = explode('|', $attributeValue);
+			} else {
+				$attributeValues[] = $attributeValue;
+			}
+			
+			foreach($attributeValues AS $value) {
+				if (strval($value) != "") {
+					$returnArray[] = $attribute->getAttributeCode().'='.$value;
+				}
 			}
 		}    	
     	return implode('|', $returnArray);    	  	
