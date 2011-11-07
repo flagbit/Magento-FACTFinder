@@ -47,7 +47,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     protected function _addCsvRow($data)
     {       	
     	foreach($data as &$item){
-    		$item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), strip_tags($item));
+    		$item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), trim( strip_tags($item), ';') );
     	}
 
     	echo '"'.implode('";"', $data).'"'."\n"; 
