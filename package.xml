@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2011-10-10</date>
- <time>14:56:53</time>
+ <date>2011-11-17</date>
+ <time>17:01:29</time>
  <version>
-  <release>3.2.2</release>
-  <api>3.2.2</api>
+  <release>3.2.4</release>
+  <api>3.2.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -31,6 +31,7 @@
   <dir name="/">
    <dir name="\">
     <file md5sum="1541c633280be62f74ba1da7aeb6f677" name="factfinder.xml" role="mageetc" />
+    <file md5sum="38390365db51e7f38a41b61164952097" name="Flagbit_Factfinder-3.2.2.tgz" role="mage" />
    </dir> <!-- /\ -->
    <dir name="\adminhtml\default\default\layout">
     <file md5sum="0389b14e8f5f3a491e1d21ff06fda964" name="factfinder.xml" role="magedesign" />
@@ -131,13 +132,14 @@
    </dir> <!-- /\Flagbit\FactFinder\Block\XmlConnect\Catalog\Search -->
    <dir name="\Flagbit\FactFinder\controllers">
     <file md5sum="2e088588b371dd66320ef5be578f7f74" name="ExportController.php" role="magecommunity" />
-    <file md5sum="77feffcda776772764a81924254529af" name="ProxyController.php" role="magecommunity" />
+    <file md5sum="f712ee5092feed5510ea55bb370ce618" name="ProxyController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers -->
    <dir name="\Flagbit\FactFinder\controllers\Adminhtml\Factfinder">
     <file md5sum="7369f2fff764a51328e1c712d122d68d" name="CockpitController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\documentation">
-    <file md5sum="560aade6f1618fa9bdf0d844b645d68c" name="Installation_FACT-Finder_Magento.pdf" role="magecommunity" />
+    <file md5sum="b4711171c625caaa8996a6a09e0eaaae" name="Installation_FACT-Finder_Magento_de.pdf" role="magecommunity" />
+    <file md5sum="d4bef19418ee33a223fbda2d45cca686" name="Installation_FACT-Finder_Magento_en.pdf" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="3d262871a3a3afe71d7218a0ba43fb50" name="adminhtml.xml" role="magecommunity" />
@@ -158,7 +160,7 @@
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="7bed26b43b252b65c1188f0004f50053" name="Price.php" role="magecommunity" />
-    <file md5sum="a93ec8f90144e3c27403a0a93f6e1707" name="Product.php" role="magecommunity" />
+    <file md5sum="c08130321b10c48b361dddee85a3040f" name="Product.php" role="magecommunity" />
     <file md5sum="a07efecd3300c1367125f7e303b159df" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
@@ -292,7 +294,37 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2011-10-10</date>
+   <date>2011-11-02</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.3</release>
+    <api>3.2.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-11-02</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.4</release>
+    <api>3.2.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-11-17</date>
    <license>GPL</license>
    <notes>
 - initial Release
