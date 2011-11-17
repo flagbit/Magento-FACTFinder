@@ -37,7 +37,8 @@ class Flagbit_FactFinder_ProxyController extends Mage_Core_Controller_Front_Acti
      * suggest Action
      */	
 	public function suggestAction()
-	{	
+	{
+		$this->getResponse()->setHeader("Content-Type:", "text/javascript;charset=utf-8", true);
 		$this->getResponse()->setBody(
 			Mage::getModel('factfinder/processor')->handleInAppRequest($this->getFullActionName())
 		);					
