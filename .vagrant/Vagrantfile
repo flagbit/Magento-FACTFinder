@@ -10,6 +10,6 @@ Vagrant::Config.run do |config|
     
     config.vm.customize do |vm|
         vm.memory_size = 1024
-        vm.name = "Vagrant Kangaroos"
+        vm.name = "Vagrant FactFinder"
     end
 end
