@@ -67,6 +67,11 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
      */
     protected function _createItem($label, $value, $count=0)
     {
+        
+        if (!Mage::helper('factfinder/search')->getIsEnabled()) {
+            return parent::_createItem($label, $value, $count);
+        }
+        
         return Mage::getModel('factfinder/layer_filter_item')
             ->setFilter($this)
             ->setLabel($label)
