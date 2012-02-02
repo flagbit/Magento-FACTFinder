@@ -80,7 +80,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
 	
 	        $items = array();
 	        foreach ($rows as $v) {        	
-				$items[$v[$idFieldName]] = $v;
+				$items[trim($v[$idFieldName])] = $v;
 	        }
 
 	        foreach ($productIds as $productId => $additionalData){
