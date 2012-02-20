@@ -76,6 +76,9 @@ class Flagbit_FactFinder_Model_Observer
 
         $searchHelper = Mage::helper('factfinder/search');
         $idFieldName = $searchHelper->getIdFieldName();
+		if ($idFieldName == 'entity_id') {
+			$idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
+		}
 
         foreach ($order->getAllItems() as $item) {
             if ($item->getParentItem() != null) {

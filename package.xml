@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2011-11-17</date>
- <time>17:01:29</time>
+ <date>2012-02-20</date>
+ <time>17:32:07</time>
  <version>
-  <release>3.2.4</release>
-  <api>3.2.4</api>
+  <release>3.2.5</release>
+  <api>3.2.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -31,7 +31,6 @@
   <dir name="/">
    <dir name="\">
     <file md5sum="1541c633280be62f74ba1da7aeb6f677" name="factfinder.xml" role="mageetc" />
-    <file md5sum="38390365db51e7f38a41b61164952097" name="Flagbit_Factfinder-3.2.2.tgz" role="mage" />
    </dir> <!-- /\ -->
    <dir name="\adminhtml\default\default\layout">
     <file md5sum="0389b14e8f5f3a491e1d21ff06fda964" name="factfinder.xml" role="magedesign" />
@@ -155,7 +154,7 @@
    <dir name="\Flagbit\FactFinder\Model">
     <file md5sum="34cbef991e7adcb6958ff672949e2b03" name="Adapter.php" role="magecommunity" />
     <file md5sum="ceb2353cb681a6f6b5bd72c3528219e4" name="Layer.php" role="magecommunity" />
-    <file md5sum="3e14deee3a1f3811949baf98d80ca2c5" name="Observer.php" role="magecommunity" />
+    <file md5sum="7320258c8a72031be35180a5d67d9cf9" name="Observer.php" role="magecommunity" />
     <file md5sum="cbff8be3dd51d026dc98aa2535fb2549" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
@@ -167,7 +166,7 @@
     <file md5sum="0a0505e719ca55320da35c7510b82d3a" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer -->
    <dir name="\Flagbit\FactFinder\Model\Layer\Filter">
-    <file md5sum="68041b483c63ddab6317e256c44ae99e" name="Attribute.php" role="magecommunity" />
+    <file md5sum="55a2031b543d28127760d1aea21e88c2" name="Attribute.php" role="magecommunity" />
     <file md5sum="1bb443a7546be810947b89d79f4d0205" name="Item.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer\Filter -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Campaign\Pushedproducts">
@@ -186,7 +185,7 @@
     <file md5sum="5f6b0b6a50838929065ebd941cedce42" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Scic\Queue -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Search">
-    <file md5sum="c2177b793c2707ca0ad29162cf2d9b54" name="Collection.php" role="magecommunity" />
+    <file md5sum="332c859176f93a7f1553e839d77d2b5e" name="Collection.php" role="magecommunity" />
     <file md5sum="0d16d096efb818ca9ec1d6047d293d20" name="Engine.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Search -->
    <dir name="\Flagbit\FactFinder\Model\Scic">
@@ -325,6 +324,21 @@
     <api>stable</api>
    </stability>
    <date>2011-11-17</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.5</release>
+    <api>3.2.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-02-20</date>
    <license>GPL</license>
    <notes>
 - initial Release
