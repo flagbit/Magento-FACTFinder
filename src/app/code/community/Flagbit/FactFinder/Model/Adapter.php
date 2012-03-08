@@ -18,7 +18,7 @@ require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id$
+ * @version   $Id: Adapter.php 906 2011-09-30 14:10:05Z tuerk $
  */
 class Flagbit_FactFinder_Model_Adapter
 {
@@ -142,12 +142,13 @@ class Flagbit_FactFinder_Model_Adapter
                     $value = base64_decode($value);
                     if(strpos($value, '|')){
                         $param = explode('|', $value);
-                        if($key == 'category'){
+                        if($key == 'Category'){
                             $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
+                            foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                             $filterkey = '';
                             foreach($categories as $category){
                                 $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                $filterkey .= '/'.$category;
+                                $filterkey .= '/'.str_replace('/', '%2F', $category);
                             }
                         }else{
                             $this->_setParam('filter'.$param[0], $param[1]);
@@ -160,9 +161,9 @@ class Flagbit_FactFinder_Model_Adapter
             case "catalog":
                 $_query = '*';
                 Mage::app()->getRequest()->setParam(
-                    'category',
-                    Mage::app()->getRequest()->getParam('category')
-                        ? Mage::app()->getRequest()->getParam('category')
+                    'Category',
+                    Mage::app()->getRequest()->getParam('Category')
+                        ? Mage::app()->getRequest()->getParam('Category')
                         : $this->_getCurrentFactfinderCategoryPath()
                 );
 
@@ -202,12 +203,13 @@ class Flagbit_FactFinder_Model_Adapter
                                 break;
 
                             default:
-                                if($key == 'category'){
+                                if($key == 'Category'){
                                     $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
+                                    foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                                     $filterkey = '';
                                     foreach($categories as $category){
                                         $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                        $filterkey .= '/'.$category;
+                                        $filterkey .= '/'.str_replace('/', '%2F', $category);
                                     }
                                 }else{
                                     $this->_setParam('filter'.$param[0], $param[1]);
@@ -524,7 +526,7 @@ class Flagbit_FactFinder_Model_Adapter
                     }else{
                        $this->_currentFactfinderCategoryPath[] = 'categoryROOT'.$mainCategoriesString.'|'.$categories[$categoryId]->getName();
                     }
-                    $mainCategoriesString .= '/'.$categories[$categoryId]->getName();
+                    $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
         }
