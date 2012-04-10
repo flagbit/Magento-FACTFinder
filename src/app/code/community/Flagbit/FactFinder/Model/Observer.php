@@ -181,6 +181,13 @@ class Flagbit_FactFinder_Model_Observer
     }
     
     
+    /**
+     * Replaces the link to the management cockpit functionality in the Magento Backend with the external link that
+     * opens in a new browser tab. Pretty dirty solution, but Magento does not offer any possibility to edit link urls
+     * in its backend menu model, nor does it allow to add absolute links for external sites.
+     * 
+     * @param Varien_Event_Observer $observer
+     */
     public function rewriteBackendMenuHtmlForCockpitRedirect($observer) {
         $block = $observer->getBlock();
         if ($block->getNameInLayout() != 'menu') {
