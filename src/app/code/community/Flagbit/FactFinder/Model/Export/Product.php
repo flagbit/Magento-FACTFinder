@@ -383,8 +383,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
                 ->where('main.visibility IN(3,4)') //TODO look for Constants
                 ->where('main.store_id = ?', $storeId)
+                ->where('e.path LIKE \'1/' . Mage::app()->getStore()->getRootCategoryId() .'/%\'')
                 ->group('main.product_id');
-    
+            
             $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);
         }    
         
