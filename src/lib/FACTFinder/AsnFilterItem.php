@@ -4,7 +4,7 @@
  * represents an filterable item from the after search navigation
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: AsnFilterItem.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  */
 class FACTFinder_AsnFilterItem extends FACTFinder_Item

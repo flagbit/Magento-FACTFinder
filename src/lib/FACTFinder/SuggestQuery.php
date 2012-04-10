@@ -4,7 +4,7 @@
  * represents a query for suggest
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: SuggestQuery.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  */
 class FACTFinder_SuggestQuery

@@ -12,9 +12,13 @@ class FACTFinder_EncodingHandler
     protected $pageContentEncoding;
     protected $pageUrlEncoding;
     protected $serverUrlEncoding;
+    
+    protected $log;
 
     public function __construct(FACTFinder_Abstract_Configuration $config)
     {
+        $this->log = FF::getLogger();
+        
         $this->pageContentEncoding = $config->getPageContentEncoding();
         $this->pageUrlEncoding     = $config->getPageUrlEncoding();
         $this->serverUrlEncoding   = $config->getServerUrlEncoding();
@@ -52,7 +56,8 @@ class FACTFinder_EncodingHandler
      */
     protected function iConvert($inCharset, $outCharset, $string)
     {
-        return ($inCharset == $outCharset || empty($inCharset) || empty($outCharset)) ? $string : iconv($inCharset, $outCharset, $string);
+        // see http://de2.php.net/manual/de/function.iconv.php to understand '//IGNORE'
+        return ($inCharset == $outCharset || empty($inCharset) || empty($outCharset)) ? $string : iconv($inCharset, $outCharset.'//IGNORE', $string);
     }
 
     /**
@@ -72,6 +77,7 @@ class FACTFinder_EncodingHandler
             } else if (strtolower($outCharset) == 'utf-8') {
                 $string = utf8_encode($string);
             } else {
+                $this->log->error("Could not convert between non-UTF-8 charsets.");
                 throw new Exception("can not handle $inCharset to $outCharset conversion!");
             }
         }

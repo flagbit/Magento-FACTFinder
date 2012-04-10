@@ -4,7 +4,7 @@
  * adapter for the factfinder tagcloud data
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_TagCloudAdapter extends FACTFinder_Abstract_Adapter

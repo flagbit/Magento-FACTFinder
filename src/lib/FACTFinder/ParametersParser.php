@@ -3,12 +3,12 @@
  * contains the FACTFinder_ParametersParser class
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: ParametersParser.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  */
 
 /**
- * this class handels the parameters conversion between the client url, the links on the webpage and the url for the
+ * this class handles the parameters conversion between the client url, the links on the webpage and the url for the
  * server. it can be seen as a parameter factory.
  */
 class FACTFinder_ParametersParser
@@ -19,6 +19,8 @@ class FACTFinder_ParametersParser
 
     protected $config;
     protected $encodingHandler;
+    
+    protected $log;
 
     /**
      * @param FACTFinder_Abstract_IConfiguration config
@@ -26,6 +28,7 @@ class FACTFinder_ParametersParser
      */
     public function __construct(FACTFinder_Abstract_Configuration $config, FACTFinder_EncodingHandler $encodingHandler)
     {
+        $this->log = FF::getLogger();
         $this->config = $config;
         $this->encodingHandler = $encodingHandler;
     }
@@ -61,7 +64,7 @@ class FACTFinder_ParametersParser
 
     /**
      * loads the parameters from request and returns them as string-to-string array
-     * also conciders the mapping and ignore rules
+     * also considers the mapping and ignore rules
      *
      * @return array of params
      */
@@ -157,7 +160,7 @@ class FACTFinder_ParametersParser
     }
 
     /**
-     * extracts a paramenter array with name=>value pairs from an url string.
+     * extracts a parameter array with name=>value pairs from an url string.
      * also only url encoding is done but no further encodings.
      * this method does not handle array variables such like "foo[0]=bar"
      *
@@ -173,9 +176,8 @@ class FACTFinder_ParametersParser
         $a_pairs = explode('&', $paramString);
         foreach($a_pairs AS $s_pair){
             $a_pair = explode('=', $s_pair);
-            if(count($a_pair) == 1) {
-                $a_pair[1] = '';
-            }
+            if(empty($a_pair[0])) continue;
+            if(count($a_pair) == 1 || empty($a_pair[1])) $a_pair[1] = '';
 
             $a_pair[0] = urldecode($a_pair[0]);
             $a_pair[1] = urldecode($a_pair[1]);

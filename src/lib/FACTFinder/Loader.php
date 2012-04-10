@@ -5,12 +5,12 @@
  * constructing and holds the singletons
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version  $Id$
+ * @version  $Id: Loader.php 25893 2010-06-29 08:19:43Z rb $
  * @package  FACTFinder\Common
  */
 
 /**
- * short cut for the contant DIRECTORY_SEPARATOR
+ * short cut for the constant DIRECTORY_SEPARATOR
  */
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -23,13 +23,21 @@ if (!defined('LIB_DIR')) {
     define('LIB_DIR', dirname(dirname(__FILE__)));
 }
 
-set_include_path(LIB_DIR . PATH_SEPARATOR . get_include_path());
+/**
+ * set as include path if this is not the case yet
+ */
+$includePaths = explode(PATH_SEPARATOR, get_include_path());
+if ( array_search(LIB_DIR, $includePaths, true) === false ) {
+    set_include_path( get_include_path() . PATH_SEPARATOR . LIB_DIR);
+}
 spl_autoload_register(array('FACTFinder_Loader', 'autoload'));
 
 // don't know, whether I should do that
 if (function_exists('__autoload') && array_search('__autoload', spl_autoload_functions()) === false) {
     spl_autoload_register('__autoload');
 }
+
+include LIB_DIR . DS . 'log4php' . DS . 'Logger.php';
 
 /**
  * shortcut / alias for the loader class
@@ -120,6 +128,32 @@ class FACTFinder_Loader
     }
 
     /**
+     * configures the static Logger class supplied by log4php
+     * be aware that only the root loggers configuration will affect how the framework's interna are logged
+     *
+     * @param    string file name of the configuration file
+     */
+    public static function configureLogger($fileName)
+    {
+        Logger::configure($fileName);
+    }
+    
+    /**
+     * gets a logger. if no logger is specified, the root logger is returned. otherwise, the specified one.
+     * this can be configured differently to use it within the shop for example
+     *
+     * @param      string the logger's name
+     * @return    Logger the specified logger
+     */
+    public static function getLogger($name = null)
+    {
+        if ($name == null)
+            return Logger::getRootLogger();
+        else
+            return Logger::getLogger($name);
+    }
+
+    /**
      * check whether there is a custom class with the prefix "FACTFinderCustom_" instead of "FACTFinder_"
      * if non of them exists, it also checks if the name is the classname itselft
      */
@@ -143,6 +177,7 @@ class FACTFinder_Loader
         } else if (class_exists($defaultClassName)) { //trigger other autload methods
             $className = $defaultClassName;
         } else {
+            $this->log->error("Could not load class '$defaultClassName'.");
             throw new Exception("class '$defaultClassName' not found");
         }
         return $className;
