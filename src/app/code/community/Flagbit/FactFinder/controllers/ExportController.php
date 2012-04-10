@@ -30,6 +30,7 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
      */
     public function preDispatch()
     {
+        $this->_getStoreId();
         $password = md5(Mage::getStoreConfig(self::XML_AUTH_PASSWORD_PATH));
         
         if ($password == '' || $password != $this->getRequest()->getParam('key')) {
@@ -46,6 +47,10 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
      */
     protected function _getStoreId()
     {
+        if ($storeId = $this->getRequest()->getParam('store')) {
+            Mage::app()->setCurrentStore($storeId);
+        }
+        
         return Mage::app()->getStore()->getId();
     }
     
