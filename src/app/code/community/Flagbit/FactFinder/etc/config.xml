@@ -192,6 +192,16 @@
                 </factfinder>
             </updates>
         </layout>
+        <events>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <rewriteBackendMenuHtmlForCockpitRedirect>
+                        <class>factfinder/observer</class>
+                        <method>rewriteBackendMenuHtmlForCockpitRedirect</method>
+                    </rewriteBackendMenuHtmlForCockpitRedirect>
+                </observers>
+            </core_block_abstract_to_html_after>
+        </events>
     </adminhtml>
     <admin>
         <routers>
@@ -212,7 +222,7 @@
             </factfinder_scic_queue_processing>
         </jobs>
     </crontab>
-    <default>
+    <default> 
         <catalog>
             <search>
                 <engine>factfinder/search_engine</engine>
