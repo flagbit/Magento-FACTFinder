@@ -1,19 +1,19 @@
 <?php 
 /**
- * 
+ * Flagbit_FactFinder
  *
- * @category  
- * @package   
+ * @category  Mage
+ * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
 
 /**
- * Model 
+ * Model class
  * 
- * This helper class provides the Product 
+ * This helper class provides the Product export
  * 
- * @category  
- * @package   
+ * @category  Mage
+ * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
@@ -21,28 +21,28 @@
 class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_Mysql4_Fulltext {
 
     /**
-     * Option ID to Value Mapping 
-     * @var 
+     * Option ID to Value Mapping Array
+     * @var mixed
      */
     protected $_optionIdToValue = null;
     
     /**
-     * Products to Category Path 
+     * Products to Category Path Mapping
      * 
-     * @var 
+     * @var mixed
      */
     protected $_productsToCategoryPath = null;
     
     /**
-     * Category Names by 
-     * @var 
+     * Category Names by ID
+     * @var mixed
      */
     protected $_categoryNames = null;
     
     /**
-     * add CSV 
+     * add CSV Row
      * 
-     * @param array $
+     * @param array $data
      */
     protected function _addCsvRow($data)
     {           
@@ -54,10 +54,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }    
     
     /**
-     * get Option Text by Option 
+     * get Option Text by Option ID
      * 
-     * @param int $optionId Option 
-     * @param int $storeId Store 
+     * @param int $optionId Option ID
+     * @param int $storeId Store ID
      * @return string 
      */
     protected function _getAttributeOptionText($optionId, $storeId)
@@ -65,7 +65,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         $value = '';
         if (intval($optionId)) {      
             if ($this->_optionIdToValue === null) {
-                /*@var $optionCollection Mage_Eav_Model_Mysql4_Entity_Attribute_Option_Collection */
+                /*@var $optionCollection Mage_Eav_Model_Mysql4_Entity_Attribute_Option_Collection */        
                 $optionCollection = Mage::getResourceModel('eav/entity_attribute_option_collection');
                 $optionCollection->setStoreFilter($storeId);
                 $this->_optionIdToValue = array();
@@ -79,10 +79,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }
     
     /**
-     * export Product Data with 
-     * direct Output as 
+     * export Product Data with Attributes
+     * direct Output as CSV
      *
-     * @param int $storeId Store View 
+     * @param int $storeId Store View Id
      */
     public function doExport($storeId = null)
     {
@@ -105,7 +105,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         
         $this->_addCsvRow($header);
         
-        // preparesearchable 
+        // preparesearchable attributes
         $staticFields   = array();
         foreach ($this->_getSearchableAttributes('static', 'system') as $attribute) {
             $staticFields[] = $attribute->getAttributeCode();
@@ -118,7 +118,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             'datetime'  => array_keys($this->_getSearchableAttributes('datetime')),
         );
 
-        // status and visibility 
+        // status and visibility filter
         $visibility     = $this->_getSearchableAttribute('visibility');
         $status         = $this->_getSearchableAttribute('status');
         $visibilityVals = Mage::getSingleton('catalog/product_visibility')->getVisibleInSearchIds();
@@ -194,7 +194,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                                     $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId)                                    
                                 );
                             if ($exportImageAndDeeplink) {
-                                //dont need to add image and deeplink to child product, just add empty 
+                                //dont need to add image and deeplink to child product, just add empty values
                                 $subProductIndex[] = '';
                                 $subProductIndex[] = '';
                             }
@@ -250,11 +250,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }
     
     /**
-     * Retrieve Searchable 
+     * Retrieve Searchable attributes
      *
      * @param string $backendType 
-     * @param string $type possible Types: system, sortable, filterable, 
-     * @return 
+     * @param string $type possible Types: system, sortable, filterable, searchable
+     * @return array
      */
     protected function _getSearchableAttributes($backendType = null, $type = null)
     {
@@ -335,11 +335,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }    
    
     /**
-     * Get Category Path by Product 
+     * Get Category Path by Product ID
      *
-     * @param   int $
-     * @param    int $
-     * @return  
+     * @param   int $productId
+     * @param    int $storeId
+     * @return  string
      */
     protected function _getCategoryPath($productId, $storeId = null)
     {
@@ -360,7 +360,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->join(
                     array('e' => $is_activeModel->getBackendTable()),
                     'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = '.$storeId.') AND e.attribute_id='.$is_activeModel->getAttributeId(),
-                       
+                       null
                 )                    
                 ->where('main.attribute_id=?', $nameModel->getAttributeId())
                 ->where('e.value=?', '1')
@@ -378,10 +378,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->join(
                     array('e' => $this->getTable('catalog/category')),
                     'main.category_id=e.entity_id',
-                       
+                       null
                 )
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
-                ->where('main.visibility IN(3,4)') //TODO look for 
+                ->where('main.visibility IN(3,4)') //TODO look for Constants
                 ->where('main.store_id = ?', $storeId)
                 ->group('main.product_id');
     
@@ -412,11 +412,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     } 
 
     /**
-     * Return all product children 
+     * Return all product children ids
      *
-     * @param int $productId Product Entity 
-     * @param string $typeId Super Product Link 
-     * @return 
+     * @param int $productId Product Entity Id
+     * @param string $typeId Super Product Link Type
+     * @return array
      */
     protected function _getProductChildIds($productId, $typeId)
     {
@@ -448,15 +448,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }
 
     /**
-     * get Attribute Row 
+     * get Attribute Row Array
      * 
-     * @param array $dataArray Export row 
-     * @param array $attributes Attributes 
-     * @param int $storeId Store 
+     * @param array $dataArray Export row Array
+     * @param array $attributes Attributes Array
+     * @param int $storeId Store ID
      */
     protected function _getAttributesRowArray(&$dataArray, $values, $storeId=null)
     {
-        //add system 
+        //add system attributes
         foreach ($this->_getSearchableAttributes(null, 'system') as $attribute) {
             if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
                 continue;
@@ -464,5 +464,5 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
             $dataArray[$attribute->getAttributeCode()] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
         }
-    }
+    }    
 }
