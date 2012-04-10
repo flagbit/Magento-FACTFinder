@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # /usr/local/bin/mageinstall
 #
 
@@ -53,6 +53,12 @@ dbroot="vagrant"
 dbhost="localhost"
 dbname=${1}
 dbuser=${1}
+
+if [[ "$dbuser" == magento-enterprise* ]]
+then
+    dbuser=`echo me${dbuser//magento\-enterprise/}`
+fi
+
 dbpass="vagrant1"
 url="http://localhost:8080/${entity}"
 version=${1}
