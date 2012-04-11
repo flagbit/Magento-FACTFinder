@@ -479,7 +479,7 @@ class Flagbit_FactFinder_Model_Adapter
                     }
                     // remove Categories from top Level Navigation
                     $_value = $this->_getAttributeOptionValue($option);
-                    if(Mage::getStoreConfigFlag('factfinder/config/navigation')
+                    if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && (
                         empty($_value) === true
                         || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true))
@@ -510,7 +510,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $returnValue = '';
         $this->_currentFactfinderCategoryPath = array();
-        if(Mage::getStoreConfigFlag('factfinder/config/navigation') && Mage::registry('current_category')){
+        if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
             /* @var $category Mage_Catalog_Model_Category */
             $category = Mage::registry('current_category');
 
