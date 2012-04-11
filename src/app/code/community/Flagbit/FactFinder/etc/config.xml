@@ -80,13 +80,13 @@
             <catalogsearch>
                 <rewrite>
                     <layer>Flagbit_FactFinder_Model_Layer</layer>
-                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
+                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute_Catalogsearch</layer_filter_attribute>
                 </rewrite>
             </catalogsearch>
             <catalog>
                 <rewrite>
                     <layer>Flagbit_FactFinder_Model_Layer</layer>
-                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute</layer_filter_attribute>
+                    <layer_filter_attribute>Flagbit_FactFinder_Model_Layer_Filter_Attribute_Catalog</layer_filter_attribute>
                 </rewrite>
             </catalog>
         </models>
@@ -267,7 +267,7 @@
             <!-- parameter settings -->
             <params>
                 <!-- parameter settings for the server -->
-                <server>
+                <server>	
                     <mapping from="q" to="query" />
                     <mapping from="p" to="page" />
                 </server>
