@@ -328,9 +328,9 @@ class Flagbit_FactFinder_Model_Adapter
     public function getSuggestResultJsonp($query, $jqueryCallback)
     {
         $this->_setParam('query', $query, false);
-        $this->_setParam('format', 'json', false);
+        $this->_setParam('format', 'jsonp', false);
 
-        return $jqueryCallback.'('.$this->_getSuggestAdapter()->getSuggestions().')';
+        return $this->_getSuggestAdapter()->getSuggestions();
     }
 
     /**
