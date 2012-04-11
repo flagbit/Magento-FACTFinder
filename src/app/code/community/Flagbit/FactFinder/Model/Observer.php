@@ -207,5 +207,16 @@ class Flagbit_FactFinder_Model_Observer
         
         $transport->setHtml(str_replace($matches[1], $replace, $html));
     }
+    
+    
+    public function addActivationLayoutHandles($observer)
+    {
+        if (Mage::helper('factfinder/search')->getIsSuggestEnabled(false)) {
+            $layout = $observer->getLayout();
+            $update = $layout->getUpdate();
+            $update->addHandle('factfinder_suggest_enabled');
+        }
+        
+    }
 
 }

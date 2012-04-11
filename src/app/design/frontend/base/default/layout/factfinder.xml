@@ -20,16 +20,17 @@
 -->
 <layout version="0.1.0">
     <default>
-        <reference name="head">
-            <action method="addJs"><script>factfinder/jXHR.js</script></action>
-            <action method="addJs"><script>factfinder/suggest.js</script></action>
-        </reference>
         <reference name="top.search">
             <action method="setTemplate"><template>factfinder/form.mini.phtml</template></action>
         </reference>
     </default>
     
-    
+    <factfinder_suggest_enabled>
+        <reference name="head">
+            <action method="addJs"><script>factfinder/jXHR.js</script></action>
+            <action method="addJs"><script>factfinder/suggest.js</script></action>
+        </reference>
+    </factfinder_suggest_enabled>
     
     <catalogsearch_result_index> 
         <reference name="head">

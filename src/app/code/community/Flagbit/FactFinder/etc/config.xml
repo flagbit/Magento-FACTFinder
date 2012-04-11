@@ -145,6 +145,14 @@
                     </addOrderDetailsToSCICQueue>
                 </observers>
             </sales_order_place_after>
+            <controller_action_layout_load_before>
+                <observers>
+                    <addActivationLayoutHandles>
+                        <class>factfinder/observer</class>
+                        <method>addActivationLayoutHandles</method>
+                    </addActivationLayoutHandles>
+                </observers>
+            </controller_action_layout_load_before>
         </events>
         <translate>
             <modules>
