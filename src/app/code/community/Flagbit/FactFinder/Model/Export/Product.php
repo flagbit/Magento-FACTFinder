@@ -40,6 +40,12 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     protected $_categoryNames = null;
     
     /**
+     * export attribute codes
+     * @var mixed
+     */
+    protected $_exportAttributes = null;
+    
+    /**
      * add CSV Row
      * 
      * @param array $data
@@ -79,6 +85,52 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     }
     
     /**
+     * get CSV Header Array
+     * 
+     * @param int $storeId
+     * @return array
+     */
+    protected function _getExportAttributes($storeId = null) 
+    {
+        if($this->_exportAttributes === null){
+            $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
+            $headerDynamic = array();
+            
+            if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
+                $headerDefault[] = 'image';
+                $headerDefault[] = 'deeplink';
+                $imageHelper = Mage::helper('catalog/image');
+            }
+            
+            // get dynamic Attributes
+            foreach ($this->_getSearchableAttributes(null, 'system') as $attribute) {
+                if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
+                    continue;
+                }            
+                $headerDynamic[] = $attribute->getAttributeCode();
+            }    
+            
+            // compare dynamic with setup attributes
+            $headerSetup = Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId));
+            $setupUpdate = false;
+            foreach($headerDynamic as $code){
+                if(in_array($code, $headerSetup)){
+                    continue;
+                }
+                $headerSetup[$code]['attribute'] = $code;
+                $setupUpdate = true;
+            }
+            if($setupUpdate === true){
+                Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup));
+            }         
+            
+            $this->_exportAttributes = array_merge($headerDefault, array_keys($headerSetup));
+        }
+        return $this->_exportAttributes;
+    }
+    
+    
+    /**
      * export Product Data with Attributes
      * direct Output as CSV
      *
@@ -87,22 +139,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     public function doExport($storeId = null)
     {
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
-        $header = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
-        
-        $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls');    
-        if ($exportImageAndDeeplink) {
-            $header[] = 'image';
-            $header[] = 'deeplink';
-            $imageHelper = Mage::helper('catalog/image');
-        }
-        
-        foreach ($this->_getSearchableAttributes(null, 'system') as $attribute) {
-            if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
-                continue;
-            }            
-            $header[] = $attribute->getAttributeCode();
-        }
-        
+        $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
+
+        $header = $this->_getExportAttributes($storeId);
         $this->_addCsvRow($header);
         
         // preparesearchable attributes
@@ -314,14 +353,16 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                         break;
 
                     case "filterable":
-                        if (!$attribute->getIsFilterableInSearch()) {
+                        if (!$attribute->getIsFilterableInSearch()
+                            || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())) {
                             continue 2;
                         }
                         break;
 
                     case "searchable":
                         if (!$attribute->getIsUserDefined()
-                            || !$attribute->getIsSearchable()) {
+                            || !$attribute->getIsSearchable()
+                            || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())) {
                             continue 2;
                         }
                         break;
