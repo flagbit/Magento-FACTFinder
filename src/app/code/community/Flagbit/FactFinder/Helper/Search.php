@@ -20,61 +20,69 @@
  * @version   $Id$
  */
 class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
-	
-	/**
-	 * XML Config Path to Product Identifier Setting
-	 * 
-	 * @var string
-	 */
-    const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';	
     
-	/**
-	 * XML Config Path to Product Identifier Setting
-	 * 
-	 * @var string
-	 */
+    /**
+     * XML Config Path to Product Identifier Setting
+     * 
+     * @var string
+     */
+    const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';    
+    
+    /**
+     * XML Config Path to Product Identifier Setting
+     * 
+     * @var string
+     */
     const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';    
-	
-	/**
-	 * if FACT-Finder enabled?
-	 * 
-	 * @return boolean
-	 */
-	public function getIsEnabled($searchPageCheck = true)
-	{
-		return (
-					Mage::getStoreConfigFlag('factfinder/search/enabled') 
-					&& !Mage::getStoreConfigFlag('advanced/modules_disable_output/Flagbit_FactFinder')
-					&& ($searchPageCheck == false || $this->getIsOnSearchPage() || Mage::getStoreConfigFlag('factfinder/config/navigation'))
-				) ? true : false;
-	}
-	
-	/**
-	 * get Module Status depending on Module
-	 * 
-	 * @return boolean
-	 */
-	public function getIsOnSearchPage()
-	{
-		return Mage::app()->getRequest()->getModuleName() == 'catalogsearch' || Mage::app()->getRequest()->getModuleName() == 'xmlconnect';	
-	}
-	
-	
+    
+    /**
+     * if FACT-Finder enabled?
+     * 
+     * @return boolean
+     */
+    public function getIsEnabled($searchPageCheck = true)
+    {
+        if (Mage::getStoreConfigFlag('factfinder/search/enabled') 
+            && !Mage::getStoreConfigFlag('advanced/modules_disable_output/Flagbit_FactFinder')
+            && ($searchPageCheck == false || $this->getIsOnSearchPage() || Mage::getStoreConfigFlag('factfinder/activation/navigation'))) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    
+    public function getIsSuggestEnabled($searchPageCheck = true)
+    {
+        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/suggest');
+    }
+    
+    /**
+     * get Module Status depending on Module
+     * 
+     * @return boolean
+     */
+    public function getIsOnSearchPage()
+    {
+        return Mage::app()->getRequest()->getModuleName() == 'catalogsearch' || Mage::app()->getRequest()->getModuleName() == 'xmlconnect';    
+    }
+    
+    
     /**
      * get Toolbar Block
      * 
      * @return Mage_Catalog_Block_Product_List_Toolbar
      */
     protected function _getToolbarBlock()
-    {	
-    	$mainBlock = Mage::app()->getLayout()->getBlock('search.result');
-    	if($mainBlock instanceof Mage_CatalogSearch_Block_Result){
-    		$toolbarBlock = $mainBlock->getListBlock()->getToolbarBlock();
-    	}else{
-    		$toolbarBlock = Mage::app()->getLayout()->createBlock('catalog/product_list_toolbar');
-    	}
-  	
-    	return $toolbarBlock;
+    {    
+        $mainBlock = Mage::app()->getLayout()->getBlock('search.result');
+        if($mainBlock instanceof Mage_CatalogSearch_Block_Result){
+            $toolbarBlock = $mainBlock->getListBlock()->getToolbarBlock();
+        }else{
+            $toolbarBlock = Mage::app()->getLayout()->createBlock('catalog/product_list_toolbar');
+        }
+      
+        return $toolbarBlock;
     }
 
      /**
@@ -84,7 +92,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getDefaultPerPageValue()
     {
-    	return $this->_getToolbarBlock()->getDefaultPerPageValue();
+        return $this->_getToolbarBlock()->getDefaultPerPageValue();
     }    
     
     /**
@@ -94,11 +102,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getIdFieldName()
     {
-    	$idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
-    	if(!$idFieldName){
-    		$idFieldName = $this->getEntity()->getIdFieldName();
-    	}	
-    	return $idFieldName;
+        $idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
+        if(!$idFieldName){
+            $idFieldName = $this->getEntity()->getIdFieldName();
+        }    
+        return $idFieldName;
     }
     
     /**
@@ -108,11 +116,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getSuggestUrl()
     {
-    	$url = Mage::getSingleton('factfinder/adapter')->getSuggestUrl();
-    	if(Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)){
-    		$url = $this->_getUrl('factfinder/proxy/suggest');
-    	}
-    	return $url;
+        $url = Mage::getSingleton('factfinder/adapter')->getSuggestUrl();
+        if(Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)){
+            $url = $this->_getUrl('factfinder/proxy/suggest');
+        }
+        return $url;
     }
     
 
@@ -123,7 +131,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getCurrentOrder()
     {
-    	return $this->_getToolbarBlock()->getCurrentOrder();
+        return $this->_getToolbarBlock()->getCurrentOrder();
     }
     
     /**
@@ -133,7 +141,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getCurrentDirection()
     {
-    	return $this->_getToolbarBlock()->getCurrentDirection();
+        return $this->_getToolbarBlock()->getCurrentDirection();
     }
     
     /**
@@ -143,11 +151,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getPageLimit()
     {
-    	$limit = $this->_getToolbarBlock()->getLimit();	
-		if ($limit == 'all') {
-			$limit = 2*3*4*5*6; //a lot of products working for each layout
-		}
-		return $limit;
+        $limit = $this->_getToolbarBlock()->getLimit();    
+        if ($limit == 'all') {
+            $limit = 2*3*4*5*6; //a lot of products working for each layout
+        }
+        return $limit;
     }
     
     /**
@@ -157,7 +165,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getCurrentPage()
     {
-    	return $this->_getToolbarBlock()->getCurrentPage();		
+        return $this->_getToolbarBlock()->getCurrentPage();        
     }
     
     /**
