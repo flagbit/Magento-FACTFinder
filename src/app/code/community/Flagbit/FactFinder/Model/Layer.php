@@ -69,7 +69,7 @@ class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abst
     public function getFilterableAttributes()
     {
 
-        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
             return parent::getFilterableAttributes();
         }
 

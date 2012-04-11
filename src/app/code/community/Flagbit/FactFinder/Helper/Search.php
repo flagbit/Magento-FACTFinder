@@ -57,6 +57,16 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/suggest');
     }
     
+    
+    public function getIsASNEnabled($searchPageCheck = true)
+    {
+        if (Mage::helper('factfinder/search')->getIsOnSearchPage()) {
+            return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/asn');
+        }
+        
+        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/navigation');
+    }
+    
     /**
      * get Module Status depending on Module
      * 
