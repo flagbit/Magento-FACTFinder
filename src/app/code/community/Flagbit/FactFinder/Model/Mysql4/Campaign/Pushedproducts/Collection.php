@@ -38,7 +38,11 @@ class Flagbit_FactFinder_Model_Mysql4_Campaign_Pushedproducts_Collection
      */
     protected function _getCampaign()
     {
-    	return Mage::getSingleton('factfinder/adapter')->getCampaigns();
+        if(Mage::helper('factfinder/search')->getIsCampaignsEnabled()){
+            return Mage::getSingleton('factfinder/adapter')->getCampaigns();
+        }
+        
+        return null;
     }
 
     /**

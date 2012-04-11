@@ -216,7 +216,16 @@ class Flagbit_FactFinder_Model_Observer
             $update = $layout->getUpdate();
             $update->addHandle('factfinder_suggest_enabled');
         }
-        
+        $request = Mage::app()->getRequest();
+        //catalogsearch_result_index
+        if (Mage::helper('factfinder/search')->getIsClicktrackingEnabled(false)
+                && $request->getModuleName() == 'catalogsearch'
+                && $request->getControllerName() == 'result'
+                && $request->getActionName() == 'index') {
+            $layout = $observer->getLayout();
+            $update = $layout->getUpdate();
+            $update->addHandle('factfinder_clicktracking_enabled');
+        }
     }
 
 }

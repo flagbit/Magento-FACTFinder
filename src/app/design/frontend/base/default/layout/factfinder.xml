@@ -32,17 +32,21 @@
         </reference>
     </factfinder_suggest_enabled>
     
-    <catalogsearch_result_index> 
-        <reference name="head">
-            <action method="addJs"><script>factfinder/scic.js</script></action>
-        </reference>        
+    <catalogsearch_result_index>      
         <reference name="content">
             <block type="factfinder/campaign_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaign/feedback.phtml">
                 <action method="setTextNumber"><number>1</number></action>
             </block>
             <block type="core/template" name="factfinder.logo" template="factfinder/logo.phtml"/>
-            <block type="factfinder/scic" name="factfinder.scic" template="factfinder/scic.phtml"/>
         </reference>
     </catalogsearch_result_index>    
     
+    <factfinder_clicktracking_enabled>
+        <reference name="head">
+            <action method="addJs"><script>factfinder/scic.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="factfinder/scic" name="factfinder.scic" template="factfinder/scic.phtml"/>
+        </reference>
+    </factfinder_clicktracking_enabled>
 </layout>

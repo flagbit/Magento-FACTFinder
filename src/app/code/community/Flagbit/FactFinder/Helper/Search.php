@@ -67,6 +67,18 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/navigation');
     }
     
+    
+    public function getIsCampaignsEnabled($searchPageCheck = true)
+    {
+        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/campaign');
+    }
+    
+    
+    public function getIsClicktrackingEnabled($searchPageCheck = true)
+    {
+        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/clicktracking');
+    }
+    
     /**
      * get Module Status depending on Module
      * 
