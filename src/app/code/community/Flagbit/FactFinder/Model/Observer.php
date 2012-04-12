@@ -209,7 +209,11 @@ class Flagbit_FactFinder_Model_Observer
         $transport->setHtml(str_replace($matches[1], $replace, $html));
     }
     
-    
+    /**
+    * Adds layout handles based on FACT-Finder configuration.
+    * 
+    * @param Varien_Event_Observer $observer
+    */
     public function addActivationLayoutHandles($observer)
     {
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'suggest')) {
