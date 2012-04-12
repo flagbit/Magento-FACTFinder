@@ -36,7 +36,7 @@ class Flagbit_FactFinder_Block_Campaign_Feedback extends Mage_Core_Block_Templat
     {
         $text = '';
         
-        if(Mage::helper('factfinder/search')->getIsCampaignsEnabled()){
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
             $_champaigns = Mage::getSingleton('factfinder/adapter')->getCampaigns();
             if($_champaigns && $_champaigns->hasFeedback() && $this->getTextNumber()){
                 $text = $_champaigns->getFeedback($this->getTextNumber() - 1);

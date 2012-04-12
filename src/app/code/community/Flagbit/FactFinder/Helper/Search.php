@@ -40,43 +40,38 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      * 
      * @return boolean
      */
-    public function getIsEnabled($searchPageCheck = true)
+    public function getIsEnabled($searchPageCheck = true, $functionality = '')
     {
-        if (Mage::getStoreConfigFlag('factfinder/search/enabled') 
-            && !Mage::getStoreConfigFlag('advanced/modules_disable_output/Flagbit_FactFinder')
-            && ($searchPageCheck == false || $this->getIsOnSearchPage() || Mage::getStoreConfigFlag('factfinder/activation/navigation'))) {
-            return true;
+        if (!Mage::getStoreConfigFlag('factfinder/search/enabled')
+            || Mage::getStoreConfigFlag('advanced/modules_disable_output/Flagbit_FactFinder')
+            || !($searchPageCheck == false || $this->getIsOnSearchPage() || Mage::getStoreConfigFlag('factfinder/activation/navigation'))) {
+            return false;
         }
         
-        return false;
-    }
-    
-    
-    public function getIsSuggestEnabled($searchPageCheck = true)
-    {
-        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/suggest');
-    }
-    
-    
-    public function getIsASNEnabled($searchPageCheck = true)
-    {
-        if (Mage::helper('factfinder/search')->getIsOnSearchPage()) {
-            return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/asn');
+        $result = true;
+        
+        if ($functionality) {
+            switch ($functionality) {
+                case 'suggest':
+                    $result = Mage::getStoreConfig('factfinder/activation/suggest');
+                break;
+                case 'asn':
+                    if (Mage::helper('factfinder/search')->getIsOnSearchPage()) {
+                        $result = Mage::getStoreConfig('factfinder/activation/asn');
+                    }
+                    
+                    $result = Mage::getStoreConfig('factfinder/activation/navigation');
+                break;
+                case 'campaign':
+                    $result = Mage::getStoreConfig('factfinder/activation/campaign');
+                break;
+                case 'clicktracking':
+                    $result = Mage::getStoreConfig('factfinder/activation/clicktracking');
+                break;
+            }
         }
         
-        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/navigation');
-    }
-    
-    
-    public function getIsCampaignsEnabled($searchPageCheck = true)
-    {
-        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/campaign');
-    }
-    
-    
-    public function getIsClicktrackingEnabled($searchPageCheck = true)
-    {
-        return $this->getIsEnabled($searchPageCheck) && Mage::getStoreConfig('factfinder/activation/clicktracking');
+        return $result;
     }
     
     /**

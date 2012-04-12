@@ -28,7 +28,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _prepareLayout()
     {  	
-    	if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+    	if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::_prepareLayout();
     	}
 
@@ -83,7 +83,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _getCategoryFilter()
     {
-        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::_getCategoryFilter();
     	}    	
         return false;
@@ -96,7 +96,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _getPriceFilter()
     {
-        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::_getPriceFilter();
     	}    	
     	
@@ -110,7 +110,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     public function canShowBlock()
     {
-        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::canShowBlock();
     	}  
         if ($this->getLayer()->getFilterableAttributes()->count()

@@ -41,7 +41,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
      */
     public function apply(Zend_Controller_Request_Abstract $request, $filterBlock)
     {
-        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::apply($request, $filterBlock);
     	}     	
 		$this->_getItemsData();
@@ -67,7 +67,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
     protected function _createItem($label, $value, $count=0)
     {
         
-        if (!Mage::helper('factfinder/search')->getIsASNEnabled()) {
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')) {
             return parent::_createItem($label, $value, $count);
         }
         
@@ -86,7 +86,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
      */
     protected function _getItemsData()
     {
-        if(!Mage::helper('factfinder/search')->getIsASNEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::_getItemsData();
     	}    	
     	

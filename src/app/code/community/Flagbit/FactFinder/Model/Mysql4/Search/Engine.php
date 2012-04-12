@@ -48,6 +48,6 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Engine extends Mage_CatalogSearch_M
      */
     public function test()
     {
-        return Mage::helper('factfinder/search')->getIsASNEnabled();
+        return Mage::helper('factfinder/search')->getIsEnabled(false, 'asn');
     }
 }
