@@ -59,8 +59,9 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
                     if (Mage::helper('factfinder/search')->getIsOnSearchPage()) {
                         $result = Mage::getStoreConfig('factfinder/activation/asn');
                     }
-                    
-                    $result = Mage::getStoreConfig('factfinder/activation/navigation');
+                    else {
+                        $result = Mage::getStoreConfig('factfinder/activation/navigation');
+                    }
                 break;
                 case 'campaign':
                     $result = Mage::getStoreConfig('factfinder/activation/campaign');
