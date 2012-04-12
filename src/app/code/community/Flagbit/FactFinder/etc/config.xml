@@ -153,6 +153,14 @@
                     </addActivationLayoutHandles>
                 </observers>
             </controller_action_layout_load_before>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <redirectToProductIfSingleResult>
+                        <class>factfinder/observer</class>
+                        <method>redirectToProductIfSingleResult</method>
+                    </redirectToProductIfSingleResult>
+                </observers>
+            </core_block_abstract_to_html_before>
         </events>
         <translate>
             <modules>

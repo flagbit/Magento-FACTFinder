@@ -188,7 +188,8 @@ class Flagbit_FactFinder_Model_Observer
      * 
      * @param Varien_Event_Observer $observer
      */
-    public function rewriteBackendMenuHtmlForCockpitRedirect($observer) {
+    public function rewriteBackendMenuHtmlForCockpitRedirect($observer)
+    {
         $block = $observer->getBlock();
         if ($block->getNameInLayout() != 'menu') {
             return;
@@ -225,6 +226,32 @@ class Flagbit_FactFinder_Model_Observer
             $layout = $observer->getLayout();
             $update = $layout->getUpdate();
             $update->addHandle('factfinder_clicktracking_enabled');
+        }
+    }
+    
+    
+    public function redirectToProductIfSingleResult($observer)
+    {
+        if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
+            return;
+        }
+        
+        Mage::register('redirectAlreadyChecked', 1);
+        $block = Mage::app()->getLayout()->getBlock('search_result_list');
+        
+        if (!$block instanceof Mage_Catalog_Block_Product_List) {
+            return;
+        }
+        
+        $collection = $block->getLoadedProductCollection();
+        $collection->load();
+        
+        if (count($collection) == 1) {
+            $product = $collection->getFirstItem();
+            $response = Mage::app()->getResponse();
+            $response->setRedirect($product->getProductUrl(false));
+            $response->sendResponse();
+            exit;
         }
     }
 
