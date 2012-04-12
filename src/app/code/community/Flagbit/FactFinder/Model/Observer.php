@@ -229,7 +229,13 @@ class Flagbit_FactFinder_Model_Observer
         }
     }
     
-    
+    /**
+     * Checks if the result set's size is one. If so the user is redirected to the product detail page. This is checked
+     * right before the first block is rendered so headers can still be sent. The ordinary collection load event is 
+     * triggered too late.
+     * 
+     * @param Varien_Event_Observer $observer
+     */
     public function redirectToProductIfSingleResult($observer)
     {
         if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
