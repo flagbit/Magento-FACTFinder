@@ -25,7 +25,7 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
      */
     public function getItems()
     {
-        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+        if (!Mage::getStoreConfigFlag('factfinder/activation/crosssell')) {
             return parent::getItems();
         }
 
@@ -73,7 +73,7 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
      */
     protected function _getCollection()
     {
-        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+        if (!Mage::getStoreConfigFlag('factfinder/activation/crosssell')) {
             return parent::_getCollection();
         }
 

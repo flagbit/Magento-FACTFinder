@@ -20,39 +20,43 @@
  */
 class Flagbit_FactFinder_Block_Campaign_Feedback extends Mage_Core_Block_Template
 {
-	/**
-	 * Pushed Products Collection
-	 *
-	 * @var Flagbit_FactFinder_Model_Mysql4_Campaign_Pushedproducts_Collection
-	 */
-	protected $_pushedProductsCollection = null;
+    /**
+     * Pushed Products Collection
+     *
+     * @var Flagbit_FactFinder_Model_Mysql4_Campaign_Pushedproducts_Collection
+     */
+    protected $_pushedProductsCollection = null;
 
-	/**
-	 * get Campaign Text
-	 *
-	 * @return string
-	 */
-	public function getText()
-	{
-		$text = '';
-		$_champaigns = Mage::getSingleton('factfinder/adapter')->getCampaigns();
-		if($_champaigns && $_champaigns->hasFeedback() && $this->getTextNumber()){
-			$text = $_champaigns->getFeedback($this->getTextNumber() - 1);
-		}
-		return $text;
-	}
+    /**
+     * get Campaign Text
+     *
+     * @return string
+     */
+    public function getText()
+    {
+        $text = '';
+        
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            $_champaigns = Mage::getSingleton('factfinder/adapter')->getCampaigns();
+            if($_champaigns && $_champaigns->hasFeedback() && $this->getTextNumber()){
+                $text = $_champaigns->getFeedback($this->getTextNumber() - 1);
+            }
+        }
+        
+        return $text;
+    }
 
-	/**
-	 * Pushed Products Collection
-	 *
-	 * @return Flagbit_FactFinder_Model_Mysql4_Campaign_Pushedproducts_Collection
-	 */
-	public function getPushedProductsCollection()
-	{
-		if($this->_pushedProductsCollection === null){
-			$this->_pushedProductsCollection = Mage::getResourceModel('factfinder/campaign_pushedproducts_collection');
-		}
+    /**
+     * Pushed Products Collection
+     *
+     * @return Flagbit_FactFinder_Model_Mysql4_Campaign_Pushedproducts_Collection
+     */
+    public function getPushedProductsCollection()
+    {
+        if($this->_pushedProductsCollection === null){
+            $this->_pushedProductsCollection = Mage::getResourceModel('factfinder/campaign_pushedproducts_collection');
+        }
 
-		return $this->_pushedProductsCollection;
-	}
+        return $this->_pushedProductsCollection;
+    }
 }

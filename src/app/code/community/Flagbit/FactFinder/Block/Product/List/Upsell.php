@@ -27,7 +27,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
     protected function _prepareData()
     {
 
-        if (!Mage::getStoreConfigFlag('factfinder/config/upsell')) {
+        if (!Mage::getStoreConfigFlag('factfinder/activation/upsell')) {
             return parent::_prepareData();
         }
 
