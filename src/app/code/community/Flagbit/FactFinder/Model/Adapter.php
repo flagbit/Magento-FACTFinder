@@ -96,7 +96,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml65/searchAdapter',
+                'xml67/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -363,7 +363,7 @@ class Flagbit_FactFinder_Model_Adapter
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml65/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_recommendationAdapter = FF::getSingleton('xml67/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
     }
