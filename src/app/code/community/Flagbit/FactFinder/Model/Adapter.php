@@ -703,6 +703,11 @@ class Flagbit_FactFinder_Model_Adapter
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
+            
+            if (in_array(Mage::helper('core/http')->getRemoteAddr(), explode(';', Mage::getStoreConfig('factfinder/config/internal_ip')))) {
+                $params['log'] = 'internal';
+            }
+            
             $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
         }
         return $this->_dataProvider;
