@@ -3,6 +3,10 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
 {
     protected function _loadTerms()
     {
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'tagcloud')) {
+            return parent::_loadTerms();
+        }
+        
         if (empty($this->_terms)) {
             $terms = Mage::getSingleton('factfinder/adapter')->getTagCloud();
             

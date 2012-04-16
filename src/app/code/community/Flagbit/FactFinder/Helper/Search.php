@@ -69,6 +69,9 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
                 case 'clicktracking':
                     $result = Mage::getStoreConfig('factfinder/activation/clicktracking');
                 break;
+                case 'tagcloud':
+                    $result = Mage::getStoreConfig('factfinder/activation/tagcloud');
+                break;
             }
         }
         
