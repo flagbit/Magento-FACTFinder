@@ -41,7 +41,8 @@ class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block
                 ->addStoreFilter();
 
             $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-            $recommendations = $recommendationAdapter->getRecommendations($product->getData($idFieldName));
+            $recommendationAdapter->setProductId($product->getData($idFieldName));
+            $recommendations = $recommendationAdapter->getRecommendations();
             $this->_itemCollection->setRecommendations($recommendations);
 
             Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);
