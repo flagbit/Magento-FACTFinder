@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+<package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
     http://pear.php.net/dtd/tasks-1.0.xsd
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-02-20</date>
- <time>17:32:07</time>
+ <date>2012-04-13</date>
+ <time>15:31:35</time>
  <version>
-  <release>3.2.5</release>
-  <api>3.2.5</api>
+  <release>3.3.0</release>
+  <api>3.3.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -30,66 +30,66 @@
  <contents>
   <dir name="/">
    <dir name="\">
-    <file md5sum="1541c633280be62f74ba1da7aeb6f677" name="factfinder.xml" role="mageetc" />
+    <file md5sum="ca4dac634339217dd2ee6e8dc477d694" name="factfinder.xml" role="mageetc" />
    </dir> <!-- /\ -->
    <dir name="\adminhtml\default\default\layout">
-    <file md5sum="0389b14e8f5f3a491e1d21ff06fda964" name="factfinder.xml" role="magedesign" />
+    <file md5sum="5e5cb94967917aa2784d19434d02b2d4" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\adminhtml\default\default\layout -->
    <dir name="\adminhtml\default\default\template\factfinder">
-    <file md5sum="ca1a67e095028779d8796c4a4aa71a23" name="cockpit.phtml" role="magedesign" />
+    <file md5sum="5fe632ad1c700fe432061be976837a3d" name="cockpit.phtml" role="magedesign" />
    </dir> <!-- /\adminhtml\default\default\template\factfinder -->
    <dir name="\de_DE">
     <file md5sum="5bc4064b558d448e6774b6139c5ef01c" name="Flagbit_FactFinder.csv" role="magelocale" />
    </dir> <!-- /\de_DE -->
    <dir name="\FACTFinder">
-    <file md5sum="415d7ca6e57fce1c2dc79a398f277a8e" name="Asn.php" role="magelib" />
-    <file md5sum="823ca331d4f0fb96cdaba37837eb4cf4" name="AsnFilterItem.php" role="magelib" />
-    <file md5sum="eb5f98e61330d2086a6f2cbed9b22e2b" name="AsnGroup.php" role="magelib" />
-    <file md5sum="93960390f4b25235cc6b3fb0ac6e607f" name="AsnSliderFilter.php" role="magelib" />
-    <file md5sum="926f78a0bdb1331e271b6027d639dcbd" name="BreadCrumbItem.php" role="magelib" />
-    <file md5sum="50ad168e075b23d2feaae04580012798" name="Campaign.php" role="magelib" />
-    <file md5sum="c6960fea3e53329219f6fd77581191d5" name="CampaignIterator.php" role="magelib" />
+    <file md5sum="ae96051d5285a2158fd753275366a521" name="Asn.php" role="magelib" />
+    <file md5sum="bdaf35d757396419227d6c41aa009af8" name="AsnFilterItem.php" role="magelib" />
+    <file md5sum="e58dfe1a5d38f32c40ce183c3408abca" name="AsnGroup.php" role="magelib" />
+    <file md5sum="84988dd62b5deb1cc19c5641408b7e26" name="AsnSliderFilter.php" role="magelib" />
+    <file md5sum="2f3aaefdb90ae4a3e0259127eef7b63c" name="BreadCrumbItem.php" role="magelib" />
+    <file md5sum="56c7074599c4d08460f1c3c2db9c67eb" name="Campaign.php" role="magelib" />
+    <file md5sum="e7238647db2496e534b545c7dad98a26" name="CampaignIterator.php" role="magelib" />
     <file md5sum="3f775ebae81ee438039b68ba4717e5a6" name="Configuration.php" role="magelib" />
     <file md5sum="b03804afac448e617bda21f690dbc0bd" name="EncodingHandler.php" role="magelib" />
-    <file md5sum="82d6aa160364f1065d905d4bfb81595e" name="Item.php" role="magelib" />
-    <file md5sum="8c430740168499ea12d9e94ee38bf0b7" name="Loader.php" role="magelib" />
-    <file md5sum="1e00f8a23eb7c77e25669662fa96e5d4" name="Paging.php" role="magelib" />
-    <file md5sum="3cff8bd17aae5a045eb8bdc9da7f36de" name="Parameters.php" role="magelib" />
-    <file md5sum="600488587db51ae0a599dcb73fd73414" name="ParametersParser.php" role="magelib" />
-    <file md5sum="00d5fefb4798df35e5eb59ba7c520d21" name="ProductsPerPageOptions.php" role="magelib" />
-    <file md5sum="88993587f716d18034aac86ddf785c76" name="Record.php" role="magelib" />
-    <file md5sum="bc67777850ff18b7784c48bb8f5fbd20" name="Result.php" role="magelib" />
+    <file md5sum="2392265d9bca72526b0d7a5d25ae1eb1" name="Item.php" role="magelib" />
+    <file md5sum="70ab129ac1aa490cc170f2da90f2dfe0" name="Loader.php" role="magelib" />
+    <file md5sum="dea2f8e45d71cc82bec1769d14b7ddb9" name="Paging.php" role="magelib" />
+    <file md5sum="c52f73e3ca64af5f48993ef5050e4e1a" name="Parameters.php" role="magelib" />
+    <file md5sum="ee487d809998ff6f98bca851252ad1f3" name="ParametersParser.php" role="magelib" />
+    <file md5sum="327bf5f931c3a72c691e368beaa9c856" name="ProductsPerPageOptions.php" role="magelib" />
+    <file md5sum="05d873542c3f2e14d71f0a656468ab76" name="Record.php" role="magelib" />
+    <file md5sum="d51cd7c16ddd8a83732690f2916fe3d6" name="Result.php" role="magelib" />
     <file md5sum="3b806c3d26785f0260d09abe6469c999" name="SingleWordSearchItem.php" role="magelib" />
-    <file md5sum="9aaa4f18c5369acfe0dcb387245e4a75" name="SuggestQuery.php" role="magelib" />
-    <file md5sum="a35b69db11cb856225c00f103b7c16ab" name="TagQuery.php" role="magelib" />
-    <file md5sum="7f3c81e2bd95a5c61365e8f2426c258e" name="Util.php" role="magelib" />
+    <file md5sum="e12df900d1163911c7ab43341d62bffa" name="SuggestQuery.php" role="magelib" />
+    <file md5sum="c8a5206536b9bbdfcd972632a7a1b78e" name="TagQuery.php" role="magelib" />
+    <file md5sum="297e2d09106a8ac339b3483aefe197f6" name="Util.php" role="magelib" />
    </dir> <!-- /\FACTFinder -->
    <dir name="\FACTFinderCustom">
     <file md5sum="de80fe6dca7ca17a3de3364fb5f6d3c2" name="Configuration.php" role="magelib" />
    </dir> <!-- /\FACTFinderCustom -->
    <dir name="\FACTFinder\Abstract">
-    <file md5sum="1408fcf0ef45938c8f24af68805ead40" name="Adapter.php" role="magelib" />
+    <file md5sum="6c3cb7b9bb65a3e6e8d3440d1a39e4c2" name="Adapter.php" role="magelib" />
     <file md5sum="66af750e71582ed18ccd8217a1eb3a2c" name="Configuration.php" role="magelib" />
-    <file md5sum="346c0daf93774006119d339be7317fd6" name="DataProvider.php" role="magelib" />
+    <file md5sum="f6fdce09126f4c484505f3324afa8201" name="DataProvider.php" role="magelib" />
     <file md5sum="8b4e8a1eca334ab3d1fc322ac468869b" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="478dc65ca80eef22696d2b0f4d83167c" name="ScicAdapter.php" role="magelib" />
-    <file md5sum="75692c9da2f4b3576cdc9cad7c54d123" name="SearchAdapter.php" role="magelib" />
-    <file md5sum="1793a1cafe52a21d87b7e9b0a5b4379e" name="SuggestAdapter.php" role="magelib" />
-    <file md5sum="8caf392c3a41b31ecf4a239d406576fc" name="TagCloudAdapter.php" role="magelib" />
+    <file md5sum="52b9e6895d3962a5955b9d2c06c0df6d" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="bb1da5b3906780058a6bd5360d4a8148" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="1724b169236360e7aa0a64c34f7a8f9b" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="70c55b093c308a4a3ce83ccd3db6ec2f" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Abstract -->
    <dir name="\FACTFinder\Http">
-    <file md5sum="a79aa4a0e3325340c3390ecb7540cb21" name="DataProvider.php" role="magelib" />
-    <file md5sum="ce5e0e6c170a2c47bb64283d762115b8" name="ScicAdapter.php" role="magelib" />
-    <file md5sum="8f9a6f8fe735599ec23bcfb411b59edb" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="b0ab31af624f1e98fa1b52d11aacb4ca" name="DataProvider.php" role="magelib" />
+    <file md5sum="fa005a2d7aa3eb6af971a254fb8cb6e9" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="ffaba81d3345a1738f41a21cb9f36670" name="SuggestAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Http -->
    <dir name="\FACTFinder\Xml64">
-    <file md5sum="d3ce38946d9df3c96e117b1a0a196b0c" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="74611d3ededc32f28d4f96b47382824f" name="SearchAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml64 -->
    <dir name="\FACTFinder\Xml65">
     <file md5sum="d46bff70dfd26c45d6b431fdf06a5712" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="c8a35086df9615d17f49dd5b2154fb3e" name="SearchAdapter.php" role="magelib" />
-    <file md5sum="c35fb8d7511fa65881a6599b724883d7" name="SuggestAdapter.php" role="magelib" />
-    <file md5sum="14ebd0423355fa8aea249734b78e956f" name="TagCloudAdapter.php" role="magelib" />
+    <file md5sum="7edb122839cec7ed6a6961e450009676" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="f248e70d73b8404fc87d917b7c253d42" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="2e01500c481f1645697c1c9486c77d2e" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml65 -->
    <dir name="\FACTFinder\Xml66">
     <file md5sum="94cd09e149d85182a6b13773b4c6c601" name="RecommendationAdapter.php" role="magelib" />
@@ -98,82 +98,90 @@
     <file md5sum="52a7937a07070f2477ccdb2185cdaab8" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml66 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="98832567c9ba31f85fa10f04e42623c1" name="Layer.php" role="magecommunity" />
-    <file md5sum="cd833abf02ed5ede65ea7eb3cf5adddd" name="Scic.php" role="magecommunity" />
+    <file md5sum="5bf52dd09dcac6df924c3b3dd3c4656a" name="Layer.php" role="magecommunity" />
+    <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml">
-    <file md5sum="ff50199c3680c00e33fc7d3d5de6b935" name="Cockpit.php" role="magecommunity" />
+    <file md5sum="7f5f3e8521f002c8c7b5a2d5f72cf5e1" name="Cockpit.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml -->
+   <dir name="\Flagbit\FactFinder\Block\Adminhtml\Form\Field">
+    <file md5sum="2e60d7473163fa523f10b2d0c441fe24" name="Attribute.php" role="magecommunity" />
+    <file md5sum="cbaf317aa5ce4417cfcd02a6c4f36486" name="Attributes.php" role="magecommunity" />
+   </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml\Form\Field -->
    <dir name="\Flagbit\FactFinder\Block\Campaign">
-    <file md5sum="4a35f437788be21ecdf64afd258a1ded" name="Feedback.php" role="magecommunity" />
+    <file md5sum="ed7662cb3e373efb66830178ff31585d" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
    <dir name="\Flagbit\FactFinder\Block\Cart">
-    <file md5sum="02f78857f2ee33e4e872baea2c77ba47" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="73e43a5c9048a1d139910dc7a2199952" name="Crosssell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Filter">
-    <file md5sum="6110983b301878e0a19073b17ce28e96" name="Slider.php" role="magecommunity" />
+    <file md5sum="159d3e1b403625dbbb970e5e7ada4ec7" name="Slider.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Filter -->
    <dir name="\Flagbit\FactFinder\Block\Layer">
-    <file md5sum="47f913854a3f715d516086e9f792836d" name="Abstract.php" role="magecommunity" />
+    <file md5sum="f53a3e2d6ce0da4afee58b4ea806a342" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Layer -->
    <dir name="\Flagbit\FactFinder\Block\Product\List">
-    <file md5sum="e9bc4fd193bff8fe24c633c208d87616" name="Crosssell.php" role="magecommunity" />
-    <file md5sum="00e0074dc3a9f49b4f2fd13ee0175c7f" name="Upsell.php" role="magecommunity" />
+    <file md5sum="3c07706a13c6f6058bd34d9fe6fe861d" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="d50b08f248736bd2ef471f02e220a8eb" name="Upsell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Product\List -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog">
-    <file md5sum="dc5ad07de699fb831941cfe417e5c55b" name="Search.php" role="magecommunity" />
+    <file md5sum="662f7b0df8d21626bf6193906aed5162" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\XmlConnect\Catalog -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog\Product">
-    <file md5sum="3af5dac4ecad3761511aa4807c4a79d8" name="List.php" role="magecommunity" />
+    <file md5sum="79103c53bbaa03f02ed8a78554dcc791" name="List.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\XmlConnect\Catalog\Product -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog\Search">
-    <file md5sum="77e20bb08a96dd9e29a39879f307c934" name="Suggest.php" role="magecommunity" />
+    <file md5sum="5c7ef36939885a14ee0644cbb91a945d" name="Suggest.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\XmlConnect\Catalog\Search -->
    <dir name="\Flagbit\FactFinder\controllers">
-    <file md5sum="2e088588b371dd66320ef5be578f7f74" name="ExportController.php" role="magecommunity" />
-    <file md5sum="f712ee5092feed5510ea55bb370ce618" name="ProxyController.php" role="magecommunity" />
+    <file md5sum="01a45ff00a9b5a95ae397fd555507592" name="ExportController.php" role="magecommunity" />
+    <file md5sum="587f159bad384600c724568a61546b66" name="ProxyController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers -->
    <dir name="\Flagbit\FactFinder\controllers\Adminhtml\Factfinder">
-    <file md5sum="7369f2fff764a51328e1c712d122d68d" name="CockpitController.php" role="magecommunity" />
+    <file md5sum="4c8665feaf14c38e6ba2384db496c95a" name="CockpitController.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\documentation">
     <file md5sum="b4711171c625caaa8996a6a09e0eaaae" name="Installation_FACT-Finder_Magento_de.pdf" role="magecommunity" />
     <file md5sum="d4bef19418ee33a223fbda2d45cca686" name="Installation_FACT-Finder_Magento_en.pdf" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
-    <file md5sum="3d262871a3a3afe71d7218a0ba43fb50" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="ace778f0b4a2305bc3aa04d5e37bb388" name="config.xml" role="magecommunity" />
-    <file md5sum="811ac952bda80330343843ebd601f9dc" name="system.xml" role="magecommunity" />
+    <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
+    <file md5sum="2884c8db3cbafdcad656978f889c6cdb" name="config.xml" role="magecommunity" />
+    <file md5sum="4e5798ad559a107d2136ed07f51aa0ad" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
-    <file md5sum="f421a64ce68f842d2aa3972a7f35562d" name="Backend.php" role="magecommunity" />
-    <file md5sum="b7e50e42c6cf2dccb7fff9ad74c7e050" name="Data.php" role="magecommunity" />
-    <file md5sum="6631737a354db8b3c1186bde527e3975" name="Debug.php" role="magecommunity" />
-    <file md5sum="c611b2a25d40332944794451a3a5a67c" name="Search.php" role="magecommunity" />
+    <file md5sum="57771ad274e7e0ea63b9a934b3757f04" name="Backend.php" role="magecommunity" />
+    <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
+    <file md5sum="af45ba164cdc47f3d076a390718fedb2" name="Debug.php" role="magecommunity" />
+    <file md5sum="137bf6524a0c1d88bcd555cf2e749815" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="34cbef991e7adcb6958ff672949e2b03" name="Adapter.php" role="magecommunity" />
-    <file md5sum="ceb2353cb681a6f6b5bd72c3528219e4" name="Layer.php" role="magecommunity" />
-    <file md5sum="7320258c8a72031be35180a5d67d9cf9" name="Observer.php" role="magecommunity" />
-    <file md5sum="cbff8be3dd51d026dc98aa2535fb2549" name="Processor.php" role="magecommunity" />
+    <file md5sum="8beab65115205df26e7e7d3720f1e2cb" name="Adapter.php" role="magecommunity" />
+    <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
+    <file md5sum="b2de388fe066446531f8aa2b9b01c999" name="Observer.php" role="magecommunity" />
+    <file md5sum="8b9a5715afead095f7cb03844ceaf7f9" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
-    <file md5sum="7bed26b43b252b65c1188f0004f50053" name="Price.php" role="magecommunity" />
-    <file md5sum="c08130321b10c48b361dddee85a3040f" name="Product.php" role="magecommunity" />
-    <file md5sum="a07efecd3300c1367125f7e303b159df" name="Stock.php" role="magecommunity" />
+    <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
+    <file md5sum="17d9084d9862b8666e515f3799b5fbd4" name="Product.php" role="magecommunity" />
+    <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
     <file md5sum="0a0505e719ca55320da35c7510b82d3a" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer -->
    <dir name="\Flagbit\FactFinder\Model\Layer\Filter">
-    <file md5sum="55a2031b543d28127760d1aea21e88c2" name="Attribute.php" role="magecommunity" />
     <file md5sum="1bb443a7546be810947b89d79f4d0205" name="Item.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer\Filter -->
+   <dir name="\Flagbit\FactFinder\Model\Layer\Filter\Attribute">
+    <file md5sum="2ad710352f1803d15ba056cd93d519f1" name="Abstract.php" role="magecommunity" />
+    <file md5sum="f6dce5ea64da9dfb3458ae9ff4b58a7b" name="Catalog.php" role="magecommunity" />
+    <file md5sum="75536576aaaa0186f166550ee746ae04" name="Catalogsearch.php" role="magecommunity" />
+   </dir> <!-- /\Flagbit\FactFinder\Model\Layer\Filter\Attribute -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Campaign\Pushedproducts">
-    <file md5sum="7388c24fb12cdd47ae3f37c32c9c02bd" name="Collection.php" role="magecommunity" />
+    <file md5sum="c966a40c7569b70cef93e47781b95190" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Campaign\Pushedproducts -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Product\Attribute">
-    <file md5sum="0ebfad0e9bfd04a25886adfca36b9917" name="Collection.php" role="magecommunity" />
+    <file md5sum="d9000f3e9c709fa63313b15f34803d74" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Product\Attribute -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Product\Recommendation">
     <file md5sum="7185cb531cce76f8d7a7de9002059098" name="Collection.php" role="magecommunity" />
@@ -185,36 +193,37 @@
     <file md5sum="5f6b0b6a50838929065ebd941cedce42" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Scic\Queue -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Search">
-    <file md5sum="332c859176f93a7f1553e839d77d2b5e" name="Collection.php" role="magecommunity" />
-    <file md5sum="0d16d096efb818ca9ec1d6047d293d20" name="Engine.php" role="magecommunity" />
+    <file md5sum="12356224ac22113428b38120a1a002a6" name="Collection.php" role="magecommunity" />
+    <file md5sum="88a56eb3b4587d87bb1152476b64036e" name="Engine.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Search -->
    <dir name="\Flagbit\FactFinder\Model\Scic">
     <file md5sum="828d391339a22c15ad74ae1a2e784b41" name="Queue.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Scic -->
    <dir name="\Flagbit\FactFinder\Model\System\Config\Backend">
-    <file md5sum="2d2158d9a680a8b6a13655fce5fc03f6" name="Enabled.php" role="magecommunity" />
+    <file md5sum="8259883090dc4bca9b858d047983e736" name="Attributes.php" role="magecommunity" />
+    <file md5sum="3b4d1f4b37d7ddba9768a7da6e3fc778" name="Enabled.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\System\Config\Backend -->
    <dir name="\Flagbit\FactFinder\Model\System\Config\Source">
-    <file md5sum="e9d719da382007b41911e7ba1d8bf939" name="Authtype.php" role="magecommunity" />
-    <file md5sum="cf792cfe8c84b67b94666900f6a268d0" name="Identifier.php" role="magecommunity" />
+    <file md5sum="5bc0b1c745782cc51d44d56299059bcb" name="Authtype.php" role="magecommunity" />
+    <file md5sum="cec45238f0e28a1bf66d10dee513c2ca" name="Identifier.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\System\Config\Source -->
    <dir name="\Flagbit\FactFinder\sql\factfinder_setup">
     <file md5sum="1342320595048cd96659c454381cfbb4" name="mysql4-install-3.2.0.php" role="magecommunity" />
     <file md5sum="3d5276dfe971a6bd48aa8e2a085de004" name="mysql4-upgrade-3.2.0-3.2.1.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\sql\factfinder_setup -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="4c58c3fd3c6540d03dc3bb83b4ee66c4" name="factfinder.xml" role="magedesign" />
+    <file md5sum="f65ce26acc34c268c1a656b5cc93f222" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
-    <file md5sum="1e95de3325d50950418bbdfba8ebd5c2" name="form.mini.phtml" role="magedesign" />
-    <file md5sum="4b4636c1ecb90ecf9fae3e6e50c9c58b" name="logo.phtml" role="magedesign" />
-    <file md5sum="4160a51279fd8334bb65bdf6a9aac12a" name="scic.phtml" role="magedesign" />
+    <file md5sum="54045a15eb78bea151f518303773ed0e" name="form.mini.phtml" role="magedesign" />
+    <file md5sum="7a40d67bf648e65345f69b2cf9d3c6b6" name="logo.phtml" role="magedesign" />
+    <file md5sum="3553a9f0f3c66015610f4c7f1d770a51" name="scic.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder -->
    <dir name="\frontend\base\default\template\factfinder\campaign">
     <file md5sum="a44c2521e961cfb62b4b89ad0cb71b15" name="feedback.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\campaign -->
    <dir name="\frontend\base\default\template\factfinder\filter">
-    <file md5sum="a801167a6959d153df4fdc8077c88f4e" name="slider.phtml" role="magedesign" />
+    <file md5sum="80e4e9e1c81437fe41b6a52d98e73549" name="slider.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\filter -->
    <dir name="\js\factfinder">
     <file md5sum="0473a3ea88f08797737814c7ffbeba18" name="jXHR.js" role="mage" />
@@ -338,7 +347,22 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2012-02-20</date>
+   <date>2012-04-13</date>
+   <license>GPL</license>
+   <notes>
+- initial Release
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.2.6</release>
+    <api>3.2.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-04-13</date>
    <license>GPL</license>
    <notes>
 - initial Release

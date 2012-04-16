@@ -26,7 +26,7 @@ class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block
     protected function _prepareData()
     {
 
-        if (!Mage::getStoreConfigFlag('factfinder/config/crosssell')) {
+        if (!Mage::getStoreConfigFlag('factfinder/activation/crosssell')) {
             return parent::_prepareData();
         }
         try {

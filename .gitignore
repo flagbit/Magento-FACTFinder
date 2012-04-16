@@ -1,0 +1,7 @@
+.vagrant/.vagrant
+*.cache.properties
+.buildpath
+.settings/**/*
+.project
+.settings
+build

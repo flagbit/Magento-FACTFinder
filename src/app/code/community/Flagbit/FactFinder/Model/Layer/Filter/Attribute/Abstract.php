@@ -18,7 +18,7 @@
  * @author    Joerg Weller <weller@flagbit.de>
  * @version   $Id$
  */
-class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch_Model_Layer_Filter_Attribute {
+class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Catalog_Model_Layer_Filter_Attribute {
 	
 	/**
 	 * Array of Magento Layer Filter Items
@@ -41,7 +41,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
      */
     public function apply(Zend_Controller_Request_Abstract $request, $filterBlock)
     {
-        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::apply($request, $filterBlock);
     	}     	
 		$this->_getItemsData();
@@ -54,8 +54,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
         	}
         }
         return $this;
-    }
-
+    }   
 	
     /**
      * Create filter item object
@@ -68,7 +67,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
     protected function _createItem($label, $value, $count=0)
     {
         
-        if (!Mage::helper('factfinder/search')->getIsEnabled()) {
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')) {
             return parent::_createItem($label, $value, $count);
         }
         
@@ -87,7 +86,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute extends Mage_CatalogSearch
      */
     protected function _getItemsData()
     {
-        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
     		return parent::_getItemsData();
     	}    	
     	
