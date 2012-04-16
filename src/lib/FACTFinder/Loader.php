@@ -37,8 +37,6 @@ if (function_exists('__autoload') && array_search('__autoload', spl_autoload_fun
     spl_autoload_register('__autoload');
 }
 
-include LIB_DIR . DS . 'log4php' . DS . 'Logger.php';
-
 /**
  * shortcut / alias for the loader class
  *
@@ -56,6 +54,7 @@ class FACTFinder_Loader
 {
     protected static $singletons = array();
     protected static $classNames = array();
+    protected static $logger = null;
 
     public static function autoload($classname)
     {
@@ -128,14 +127,14 @@ class FACTFinder_Loader
     }
 
     /**
-     * configures the static Logger class supplied by log4php
+     * sets the static Logger class from code
      * be aware that only the root loggers configuration will affect how the framework's interna are logged
      *
      * @param    string file name of the configuration file
      */
-    public static function configureLogger($fileName)
+    public static function setLogger(FACTFinder_Logger_LoggerInterface $logger)
     {
-        Logger::configure($fileName);
+        self::$logger = $logger;
     }
     
     /**
@@ -147,10 +146,11 @@ class FACTFinder_Loader
      */
     public static function getLogger($name = null)
     {
-        if ($name == null)
-            return Logger::getRootLogger();
-        else
-            return Logger::getLogger($name);
+        if (self::$logger == null) {
+            self::$logger = new FACTFinder_Logger_BlackHole();
+        }
+        
+        return self::$logger;
     }
 
     /**

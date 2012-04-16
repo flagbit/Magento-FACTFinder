@@ -83,6 +83,12 @@ class Flagbit_FactFinder_Model_Adapter
      * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
+    
+    
+    public function __construct()
+    {
+        FF::setLogger(Mage::helper('factfinder/debug'));
+    }
 
     /**
      * get FactFinder SearchAdapter
