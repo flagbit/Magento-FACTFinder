@@ -67,6 +67,12 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_recommendationAdapter = null;
 
     /**
+     * FACT-Finder TagCloudadapter
+     * @var FACTFinder_Abstract_TagCloudAdapter
+     */
+    protected $_tagCloudAdapter = null;
+
+    /**
      * FACT-Finder After Search Navigation
      * @var array
      */
@@ -331,6 +337,40 @@ class Flagbit_FactFinder_Model_Adapter
         $this->_setParam('format', 'jsonp', false);
 
         return $this->_getSuggestAdapter()->getSuggestions();
+    }
+    
+    /**
+    * get FactFinder TagCloudAdapter
+    *
+    * @return FACTFinder_Abstract_TagCloudAdapter
+    */
+    protected function _getTagCloudAdapter()
+    {
+        if ($this->_tagCloudAdapter == null) {
+            $config              = $this->_getConfiguration();
+            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
+            $dataProvider        = $this->_getDataProvider();
+            $this->_tagCloudAdapter = FF::getSingleton(
+                'xml67/tagCloudAdapter',
+                $dataProvider,
+                $this->_getParamsParser(),
+                $encodingHandler
+            );
+    
+        }
+    
+        return $this->_tagCloudAdapter;
+    }
+
+    /**
+     * get tag cloud information as Array
+     *
+     * @param string $query
+     * @return array
+     */
+    public function getTagCloud()
+    {
+        return $this->_getTagCloudAdapter()->getTagCloud();
     }
 
     /**

@@ -37,6 +37,7 @@
             </factfinder>
             <catalogsearch>
                 <rewrite>
+                    <term>Flagbit_FactFinder_Block_TagCloud</term>
                     <layer>Flagbit_FactFinder_Block_Layer</layer>
                 </rewrite>
             </catalogsearch>
