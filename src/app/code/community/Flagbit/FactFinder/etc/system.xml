@@ -183,8 +183,8 @@
                             <frontend_model>factfinder/adminhtml_form_field_attributes</frontend_model>
                             <backend_model>factfinder/system_config_backend_attributes</backend_model>
                             <sort_order>50</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                        </attributes>                        
                     </fields>
