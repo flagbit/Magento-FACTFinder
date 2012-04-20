@@ -722,7 +722,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $dataprovider = $this->_getDataProvider();
         $dataprovider->setType('Management.ff');
-        return $dataprovider->getAuthenticationUrl();
+        return $dataprovider->getNonAuthenticationUrl();
     }
 
     /**
