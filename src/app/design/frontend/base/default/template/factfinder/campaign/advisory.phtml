@@ -1,0 +1,11 @@
+<?php if ($questions = $this->getActiveQuestions()): ?>
+    <dl class="factfinder-advisory">
+    <?php foreach ($questions as $question): ?>
+    <dt class="factfinder-advisory-question"><?php echo $question->getText() ?></dt>
+    <?php foreach ($question->getAnswers() as $answer): ?>
+        <dd class="factfinder-advisory-answer"><a href="<?php echo $answer->getParams() ?>"><?php echo $answer->getText() ?></a></dd>
+    <?php endforeach; ?>
+
+    <?php endforeach; ?>
+    </dl>
+<?php endif; ?>

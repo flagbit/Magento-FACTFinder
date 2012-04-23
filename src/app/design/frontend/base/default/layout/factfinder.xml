@@ -37,6 +37,7 @@
             <block type="factfinder/campaign_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaign/feedback.phtml">
                 <action method="setTextNumber"><number>1</number></action>
             </block>
+            <block type="factfinder/campaign_advisory" after="factfinder.campaign.feedback" template="factfinder/campaign/advisory.phtml" />
             <block type="core/template" name="factfinder.logo" template="factfinder/logo.phtml"/>
         </reference>
     </catalogsearch_result_index>    
