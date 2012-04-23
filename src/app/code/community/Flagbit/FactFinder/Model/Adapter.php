@@ -704,7 +704,7 @@ class Flagbit_FactFinder_Model_Adapter
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
             
-            if (in_array(Mage::helper('core/http')->getRemoteAddr(), explode(';', Mage::getStoreConfig('factfinder/config/internal_ip')))) {
+			if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
                 $params['log'] = 'internal';
             }
             
@@ -722,7 +722,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $dataprovider = $this->_getDataProvider();
         $dataprovider->setType('Management.ff');
-        return $dataprovider->getAuthenticationUrl();
+        return $dataprovider->getNonAuthenticationUrl();
     }
 
     /**

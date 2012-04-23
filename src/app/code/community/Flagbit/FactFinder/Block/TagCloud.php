@@ -25,7 +25,6 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
                 $termArray['url'] = $term->getUrl();
                 $termArray['popularity'] = $term->getWeight();
                 $termArray['ratio'] = $term->getWeight();
-                $termArray['ratio'] = $term->getWeight();
                 
                 if ($term->getWeight() > $this->_maxPopularity) {
                     $this->_maxPopularity = $term->getWeight();

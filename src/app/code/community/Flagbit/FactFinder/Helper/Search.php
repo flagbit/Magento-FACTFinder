@@ -67,7 +67,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
                     $result = Mage::getStoreConfig('factfinder/activation/campaign');
                 break;
                 case 'clicktracking':
-                    $result = Mage::getStoreConfig('factfinder/activation/clicktracking');
+                    $result = Mage::getStoreConfig('factfinder/export/clicktracking');
                 break;
                 case 'tagcloud':
                     $result = Mage::getStoreConfig('factfinder/activation/tagcloud');
