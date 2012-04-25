@@ -25,7 +25,8 @@
  </stability>
  <license>GPL</license>
  <notes>
-- initial Release
+new features: FF Tagcloud; FF Management reachable by Link instead of iframe; each FF module can be enabled/disabled; IP Logging; HTTP/Browser caching to prevent duplicate request on page-back;
+several bugfixes: category parameters read correctly from url; category export doesn't export categories from other stores; etc.
  </notes>
  <contents>
   <dir name="/">
@@ -320,7 +321,7 @@
    <date>2011-11-02</date>
    <license>GPL</license>
    <notes>
-- initial Release
+FIX: correct export multiple filter-attributes 
    </notes>
   </release>
   <release>
@@ -335,7 +336,7 @@
    <date>2011-11-17</date>
    <license>GPL</license>
    <notes>
-- initial Release
+- closed XSS bug - added English documentation 
    </notes>
   </release>
   <release>
@@ -347,10 +348,10 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2012-04-13</date>
+   <date>2012-02-28</date>
    <license>GPL</license>
    <notes>
-- initial Release
+- fixed encoding problem with one-touch-slider - checkout tracking with entity-id works now correctly 
    </notes>
   </release>
   <release>
@@ -365,7 +366,7 @@
    <date>2012-04-13</date>
    <license>GPL</license>
    <notes>
-- initial Release
+BUGFIX: module handles slashes in category names correctly
    </notes>
   </release>
  </changelog>
