@@ -115,14 +115,14 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
-        $_query = $helper->getQuery()->getQueryText();
 
         switch($_request->getModuleName()){
-
+			
             case "xmlconnect":
+				$_query = $helper->getQueryText();
                 $this->_setParam('idsOnly', 'true')
                     ->_setParam('productsPerPage', $_request->getParam('count'))
-                    ->_setParam('query', $helper->getQuery()->getQueryText())
+                    ->_setParam('query', $_query)
                     ->_setParam('page', ($_request->getParam('offset') / $_request->getParam('count')) + 1);
 
                 // add Sorting Param
@@ -170,7 +170,11 @@ class Flagbit_FactFinder_Model_Adapter
 
             case "catalogsearch":
             default:
-                    // add Default Params
+				if ($_request->getModuleName() == 'catalogsearch') {
+					$_query = $helper->getQueryText();
+				}
+				
+                // add Default Params
                 $this->_setParam('idsOnly', 'true')
                     ->_setParam('productsPerPage', $helper->getPageLimit())
                     ->_setParam('query', $_query)
