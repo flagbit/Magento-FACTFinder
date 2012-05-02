@@ -42,6 +42,12 @@
         </reference>
     </catalogsearch_result_index>    
     
+    <catalog_product_view>
+    	<reference name="content">
+            <block type="factfinder/campaign_product_advisory" before="product.info" template="factfinder/campaign/product/advisory.phtml" />
+    	</reference>
+    </catalog_product_view>
+    
     <factfinder_clicktracking_enabled>
         <reference name="head">
             <action method="addJs"><script>factfinder/scic.js</script></action>
