@@ -247,21 +247,24 @@ class Flagbit_FactFinder_Model_Observer
         }
         
         Mage::register('redirectAlreadyChecked', 1);
-        $block = Mage::app()->getLayout()->getBlock('search_result_list');
         
-        if (!$block instanceof Mage_Catalog_Block_Product_List) {
-            return;
-        }
-        
-        $collection = $block->getLoadedProductCollection();
-        $collection->load();
-        
-        if (count($collection) == 1) {
-            $product = $collection->getFirstItem();
-            $response = Mage::app()->getResponse();
-            $response->setRedirect($product->getProductUrl(false));
-            $response->sendResponse();
-            exit;
+        if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
+            $block = Mage::app()->getLayout()->getBlock('search_result_list');
+            
+            if (!$block instanceof Mage_Catalog_Block_Product_List) {
+                return;
+            }
+            
+            $collection = $block->getLoadedProductCollection();
+            $collection->load();
+            
+            if (count($collection) == 1) {
+                $product = $collection->getFirstItem();
+                $response = Mage::app()->getResponse();
+                $response->setRedirect($product->getProductUrl(false));
+                $response->sendResponse();
+                exit;
+            }
         }
         
         $response = Mage::app()->getResponse();
