@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 # /usr/local/bin/mageinstall
 #
 
@@ -14,6 +14,13 @@ echo "Usage: `basename $0` magentoversion --with-sample-data"
    cat versionlist.txt
    rm versionlist.txt
    exit ${ebadargs}
+fi
+
+if [ -d /usr/local/src/magento/tmp ];
+then
+echo [-] tmp directory exists
+else
+mkdir /usr/local/src/magento/tmp
 fi
 cd /usr/local/src/magento/tmp;
 
@@ -53,12 +60,6 @@ dbroot="vagrant"
 dbhost="localhost"
 dbname=${1}
 dbuser=${1}
-
-if [[ "$dbuser" == magento-enterprise* ]]
-then
-    dbuser=`echo me${dbuser//magento\-enterprise/}`
-fi
-
 dbpass="vagrant1"
 url="http://localhost:8080/${entity}"
 version=${1}
@@ -126,6 +127,7 @@ $mysql -uroot -p${dbroot} -e "${sql}"
     if [ ${sampleData} = "true" ]
     then
 echo [+] extracting Sample-Data
+sudo wget --output-document ${versionspath}/magento-sample-data-1.2.0.tar.gz http://www.magentocommerce.com/downloads/assets/1.2.0/magento-sample-data-1.2.0.tar.gz 
 
 sudo tar -zxf ${versionspath}/magento-sample-data-1.2.0.tar.gz -C /var/www/${version}/
 sudo mv /var/www/${version}/magento-sample-data-1.2.0/media/* /var/www/${version}/media/
