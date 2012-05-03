@@ -47,6 +47,12 @@
             <block type="factfinder/campaign_product_advisory" before="product.info" template="factfinder/campaign/product/advisory.phtml" />
     	</reference>
     </catalog_product_view>
+
+    <checkout_cart_index>
+    	<reference name="checkout.cart.form.before">
+            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" />
+    	</reference>
+    </checkout_cart_index>
     
     <factfinder_clicktracking_enabled>
         <reference name="head">
