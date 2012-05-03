@@ -12,37 +12,33 @@
  * 
  * @category  Mage
  * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @copyright Copyright (c) 2012 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Mike Becker <mike.becker@flagbit.de>
  * @version   $Id$
  */
 class Flagbit_FactFinder_Block_Campaign_Product_Advisory extends Mage_Core_Block_Template
 {
     /**
-    * get Campaign Text
+    * get campaign questions and answers
     *
-    * @return string
+    * @return array $questions
     */
     public function getActiveQuestions()
     {
+        if (!Mage::getStoreConfig('factfinder/activation/campaign') || !Mage::registry('current_product')) {
+            return array();
+        }
+        
         $questions = array();
     
+        // get productcampaign adapter and set current sku
         $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
-        // set current productid
-        $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getId()));
+        $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getSku()));
         $productCampaignAdapter->makeProductCampaign();
         
-        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
-            $_campaigns = Mage::getSingleton('factfinder/adapter')->getProductCampaigns();
-            $_campaigns = $productCampaignAdapter->getCampaigns();
-            Zend_Debug::dump(array(
-                'class' => __CLASS__,
-                'method' => __FUNCTION__,
-                'campaigns' => $_campaigns
-            ));
-            if($_campaigns && $_campaigns->hasActiveQuestions()){
-                $questions = $_campaigns->getActiveQuestions();
-            }
+        $_campaigns = $productCampaignAdapter->getCampaigns();
+        if($_campaigns && $_campaigns->hasActiveQuestions()){
+            $questions = $_campaigns->getActiveQuestions();
         }
     
         return $questions;
