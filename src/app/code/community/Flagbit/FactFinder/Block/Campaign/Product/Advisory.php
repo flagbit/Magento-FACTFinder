@@ -25,22 +25,20 @@ class Flagbit_FactFinder_Block_Campaign_Product_Advisory extends Mage_Core_Block
     */
     public function getActiveQuestions()
     {
-        if (!Mage::getStoreConfig('factfinder/activation/campaign') || !Mage::registry('current_product')) {
-            return array();
-        }
-        
         $questions = array();
-    
-        // get productcampaign adapter and set current sku
-        $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
-        $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getSku()));
-        $productCampaignAdapter->makeProductCampaign();
         
-        $_campaigns = $productCampaignAdapter->getCampaigns();
-        if($_campaigns && $_campaigns->hasActiveQuestions()){
-            $questions = $_campaigns->getActiveQuestions();
+        if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && Mage::registry('current_product')) {
+            // get productcampaign adapter and set current sku
+            $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
+            $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())));
+            $productCampaignAdapter->makeProductCampaign();
+            
+            $_campaigns = $productCampaignAdapter->getCampaigns();
+            if($_campaigns && $_campaigns->hasActiveQuestions()){
+                $questions = $_campaigns->getActiveQuestions();
+            }
         }
-    
+        
         return $questions;
     }
 }
