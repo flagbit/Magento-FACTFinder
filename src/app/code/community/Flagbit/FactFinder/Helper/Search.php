@@ -197,5 +197,15 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     public function getQuery()
     {
         return Mage::helper('catalogsearch')->getQuery();
-    }    
+    }
+    
+    /**
+     * Retrieve query model object
+     *
+     * @return String
+     */
+    public function getQueryText()
+    {
+        return Mage::helper('catalogsearch')->getQueryText();
+    }
 }
