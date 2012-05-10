@@ -131,6 +131,10 @@ class Flagbit_FactFinder_Model_Adapter
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
 
+		if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
+			$this->_setParam('log', 'internal');
+		}
+
         switch($_request->getModuleName()){
 			
             case "xmlconnect":
@@ -710,10 +714,6 @@ class Flagbit_FactFinder_Model_Adapter
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
-            
-			if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
-                $params['log'] = 'internal';
-            }
             
             $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
         }
