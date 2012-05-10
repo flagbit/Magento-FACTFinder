@@ -91,9 +91,12 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_currentFactfinderCategoryPath = null;
     
     
-    public function __construct()
+    public function __construct(FACTFinder_Logger_LoggerInterface $logger = null)
     {
-        FF::setLogger(Mage::helper('factfinder/debug'));
+		if ($logger == null) {
+			$logger = Mage::helper('factfinder/debug');
+		}
+        FF::setLogger($logger);
     }
 
     /**
