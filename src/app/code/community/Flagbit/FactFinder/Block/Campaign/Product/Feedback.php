@@ -28,12 +28,10 @@ class Flagbit_FactFinder_Block_Campaign_Product_Feedback extends Mage_Core_Block
         $feedback = array();
         
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && Mage::registry('current_product')) {
-            // get productcampaign adapter and set current sku
-            $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
-            $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())));
-            $productCampaignAdapter->makeProductCampaign();
+            $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
+                Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
+            ));
             
-            $_campaigns = $productCampaignAdapter->getCampaigns();
             if($_campaigns && $_campaigns->hasFeedback()){
                 $feedback = $_campaigns;
             }

@@ -208,4 +208,21 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     {
         return Mage::helper('catalogsearch')->getQueryText();
     }
+    
+    
+    /**
+     * return product campaings
+     * 
+     * @param array $productIds
+     * @return FACTFinder_CampaignIterator
+     */
+    public function getProductCampaigns($productIds)
+    {
+        // get productcampaign adapter and set product id or sku array
+        $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
+        $productCampaignAdapter->setProductIds($productIds);
+        $productCampaignAdapter->makeProductCampaign();
+        
+        return $productCampaignAdapter->getCampaigns();
+    }
 }

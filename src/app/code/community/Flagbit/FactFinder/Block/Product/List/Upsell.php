@@ -106,11 +106,10 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
     {
         $pushedProducts = array();
         
-        $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
-        $productCampaignAdapter->setProductIds(array(Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())));
-        $productCampaignAdapter->makeProductCampaign();
-    
-        $_campaigns = $productCampaignAdapter->getCampaigns();
+        $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
+            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
+        ));
+
         if($_campaigns && $_campaigns->hasPushedProducts()){
             $pushedProducts = $_campaigns->getPushedProducts();
         }
