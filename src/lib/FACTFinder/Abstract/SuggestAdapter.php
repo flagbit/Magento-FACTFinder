@@ -4,7 +4,7 @@
  * adapter for factfinder's suggest
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: SuggestAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_SuggestAdapter extends FACTFinder_Abstract_Adapter

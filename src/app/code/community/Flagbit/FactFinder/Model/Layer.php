@@ -39,8 +39,8 @@ class Flagbit_FactFinder_Model_Layer extends Flagbit_FactFinder_Model_Layer_Abst
         // handle search
         if($this instanceof Mage_CatalogSearch_Model_Layer){
             if(is_null($this->_productCollection)){
-			    $this->_productCollection = Mage::getResourceModel('factfinder/search_collection');
-			    $this->prepareProductCollection($this->_productCollection);
+                $this->_productCollection = Mage::getResourceModel('factfinder/search_collection');
+                $this->prepareProductCollection($this->_productCollection);
             }
             $collection = $this->_productCollection;
 

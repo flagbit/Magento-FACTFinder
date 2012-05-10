@@ -5,7 +5,7 @@
  * FACTFinder_Record objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Result.php 25893 2010-06-29 08:19:43Z rb $
  * @category  Collection
  * @package   FACTFinder\Common
  */

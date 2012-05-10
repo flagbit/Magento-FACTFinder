@@ -4,7 +4,7 @@
  * tag cloud adapter using the xml interface
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Xml65
  */
 class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapter
@@ -16,6 +16,7 @@ class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapt
      **/
     public function init()
     {
+        $this->log->info("Initializing new tag cloud adapter.");
         $this->getDataProvider()->setType('WhatsHot.ff');
         $this->getDataProvider()->setParam('do', 'getTagCloud');
     }
@@ -41,7 +42,7 @@ class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapt
     {
         $tagCloud = array();
         $xmlTagCloud = $this->getData();
-        if (!empty($xmlTagCloud->entry)) {
+        if (!empty($xmlTagCloud)) {
             $encodingHandler = $this->getEncodingHandler();
             $ffparams = $this->getParamsParser()->getFactfinderParams();
             foreach($xmlTagCloud->entry AS $xmlEntry) {

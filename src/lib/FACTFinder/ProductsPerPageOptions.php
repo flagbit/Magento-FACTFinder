@@ -5,7 +5,7 @@
  * object, you will get FACTFinder_Item objects, where each represents one products-per-page option.
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: ProductsPerPageOptions.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  **/
 class FACTFinder_ProductsPerPageOptions implements IteratorAggregate

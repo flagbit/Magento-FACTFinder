@@ -35,6 +35,7 @@ class FACTFinder_Configuration implements FACTFinder_Abstract_Configuration
 
     /**
      * @return boolean
+     * @deprecated
      */
     public function isDebugEnabled() {
         return $this->zendConfig->debug == 'true';

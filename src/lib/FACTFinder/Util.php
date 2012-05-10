@@ -4,7 +4,7 @@
  * util class for some repeated issues which do not fit to a single class
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Util.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  **/
 class FACTFinder_Util

@@ -4,7 +4,7 @@
  * represents a FACT-Finder data record
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Record.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
 **/
 class FACTFinder_Record
@@ -31,7 +31,7 @@ class FACTFinder_Record
      * @param int originalPosition (optional)
      * @param array fieldValues (optional)
     **/
-    public function __construct($id, $similarity, $position = 0, $origPosition = 0, array $fieldValues = null)
+    public function __construct($id, $similarity = 100, $position = 0, $origPosition = 0, array $fieldValues = null)
     {
         $this->id = trim($id);
         $this->similarity = doubleval($similarity);
@@ -198,7 +198,7 @@ class FACTFinder_Record
     /**
      * set a value to field defined by the argument $field, which can be a fieldnumber or a fieldname
      *
-     * @throws Exception if the argument $field is either an integer nor a string
+     * @throws Exception if the argument $field is neither an integer nor a string
      * @param int|string fieldnumber or fieldname
      * @param string fieldvalue
      * @return void
@@ -216,6 +216,7 @@ class FACTFinder_Record
                 $this->fieldValues[$this->fieldNames[$field]] = $value;
             }
         } else {
+            $this->log->error("Could not refer to a field using ".gettype($field));
             throw new Exception("it is not (yet) possible to refer to a field using ".gettype($field));
         }
     }

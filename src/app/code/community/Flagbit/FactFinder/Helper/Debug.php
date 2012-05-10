@@ -20,6 +20,7 @@
  * @version   $Id$
  */
 class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
+    implements FACTFinder_Logger_LoggerInterface
 {
     /**
      * Module Configuration File
@@ -62,6 +63,16 @@ class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
         }catch (Exception $e){}
 
         return $this;
+    }
+    
+    public function error($error)
+    {
+        return $this->log('ERROR: ' . $error);
+    }
+    
+    public function info($message)
+    {
+        return $this->log('INFO: ' . $message);
     }
 
     /**

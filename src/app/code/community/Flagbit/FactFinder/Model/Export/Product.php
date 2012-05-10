@@ -45,6 +45,12 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected $_exportAttributes = null;
     
+	/**
+	 * helper to generate the image urls
+     * @var Mage_Catalog_Helper_Image
+	 */
+	protected $_imageHelper = null;
+    
     /**
      * add CSV Row
      * 
@@ -99,7 +105,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
                 $headerDefault[] = 'image';
                 $headerDefault[] = 'deeplink';
-                $imageHelper = Mage::helper('catalog/image');
+                $this->_imageHelper = Mage::helper('catalog/image');
             }
             
             // get dynamic Attributes
@@ -212,7 +218,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product = Mage::getModel("catalog/product");
                     $product->load($productData['entity_id']);
                     
-                    $productIndex[] = $imageHelper->init($product, 'image')->resize(120)->__toString();
+                    $productIndex[] = $this->_imageHelper->init($product, 'image')->resize(120)->__toString();
                     $productIndex[] = $product->getProductUrl();
                 }
                 

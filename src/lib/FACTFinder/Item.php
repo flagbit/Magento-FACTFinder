@@ -5,7 +5,7 @@
  * it is NOT defined in this class, what this item affects on the website
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Item.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
 **/
 class FACTFinder_Item

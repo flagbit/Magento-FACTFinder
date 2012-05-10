@@ -67,6 +67,12 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_recommendationAdapter = null;
 
     /**
+     * FACT-Finder TagCloudadapter
+     * @var FACTFinder_Abstract_TagCloudAdapter
+     */
+    protected $_tagCloudAdapter = null;
+
+    /**
      * FACT-Finder After Search Navigation
      * @var array
      */
@@ -83,6 +89,12 @@ class Flagbit_FactFinder_Model_Adapter
      * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
+    
+    
+    public function __construct()
+    {
+        FF::setLogger(Mage::helper('factfinder/debug'));
+    }
 
     /**
      * get FactFinder SearchAdapter
@@ -96,7 +108,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml65/searchAdapter',
+                'xml67/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -336,6 +348,40 @@ class Flagbit_FactFinder_Model_Adapter
 
         return $this->_getSuggestAdapter()->getSuggestions();
     }
+    
+    /**
+    * get FactFinder TagCloudAdapter
+    *
+    * @return FACTFinder_Abstract_TagCloudAdapter
+    */
+    protected function _getTagCloudAdapter()
+    {
+        if ($this->_tagCloudAdapter == null) {
+            $config              = $this->_getConfiguration();
+            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
+            $dataProvider        = $this->_getDataProvider();
+            $this->_tagCloudAdapter = FF::getSingleton(
+                'xml67/tagCloudAdapter',
+                $dataProvider,
+                $this->_getParamsParser(),
+                $encodingHandler
+            );
+    
+        }
+    
+        return $this->_tagCloudAdapter;
+    }
+
+    /**
+     * get tag cloud information as Array
+     *
+     * @param string $query
+     * @return array
+     */
+    public function getTagCloud()
+    {
+        return $this->_getTagCloudAdapter()->getTagCloud();
+    }
 
     /**
      * get Scic Adapter
@@ -367,7 +413,7 @@ class Flagbit_FactFinder_Model_Adapter
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml65/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_recommendationAdapter = FF::getSingleton('xml67/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
     }
@@ -661,6 +707,11 @@ class Flagbit_FactFinder_Model_Adapter
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
+            
+			if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
+                $params['log'] = 'internal';
+            }
+            
             $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
         }
         return $this->_dataProvider;
@@ -675,7 +726,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $dataprovider = $this->_getDataProvider();
         $dataprovider->setType('Management.ff');
-        return $dataprovider->getAuthenticationUrl();
+        return $dataprovider->getNonAuthenticationUrl();
     }
 
     /**

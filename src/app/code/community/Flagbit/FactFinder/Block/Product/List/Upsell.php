@@ -39,7 +39,8 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 	        $idFieldName = $searchHelper->getIdFieldName();
 
 	        $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-	        $recommendations = $recommendationAdapter->getRecommendations($product->getData($idFieldName));
+	        $recommendationAdapter->setProductId($product->getData($idFieldName));
+	        $recommendations = $recommendationAdapter->getRecommendations();
 
 	        if ($recommendations == null) {
 	            throw new Exception('No recommendations given - check connection to FACT-Finder and FACT-Finder configuration');
