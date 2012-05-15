@@ -43,6 +43,12 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * export attribute codes
      * @var mixed
      */
+    protected $_exportAttributeCodes = null;
+	
+	/**
+     * export attribute objects
+     * @var mixed
+     */
     protected $_exportAttributes = null;
     
 	/**
@@ -98,7 +104,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected function _getExportAttributes($storeId = null) 
     {
-        if($this->_exportAttributes === null){
+        if($this->_exportAttributeCodes === null){
             $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
             $headerDynamic = array();
             
@@ -130,9 +136,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup), 'stores', $storeId);
             }         
             
-            $this->_exportAttributes = array_merge($headerDefault, array_keys($headerSetup));
+            $this->_exportAttributeCodes = array_merge($headerDefault, array_keys($headerSetup));
         }
-        return $this->_exportAttributes;
+        return $this->_exportAttributeCodes;
     }
     
     
@@ -308,9 +314,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             $entityType = $this->getEavConfig()->getEntityType('catalog_product');
             $entity     = $entityType->getEntity();
 
+			$userDefinedAttributes = array_keys(Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId)));
+			
             $whereCond  = array(
                 $this->_getWriteAdapter()->quoteInto('additional_table.is_searchable=? or additional_table.is_filterable=? or additional_table.used_for_sort_by=?', 1),
-                $this->_getWriteAdapter()->quoteInto('main_table.attribute_code IN(?)', array('status', 'visibility'))
+                $this->_getWriteAdapter()->quoteInto('main_table.attribute_code IN(?)', array_merge(array('status', 'visibility'), $userDefinedAttributes))
             );
 
             $select = $this->_getWriteAdapter()->select()
@@ -504,13 +512,24 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected function _getAttributesRowArray(&$dataArray, $values, $storeId=null)
     {
-        //add system attributes
-        foreach ($this->_getSearchableAttributes(null, 'system') as $attribute) {
-            if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
-                continue;
-            }
-            $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
-            $dataArray[$attribute->getAttributeCode()] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-        }
-    }    
+		// get attributes objects assigned to their position at the export
+		if ($this->_exportAttributes == null) {
+			$this->_exportAttributes = array_fill(0, sizeof($this->_getExportAttributes()), null);
+			
+			$attributeCodes = array_flip($this->_getExportAttributes());
+			foreach ($this->_getSearchableAttributes() as $attribute) {
+				if (isset($attributeCodes[$attribute->getAttributeCode()]) && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
+					$this->_exportAttributes[$attributeCodes[$attribute->getAttributeCode()]] = $attribute;
+				}
+			}
+		}
+		
+		// fill dataArray with the values of the attributes that should be exported
+		foreach($this->_exportAttributes AS $pos => $attribute) {
+			if ($attribute != null) {
+				$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+				$dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+			}
+		}
+    }
 }
