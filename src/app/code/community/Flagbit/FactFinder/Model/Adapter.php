@@ -566,8 +566,8 @@ class Flagbit_FactFinder_Model_Adapter
     protected function _getCurrentFactfinderCategoryPath($all = false)
     {
         $returnValue = '';
-        $this->_currentFactfinderCategoryPath = array();
-        if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+        if($this->_currentFactfinderCategoryPath == null && Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+			$this->_currentFactfinderCategoryPath = array();
             /* @var $category Mage_Catalog_Model_Category */
             $category = Mage::registry('current_category');
 
@@ -587,6 +587,7 @@ class Flagbit_FactFinder_Model_Adapter
                 }
             }
         }
+		
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {
                 $returnValue = $this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1];
@@ -594,9 +595,10 @@ class Flagbit_FactFinder_Model_Adapter
             else {
                 $returnValue = false;
             }
-        }else{
+        } else {
             $returnValue = $this->_currentFactfinderCategoryPath;
         }
+		
         return $returnValue;
     }
 
