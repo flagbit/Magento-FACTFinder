@@ -327,7 +327,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     array('additional_table' => $this->getTable('catalog/eav_attribute')),
                     'additional_table.attribute_id = main_table.attribute_id'
                 )
-                //->where('main_table.entity_type_id=?', $entityType->getEntityTypeId())
+                ->where('main_table.entity_type_id=?', $entityType->getEntityTypeId())
                 ->where(join(' OR ', $whereCond))
                 ->order('main_table.attribute_id', 'asc');
 
