@@ -14,7 +14,7 @@
   <active>yes</active>
  </lead>
  <date>2012-05-22</date>
- <time>10:51:09</time>
+ <time>15:11:16</time>
  <version>
   <release>3.3.2</release>
   <api>3.3.2</api>
@@ -179,7 +179,7 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
     <file md5sum="43130a2af19eacc5e79547018f162767" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="78df3cb3870aa376ff4165602a8f664b" name="Adapter.php" role="magecommunity" />
+    <file md5sum="d9b6b73fa483ee56396ddc064804f802" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="d945f71efee2863cf2c0003adadc9cf0" name="Observer.php" role="magecommunity" />
     <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
