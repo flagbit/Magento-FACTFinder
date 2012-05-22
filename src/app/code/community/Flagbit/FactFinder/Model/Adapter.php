@@ -514,6 +514,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $attributeOption = array();
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
+		$helper = Mage::helper('factfinder/search');
         foreach($options as $option){
 
             switch ($option->getType()){
@@ -539,9 +540,10 @@ class Flagbit_FactFinder_Model_Adapter
                     // remove Categories from top Level Navigation
                     $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
-                        && (
+                        && !$helper->getIsOnSearchPage()
+						&& (
                         empty($_value) === true
-                        || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true))
+                        || in_array($_value, $_currentCategoryPath)
                             && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
                         )){
                             continue;
@@ -588,7 +590,9 @@ class Flagbit_FactFinder_Model_Adapter
                     $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        }
+        } else {
+			$this->_currentFactfinderCategoryPath = array();
+		}
 		
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {
