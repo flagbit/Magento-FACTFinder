@@ -588,7 +588,9 @@ class Flagbit_FactFinder_Model_Adapter
                     $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        }
+        } else {
+			$this->_currentFactfinderCategoryPath = array();
+		}
 		
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {
