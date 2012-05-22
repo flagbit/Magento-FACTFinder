@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-05-15</date>
- <time>13:28:50</time>
+ <date>2012-05-22</date>
+ <time>10:51:09</time>
  <version>
-  <release>3.3.1</release>
-  <api>3.3.1</api>
+  <release>3.3.2</release>
+  <api>3.3.2</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,10 +25,7 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: dont load query from db if no query was specified via URL;
-bugfix: cached proxy request dont make problems;
-bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
-bugfix: cache category path calculation to avoid massive db queries;
+bugfix: constructor of the adapter accepts any parameter and checks its type inside
  </notes>
  <contents>
   <dir name="/">
@@ -182,7 +179,7 @@ bugfix: cache category path calculation to avoid massive db queries;
     <file md5sum="43130a2af19eacc5e79547018f162767" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="4ca0c23d18ca02c0a44fdb7e7b9cf13d" name="Adapter.php" role="magecommunity" />
+    <file md5sum="78df3cb3870aa376ff4165602a8f664b" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="d945f71efee2863cf2c0003adadc9cf0" name="Observer.php" role="magecommunity" />
     <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
@@ -411,6 +408,21 @@ bugfix: dont load query from db if no query was specified via URL;
 bugfix: cached proxy request dont make problems;
 bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
 bugfix: cache category path calculation to avoid massive db queries;
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.2</release>
+    <api>3.3.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-05-22</date>
+   <license>GPL</license>
+   <notes>
+bugfix: constructor of the adapter accepts any parameter and checks its type inside
    </notes>
   </release>
  </changelog>
