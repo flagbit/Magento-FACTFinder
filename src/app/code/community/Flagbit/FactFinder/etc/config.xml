@@ -281,27 +281,6 @@
                 <crosssell>0</crosssell>
             </config>
     
-            <!-- parameter settings -->
-            <params>
-                <!-- parameter settings for the server -->
-                <server>	
-                    <mapping from="q" to="query" />
-                    <mapping from="p" to="page" />
-                </server>
-    
-                <!-- parameter settings for the client -->
-                <client>
-                    <ignore name="xml" />
-                    <ignore name="format" />
-                    <ignore name="x" />
-                    <ignore name="y" />
-                    <ignore name="channel" />
-                    <ignore name="productsPerPage" />
-                    <mapping from="query" to="q" />
-                    <mapping from="page" to="p" />
-                </client>
-            </params>
-    
             <!-- encoding settings -->
             <encoding>
                 <pageContent>UTF-8</pageContent>
