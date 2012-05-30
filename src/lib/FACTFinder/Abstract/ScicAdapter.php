@@ -4,7 +4,7 @@
  * abstract adapter for the shopping cart information collector tracking
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: ScicAdapter.php 25896 2010-06-29 08:34:06Z rb $
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapter

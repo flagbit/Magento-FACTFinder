@@ -27,22 +27,22 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      * @return Mage_Catalog_Block_Layer_View
      */
     protected function _prepareLayout()
-    {  	
-    	if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
-    		return parent::_prepareLayout();
-    	}
+    {      
+        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
+            return parent::_prepareLayout();
+        }
 
-    	// set default sort Order
-    	if(Mage::getSingleton('catalog/session')->getSortOrder()){
-    		Mage::getSingleton('catalog/session')->setSortOrder('relevance');
-    	}
-    	
-    	// handle redirects
-    	$redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
-    	if($redirect){
-    		Mage::app()->getResponse()->setRedirect($redirect);
-    	}
-    	
+        // set default sort Order
+        if(Mage::getSingleton('catalog/session')->getSortOrder()){
+            Mage::getSingleton('catalog/session')->setSortOrder('relevance');
+        }
+        
+        // handle redirects
+        $redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
+        if($redirect){
+            Mage::app()->getResponse()->setRedirect($redirect);
+        }
+        
         $stateBlock = $this->getLayout()->createBlock('catalog/layer_state')
             ->setLayer($this->getLayer());
 
@@ -58,15 +58,15 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
                     ->init();
 
             switch($attribute->getType()){
-            	          	
-            	case 'slider':
-            		if(!($this->getLayout()->getBlock('ffslider') instanceof  Flagbit_FactFinder_Block_Filter_Slider)){
-            			$this->getLayout()->getBlock('head')->setChild('ffslider', $this->getLayout()->createBlock('factfinder/filter_slider'));
-            		}
-            		$filterBlock->setTemplate('factfinder/filter/slider.phtml');
-					$filterBlock->setData((current($attribute->getItems())));
-					$filterBlock->setUnit($attribute->getUnit());
-            		break;
+                              
+                case 'slider':
+                    if(!($this->getLayout()->getBlock('ffslider') instanceof  Flagbit_FactFinder_Block_Filter_Slider)){
+                        $this->getLayout()->getBlock('head')->setChild('ffslider', $this->getLayout()->createBlock('factfinder/filter_slider'));
+                    }
+                    $filterBlock->setTemplate('factfinder/filter/slider.phtml');
+                    $filterBlock->setData((current($attribute->getItems())));
+                    $filterBlock->setUnit($attribute->getUnit());
+                    break;
             }
             
             $this->setChild($attribute->getAttributeCode().'_filter', $filterBlock);
@@ -74,8 +74,8 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         
         $this->getLayer()->apply();
         return Mage_Core_Block_Template::_prepareLayout();
-    }	
-	  
+    }    
+      
     /**
      * Get category filter block
      *
@@ -84,8 +84,8 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     protected function _getCategoryFilter()
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
-    		return parent::_getCategoryFilter();
-    	}    	
+            return parent::_getCategoryFilter();
+        }        
         return false;
     }
 
@@ -97,9 +97,9 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     protected function _getPriceFilter()
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
-    		return parent::_getPriceFilter();
-    	}    	
-    	
+            return parent::_getPriceFilter();
+        }        
+        
         return false;
     }
     
@@ -110,9 +110,12 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     public function canShowBlock()
     {
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false)) {
+            return parent::canShowBlock();
+        } 
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
-    		return parent::canShowBlock();
-    	}  
+            return false;
+        } 
         if ($this->getLayer()->getFilterableAttributes()->count()
             && $this->getLayer()->getProductCollection()->getSize()) {
             return true;

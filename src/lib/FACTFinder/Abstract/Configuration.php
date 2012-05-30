@@ -14,11 +14,6 @@ interface FACTFinder_Abstract_Configuration
     function getVersion();
 
     /**
-     * @return boolean
-     */
-    function isDebugEnabled();
-
-    /**
      * @param string name
      * @return string value
      */

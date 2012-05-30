@@ -6,7 +6,7 @@
  * the useable, unique objects
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Adapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Abstract
  */
 abstract class FACTFinder_Abstract_Adapter
@@ -14,10 +14,15 @@ abstract class FACTFinder_Abstract_Adapter
     protected $paramsParser;
     protected $dataProvider;
     protected $encodingHandler;
-
+    
+    protected $log;
+    
+    protected $data;
+    
     final public function __construct(FACTFinder_Abstract_DataProvider $dataProvider, FACTFinder_ParametersParser $paramsParser,
         FACTFinder_EncodingHandler $encodingHandler)
     {
+        $this->log = FF::getLogger();
         $this->setDataProvider($dataProvider);
         $this->setParamsParser($paramsParser);
         $this->setEncodingHandler($encodingHandler);
@@ -31,16 +36,25 @@ abstract class FACTFinder_Abstract_Adapter
      * @return void
      */
     protected function init(){}
-
+    
     /**
-     * returns the data from the dataprovider. decorates the dataprovider::getData method so a inheriting class does not
-     * have to use the dataprovider
+     * returns the data lazily. if it isn't available yet, it will be requested from the dataprovider.
+     * decorates the dataprovider::getData method so a inheriting class does not have to use the dataprovider
      */
     protected function getData()
     {
-        return $this->getDataProvider()->getData();
+        if(!isset($this->data)) {
+            $this->data = $this->getDataProvider()->getData();
+        }
+        return $this->data;
     }
-
+    
+    protected function reloadData()
+    {
+        $this->data = $this->getDataProvider()->getData();
+        return $this->data;
+    }
+    
     /**
      * set data provider
      *

@@ -4,7 +4,7 @@
  * By iterating over an CampaignIterator you get FACTFinder_Campaign objects in the loop.
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: CampaignIterator.php 25985 2010-06-30 15:31:53Z rb $
  * @package   FACTFinder\Common
  */
 class FACTFinder_CampaignIterator extends ArrayIterator
@@ -111,5 +111,72 @@ class FACTFinder_CampaignIterator extends ArrayIterator
             }
         }
         return $feedback;
+    }
+    
+    /**
+     * true if active advisor questions exist in any campaign
+     *
+     * @see FACTFinder_Campaign::hasActiveQuestions()
+     * @return boolean
+     */
+    public function hasActiveQuestions() {
+        $hasActiveQuestions = false;
+        foreach ($this AS $campaign) {
+            if ($campaign->hasActiveQuestions()) {
+                $hasActiveQuestions = true;
+                break;
+            }
+        }
+        return $hasActiveQuestions;
+    }
+
+    /**
+     * decorates FACTFinder_Campaign::getActiveQuestions() for all campaigns
+     *
+     * @see FACTFinder_Campaign::getActiveQuestions()
+     * @return array of records
+     */
+    public function getActiveQuestions() {
+        $activeQuestions = array();
+        foreach ($this AS $campaign) {
+            if ($campaign->hasActiveQuestions()) {
+                $activeQuestions = array_merge($activeQuestions, $campaign->getActiveQuestions());
+            }
+        }
+        return $activeQuestions;
+    }
+    
+        
+    /**
+     * true if an advisor tree exists in any campaign
+     *
+     * @see FACTFinder_Campaign::hasActiveQuestions()
+     * @return boolean
+     */
+    public function hasAdvisorTree() {
+        $hasAdvisorTree = false;
+        foreach ($this AS $campaign) {
+            if ($campaign->hasAdvisorTree()) {
+                $hasAdvisorTree = true;
+                break;
+            }
+        }
+        return $hasAdvisorTree;
+    }
+    
+    /**
+     * decorates FACTFinder_Campaign::getAdvisorTree() for all campaigns
+     *
+     * @see FACTFinder_Campaign::getAdvisorTree()
+     * @return array of records
+     */
+    public function getAdvisorTree() {
+        $advisorTree = array();
+        foreach ($this AS $campaign) {
+            if ($campaign->hasAdvisorTree()) {
+                $advisorTree = array_merge($advisorTree, $campaign->getAdvisorTree());
+            }
+        }
+        return $advisorTree;
     }
 }

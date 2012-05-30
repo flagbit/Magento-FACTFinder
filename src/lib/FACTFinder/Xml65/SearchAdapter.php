@@ -4,7 +4,7 @@
  * search adapter using the xml interface. expects a xml formated string from the dataprovider
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: SearchAdapter.php 25985 2010-06-30 15:31:53Z rb $
  * @package   FACTFinder\Xml65
  */
 class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
@@ -18,6 +18,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
      */
     protected function init()
     {
+        $this->log->info("Initializing new search adapter.");
         $this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Search.ff');
     }

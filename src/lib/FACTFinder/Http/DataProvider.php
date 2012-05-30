@@ -1,10 +1,10 @@
 <?php
 
 /**
- * this data provider loads the data per http
+ * this data provider loads the data via http
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: DataProvider.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Http
  */
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
@@ -22,7 +22,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
-     * please insure that this is the full action name, i.e. "Search.ff"
+     * please ensure that this is the full action name, i.e. "Search.ff"
      *
      * @param string type
      */
@@ -72,15 +72,16 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 
     /**
      * {@inheritdoc}
-     * this implementation returns the data as string, no mather what content type set at the http response
+     * this implementation returns the data as string, no matter what content type set at the http response
      *
      * @return string data
      */
     public function getData()
     {
-        if ($this->data == null || $this->getAuthenticationUrl() != $this->previousUrl) {
-            $this->previousUrl = $this->getAuthenticationUrl();
-            $this->data = $this->loadResponse();
+        $url = $this->getAuthenticationUrl();
+        if ($this->data == null || $url != $this->previousUrl) {
+            $this->previousUrl = $url;
+            $this->data = $this->loadResponse($url);
         }
         return $this->data;
     }
@@ -91,9 +92,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      * @throws Exception on connection error
      * @return response data
      **/
-    protected function loadResponse()
+    protected function loadResponse($url)
     {
         if ($this->type == null) {
+            $this->log->error("Request type missing.");
             throw new Exception('request type not set! can not do a request without knowing the type.');
         }
 
@@ -102,7 +104,6 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             $this->addHttpHeaderFields(array('Accept-Language: ' . $config->getLanguage()));
         }
 
-        $url = $this->getAuthenticationUrl();
         if ($this->getConfig()->isDebugEnabled()) {
             $url .= '&verbose=true';
             if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
@@ -137,6 +138,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function sendRequest($url)
     {
+        $this->log->info("Trying to send request to ".$url."...");
         $cResource = curl_init($url);
 
         if (!empty($this->httpHeader)) {
@@ -153,10 +155,15 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         curl_close($cResource);
 
         if (intval($httpCode) >= 400) {
+            $this->log->error("Conntection failed. HTTP code: $httpCode");
             throw new Exception("Connection failed. HTTP code: $httpCode", $httpCode);
         } else if ($httpCode == 0) {
+            $this->log->error("Connection refused. $curlErr");
             throw new Exception("Connection refused. $curlErr");
-        }
+        } else if (floor(intval($httpCode) / 100) == 2) { // all successful status codes (2**)
+            $this->log->info("Received response from ".$url.".");
+        }        
+        
         return $response;
     }
 
@@ -167,11 +174,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getAdvancedAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();
+        $params = $this->getParams();        
+        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        if (empty($params['channel']) && $config->getChannel() != '') {
-            $params['channel'] = $config->getChannel();
-        }
+        $params['channel'] = $this->getChannel($params, $config);
 
         $ts         = time() . '000'; //millisecondes needed
         $prefix     = $config->getAdvancedAuthPrefix();
@@ -183,6 +189,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
+            
+        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
+        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+        $this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -193,11 +203,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getSimpleAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();
+        $params = $this->getParams();        
+        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        if ($config->getChannel() != '') {
-            $params['channel'] = $config->getChannel();
-        }
+        $params['channel'] = $this->getChannel($params, $config);
 
         $ts = time() . '000'; //millisecondes needed but won't be considered
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
@@ -207,6 +216,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
+        
+        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
+        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+        $this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -217,11 +230,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getHttpAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();
+        $params = $this->getParams();        
+        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        if ($config->getChannel() != '') {
-            $params['channel'] = $config->getChannel();
-        }
+        $params['channel'] = $this->getChannel($params, $config);
 
         $auth = $config->getAuthUser() . ':' . $config->getAuthPasswort() . '@';
         if ($auth == ':@') $auth = '';
@@ -230,6 +242,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
+            
+        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
+        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+        $this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -240,17 +256,36 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getNonAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();
+        $params = $this->getParams();        
+        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        if ($config->getChannel() != '') {
-            $params['channel'] = $config->getChannel();
-        }
+        $params['channel'] = $this->getChannel($params, $config);
 
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
 
+        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
+        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+        $this->log->info("Request Url: ".$url);
         return $url;
+    }
+
+    /**
+     * get channel from params or config (params override config)
+     *
+     * @param array parameterse
+     * @FACTFinderAbstractConfiguration config
+     * @return string channel
+     */
+    protected function getChannel($params, $config) {
+        $channel = '';
+        if (!empty($params['channel'])) {
+            $channel = $params['channel'];
+        } else if($config->getChannel() != '') {
+            $channel = $config->getChannel();
+        }
+        return $channel;
     }
 }

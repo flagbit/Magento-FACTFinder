@@ -3,7 +3,7 @@
  * represents a factfinder campaign
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: Campaign.php 25985 2010-06-30 15:31:53Z rb $
  * @package   FACTFinder\Common
  */
 class FACTFinder_Campaign
@@ -14,20 +14,25 @@ class FACTFinder_Campaign
     private $redirectUrl = null;
     private $pushedProducts = array();
     private $feedback = array();
+    private $activeQuestions = array();
+    private $advisorTree = array();
 
     /**
      * @param string name
      * @param string category
      * @param string redirectUrl (default: empty string)
      * @param array pushedProducts; array of records
-     * @param array feedback; array of strings
+     * @param array feedback; array of strings with labels as keys
+     * @param array activeQuestions; array of FACTFinder_AdvisorQuestion objects
      */
-    public function __construct($name = '', $category = '', $redirectUrl = '', array $pushedProducts = array(), $feedback = array()) {
+    public function __construct($name = '', $category = '', $redirectUrl = '', array $pushedProducts = array(), $feedback = array(), $activeQuestions = array(), $advisorTree = array()) {
         $this->name = trim($name);
         $this->category = trim($category);
         $this->redirectUrl = trim($redirectUrl);
         $this->addPushedProducts($pushedProducts);
         $this->addFeedback($feedback);
+        $this->addActiveQuestions($activeQuestions);
+        $this->addToAdvisorTree($advisorTree);
     }
 
     /**
@@ -62,7 +67,7 @@ class FACTFinder_Campaign
     }
 
     /**
-     * add products to this campaigns
+     * add products to this campaign
      *
      * @param array of FACTFinder_Record objects
      * @return void
@@ -90,28 +95,28 @@ class FACTFinder_Campaign
     }
 
     /**
-     * set the feedback strings. if a feedback with the same key (number) exist, it will be overwritten
+     * set the feedback strings. if a feedback with the same key (label) exist, it will be overwritten
      *
      * @param array of string
      * @return void
      */
     public function addFeedback(array $feedback) {
-        foreach($feedback AS $nr => $text) {
-            $this->feedback[$nr] = trim($text);
+        foreach($feedback AS $label => $text) {
+            $this->feedback[$label] = trim($text);
         }
     }
 
     /**
-     * returns true if feedback exists. if no number is given as argument, this methods checks, whether there is any
-     * feedback text available. if a number is given, then this method only returns true, if there is a feedback text
-     * for this number
+     * returns true if feedback exists. if argument is specified, this methods checks, whether there is any
+     * feedback text available. if a label is given, then this method only returns true, if there is a feedback text
+     * for this label
      *
-     * @param int number of feedback (default: null)
+     * @param string label of feedback (default: null)
      * @return boolean
      */
-    public function hasFeedback($nr = null) {
-        if (is_int($nr)) {
-            $hasFeedback = isset($this->feedback[$nr]) && $this->feedback[$nr] != '';
+    public function hasFeedback($label = null) {
+        if ($label != null) {
+            $hasFeedback = isset($this->feedback[$label]) && $this->feedback[$label] != '';
         } else {
             $hasFeedback = sizeof($this->feedback) > 0 && implode('', $this->feedback) != '';
         }
@@ -119,19 +124,75 @@ class FACTFinder_Campaign
     }
 
     /**
-     * when number is given, only the wished feedback text will be returned or an empty string, if this text does not exist.
-     * if no number is set, the complete feedback array will be returned
+     * when label is specified, only the desired feedback text will be returned or an empty string, if this text does not exist.
+     * if no label is set, the complete feedback array will be returned
      *
-     * @param int $nr
+     * @param string $label
      * @return array|string
      */
-    public function getFeedback($nr = null) {
-        if ($nr === null) {
+    public function getFeedback($label = null) {
+        if ($label === null) {
             return $this->feedback;
-        } else if (isset($this->feedback[$nr])) {
-            return $this->feedback[$nr];
+        } else if (isset($this->feedback[$label])) {
+            return $this->feedback[$label];
         } else {
             return '';
         }
+    }
+    
+    /**
+     * add active questions to this campaign
+     *
+     * @param array of FACTFinder_AdvisorQuestion objects
+     * @return void
+     */
+    public function addActiveQuestions(array $activeQuestions) {
+        foreach ($activeQuestions AS $question) {
+            $this->activeQuestions[] = $question;
+        }
+    }
+
+    /**
+     * true if advisor questions exist
+     *
+     * @return boolean
+     */
+    public function hasActiveQuestions() {
+        return sizeof($this->activeQuestions) > 0;
+    }
+
+    /**
+     * @return array of FACTFinder_AdvisorQuestion objects
+     */
+    public function getActiveQuestions() {
+        return $this->activeQuestions;
+    }
+    
+    /**
+     * add questions to the advisor tree (top level) of this campaign
+     *
+     * @param array of FACTFinder_AdvisorQuestion objects
+     * @return void
+     */
+    public function addToAdvisorTree(array $advisorTree) {
+        foreach ($advisorTree AS $question) {
+            $this->advisorTree[] = $question;
+        }
+    }
+
+    /**
+     * true if advisor tree exists
+     *
+     * @return boolean
+     */
+    public function hasAdvisorTree() {
+        return sizeof($this->advisorTree) > 0;
+    }
+
+    /**
+     * @return array of FACTFinder_AdvisorQuestion objects
+     */
+    public function getAdvisorTree() {
+        return $this->advisorTree;
     }
 }

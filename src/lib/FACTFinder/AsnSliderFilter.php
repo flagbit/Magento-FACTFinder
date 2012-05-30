@@ -4,7 +4,7 @@
  * represents an asn filter slider item
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: AsnSliderFilter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Common
  */
 class FACTFinder_AsnSliderFilter

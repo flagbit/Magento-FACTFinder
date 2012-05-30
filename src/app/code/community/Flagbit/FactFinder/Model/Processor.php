@@ -52,7 +52,8 @@ class Flagbit_FactFinder_Model_Processor
     public function getSearchAdapter()
     {
     	if($this->_searchAdapter === null){
-    		$this->_searchAdapter = new Flagbit_FactFinder_Model_Adapter();
+			$logger = new Flagbit_FactFinder_Helper_Debug();
+    		$this->_searchAdapter = new Flagbit_FactFinder_Model_Adapter($logger);
     	}
     	return $this->_searchAdapter;
     }

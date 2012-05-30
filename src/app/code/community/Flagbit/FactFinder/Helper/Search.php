@@ -67,7 +67,10 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
                     $result = Mage::getStoreConfig('factfinder/activation/campaign');
                 break;
                 case 'clicktracking':
-                    $result = Mage::getStoreConfig('factfinder/activation/clicktracking');
+                    $result = Mage::getStoreConfig('factfinder/export/clicktracking');
+                break;
+                case 'tagcloud':
+                    $result = Mage::getStoreConfig('factfinder/activation/tagcloud');
                 break;
             }
         }
@@ -194,5 +197,15 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     public function getQuery()
     {
         return Mage::helper('catalogsearch')->getQuery();
-    }    
+    }
+    
+    /**
+     * Retrieve query model object
+     *
+     * @return String
+     */
+    public function getQueryText()
+    {
+        return Mage::helper('catalogsearch')->getQueryText();
+    }
 }
