@@ -37,9 +37,9 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Recommendation_Collection extends 
 
         $this->addAttributeToFilter($idFieldName, array('in' => $ids));
 
-        $order = new Zend_Db_Expr($this->getConnection()->quoteInto('find_in_set(' . $idFieldName . ', ?)', implode(',', $ids)));
+        $order = new Zend_Db_Expr($this->getConnection()->quoteInto('find_in_set(`e`.`' . $idFieldName . '`, ?)', implode(',', $ids)));
         $this->getSelect()->order($order);
-
+        
         return $this;
     }
 

@@ -49,9 +49,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 	            return $this;
 	        }
 
-	        $this->_itemCollection = Mage::getResourceModel('factfinder/product_recommendation_collection')
-	        ->addStoreFilter()
-	        ;
+	        $this->_itemCollection = Mage::getResourceModel('factfinder/product_recommendation_collection')->addStoreFilter();
 
 	        if ($this->getItemLimit('upsell') > 0) {
 	            $this->_itemCollection->setPageSize($this->getItemLimit('upsell'));
@@ -65,9 +63,6 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 
 // 	//        Mage::getSingleton('catalog/product_status')->addSaleableFilterToCollection($this->_itemCollection);
 	        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);
-// 	        Zend_Debug::dump($this->_itemCollection->getSelect()->__toString());
-// 	        Zend_Debug::dump($recommendations);
-// 	        die();
 	        $this->_itemCollection->load();
 
 	        /**
