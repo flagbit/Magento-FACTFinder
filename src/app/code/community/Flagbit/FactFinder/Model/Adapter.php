@@ -96,9 +96,14 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_currentFactfinderCategoryPath = null;
     
     
-    public function __construct()
+    public function __construct($arg = null)
     {
-        FF::setLogger(Mage::helper('factfinder/debug'));
+		if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
+			FF::setLogger($arg);
+		} else {
+			$logger = Mage::helper('factfinder/debug');
+			FF::setLogger($logger);
+		}
     }
 
     /**
@@ -132,6 +137,10 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
+
+		if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
+			$this->_setParam('log', 'internal');
+		}
 
         switch($_request->getModuleName()){
 			
@@ -528,6 +537,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $attributeOption = array();
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
+		$helper = Mage::helper('factfinder/search');
         foreach($options as $option){
 
             switch ($option->getType()){
@@ -553,9 +563,10 @@ class Flagbit_FactFinder_Model_Adapter
                     // remove Categories from top Level Navigation
                     $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
-                        && (
+                        && !$helper->getIsOnSearchPage()
+						&& (
                         empty($_value) === true
-                        || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true))
+                        || in_array($_value, $_currentCategoryPath)
                             && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
                         )){
                             continue;
@@ -582,8 +593,8 @@ class Flagbit_FactFinder_Model_Adapter
     protected function _getCurrentFactfinderCategoryPath($all = false)
     {
         $returnValue = '';
-        $this->_currentFactfinderCategoryPath = array();
-        if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+        if($this->_currentFactfinderCategoryPath == null && Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+			$this->_currentFactfinderCategoryPath = array();
             /* @var $category Mage_Catalog_Model_Category */
             $category = Mage::registry('current_category');
 
@@ -602,7 +613,10 @@ class Flagbit_FactFinder_Model_Adapter
                     $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        }
+        } else {
+			$this->_currentFactfinderCategoryPath = array();
+		}
+		
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {
                 $returnValue = $this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1];
@@ -610,9 +624,10 @@ class Flagbit_FactFinder_Model_Adapter
             else {
                 $returnValue = false;
             }
-        }else{
+        } else {
             $returnValue = $this->_currentFactfinderCategoryPath;
         }
+		
         return $returnValue;
     }
 
@@ -730,10 +745,6 @@ class Flagbit_FactFinder_Model_Adapter
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
-            
-			if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
-                $params['log'] = 'internal';
-            }
             
             $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
         }
