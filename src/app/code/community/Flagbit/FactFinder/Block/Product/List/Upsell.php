@@ -42,7 +42,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 	        $recommendations = $recommendationAdapter->getRecommendations();
 
 	        // combine recommendations and pushed products
-	        $mergedUpsell = array_merge((array) $recommendations, $this->getPushedProducts());
+	        $mergedUpsell = array_merge($this->getPushedProducts(), (array) $recommendations);
 	        // build new FACTFinder_Result with combined data 
 	        $recommendations = FF::getInstance('result', $mergedUpsell, count($mergedUpsell));
 	        
