@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-05-22</date>
- <time>15:11:16</time>
+ <date>2012-06-04</date>
+ <time>09:00:52</time>
  <version>
-  <release>3.3.2</release>
-  <api>3.3.2</api>
+  <release>3.3.4</release>
+  <api>3.3.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -67,7 +67,7 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
     <file md5sum="7f3c81e2bd95a5c61365e8f2426c258e" name="Util.php" role="magelib" />
    </dir> <!-- /\FACTFinder -->
    <dir name="\FACTFinderCustom">
-    <file md5sum="de80fe6dca7ca17a3de3364fb5f6d3c2" name="Configuration.php" role="magelib" />
+    <file md5sum="96b16f73d80f74ee0a24d39bc81ac321" name="Configuration.php" role="magelib" />
    </dir> <!-- /\FACTFinderCustom -->
    <dir name="\FACTFinder\Abstract">
     <file md5sum="469470db8fe9e148922e56ae37ca3862" name="Adapter.php" role="magelib" />
@@ -132,8 +132,17 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
     <file md5sum="cbaf317aa5ce4417cfcd02a6c4f36486" name="Attributes.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml\Form\Field -->
    <dir name="\Flagbit\FactFinder\Block\Campaign">
-    <file md5sum="ed7662cb3e373efb66830178ff31585d" name="Feedback.php" role="magecommunity" />
+    <file md5sum="9eb34869abbc7e4ba4fe3825835793eb" name="Advisory.php" role="magecommunity" />
+    <file md5sum="ffb877d1e9cb5e7fb7b9d5731a8ace56" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
+   <dir name="\Flagbit\FactFinder\Block\Campaign\Cart">
+    <file md5sum="10c61b9c7360548d4972f3eebf1de69f" name="Advisory.php" role="magecommunity" />
+    <file md5sum="6c10a5c20786de23c409d2285093de55" name="Feedback.php" role="magecommunity" />
+   </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Cart -->
+   <dir name="\Flagbit\FactFinder\Block\Campaign\Product">
+    <file md5sum="ed3c402d4d406ee82f3c019beebf34dd" name="Advisory.php" role="magecommunity" />
+    <file md5sum="c02809883b381e2cce8c18305d5e9b94" name="Feedback.php" role="magecommunity" />
+   </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Product -->
    <dir name="\Flagbit\FactFinder\Block\Cart">
     <file md5sum="73e43a5c9048a1d139910dc7a2199952" name="Crosssell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Cart -->
@@ -145,7 +154,7 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
    </dir> <!-- /\Flagbit\FactFinder\Block\Layer -->
    <dir name="\Flagbit\FactFinder\Block\Product\List">
     <file md5sum="8b6936aa661cd77a1866da3bc2a40939" name="Crosssell.php" role="magecommunity" />
-    <file md5sum="7e37450f9fe16835eb92a7aeb3b8f1fa" name="Upsell.php" role="magecommunity" />
+    <file md5sum="1dc055dc3cbac045910704181be1453b" name="Upsell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Product\List -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog">
     <file md5sum="662f7b0df8d21626bf6193906aed5162" name="Search.php" role="magecommunity" />
@@ -169,31 +178,31 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="69f6905b6b7c815fba091bc218fc6be4" name="config.xml" role="magecommunity" />
+    <file md5sum="62b73c9061598779cdba82775a64934d" name="config.xml" role="magecommunity" />
     <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="57771ad274e7e0ea63b9a934b3757f04" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
     <file md5sum="0e35720a3c3fea9d4d2feece970e6ab0" name="Debug.php" role="magecommunity" />
-    <file md5sum="43130a2af19eacc5e79547018f162767" name="Search.php" role="magecommunity" />
+    <file md5sum="d59dc3e88ba8b10186a57e61939014d5" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="d9b6b73fa483ee56396ddc064804f802" name="Adapter.php" role="magecommunity" />
+    <file md5sum="32e4d6c71b59cb5a00117dc47aaece21" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
-    <file md5sum="d945f71efee2863cf2c0003adadc9cf0" name="Observer.php" role="magecommunity" />
+    <file md5sum="f08ea0a8ac7928166329c00be8e2ccad" name="Observer.php" role="magecommunity" />
     <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="c6767f5223dead076318f167cc30b7b1" name="Product.php" role="magecommunity" />
+    <file md5sum="566f04d65ea98897234d3ef3dd520b90" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
     <file md5sum="0a0505e719ca55320da35c7510b82d3a" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer -->
    <dir name="\Flagbit\FactFinder\Model\Layer\Filter">
-    <file md5sum="1bb443a7546be810947b89d79f4d0205" name="Item.php" role="magecommunity" />
+    <file md5sum="28e42624d764342dae6cb09a1b29b7b8" name="Item.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Layer\Filter -->
    <dir name="\Flagbit\FactFinder\Model\Layer\Filter\Attribute">
     <file md5sum="2ad710352f1803d15ba056cd93d519f1" name="Abstract.php" role="magecommunity" />
@@ -207,7 +216,7 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
     <file md5sum="d9000f3e9c709fa63313b15f34803d74" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Product\Attribute -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Product\Recommendation">
-    <file md5sum="7185cb531cce76f8d7a7de9002059098" name="Collection.php" role="magecommunity" />
+    <file md5sum="fdb6f35fa1cca09aa405bc5cd0c68601" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Product\Recommendation -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Scic">
     <file md5sum="a1521000a1a10df8e6b580f33d06cf23" name="Queue.php" role="magecommunity" />
@@ -233,10 +242,10 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
    <dir name="\Flagbit\FactFinder\sql\factfinder_setup">
     <file md5sum="1342320595048cd96659c454381cfbb4" name="mysql4-install-3.2.0.php" role="magecommunity" />
     <file md5sum="3d5276dfe971a6bd48aa8e2a085de004" name="mysql4-upgrade-3.2.0-3.2.1.php" role="magecommunity" />
-    <file md5sum="51ffa72bd8490f139c0018ddfbcbf932" name="mysql4-upgrade-3.2.1-3.3.0.php" role="magecommunity" />
+    <file md5sum="71954ea0cf400950d23b020ff095a9ee" name="mysql4-upgrade-3.2.1-3.3.0.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\sql\factfinder_setup -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="f65ce26acc34c268c1a656b5cc93f222" name="factfinder.xml" role="magedesign" />
+    <file md5sum="0eb1090732b647bbdfb889c179504bf9" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
     <file md5sum="54045a15eb78bea151f518303773ed0e" name="form.mini.phtml" role="magedesign" />
@@ -244,8 +253,13 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
     <file md5sum="3553a9f0f3c66015610f4c7f1d770a51" name="scic.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder -->
    <dir name="\frontend\base\default\template\factfinder\campaign">
+    <file md5sum="d0ef29b97aa4c3bdfa2b94596beb5b21" name="advisory.phtml" role="magedesign" />
     <file md5sum="a44c2521e961cfb62b4b89ad0cb71b15" name="feedback.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\campaign -->
+   <dir name="\frontend\base\default\template\factfinder\campaign\cart">
+    <file md5sum="bb994272a6daaaba298a38023f6db212" name="advisory.phtml" role="magedesign" />
+    <file md5sum="01fa6a9cd024a2a8edaea7013b00fc89" name="feedback.phtml" role="magedesign" />
+   </dir> <!-- /\frontend\base\default\template\factfinder\campaign\cart -->
    <dir name="\frontend\base\default\template\factfinder\filter">
     <file md5sum="80e4e9e1c81437fe41b6a52d98e73549" name="slider.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\filter -->
@@ -420,6 +434,21 @@ bugfix: cache category path calculation to avoid massive db queries;
     <api>stable</api>
    </stability>
    <date>2012-05-22</date>
+   <license>GPL</license>
+   <notes>
+bugfix: constructor of the adapter accepts any parameter and checks its type inside
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.4</release>
+    <api>3.3.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-04</date>
    <license>GPL</license>
    <notes>
 bugfix: constructor of the adapter accepts any parameter and checks its type inside

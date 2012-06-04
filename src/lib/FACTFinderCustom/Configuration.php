@@ -204,11 +204,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return array
      */
     public function getServerMappings() {
-    	return array();
-        return array(
-        	'q' => 'query',
-        	'p' => 'page',
-        );
+        return array();
     }
 
     /**
@@ -217,7 +213,13 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return array with string as key and boolean true as value for each of them
      */
     public function getIgnoredPageParams() {
-        return array();
+        return array(
+			'channel' => true,
+			'format' => true,
+			'log' => true,
+			'productsPerPage' => true,
+			'query' => true
+		);
     }
 
     /**
