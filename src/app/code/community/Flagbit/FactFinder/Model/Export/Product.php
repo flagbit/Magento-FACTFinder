@@ -115,7 +115,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             }
             
             // get dynamic Attributes
-            foreach ($this->_getSearchableAttributes(null, 'system') as $attribute) {
+            foreach ($this->_getSearchableAttributes(null, 'system', $storeId) as $attribute) {
                 if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
                     continue;
                 }            
@@ -158,7 +158,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         
         // preparesearchable attributes
         $staticFields   = array();
-        foreach ($this->_getSearchableAttributes('static', 'system') as $attribute) {
+        foreach ($this->_getSearchableAttributes('static', 'system', $storeId) as $attribute) {
             $staticFields[] = $attribute->getAttributeCode();
         }
         $dynamicFields  = array(
@@ -306,7 +306,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param string $type possible Types: system, sortable, filterable, searchable
      * @return array
      */
-    protected function _getSearchableAttributes($backendType = null, $type = null)
+    protected function _getSearchableAttributes($backendType = null, $type = null, $storeId = null)
     {
         if (is_null($this->_searchableAttributes)) {
             $this->_searchableAttributes = array();
