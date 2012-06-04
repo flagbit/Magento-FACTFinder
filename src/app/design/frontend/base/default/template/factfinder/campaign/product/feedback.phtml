@@ -1,0 +1,6 @@
+<?php if ($feedback = $this->getActiveFeedback()): ?>
+    <?php $feedbackIds = array(0,1); ?>
+    <?php foreach ($feedbackIds as $feedbackId): ?>
+    <p class="factfinder-feedbackCampaign"><?php echo $feedback->getFeedback($feedbackId) ?></p>
+    <?php endforeach; ?>
+<?php endif; ?>

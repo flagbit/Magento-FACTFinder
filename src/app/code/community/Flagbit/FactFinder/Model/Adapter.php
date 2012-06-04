@@ -63,8 +63,13 @@ class Flagbit_FactFinder_Model_Adapter
      * FACT-Finder Recommendation Adapter
      * @var FACTFinder_Abstract_RecommendationAdapter
      */
-
     protected $_recommendationAdapter = null;
+
+    /**
+     * FACT-Finder Product Campaign Adapter
+     * @var FACTFinder_Abstract_ProductCampaignAdapter
+     */
+    protected $_productCampaignAdapter = null;
 
     /**
      * FACT-Finder TagCloudadapter
@@ -91,12 +96,14 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_currentFactfinderCategoryPath = null;
     
     
-    public function __construct(FACTFinder_Logger_LoggerInterface $logger = null)
+    public function __construct($arg = null)
     {
-		if ($logger == null) {
+		if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
+			FF::setLogger($arg);
+		} else {
 			$logger = Mage::helper('factfinder/debug');
+			FF::setLogger($logger);
 		}
-        FF::setLogger($logger);
     }
 
     /**
@@ -424,6 +431,24 @@ class Flagbit_FactFinder_Model_Adapter
         }
         return $this->_recommendationAdapter;
     }
+    
+    /**
+     * get Product Campaign Adapter
+     *
+     * @return FACTFinder_Abstract_ProductCampaignAdapter
+     */
+    public function getProductCampaignAdapter()
+    {
+        if ($this->_productCampaignAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getDataProvider();
+            $dataProvider->setParam('idsOnly', 'true');
+            $this->_productCampaignAdapter = FF::getSingleton('xml67/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+        }
+        return $this->_productCampaignAdapter;
+    }
 
     /**
      * get Search Result Count
@@ -512,6 +537,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $attributeOption = array();
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
+		$helper = Mage::helper('factfinder/search');
         foreach($options as $option){
 
             switch ($option->getType()){
@@ -537,9 +563,10 @@ class Flagbit_FactFinder_Model_Adapter
                     // remove Categories from top Level Navigation
                     $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
-                        && (
+                        && !$helper->getIsOnSearchPage()
+						&& (
                         empty($_value) === true
-                        || in_array($_value, $this->_getCurrentFactfinderCategoryPath(true))
+                        || in_array($_value, $_currentCategoryPath)
                             && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
                         )){
                             continue;
@@ -586,7 +613,9 @@ class Flagbit_FactFinder_Model_Adapter
                     $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        }
+        } else {
+			$this->_currentFactfinderCategoryPath = array();
+		}
 		
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {

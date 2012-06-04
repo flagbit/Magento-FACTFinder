@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-04-13</date>
- <time>15:31:35</time>
+ <date>2012-05-15</date>
+ <time>13:28:50</time>
  <version>
-  <release>3.3.0</release>
-  <api>3.3.0</api>
+  <release>3.3.1</release>
+  <api>3.3.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,8 +25,10 @@
  </stability>
  <license>GPL</license>
  <notes>
-new features: FF Tagcloud; FF Management reachable by Link instead of iframe; each FF module can be enabled/disabled; IP Logging; HTTP/Browser caching to prevent duplicate request on page-back;
-several bugfixes: category parameters read correctly from url; category export doesn't export categories from other stores; etc.
+bugfix: dont load query from db if no query was specified via URL;
+bugfix: cached proxy request dont make problems;
+bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
+bugfix: cache category path calculation to avoid massive db queries;
  </notes>
  <contents>
   <dir name="/">
@@ -40,67 +42,90 @@ several bugfixes: category parameters read correctly from url; category export d
     <file md5sum="5fe632ad1c700fe432061be976837a3d" name="cockpit.phtml" role="magedesign" />
    </dir> <!-- /\adminhtml\default\default\template\factfinder -->
    <dir name="\de_DE">
-    <file md5sum="5bc4064b558d448e6774b6139c5ef01c" name="Flagbit_FactFinder.csv" role="magelocale" />
+    <file md5sum="c167467f3ad4aa0ae798f5e0c9dce0d6" name="Flagbit_FactFinder.csv" role="magelocale" />
    </dir> <!-- /\de_DE -->
    <dir name="\FACTFinder">
-    <file md5sum="ae96051d5285a2158fd753275366a521" name="Asn.php" role="magelib" />
-    <file md5sum="bdaf35d757396419227d6c41aa009af8" name="AsnFilterItem.php" role="magelib" />
-    <file md5sum="e58dfe1a5d38f32c40ce183c3408abca" name="AsnGroup.php" role="magelib" />
-    <file md5sum="84988dd62b5deb1cc19c5641408b7e26" name="AsnSliderFilter.php" role="magelib" />
-    <file md5sum="2f3aaefdb90ae4a3e0259127eef7b63c" name="BreadCrumbItem.php" role="magelib" />
-    <file md5sum="56c7074599c4d08460f1c3c2db9c67eb" name="Campaign.php" role="magelib" />
-    <file md5sum="e7238647db2496e534b545c7dad98a26" name="CampaignIterator.php" role="magelib" />
-    <file md5sum="3f775ebae81ee438039b68ba4717e5a6" name="Configuration.php" role="magelib" />
-    <file md5sum="b03804afac448e617bda21f690dbc0bd" name="EncodingHandler.php" role="magelib" />
-    <file md5sum="2392265d9bca72526b0d7a5d25ae1eb1" name="Item.php" role="magelib" />
-    <file md5sum="70ab129ac1aa490cc170f2da90f2dfe0" name="Loader.php" role="magelib" />
-    <file md5sum="dea2f8e45d71cc82bec1769d14b7ddb9" name="Paging.php" role="magelib" />
-    <file md5sum="c52f73e3ca64af5f48993ef5050e4e1a" name="Parameters.php" role="magelib" />
-    <file md5sum="ee487d809998ff6f98bca851252ad1f3" name="ParametersParser.php" role="magelib" />
-    <file md5sum="327bf5f931c3a72c691e368beaa9c856" name="ProductsPerPageOptions.php" role="magelib" />
-    <file md5sum="05d873542c3f2e14d71f0a656468ab76" name="Record.php" role="magelib" />
-    <file md5sum="d51cd7c16ddd8a83732690f2916fe3d6" name="Result.php" role="magelib" />
+    <file md5sum="873206d7ff713e4dbe8d12035236fa88" name="AdvisorAnswer.php" role="magelib" />
+    <file md5sum="45fc864b18cb650ea7ab6ad69fe4d2cf" name="AdvisorQuestion.php" role="magelib" />
+    <file md5sum="415d7ca6e57fce1c2dc79a398f277a8e" name="Asn.php" role="magelib" />
+    <file md5sum="823ca331d4f0fb96cdaba37837eb4cf4" name="AsnFilterItem.php" role="magelib" />
+    <file md5sum="eb5f98e61330d2086a6f2cbed9b22e2b" name="AsnGroup.php" role="magelib" />
+    <file md5sum="93960390f4b25235cc6b3fb0ac6e607f" name="AsnSliderFilter.php" role="magelib" />
+    <file md5sum="926f78a0bdb1331e271b6027d639dcbd" name="BreadCrumbItem.php" role="magelib" />
+    <file md5sum="fb71fc56c52bafbf54928478e29a36c2" name="Campaign.php" role="magelib" />
+    <file md5sum="70ebfc5ab5db712f7bad1e9fff823868" name="CampaignIterator.php" role="magelib" />
+    <file md5sum="b203f9bb455cdb7d67bca04568ca90db" name="Configuration.php" role="magelib" />
+    <file md5sum="3cf4f8c653e2cf06101476c6ed0c5d91" name="EncodingHandler.php" role="magelib" />
+    <file md5sum="82d6aa160364f1065d905d4bfb81595e" name="Item.php" role="magelib" />
+    <file md5sum="f90769906b975860d756db2c7c90bcef" name="Loader.php" role="magelib" />
+    <file md5sum="1e00f8a23eb7c77e25669662fa96e5d4" name="Paging.php" role="magelib" />
+    <file md5sum="3cff8bd17aae5a045eb8bdc9da7f36de" name="Parameters.php" role="magelib" />
+    <file md5sum="32901cab2b4ac273707248a353c0e5d8" name="ParametersParser.php" role="magelib" />
+    <file md5sum="00d5fefb4798df35e5eb59ba7c520d21" name="ProductsPerPageOptions.php" role="magelib" />
+    <file md5sum="13d6d9d64b6914706866450869b38206" name="Record.php" role="magelib" />
+    <file md5sum="bc67777850ff18b7784c48bb8f5fbd20" name="Result.php" role="magelib" />
     <file md5sum="3b806c3d26785f0260d09abe6469c999" name="SingleWordSearchItem.php" role="magelib" />
-    <file md5sum="e12df900d1163911c7ab43341d62bffa" name="SuggestQuery.php" role="magelib" />
-    <file md5sum="c8a5206536b9bbdfcd972632a7a1b78e" name="TagQuery.php" role="magelib" />
-    <file md5sum="297e2d09106a8ac339b3483aefe197f6" name="Util.php" role="magelib" />
+    <file md5sum="9aaa4f18c5369acfe0dcb387245e4a75" name="SuggestQuery.php" role="magelib" />
+    <file md5sum="a35b69db11cb856225c00f103b7c16ab" name="TagQuery.php" role="magelib" />
+    <file md5sum="7f3c81e2bd95a5c61365e8f2426c258e" name="Util.php" role="magelib" />
    </dir> <!-- /\FACTFinder -->
    <dir name="\FACTFinderCustom">
     <file md5sum="de80fe6dca7ca17a3de3364fb5f6d3c2" name="Configuration.php" role="magelib" />
    </dir> <!-- /\FACTFinderCustom -->
    <dir name="\FACTFinder\Abstract">
-    <file md5sum="6c3cb7b9bb65a3e6e8d3440d1a39e4c2" name="Adapter.php" role="magelib" />
-    <file md5sum="66af750e71582ed18ccd8217a1eb3a2c" name="Configuration.php" role="magelib" />
-    <file md5sum="f6fdce09126f4c484505f3324afa8201" name="DataProvider.php" role="magelib" />
-    <file md5sum="8b4e8a1eca334ab3d1fc322ac468869b" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="52b9e6895d3962a5955b9d2c06c0df6d" name="ScicAdapter.php" role="magelib" />
-    <file md5sum="bb1da5b3906780058a6bd5360d4a8148" name="SearchAdapter.php" role="magelib" />
-    <file md5sum="1724b169236360e7aa0a64c34f7a8f9b" name="SuggestAdapter.php" role="magelib" />
-    <file md5sum="70c55b093c308a4a3ce83ccd3db6ec2f" name="TagCloudAdapter.php" role="magelib" />
+    <file md5sum="469470db8fe9e148922e56ae37ca3862" name="Adapter.php" role="magelib" />
+    <file md5sum="7ec1139255b96d45b9e29973cfb0ec95" name="CompareAdapter.php" role="magelib" />
+    <file md5sum="7335710c0e999b3b4d3274f356d871fc" name="Configuration.php" role="magelib" />
+    <file md5sum="39dde70290a61f81d19200d36e063880" name="DataProvider.php" role="magelib" />
+    <file md5sum="58c555e5e704e91c16cb9be5fc82e218" name="ProductCampaignAdapter.php" role="magelib" />
+    <file md5sum="1881e3fa29e82a898c7ee3936650fdc7" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="478dc65ca80eef22696d2b0f4d83167c" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="48e692f054663c7fa7349c96d0452403" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="302fe55861cef886abd6e210a501a4b3" name="SimilarRecordsAdapter.php" role="magelib" />
+    <file md5sum="1793a1cafe52a21d87b7e9b0a5b4379e" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="8caf392c3a41b31ecf4a239d406576fc" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Abstract -->
    <dir name="\FACTFinder\Http">
-    <file md5sum="b0ab31af624f1e98fa1b52d11aacb4ca" name="DataProvider.php" role="magelib" />
-    <file md5sum="fa005a2d7aa3eb6af971a254fb8cb6e9" name="ScicAdapter.php" role="magelib" />
-    <file md5sum="ffaba81d3345a1738f41a21cb9f36670" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="23d3d4dea4c282467ebec881d6571633" name="DataProvider.php" role="magelib" />
+    <file md5sum="b4b3991dd1263291a286e3672509f640" name="DummyProvider.php" role="magelib" />
+    <file md5sum="1e3c196ca9db498d556f15e4f3a613ba" name="ParallelDataProvider.php" role="magelib" />
+    <file md5sum="4c7f7f3f689e073976bf37cf6ccfbd02" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="f9364c65034848444e2928617f71c357" name="SuggestAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Http -->
+   <dir name="\FACTFinder\Logger">
+    <file md5sum="a69e509021e53c4605606b0a8b306506" name="BlackHole.php" role="magelib" />
+    <file md5sum="1528b92855ea10d4166cea56e64facd5" name="LoggerInterface.php" role="magelib" />
+   </dir> <!-- /\FACTFinder\Logger -->
    <dir name="\FACTFinder\Xml64">
-    <file md5sum="74611d3ededc32f28d4f96b47382824f" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="d3ce38946d9df3c96e117b1a0a196b0c" name="SearchAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml64 -->
    <dir name="\FACTFinder\Xml65">
-    <file md5sum="d46bff70dfd26c45d6b431fdf06a5712" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="7edb122839cec7ed6a6961e450009676" name="SearchAdapter.php" role="magelib" />
-    <file md5sum="f248e70d73b8404fc87d917b7c253d42" name="SuggestAdapter.php" role="magelib" />
-    <file md5sum="2e01500c481f1645697c1c9486c77d2e" name="TagCloudAdapter.php" role="magelib" />
+    <file md5sum="d9c1d57dba84ef5db4dc624c788b91dc" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="71b0cb4554b98cc7f7d74cd6754bf3cc" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="f9742b1c720542d01ec622c6d65beea4" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="290ce886957e6760c9a3bdc5dec19e4f" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml65 -->
    <dir name="\FACTFinder\Xml66">
+    <file md5sum="5ebc1da804fb2f27cdc6ab911d823f14" name="CompareAdapter.php" role="magelib" />
     <file md5sum="94cd09e149d85182a6b13773b4c6c601" name="RecommendationAdapter.php" role="magelib" />
     <file md5sum="e178a14e3173c123f38df9312030cdd3" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="669541b29f87955d45d315545a1951bf" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="982290e42670453a9597279ffe5fa86c" name="SuggestAdapter.php" role="magelib" />
     <file md5sum="52a7937a07070f2477ccdb2185cdaab8" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml66 -->
+   <dir name="\FACTFinder\Xml67">
+    <file md5sum="f58ea46c0f0a634d2753ff4627937c3d" name="CompareAdapter.php" role="magelib" />
+    <file md5sum="6a81f02658445dabc1f997b865e385d5" name="ProductCampaignAdapter.php" role="magelib" />
+    <file md5sum="bdbcd5a489b2dc21555aa6db0a044eb3" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="894f602ab8736307a932354010ae8a07" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="75663be522e408124198a3091a0cf9d9" name="SimilarRecordsAdapter.php" role="magelib" />
+    <file md5sum="3323d92b9a9dcb80a0587fab203c5a73" name="SuggestAdapter.php" role="magelib" />
+    <file md5sum="cd4ebb2581682d478d71ba1aeb62e01e" name="TagCloudAdapter.php" role="magelib" />
+   </dir> <!-- /\FACTFinder\Xml67 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="5bf52dd09dcac6df924c3b3dd3c4656a" name="Layer.php" role="magecommunity" />
+    <file md5sum="104a2e51253b35aba06e2fd283039676" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
+    <file md5sum="664c18eceaa82779a60b6eb1694cdfca" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml">
     <file md5sum="7f5f3e8521f002c8c7b5a2d5f72cf5e1" name="Cockpit.php" role="magecommunity" />
@@ -122,8 +147,8 @@ several bugfixes: category parameters read correctly from url; category export d
     <file md5sum="f53a3e2d6ce0da4afee58b4ea806a342" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Layer -->
    <dir name="\Flagbit\FactFinder\Block\Product\List">
-    <file md5sum="3c07706a13c6f6058bd34d9fe6fe861d" name="Crosssell.php" role="magecommunity" />
-    <file md5sum="d50b08f248736bd2ef471f02e220a8eb" name="Upsell.php" role="magecommunity" />
+    <file md5sum="8b6936aa661cd77a1866da3bc2a40939" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="7e37450f9fe16835eb92a7aeb3b8f1fa" name="Upsell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Product\List -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog">
     <file md5sum="662f7b0df8d21626bf6193906aed5162" name="Search.php" role="magecommunity" />
@@ -147,24 +172,24 @@ several bugfixes: category parameters read correctly from url; category export d
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="2884c8db3cbafdcad656978f889c6cdb" name="config.xml" role="magecommunity" />
-    <file md5sum="4e5798ad559a107d2136ed07f51aa0ad" name="system.xml" role="magecommunity" />
+    <file md5sum="69f6905b6b7c815fba091bc218fc6be4" name="config.xml" role="magecommunity" />
+    <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="57771ad274e7e0ea63b9a934b3757f04" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
-    <file md5sum="af45ba164cdc47f3d076a390718fedb2" name="Debug.php" role="magecommunity" />
-    <file md5sum="137bf6524a0c1d88bcd555cf2e749815" name="Search.php" role="magecommunity" />
+    <file md5sum="0e35720a3c3fea9d4d2feece970e6ab0" name="Debug.php" role="magecommunity" />
+    <file md5sum="43130a2af19eacc5e79547018f162767" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="8beab65115205df26e7e7d3720f1e2cb" name="Adapter.php" role="magecommunity" />
+    <file md5sum="4ca0c23d18ca02c0a44fdb7e7b9cf13d" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
-    <file md5sum="b2de388fe066446531f8aa2b9b01c999" name="Observer.php" role="magecommunity" />
-    <file md5sum="8b9a5715afead095f7cb03844ceaf7f9" name="Processor.php" role="magecommunity" />
+    <file md5sum="d945f71efee2863cf2c0003adadc9cf0" name="Observer.php" role="magecommunity" />
+    <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="17d9084d9862b8666e515f3799b5fbd4" name="Product.php" role="magecommunity" />
+    <file md5sum="c6767f5223dead076318f167cc30b7b1" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
@@ -211,6 +236,7 @@ several bugfixes: category parameters read correctly from url; category export d
    <dir name="\Flagbit\FactFinder\sql\factfinder_setup">
     <file md5sum="1342320595048cd96659c454381cfbb4" name="mysql4-install-3.2.0.php" role="magecommunity" />
     <file md5sum="3d5276dfe971a6bd48aa8e2a085de004" name="mysql4-upgrade-3.2.0-3.2.1.php" role="magecommunity" />
+    <file md5sum="51ffa72bd8490f139c0018ddfbcbf932" name="mysql4-upgrade-3.2.1-3.3.0.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\sql\factfinder_setup -->
    <dir name="\frontend\base\default\layout">
     <file md5sum="f65ce26acc34c268c1a656b5cc93f222" name="factfinder.xml" role="magedesign" />
@@ -321,7 +347,7 @@ several bugfixes: category parameters read correctly from url; category export d
    <date>2011-11-02</date>
    <license>GPL</license>
    <notes>
-FIX: correct export multiple filter-attributes 
+FIX: correct export multiple filter-attributes
    </notes>
   </release>
   <release>
@@ -336,7 +362,7 @@ FIX: correct export multiple filter-attributes
    <date>2011-11-17</date>
    <license>GPL</license>
    <notes>
-- closed XSS bug - added English documentation 
+- closed XSS bug - added English documentation
    </notes>
   </release>
   <release>
@@ -351,7 +377,7 @@ FIX: correct export multiple filter-attributes
    <date>2012-02-28</date>
    <license>GPL</license>
    <notes>
-- fixed encoding problem with one-touch-slider - checkout tracking with entity-id works now correctly 
+- fixed encoding problem with one-touch-slider - checkout tracking with entity-id works now correctly
    </notes>
   </release>
   <release>
@@ -367,6 +393,24 @@ FIX: correct export multiple filter-attributes
    <license>GPL</license>
    <notes>
 BUGFIX: module handles slashes in category names correctly
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.1</release>
+    <api>3.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-05-15</date>
+   <license>GPL</license>
+   <notes>
+bugfix: dont load query from db if no query was specified via URL;
+bugfix: cached proxy request dont make problems;
+bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
+bugfix: cache category path calculation to avoid massive db queries;
    </notes>
   </release>
  </changelog>

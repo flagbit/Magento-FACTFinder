@@ -44,7 +44,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     {
         if (!Mage::getStoreConfigFlag('factfinder/search/enabled')
             || Mage::getStoreConfigFlag('advanced/modules_disable_output/Flagbit_FactFinder')
-            || !($searchPageCheck == false || $this->getIsOnSearchPage() || Mage::getStoreConfigFlag('factfinder/activation/navigation'))) {
+            || ($searchPageCheck == true && !$this->getIsOnSearchPage() && !Mage::getStoreConfigFlag('factfinder/activation/navigation'))) {
             return false;
         }
         
@@ -207,5 +207,22 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     public function getQueryText()
     {
         return Mage::helper('catalogsearch')->getQueryText();
+    }
+    
+    
+    /**
+     * return product campaings
+     * 
+     * @param array $productIds
+     * @return FACTFinder_CampaignIterator
+     */
+    public function getProductCampaigns($productIds)
+    {
+        // get productcampaign adapter and set product id or sku array
+        $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
+        $productCampaignAdapter->setProductIds($productIds);
+        $productCampaignAdapter->makeProductCampaign();
+        
+        return $productCampaignAdapter->getCampaigns();
     }
 }
