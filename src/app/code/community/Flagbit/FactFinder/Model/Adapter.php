@@ -147,9 +147,13 @@ class Flagbit_FactFinder_Model_Adapter
             case "xmlconnect":
 				$_query = $helper->getQueryText();
                 $this->_setParam('idsOnly', 'true')
-                    ->_setParam('productsPerPage', $_request->getParam('count'))
-                    ->_setParam('query', $_query)
-                    ->_setParam('page', ($_request->getParam('offset') / $_request->getParam('count')) + 1);
+                    ->_setParam('query', $_query);
+				
+				$count = $_request->getParam('count');
+				if ($count > 0) {
+					$this->_setParam('productsPerPage', $count)
+						 ->_setParam('page', ($_request->getParam('offset') / $count) + 1);
+				}
 
                 // add Sorting Param
                 $params = Mage::app()->getRequest()->getParams();
@@ -173,9 +177,9 @@ class Flagbit_FactFinder_Model_Adapter
                             foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                             $filterkey = '';
                             foreach($categories as $category){
-				     $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                 $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                 $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
+                                $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
+                                $this->_setParam('filtercategoryROOT'.$filterkey, $category);
+                                $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                             }
                         }else{
                             $this->_setParam('filter'.$param[0], $param[1]);
