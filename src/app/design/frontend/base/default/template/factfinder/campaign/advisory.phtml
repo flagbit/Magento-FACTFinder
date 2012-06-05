@@ -1,0 +1,12 @@
+<?php if ($questions = $this->getActiveQuestions()): ?>
+    <?php foreach ($questions as $question): ?>
+    <div class="factfinder-advisorCampaign">
+        <p class="factfinder-advisorCampaign-question"><?php echo $question->getText() ?></p>
+        <p>
+        <?php foreach ($question->getAnswers() as $answer): ?>
+            <a class="factfinder-advisorCampaign-answer" href="<?php echo $answer->getParams() ?>"><?php echo $answer->getText() ?></a>
+        <?php endforeach; ?>
+        </p>
+    </div>
+    <?php endforeach; ?>
+<?php endif; ?>

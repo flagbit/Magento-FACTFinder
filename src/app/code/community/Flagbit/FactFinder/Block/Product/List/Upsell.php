@@ -26,8 +26,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 	 */
     protected function _prepareData()
     {
-
-        if (!Mage::getStoreConfigFlag('factfinder/activation/upsell')) {
+        if (!Mage::getStoreConfigFlag('factfinder/activation/upsell') && !(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign'))) {
             return parent::_prepareData();
         }
 
@@ -42,6 +41,11 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 	        $recommendationAdapter->setProductId($product->getData($idFieldName));
 	        $recommendations = $recommendationAdapter->getRecommendations();
 
+	        // combine recommendations and pushed products
+	        $mergedUpsell = array_merge($this->getPushedProducts(), (array) $recommendations);
+	        // build new FACTFinder_Result with combined data 
+	        $recommendations = FF::getInstance('result', $mergedUpsell, count($mergedUpsell));
+	        
 	        if ($recommendations == null) {
 	            throw new Exception('No recommendations given - check connection to FACT-Finder and FACT-Finder configuration');
 	        }
@@ -86,4 +90,26 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 
         return $this;
     }
+
+    
+    /**
+     * get pushed products to combine with recommendations
+     * 
+     * @return array
+     */
+    protected function getPushedProducts()
+    {
+        $pushedProducts = array();
+        
+        $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
+            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
+        ));
+
+        if($_campaigns && $_campaigns->hasPushedProducts()){
+            $pushedProducts = $_campaigns->getPushedProducts();
+        }
+    
+        return $pushedProducts;
+    }
+    
 }

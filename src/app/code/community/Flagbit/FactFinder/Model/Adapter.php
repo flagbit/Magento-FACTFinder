@@ -63,8 +63,13 @@ class Flagbit_FactFinder_Model_Adapter
      * FACT-Finder Recommendation Adapter
      * @var FACTFinder_Abstract_RecommendationAdapter
      */
-
     protected $_recommendationAdapter = null;
+
+    /**
+     * FACT-Finder Product Campaign Adapter
+     * @var FACTFinder_Abstract_ProductCampaignAdapter
+     */
+    protected $_productCampaignAdapter = null;
 
     /**
      * FACT-Finder TagCloudadapter
@@ -425,6 +430,24 @@ class Flagbit_FactFinder_Model_Adapter
             $this->_recommendationAdapter = FF::getSingleton('xml67/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
+    }
+    
+    /**
+     * get Product Campaign Adapter
+     *
+     * @return FACTFinder_Abstract_ProductCampaignAdapter
+     */
+    public function getProductCampaignAdapter()
+    {
+        if ($this->_productCampaignAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getDataProvider();
+            $dataProvider->setParam('idsOnly', 'true');
+            $this->_productCampaignAdapter = FF::getSingleton('xml67/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+        }
+        return $this->_productCampaignAdapter;
     }
 
     /**
