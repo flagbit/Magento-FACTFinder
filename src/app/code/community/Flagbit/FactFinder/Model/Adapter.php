@@ -163,7 +163,7 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                  // add Filter Params
-                $params = Mage::app()->getRequest()->getParams();
+                $params = $this->_getParamsParser()->getRequestParams();
                 foreach($params as $key => $value){
                     $value = base64_decode($value);
                     if(strpos($value, '|')){
@@ -173,8 +173,9 @@ class Flagbit_FactFinder_Model_Adapter
                             foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                             $filterkey = '';
                             foreach($categories as $category){
-                                $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                $filterkey .= '/'.str_replace('/', '%2F', $category);
+				     $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
+                                 $this->_setParam('filtercategoryROOT'.$filterkey, $category);
+                                 $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                             }
                         }else{
                             $this->_setParam('filter'.$param[0], $param[1]);
@@ -219,7 +220,8 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                 // add Filter Params
-                $params = Mage::app()->getRequest()->getParams();
+                $params = $this->_getParamsParser()->getRequestParams();
+
                 foreach($params as $key => $value){
                     if(strpos($value, '|')){
                         $param = explode('|', $value);
@@ -235,12 +237,14 @@ class Flagbit_FactFinder_Model_Adapter
                             default:
                                 if($key == 'Category'){
                                     $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
-                                    foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
+                                    foreach($categories AS $k => $v) { $categories[$k] = $v; }
                                     $filterkey = '';
                                     foreach($categories as $category){
+					     $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
                                         $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                        $filterkey .= '/'.str_replace('/', '%2F', $category);
+                                        $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                                     }
+
                                 }else{
                                     $this->_setParam('filter'.$param[0], $param[1]);
                                 }
@@ -627,7 +631,7 @@ class Flagbit_FactFinder_Model_Adapter
         } else {
             $returnValue = $this->_currentFactfinderCategoryPath;
         }
-		
+
         return $returnValue;
     }
 
