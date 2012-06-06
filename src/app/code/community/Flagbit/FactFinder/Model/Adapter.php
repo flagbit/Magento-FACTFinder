@@ -496,7 +496,7 @@ class Flagbit_FactFinder_Model_Adapter
                         'attribute_code' => $row->getName(),
                         'name' => $row->getName(),
                         'unit' => $row->getUnit(),
-                        'items' => $this->_getAttributeOptions($row->getArrayCopy()),
+                        'items' => $this->_getAttributeOptions($row->getArrayCopy(), $row->getUnit()),
                         'count' => $row->count(),
                         'type'    => $this->_getFilterType($row->getArrayCopy()),
                         'store_label' => $row->getName()
@@ -533,9 +533,10 @@ class Flagbit_FactFinder_Model_Adapter
      * @param FACTFinder_AsnFilterItem $options
      * @return array
      */
-    protected function _getAttributeOptions($options)
+    protected function _getAttributeOptions($options, $unit = '')
     {
         $attributeOption = array();
+        if (!empty($unit)) $unit = ' ' . $unit;
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
         $helper = Mage::helper('factfinder/search');
         foreach($options as $option){
@@ -574,7 +575,7 @@ class Flagbit_FactFinder_Model_Adapter
 
                     $attributeOption[] = array(
                         'type'    => 'attribute',
-                        'label' => $option->getValue(),
+                        'label' => $option->getValue() . $unit,
                         'value' => $_value,
                         'count' => $option->getMatchCount(),
                         'selected' => $option->isSelected()
