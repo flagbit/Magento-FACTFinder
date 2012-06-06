@@ -27,7 +27,15 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      * @return Mage_Catalog_Block_Layer_View
      */
     protected function _prepareLayout()
-    {      
+    {
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            // handle redirects
+            $redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
+            if($redirect){
+                Mage::app()->getResponse()->setRedirect($redirect);
+            }
+        }
+
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
             return parent::_prepareLayout();
         }
@@ -35,12 +43,6 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         // set default sort Order
         if(Mage::getSingleton('catalog/session')->getSortOrder()){
             Mage::getSingleton('catalog/session')->setSortOrder('relevance');
-        }
-        
-        // handle redirects
-        $redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
-        if($redirect){
-            Mage::app()->getResponse()->setRedirect($redirect);
         }
         
         $stateBlock = $this->getLayout()->createBlock('catalog/layer_state')
