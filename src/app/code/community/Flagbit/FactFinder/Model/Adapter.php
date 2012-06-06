@@ -98,12 +98,12 @@ class Flagbit_FactFinder_Model_Adapter
     
     public function __construct($arg = null)
     {
-		if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
-			FF::setLogger($arg);
-		} else {
-			$logger = Mage::helper('factfinder/debug');
-			FF::setLogger($logger);
-		}
+        if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
+            FF::setLogger($arg);
+        } else {
+            $logger = Mage::helper('factfinder/debug');
+            FF::setLogger($logger);
+        }
     }
 
     /**
@@ -137,22 +137,26 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
+        $params = $this->_getParamsParser()->getRequestParams();
 
-		if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
-			$this->_setParam('log', 'internal');
-		}
+        if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
+            $this->_setParam('log', 'internal');
+        }
 
         switch($_request->getModuleName()){
-			
+            
             case "xmlconnect":
-				$_query = $helper->getQueryText();
+                $_query = $helper->getQueryText();
                 $this->_setParam('idsOnly', 'true')
-                    ->_setParam('productsPerPage', $_request->getParam('count'))
-                    ->_setParam('query', $_query)
-                    ->_setParam('page', ($_request->getParam('offset') / $_request->getParam('count')) + 1);
+                    ->_setParam('query', $_query);
+                
+                $count = $params['count'];
+                if ($count > 0) {
+                    $this->_setParam('productsPerPage', $count)
+                         ->_setParam('page', ($params['offset'] / $count) + 1);
+                }
 
                 // add Sorting Param
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     if(substr($key, 0, 6) == 'order_'){
                         $key = substr($key, 6);
@@ -163,7 +167,6 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                  // add Filter Params
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     $value = base64_decode($value);
                     if(strpos($value, '|')){
@@ -173,8 +176,9 @@ class Flagbit_FactFinder_Model_Adapter
                             foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                             $filterkey = '';
                             foreach($categories as $category){
+                                $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
                                 $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                $filterkey .= '/'.str_replace('/', '%2F', $category);
+                                $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                             }
                         }else{
                             $this->_setParam('filter'.$param[0], $param[1]);
@@ -186,20 +190,16 @@ class Flagbit_FactFinder_Model_Adapter
 
             case "catalog":
                 $_query = '*';
-                Mage::app()->getRequest()->setParam(
-                    'Category',
-                    Mage::app()->getRequest()->getParam('Category')
-                        ? Mage::app()->getRequest()->getParam('Category')
-                        : $this->_getCurrentFactfinderCategoryPath()
-                );
-
+                if (!isset($params['Category'])) {
+                    $params['Category'] = $this->_getCurrentFactfinderCategoryPath();
+                }
 
             case "catalogsearch":
             default:
-				if ($_request->getModuleName() == 'catalogsearch') {
-					$_query = $helper->getQueryText();
-				}
-				
+                if ($_request->getModuleName() == 'catalogsearch') {
+                    $_query = $helper->getQueryText();
+                }
+                
                 // add Default Params
                 $this->_setParam('idsOnly', 'true')
                     ->_setParam('productsPerPage', $helper->getPageLimit())
@@ -207,7 +207,6 @@ class Flagbit_FactFinder_Model_Adapter
                     ->_setParam('page', $helper->getCurrentPage());
 
                 // add Sorting Param, but only if it was set explicit via url
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     if($key == 'order'
                     && $helper->getCurrentOrder()
@@ -219,7 +218,6 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                 // add Filter Params
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     if(strpos($value, '|')){
                         $param = explode('|', $value);
@@ -235,12 +233,14 @@ class Flagbit_FactFinder_Model_Adapter
                             default:
                                 if($key == 'Category'){
                                     $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
-                                    foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
+                                    foreach($categories AS $k => $v) { $categories[$k] = $v; }
                                     $filterkey = '';
                                     foreach($categories as $category){
+                         $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
                                         $this->_setParam('filtercategoryROOT'.$filterkey, $category);
-                                        $filterkey .= '/'.str_replace('/', '%2F', $category);
+                                        $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                                     }
+
                                 }else{
                                     $this->_setParam('filter'.$param[0], $param[1]);
                                 }
@@ -537,7 +537,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $attributeOption = array();
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
-		$helper = Mage::helper('factfinder/search');
+        $helper = Mage::helper('factfinder/search');
         foreach($options as $option){
 
             switch ($option->getType()){
@@ -564,7 +564,7 @@ class Flagbit_FactFinder_Model_Adapter
                     $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && !$helper->getIsOnSearchPage()
-						&& (
+                        && (
                         empty($_value) === true
                         || in_array($_value, $_currentCategoryPath)
                             && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
@@ -594,7 +594,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $returnValue = '';
         if($this->_currentFactfinderCategoryPath == null && Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
-			$this->_currentFactfinderCategoryPath = array();
+            $this->_currentFactfinderCategoryPath = array();
             /* @var $category Mage_Catalog_Model_Category */
             $category = Mage::registry('current_category');
 
@@ -614,9 +614,9 @@ class Flagbit_FactFinder_Model_Adapter
                 }
             }
         } else {
-			$this->_currentFactfinderCategoryPath = array();
-		}
-		
+            $this->_currentFactfinderCategoryPath = array();
+        }
+        
         if($all === false){
             if (isset($this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1])) {
                 $returnValue = $this->_currentFactfinderCategoryPath[count($this->_currentFactfinderCategoryPath)-1];
@@ -627,7 +627,7 @@ class Flagbit_FactFinder_Model_Adapter
         } else {
             $returnValue = $this->_currentFactfinderCategoryPath;
         }
-		
+
         return $returnValue;
     }
 
