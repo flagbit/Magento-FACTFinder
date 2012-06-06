@@ -137,6 +137,7 @@ class Flagbit_FactFinder_Model_Adapter
         // search Helper
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
+		$params = $this->_getParamsParser()->getRequestParams();
 
 		if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
 			$this->_setParam('log', 'internal');
@@ -149,14 +150,13 @@ class Flagbit_FactFinder_Model_Adapter
                 $this->_setParam('idsOnly', 'true')
                     ->_setParam('query', $_query);
 				
-				$count = $_request->getParam('count');
+				$count = $params['count'];
 				if ($count > 0) {
 					$this->_setParam('productsPerPage', $count)
-						 ->_setParam('page', ($_request->getParam('offset') / $count) + 1);
+						 ->_setParam('page', ($params['offset'] / $count) + 1);
 				}
 
                 // add Sorting Param
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     if(substr($key, 0, 6) == 'order_'){
                         $key = substr($key, 6);
@@ -167,7 +167,6 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                  // add Filter Params
-                $params = $this->_getParamsParser()->getRequestParams();
                 foreach($params as $key => $value){
                     $value = base64_decode($value);
                     if(strpos($value, '|')){
@@ -191,13 +190,9 @@ class Flagbit_FactFinder_Model_Adapter
 
             case "catalog":
                 $_query = '*';
-                Mage::app()->getRequest()->setParam(
-                    'Category',
-                    Mage::app()->getRequest()->getParam('Category')
-                        ? Mage::app()->getRequest()->getParam('Category')
-                        : $this->_getCurrentFactfinderCategoryPath()
-                );
-
+                if (!isset($params['Category'])) {
+                    $params['Category'] = $this->_getCurrentFactfinderCategoryPath();
+                }
 
             case "catalogsearch":
             default:
@@ -212,7 +207,6 @@ class Flagbit_FactFinder_Model_Adapter
                     ->_setParam('page', $helper->getCurrentPage());
 
                 // add Sorting Param, but only if it was set explicit via url
-                $params = Mage::app()->getRequest()->getParams();
                 foreach($params as $key => $value){
                     if($key == 'order'
                     && $helper->getCurrentOrder()
@@ -224,8 +218,6 @@ class Flagbit_FactFinder_Model_Adapter
                 }
 
                 // add Filter Params
-                $params = $this->_getParamsParser()->getRequestParams();
-
                 foreach($params as $key => $value){
                     if(strpos($value, '|')){
                         $param = explode('|', $value);
