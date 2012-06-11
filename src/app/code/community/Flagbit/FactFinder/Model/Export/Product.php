@@ -68,7 +68,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             $item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), trim( strip_tags($item), ';') );
         }
 
-        echo '"'.implode('";"', $data).'"'."\n"; 
+        echo '"'.implode('";"', $data).'"'."\n";
     }    
     
     /**
@@ -255,6 +255,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     }
                 }             
             }
+            flush();
         }
     }
     
