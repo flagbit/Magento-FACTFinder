@@ -577,7 +577,8 @@ class Flagbit_FactFinder_Model_Adapter
                         'label' => $option->getValue(),
                         'value' => $_value,
                         'count' => $option->getMatchCount(),
-                        'selected' => $option->isSelected()
+                        'selected' => $option->isSelected(),
+                        'clusterLevel' => $option->getClusterLevel()
                     );
                     break;
             }
