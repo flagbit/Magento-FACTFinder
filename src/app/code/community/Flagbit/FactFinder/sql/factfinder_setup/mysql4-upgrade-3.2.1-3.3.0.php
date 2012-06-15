@@ -10,7 +10,7 @@
 /**
  * Install script
  *
- * Install script for SCIC queue. Orders are sent to FACT-Finder asynchronously by cronjobs.
+ * Update configuration keys
  *
  * @category  Mage
  * @package   Flagbit_FactFinder
