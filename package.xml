@@ -14,10 +14,10 @@
   <active>yes</active>
  </lead>
  <date>2012-06-15</date>
- <time>12:36:59</time>
+ <time>13:49:03</time>
  <version>
-  <release>3.3.6</release>
-  <api>3.3.6</api>
+  <release>3.3.7</release>
+  <api>3.3.7</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,11 +25,7 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: dont fail if products campaigns cant be loaded.
-bugfix: dont use product campaigns, if campaigns are disabled.
-task: show ff search form only if suggest is enabled
-task: apply cluster level into attribute objects
-task: flush output buffer for each bulk on product export
+bugfix: show magento layered navigation if ff-navigation is disabled
  </notes>
  <contents>
   <dir name="/">
@@ -124,7 +120,7 @@ task: flush output buffer for each bulk on product export
     <file md5sum="cd4ebb2581682d478d71ba1aeb62e01e" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml67 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="cdb69ca287a7332f63c9fd32746d8896" name="Layer.php" role="magecommunity" />
+    <file md5sum="fc9ae3f5197a73be5951a420d4b27124" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
     <file md5sum="664c18eceaa82779a60b6eb1694cdfca" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
@@ -182,7 +178,7 @@ task: flush output buffer for each bulk on product export
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="034774e583bc252138ad97ed2d1b3033" name="config.xml" role="magecommunity" />
+    <file md5sum="ecd02746a5b0974e1ccc03eb2ac9e5e2" name="config.xml" role="magecommunity" />
     <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -494,6 +490,21 @@ bugfix: dont use product campaigns, if campaigns are disabled.
 task: show ff search form only if suggest is enabled
 task: apply cluster level into attribute objects
 task: flush output buffer for each bulk on product export
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.7</release>
+    <api>3.3.7</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-15</date>
+   <license>GPL</license>
+   <notes>
+bugfix: show magento layered navigation if ff-navigation is disabled
    </notes>
   </release>
  </changelog>
