@@ -112,9 +112,10 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     public function canShowBlock()
     {
-        if (!Mage::helper('factfinder/search')->getIsEnabled(false)) {
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false)
+            || (!Mage::helper('factfinder/search')->getIsOnSearchPage() && !Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')) ){
             return parent::canShowBlock();
-        } 
+        }
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
             return false;
         } 
