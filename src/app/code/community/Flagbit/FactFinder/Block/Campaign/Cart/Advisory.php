@@ -32,7 +32,7 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Te
         }
         
         // only display campaign right after a new product was added to cart 
-        if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && !Mage::getSingleton('checkout/session')->getLastAddedProductId()) {
+        if (!Mage::getSingleton('checkout/session')->getLastAddedProductId()) {
             return array();
         }
             
