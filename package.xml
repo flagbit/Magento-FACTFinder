@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-06-04</date>
- <time>09:00:52</time>
+ <date>2012-06-06</date>
+ <time>15:34:29</time>
  <version>
-  <release>3.3.4</release>
-  <api>3.3.4</api>
+  <release>3.3.5</release>
+  <api>3.3.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,7 +25,11 @@
  </stability>
  <license>GPL</license>
  <notes>
-added: advisor campaigns integration
+bugfix: plus character inside category path works now
+bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
+bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
+bugfix: make campaign redirect work even if asn is disabled
+feature: attribute-units are added to the label
  </notes>
  <contents>
   <dir name="/">
@@ -120,7 +124,7 @@ added: advisor campaigns integration
     <file md5sum="cd4ebb2581682d478d71ba1aeb62e01e" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml67 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="104a2e51253b35aba06e2fd283039676" name="Layer.php" role="magecommunity" />
+    <file md5sum="cdb69ca287a7332f63c9fd32746d8896" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
     <file md5sum="664c18eceaa82779a60b6eb1694cdfca" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
@@ -178,7 +182,7 @@ added: advisor campaigns integration
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="62b73c9061598779cdba82775a64934d" name="config.xml" role="magecommunity" />
+    <file md5sum="abe9dd6edc82c00591555dedd622384d" name="config.xml" role="magecommunity" />
     <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -188,7 +192,7 @@ added: advisor campaigns integration
     <file md5sum="d59dc3e88ba8b10186a57e61939014d5" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="32e4d6c71b59cb5a00117dc47aaece21" name="Adapter.php" role="magecommunity" />
+    <file md5sum="be02f9dce81528a41ea02efdbf8f282a" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="f08ea0a8ac7928166329c00be8e2ccad" name="Observer.php" role="magecommunity" />
     <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
@@ -452,6 +456,25 @@ bugfix: constructor of the adapter accepts any parameter and checks its type ins
    <license>GPL</license>
    <notes>
 added: advisor campaigns integration
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.5</release>
+    <api>3.3.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-06</date>
+   <license>GPL</license>
+   <notes>
+bugfix: plus character inside category path works now
+bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
+bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
+bugfix: make campaign redirect work even if asn is disabled
+feature: attribute-units are added to the label
    </notes>
   </release>
  </changelog>
