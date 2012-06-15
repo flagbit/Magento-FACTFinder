@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-06-06</date>
- <time>15:34:29</time>
+ <date>2012-06-15</date>
+ <time>12:36:59</time>
  <version>
-  <release>3.3.5</release>
-  <api>3.3.5</api>
+  <release>3.3.6</release>
+  <api>3.3.6</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,11 +25,11 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: plus character inside category path works now
-bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
-bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
-bugfix: make campaign redirect work even if asn is disabled
-feature: attribute-units are added to the label
+bugfix: dont fail if products campaigns cant be loaded.
+bugfix: dont use product campaigns, if campaigns are disabled.
+task: show ff search form only if suggest is enabled
+task: apply cluster level into attribute objects
+task: flush output buffer for each bulk on product export
  </notes>
  <contents>
   <dir name="/">
@@ -140,12 +140,12 @@ feature: attribute-units are added to the label
     <file md5sum="ffb877d1e9cb5e7fb7b9d5731a8ace56" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Cart">
-    <file md5sum="10c61b9c7360548d4972f3eebf1de69f" name="Advisory.php" role="magecommunity" />
-    <file md5sum="6c10a5c20786de23c409d2285093de55" name="Feedback.php" role="magecommunity" />
+    <file md5sum="9861e5ff8bb10fdec38d17bc9f61090a" name="Advisory.php" role="magecommunity" />
+    <file md5sum="aa9239e92f528ff6b216942194f36776" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Product">
-    <file md5sum="ed3c402d4d406ee82f3c019beebf34dd" name="Advisory.php" role="magecommunity" />
-    <file md5sum="c02809883b381e2cce8c18305d5e9b94" name="Feedback.php" role="magecommunity" />
+    <file md5sum="d4736ab3436e7966c37b393a339110ca" name="Advisory.php" role="magecommunity" />
+    <file md5sum="7843ed6669b7e6bdd92934b3aeb2fd41" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Product -->
    <dir name="\Flagbit\FactFinder\Block\Cart">
     <file md5sum="73e43a5c9048a1d139910dc7a2199952" name="Crosssell.php" role="magecommunity" />
@@ -182,24 +182,24 @@ feature: attribute-units are added to the label
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="abe9dd6edc82c00591555dedd622384d" name="config.xml" role="magecommunity" />
+    <file md5sum="034774e583bc252138ad97ed2d1b3033" name="config.xml" role="magecommunity" />
     <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="57771ad274e7e0ea63b9a934b3757f04" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
     <file md5sum="0e35720a3c3fea9d4d2feece970e6ab0" name="Debug.php" role="magecommunity" />
-    <file md5sum="d59dc3e88ba8b10186a57e61939014d5" name="Search.php" role="magecommunity" />
+    <file md5sum="8e043ec61152a91d78361e73d7679f9d" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="be02f9dce81528a41ea02efdbf8f282a" name="Adapter.php" role="magecommunity" />
+    <file md5sum="f0b105f413f6d4870f3a7f498877d983" name="Adapter.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="f08ea0a8ac7928166329c00be8e2ccad" name="Observer.php" role="magecommunity" />
     <file md5sum="1a48223d1208215013f314a5439b3028" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="566f04d65ea98897234d3ef3dd520b90" name="Product.php" role="magecommunity" />
+    <file md5sum="f5c83235446394a7ccac8af132e1037d" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
@@ -249,7 +249,7 @@ feature: attribute-units are added to the label
     <file md5sum="71954ea0cf400950d23b020ff095a9ee" name="mysql4-upgrade-3.2.1-3.3.0.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\sql\factfinder_setup -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="0eb1090732b647bbdfb889c179504bf9" name="factfinder.xml" role="magedesign" />
+    <file md5sum="b4e442334228676e8847236bdc20bd25" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
     <file md5sum="54045a15eb78bea151f518303773ed0e" name="form.mini.phtml" role="magedesign" />
@@ -475,6 +475,25 @@ bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is n
 bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
 bugfix: make campaign redirect work even if asn is disabled
 feature: attribute-units are added to the label
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.6</release>
+    <api>3.3.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-15</date>
+   <license>GPL</license>
+   <notes>
+bugfix: dont fail if products campaigns cant be loaded.
+bugfix: dont use product campaigns, if campaigns are disabled.
+task: show ff search form only if suggest is enabled
+task: apply cluster level into attribute objects
+task: flush output buffer for each bulk on product export
    </notes>
   </release>
  </changelog>
