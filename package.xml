@@ -16,8 +16,8 @@
  <date>2012-06-06</date>
  <time>15:34:29</time>
  <version>
-  <release>3.3.5</release>
-  <api>3.3.5</api>
+  <release>3.3.6</release>
+  <api>3.3.6</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,11 +25,11 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: plus character inside category path works now
-bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
-bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
-bugfix: make campaign redirect work even if asn is disabled
-feature: attribute-units are added to the label
+bugfix: dont fail if products campaigns cant be loaded.
+bugfix: dont use product campaigns, if campaigns are disabled.
+task: show ff search form only if suggest is enabled
+task: apply cluster level into attribute objects
+task: flush output buffer for each bulk on product export
  </notes>
  <contents>
   <dir name="/">
