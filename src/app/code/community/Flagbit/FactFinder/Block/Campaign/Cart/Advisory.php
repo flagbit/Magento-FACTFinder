@@ -27,6 +27,10 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Te
     {
         Mage::getSingleton('core/session', array('name'=>'frontend'));
 
+        if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')) {
+            return array();
+        }
+        
         // only display campaign right after a new product was added to cart 
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && !Mage::getSingleton('checkout/session')->getLastAddedProductId()) {
             return array();
