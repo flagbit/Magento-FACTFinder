@@ -41,7 +41,7 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
 	 $store = $this->getRequest()->getParam('store');
 	 if ($store) 	$storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
 	 else 		$storeParam = '';
-	 $linktext = 'Export herunterladen'; //TODO: translate
+	 $linktext = Mage::helper('factfinder')->__('Download export'); //TODO: translate
         $html = '<a href="'.$shopdomain.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$linktext.'</a>';
         return $html;
     }
