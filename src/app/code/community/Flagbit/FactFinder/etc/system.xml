@@ -186,7 +186,15 @@
                             <show_in_default>0</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                       </attributes>                        
+                        </attributes>       
+			   <export_url translate="label">
+                            <label></label>
+                            <frontend_model>factfinder/adminhtml_exportlink</frontend_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </export_url>                 
                     </fields>
                 </export>
                 <config translate="label">
