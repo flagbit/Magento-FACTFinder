@@ -502,7 +502,53 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
         return null;
     }
+	
+	/**
+     * Retrieve attribute source value for search
+	 * This method is mostly copied from Mage_Core_Model_Resource_Db_Abstract, but it also retrieves attribute values from non-searchable/non-filterable attributes
+     *
+     * @param int $attributeId
+     * @param mixed $value
+     * @param int $storeId
+     * @return mixed
+     */
+    protected function _getAttributeValue($attributeId, $value, $storeId)
+    {
+        $attribute = $this->_getSearchableAttribute($attributeId);
+        if (!$attribute->getIsSearchable() && $attribute->getAttributeCode() == 'visibility') {
+			return $value;
+        }
 
+        if ($attribute->usesSource()) {
+            if ($this->_engine->allowAdvancedIndex()) {
+                return $value;
+            }
+
+            $attribute->setStoreId($storeId);
+            $value = $attribute->getSource()->getOptionText($value);
+
+            if (is_array($value)) {
+                $value = implode($this->_separator, $value);
+            } elseif (empty($value)) {
+                $inputType = $attribute->getFrontend()->getInputType();
+                if ($inputType == 'select' || $inputType == 'multiselect') {
+                    return null;
+                }
+            }
+        } elseif ($attribute->getBackendType() == 'datetime') {
+            $value = $this->_getStoreDate($storeId, $value);
+        } else {
+            $inputType = $attribute->getFrontend()->getInputType();
+            if ($inputType == 'price') {
+                $value = Mage::app()->getStore($storeId)->roundPrice($value);
+            }
+        }
+
+        $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
+
+        return $value;
+    }
+	
     /**
      * get Attribute Row Array
      * 
@@ -523,7 +569,6 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 				}
 			}
 		}
-		
 		// fill dataArray with the values of the attributes that should be exported
 		foreach($this->_exportAttributes AS $pos => $attribute) {
 			if ($attribute != null) {
