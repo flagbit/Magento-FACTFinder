@@ -265,6 +265,30 @@ class Flagbit_FactFinder_Model_Observer
             
             if (count($collection) == 1) {
                 $product = $collection->getFirstItem();
+				$searchHelper = Mage::helper('factfinder/search');
+				
+				try {
+					$scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
+			        $idFieldName = $searchHelper->getIdFieldName();
+					if ($idFieldName == 'entity_id') {
+						$idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
+					}
+					$result = $scic->trackClick(
+						$product->getData($idFieldName),
+						md5(Mage::getSingleton('core/session')->getSessionId()),
+						$searchHelper->getQuery()->getQueryText(),
+						1, //pos
+						1, //origPos
+						1, //page
+						$product->getSimilarity,
+						$product->getName(),
+						$searchHelper->getPageLimit(),
+						$searchHelper->getDefaultPerPageValue());
+				}
+				catch (Exception $e) {
+					Mage::helper('factfinder/debug')->log($e->getMessage());
+				}
+				
                 $response = Mage::app()->getResponse();
                 $response->setRedirect($product->getProductUrl(false));
                 $response->sendResponse();
