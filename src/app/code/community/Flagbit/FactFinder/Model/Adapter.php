@@ -118,7 +118,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml67/searchAdapter',
+                'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -375,7 +375,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_tagCloudAdapter = FF::getSingleton(
-                'xml67/tagCloudAdapter',
+                'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/tagCloudAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -427,7 +427,7 @@ class Flagbit_FactFinder_Model_Adapter
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml67/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_recommendationAdapter = FF::getSingleton('xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
     }
@@ -439,13 +439,17 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getProductCampaignAdapter()
     {
+		// Note: this will only work as long as version numbers are used with the same amount of decimal points
+		if (Mage::getStoreConfig('factfinder/search/ffversion') < 67)
+			throw new Exception('Feature not supported by used FACT-Finder version.');
+			
         if ($this->_productCampaignAdapter == null) {
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_productCampaignAdapter = FF::getSingleton('xml67/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_productCampaignAdapter = FF::getSingleton('xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_productCampaignAdapter;
     }
