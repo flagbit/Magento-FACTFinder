@@ -505,7 +505,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 	
 	/**
      * Retrieve attribute source value for search
-	 * This method is mostly copied from Mage_Core_Model_Resource_Db_Abstract, but it also retrieves attribute values from non-searchable/non-filterable attributes
+	 * This method is mostly copied from Mage_CatalogSearch_Model_Resource_Fulltext, but it also retrieves attribute values from non-searchable/non-filterable attributes
      *
      * @param int $attributeId
      * @param mixed $value
