@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-06-15</date>
- <time>12:36:59</time>
+ <date>2012-07-04</date>
+ <time>12:03:38</time>
  <version>
-  <release>3.3.6</release>
-  <api>3.3.6</api>
+  <release>3.3.8</release>
+  <api>3.3.8</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,11 +25,7 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: dont fail if products campaigns cant be loaded.
-bugfix: dont use product campaigns, if campaigns are disabled.
-task: show ff search form only if suggest is enabled
-task: apply cluster level into attribute objects
-task: flush output buffer for each bulk on product export
+feature: export download link at the backend (configuration of factfinder)
  </notes>
  <contents>
   <dir name="/">
@@ -43,7 +39,7 @@ task: flush output buffer for each bulk on product export
     <file md5sum="5fe632ad1c700fe432061be976837a3d" name="cockpit.phtml" role="magedesign" />
    </dir> <!-- /\adminhtml\default\default\template\factfinder -->
    <dir name="\de_DE">
-    <file md5sum="c167467f3ad4aa0ae798f5e0c9dce0d6" name="Flagbit_FactFinder.csv" role="magelocale" />
+    <file md5sum="f28b6aeb3f5b3d7b9dff68a17431170d" name="Flagbit_FactFinder.csv" role="magelocale" />
    </dir> <!-- /\de_DE -->
    <dir name="\FACTFinder">
     <file md5sum="873206d7ff713e4dbe8d12035236fa88" name="AdvisorAnswer.php" role="magelib" />
@@ -124,12 +120,13 @@ task: flush output buffer for each bulk on product export
     <file md5sum="cd4ebb2581682d478d71ba1aeb62e01e" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml67 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="cdb69ca287a7332f63c9fd32746d8896" name="Layer.php" role="magecommunity" />
+    <file md5sum="fc9ae3f5197a73be5951a420d4b27124" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
     <file md5sum="664c18eceaa82779a60b6eb1694cdfca" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml">
     <file md5sum="7f5f3e8521f002c8c7b5a2d5f72cf5e1" name="Cockpit.php" role="magecommunity" />
+    <file md5sum="f83a083279cec4d1e3fece4bbb94263e" name="Exportlink.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml\Form\Field">
     <file md5sum="2e60d7473163fa523f10b2d0c441fe24" name="Attribute.php" role="magecommunity" />
@@ -182,8 +179,8 @@ task: flush output buffer for each bulk on product export
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="034774e583bc252138ad97ed2d1b3033" name="config.xml" role="magecommunity" />
-    <file md5sum="dfe5072b02f952bfda82963683ec0b20" name="system.xml" role="magecommunity" />
+    <file md5sum="485fc1f1e10a566f741b2c6ad2b1e15f" name="config.xml" role="magecommunity" />
+    <file md5sum="f72ec689a1a706ec644bcfb0ceb7ea92" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="57771ad274e7e0ea63b9a934b3757f04" name="Backend.php" role="magecommunity" />
@@ -494,6 +491,36 @@ bugfix: dont use product campaigns, if campaigns are disabled.
 task: show ff search form only if suggest is enabled
 task: apply cluster level into attribute objects
 task: flush output buffer for each bulk on product export
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.7</release>
+    <api>3.3.7</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-15</date>
+   <license>GPL</license>
+   <notes>
+bugfix: show magento layered navigation if ff-navigation is disabled
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.3.8</release>
+    <api>3.3.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-07-04</date>
+   <license>GPL</license>
+   <notes>
+feature: export download link at the backend (configuration of factfinder)
    </notes>
   </release>
  </changelog>
