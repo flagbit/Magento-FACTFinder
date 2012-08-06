@@ -16,8 +16,8 @@
  <date>2012-07-04</date>
  <time>12:03:38</time>
  <version>
-  <release>3.3.9</release>
-  <api>3.3.9</api>
+  <release>3.3.10</release>
+  <api>3.3.10</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,9 +25,7 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: attributes that are not searchable or filterable work now as explicit attributes
-bugfix: if a single-result search redirects to the detail page, a click-tracking request will be sent
-bugfix: exceptions in the tag cloud adapter will not compromise the main functionality of the site
+feature: FACT-Finder version is now configurable in backend. Unavailable features won't be used.
  </notes>
  <contents>
   <dir name="/">
