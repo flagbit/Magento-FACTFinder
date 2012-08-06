@@ -394,7 +394,12 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getTagCloud()
     {
-        return $this->_getTagCloudAdapter()->getTagCloud();
+		try {
+			return $this->_getTagCloudAdapter()->getTagCloud();
+		} catch (Exception $e) {
+            Mage::logException($e);
+			return array();
+        }
     }
 
     /**
