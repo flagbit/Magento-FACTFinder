@@ -84,11 +84,18 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_afterSearchNavigation = null;
 
     /**
-     * FACT-Finder Searchadapter
+     * FACT-Finder product IDs of primary search result
      * @var array
      */
     protected $_searchResultProductIds = null;
 
+	/**
+     * FACT-Finder secondary search results
+     * @var array
+     */
+    protected $_secondarySearchResults = null;
+
+	
     /**
      * current FACT-Finder Category Path
      * @var array
@@ -730,6 +737,102 @@ class Flagbit_FactFinder_Model_Adapter
 
         return $this->_searchResultProductIds;
     }
+	
+	/**
+     * get secondary Search Results
+     *
+     * @return array Products Ids
+     */
+    public function getSecondarySearchResult($channel)
+    {
+		// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
+		$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return array();
+		}
+			
+        if($this->_secondarySearchResults == null)
+		{
+			$this->_secondarySearchResults = array();
+			
+			$query = Mage::helper('factfinder/search')->getQueryText();
+			
+			$searchAdapters = array();
+			
+			foreach($channels AS $currentChannel)
+			{
+				try {
+					$searchAdapters[$currentChannel] = $this->_getSecondarySearchAdapter($currentChannel, $query);
+				}
+				catch (Exception $e) {
+					Mage::logException($e);
+				}
+			}
+			
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			
+			foreach($searchAdapters AS $currentChannel => $searchAdapter)
+			{
+				try {
+					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
+				}
+				catch (Exception $e) {
+					Mage::logException($e);
+				}
+			}
+        }
+		
+		if(!array_key_exists($channel, $this->_secondarySearchResults))
+		{
+			Mage::logException(new Exception("Result for channel '".$channel."' could not be retrieved."));
+			return array();
+		}
+
+        return $this->_secondarySearchResults[$channel];
+    }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SearchAdapter
+     */
+    protected function _getSecondarySearchAdapter($channel, $query)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getParallelDataProvider($channel);
+				
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', $query);
+		
+		$searchAdapter = FF::getInstance(
+			'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/searchAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+        return $searchAdapter;
+    }
+	
+	/**
+	 * get a (new) FactFinder DataProvider that works in parallel
+	 *
+	 * @return FACTFinder_Abstract_Dataprovider
+	 **/
+	protected function _getParallelDataProvider()
+	{
+		$config = $this->_getConfiguration();
+		$params = $this->_getParamsParser()->getServerRequestParams();
+		
+		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config);
+				
+		return $dp;
+	}
 
     /**
      * set single parameter, which will be looped through to the FACT-Finder request
@@ -756,7 +859,7 @@ class Flagbit_FactFinder_Model_Adapter
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
-            
+
             $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
         }
         return $this->_dataProvider;
