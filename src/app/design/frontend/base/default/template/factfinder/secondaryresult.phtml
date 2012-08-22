@@ -17,13 +17,20 @@
  * @version   $Id$
  */
 ?>
-<?php if(Mage::helper('factfinder/search')->getIsEnabled()):?>
+<?php
+
+// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
+$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+
+if(Mage::helper('factfinder/search')->getIsEnabled() && !empty($channels)):
+
+?>
 
 <div>
 <?php echo $this->__('Secondary Result'); ?>:
 <br><br>
 <?php
-$result = $this->getSecondaryResult("dev-content");
+$result = $this->getSecondaryResult($channels[0]);
 foreach($result AS $record)
 {
 	echo $record->getValue("Title")."<br/>";

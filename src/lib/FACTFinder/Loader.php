@@ -64,6 +64,7 @@ class FACTFinder_Loader
 {
     protected static $singletons = array();
     protected static $classNames = array();
+	protected static $logger = null;
 
     public static function autoload($classname)
     {
@@ -183,7 +184,7 @@ class FACTFinder_Loader
         } else if (class_exists($defaultClassName)) { //trigger other autload methods
             $className = $defaultClassName;
         } else {
-            self::$getLogger()->error("Could not load class '$defaultClassName'.");
+            self::getLogger()->error("Could not load class '$defaultClassName'.");
             throw new Exception("class '$defaultClassName' not found");
         }
         return $className;

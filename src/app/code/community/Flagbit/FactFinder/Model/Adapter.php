@@ -102,14 +102,21 @@ class Flagbit_FactFinder_Model_Adapter
      */
     protected $_currentFactfinderCategoryPath = null;
     
+	/**
+	 * logger object to log all module interna
+	 * @var FACTFinder_Abstract_Logger
+	 */
+	protected $_logger = null;
     
     public function __construct($arg = null)
     {
-        if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
+        if ($arg != null && $arg instanceof FACTFinder_Abstract_Logger) {
             FF::setLogger($arg);
+			$this->_logger = $arg;
         } else {
             $logger = Mage::helper('factfinder/debug');
             FF::setLogger($logger);
+			$this->_logger = $logger;
         }
     }
 
