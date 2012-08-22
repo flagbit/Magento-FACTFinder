@@ -1,5 +1,13 @@
 <?php
 /**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
+
+/**
  * represents a factfinder campaign
  *
  * @author    Rudolf Batt <rb@omikron.net>
@@ -14,8 +22,8 @@ class FACTFinder_Campaign
     private $redirectUrl = null;
     private $pushedProducts = array();
     private $feedback = array();
-    private $activeQuestions = array();
-    private $advisorTree = array();
+	private $activeQuestions = array();
+	private $advisorTree = array();
 
     /**
      * @param string name
@@ -23,7 +31,7 @@ class FACTFinder_Campaign
      * @param string redirectUrl (default: empty string)
      * @param array pushedProducts; array of records
      * @param array feedback; array of strings with labels as keys
-     * @param array activeQuestions; array of FACTFinder_AdvisorQuestion objects
+	 * @param array activeQuestions; array of FACTFinder_AdvisorQuestion objects
      */
     public function __construct($name = '', $category = '', $redirectUrl = '', array $pushedProducts = array(), $feedback = array(), $activeQuestions = array(), $advisorTree = array()) {
         $this->name = trim($name);
@@ -31,8 +39,8 @@ class FACTFinder_Campaign
         $this->redirectUrl = trim($redirectUrl);
         $this->addPushedProducts($pushedProducts);
         $this->addFeedback($feedback);
-        $this->addActiveQuestions($activeQuestions);
-        $this->addToAdvisorTree($advisorTree);
+		$this->addActiveQuestions($activeQuestions);
+		$this->addToAdvisorTree($advisorTree);
     }
 
     /**
@@ -117,7 +125,7 @@ class FACTFinder_Campaign
     public function hasFeedback($label = null) {
         if ($label != null) {
             $hasFeedback = isset($this->feedback[$label]) && $this->feedback[$label] != '';
-        } else {
+		} else {
             $hasFeedback = sizeof($this->feedback) > 0 && implode('', $this->feedback) != '';
         }
         return $hasFeedback;
@@ -139,8 +147,8 @@ class FACTFinder_Campaign
             return '';
         }
     }
-    
-    /**
+	
+	/**
      * add active questions to this campaign
      *
      * @param array of FACTFinder_AdvisorQuestion objects
@@ -167,8 +175,8 @@ class FACTFinder_Campaign
     public function getActiveQuestions() {
         return $this->activeQuestions;
     }
-    
-    /**
+	
+	/**
      * add questions to the advisor tree (top level) of this campaign
      *
      * @param array of FACTFinder_AdvisorQuestion objects

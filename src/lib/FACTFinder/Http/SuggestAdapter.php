@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Http
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * this suggest adapter requests the raw suggest data
@@ -10,11 +17,11 @@
 class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
 {
     /**
-     * {@inheritdoc}
+     * init
      */
     protected function init()
     {
-        $this->log->info("Initializing new suggest adapter.");
+		$this->log->info("Initializing new suggest adapter.");
         $this->getDataProvider()->setType('Suggest.ff');
         $this->getDataProvider()->setCurlOptions(array(
             CURLOPT_CONNECTTIMEOUT => 1,
@@ -23,7 +30,6 @@ class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
     }
 
     /**
-     * {@inheritdoc}
      * this implementation returns raw suggestions strings
      *
      * @return string raw data

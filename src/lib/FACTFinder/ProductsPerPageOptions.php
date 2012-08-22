@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * represents the fact-finder product-per-page-options. by iterating over an FACTFinder_ProductsPerPageOptions

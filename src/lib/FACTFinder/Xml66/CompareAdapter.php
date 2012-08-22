@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Xml66
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * product comparison adapter using the xml interface
@@ -10,13 +17,11 @@
 class FACTFinder_Xml66_CompareAdapter extends FACTFinder_Abstract_CompareAdapter
 {
     /**
-     * {@inheritdoc}
-     *
      * @return void
      **/
     public function init() {
-        $this->log->info("Initializing new compare adapter.");
-        $this->getDataProvider()->setParam('format', 'xml');
+		$this->log->info("Initializing new compare adapter.");
+		$this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Compare.ff');
     }
 
@@ -31,40 +36,36 @@ class FACTFinder_Xml66_CompareAdapter extends FACTFinder_Abstract_CompareAdapter
         return new SimpleXMLElement(parent::getData()); //throws exception on error
     }
 
-    /**
-     * {@inheritdoc}
-     *
+	/**
      * @return array $comparableAttributes of strings (field names as keys, hasDifferences as values)
      **/
     protected function createComparableAttributes() {
-        $comparableAttributes = array();
+		$comparableAttributes = array();
         $xmlComparableAttributes = $this->getData()->attributes;
         if (!empty($xmlComparableAttributes)) {
-            foreach($xmlComparableAttributes->attribute AS $currentAttribute){
-                $name = (string) $currentAttribute->attributes()->name;
-                $comparableAttributes[$name] = ((string) $currentAttribute->attributes()->hasDifferences == "true") ? true : false;
-            }
+			foreach($xmlComparableAttributes->attribute AS $currentAttribute){
+				$name = (string) $currentAttribute->attributes()->name;
+				$comparableAttributes[$name] = ((string) $currentAttribute->attributes()->hasDifferences == "true") ? true : false;
+			}
         }
         return $comparableAttributes;
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array $comparedRecords list of FACTFinder_Record items
      **/
     protected function createComparedRecords() {
-        $comparedRecords = array();
+		$comparedRecords = array();
         $xmlComparedRecords = $this->getData()->results;
         if (!empty($xmlComparedRecords)) {
             $encodingHandler = $this->getEncodingHandler();
-            
-            if($this->idsOnly && !$this->attributesUpToDate) {
-                $this->createComparableAttributes();
-                $this->attributesUpToDate = true;
-            }
-            
-            $positionCounter = 1;
+			
+			if($this->idsOnly && !$this->attributesUpToDate) {
+				$this->createComparableAttributes();
+				$this->attributesUpToDate = true;
+			}
+			
+			$positionCounter = 1;
             foreach($xmlComparedRecords->record AS $currentRecord) {
                 // get current position
                 $position = $positionCounter;
@@ -74,9 +75,9 @@ class FACTFinder_Xml66_CompareAdapter extends FACTFinder_Abstract_CompareAdapter
                 $fieldValues = array();
                 foreach($currentRecord->field AS $current_field){
                     $currentFieldname = (string) $current_field->attributes()->name;
-                    if(!$this->idsOnly || array_key_exists($currentFieldname, $this->comparableAttributes)) {
-                        $fieldValues[$currentFieldname] = (string) $current_field;
-                    }
+					if(!$this->idsOnly || array_key_exists($currentFieldname, $this->comparableAttributes)) {
+						$fieldValues[$currentFieldname] = (string) $current_field;
+					}
                 }
 
                 // get original position

@@ -1,15 +1,19 @@
 <?php
 /**
- * contains the FACTFinder_ParametersParser class
+ * FACT-Finder PHP Framework
  *
- * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: ParametersParser.php 25893 2010-06-29 08:19:43Z rb $
+ * @category  Library
  * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
  */
 
 /**
  * this class handles the parameters conversion between the client url, the links on the webpage and the url for the
  * server. it can be seen as a parameter factory.
+ *
+ * @package   FACTFinder\Common
+ * @author    Rudolf Batt <rb@omikron.net>
+ * @version   $Id: ParametersParser.php 25893 2010-06-29 08:19:43Z rb $
  */
 class FACTFinder_ParametersParser
 {
@@ -19,31 +23,34 @@ class FACTFinder_ParametersParser
 
     protected $config;
     protected $encodingHandler;
-    
-    protected $log;
+	
+	protected $log;
 
     /**
      * @param FACTFinder_Abstract_IConfiguration config
      * @param FACTFinder_EncodingHandler $encodingHandler
      */
-    public function __construct(FACTFinder_Abstract_Configuration $config, FACTFinder_EncodingHandler $encodingHandler)
+    public function __construct(FACTFinder_Abstract_Configuration $config, FACTFinder_EncodingHandler $encodingHandler, FACTFinder_Abstract_Logger $log = null)
     {
-        $this->log = FF::getLogger();
+		if(isset($log))
+			$this->log = $log;
+		else
+			$this->log = FF::getSingleton('nullLogger');
         $this->config = $config;
         $this->encodingHandler = $encodingHandler;
     }
 
     /**
-     * DEPRECATED, because it also might destroy other components of the system which rely on the standard PHP. For example this
-     * method don't manage array-parameters e.g. "foo[0]=bar" like expected.
-     * This method is not in internal use any more
-     *
+	 * DEPRECATED, because it also might destroy other components of the system which rely on the standard PHP. For example this
+	 * method don't manage array-parameters e.g. "foo[0]=bar" like expected.
+	 * This method is not in internal use any more
+	 *
      * runs a workaround for php to restore the original parameter names from the url respectively $_SERVER['QUERY_STRING'].
      * this method will only run once and change the global variables $GLOBALS, $_GET and $_REQUEST. parameters which are
      * transformed by php will be left at the $_REQUEST array, the $_GET array will only contain the correct parameters
      *
      * @link http://stackoverflow.com/questions/283751/php-replaces-spaces-with-underlines
-     * @deprecated and not in interal use any more
+	 * @deprecated and not in interal use any more
      * @return void
      */
     final public static function runWorkaround283751()
@@ -71,16 +78,16 @@ class FACTFinder_ParametersParser
     public function getRequestParams()
     {
         if ($this->requestParams == null) {
-            if (isset($_SERVER['QUERY_STRING'])) {
-                $requestParams = array_merge($_POST, self::parseParamsFromString($_SERVER['QUERY_STRING']));
-            } else if (isset($_GET)) {
-                $requestParams = array_merge($_POST, $_GET); // dont use $_REQUEST, because it also contains $_COOKIE;
-            } else {
-                // for cli
-                $requestParams = array();
-            }
+			if (isset($_SERVER['QUERY_STRING'])) {
+				$requestParams = array_merge($_POST, self::parseParamsFromString($_SERVER['QUERY_STRING']));
+			} else if (isset($_GET)) {
+				$requestParams = array_merge($_POST, $_GET); // dont use $_REQUEST, because it also contains $_COOKIE;
+			} else {
+				// for cli
+				$requestParams = array();
+			}
 
-            $this->requestParams = $this->encodingHandler->encodeUrlForPage($requestParams);
+			$this->requestParams = $this->encodingHandler->encodeUrlForPage($requestParams);
         }
         return $this->requestParams;
     }
@@ -93,7 +100,7 @@ class FACTFinder_ParametersParser
     {
         if ($params == null) {
             $params = $this->getServerRequestParams();
-            $params = $this->encodingHandler->encodeServerUrlForPageUrl($params);
+			$params = $this->encodingHandler->encodeServerUrlForPageUrl($params);
         }
 
         $filters = array();
@@ -162,7 +169,7 @@ class FACTFinder_ParametersParser
     /**
      * extracts a parameter array with name=>value pairs from an url string.
      * also only url encoding is done but no further encodings.
-     * this method does not handle array variables such like "foo[0]=bar"
+	 * this method does not handle array variables such like "foo[0]=bar"
      *
      * @param string url
      * @return array of parameter variables
@@ -177,7 +184,7 @@ class FACTFinder_ParametersParser
         foreach($a_pairs AS $s_pair){
             $a_pair = explode('=', $s_pair);
             if(empty($a_pair[0])) continue;
-            if(count($a_pair) == 1 || empty($a_pair[1])) $a_pair[1] = '';
+			if(count($a_pair) == 1 || strlen($a_pair[1]) == 0) $a_pair[1] = '';
 
             $a_pair[0] = urldecode($a_pair[0]);
             $a_pair[1] = urldecode($a_pair[1]);
@@ -272,7 +279,7 @@ class FACTFinder_ParametersParser
         $returnParams = array();
         foreach($params as $key => $value) {
             // copy each param and do not set to null, because mappings are stored as references in the params array
-            if(!isset($ignoredParams[$key]) && !empty($value)) {
+            if(!isset($ignoredParams[$key]) && strlen($value) > 0) {
                 $returnParams[$key] = $value;
             }
         }
@@ -305,20 +312,20 @@ class FACTFinder_ParametersParser
     protected function getRequestTarget()
     {
         if ($this->requestTarget == null) {
-            // workaround for some servers (IIS) which do not provide '$_SERVER['REQUEST_URI']'
-            if (!isset($_SERVER['REQUEST_URI'])) {
-                $arr = explode("/", $_SERVER['PHP_SELF']);
-                $_SERVER['REQUEST_URI'] = "/" . $arr[count($arr)-1];
-                if (isset($_SERVER['argv'][0]) && $_SERVER['argv'][0]) {
-                    $_SERVER['REQUEST_URI'] .= "?" . $_SERVER['argv'][0];
-                }
-            }
+			// workaround for some servers (IIS) which do not provide '$_SERVER['REQUEST_URI']'
+			if (!isset($_SERVER['REQUEST_URI'])) {
+				$arr = explode("/", $_SERVER['PHP_SELF']);
+				$_SERVER['REQUEST_URI'] = "/" . $arr[count($arr)-1];
+				if (isset($_SERVER['argv'][0]) && $_SERVER['argv'][0]) {
+					$_SERVER['REQUEST_URI'] .= "?" . $_SERVER['argv'][0];
+				}
+			}
 
-            if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
-                $this->requestTarget = $_SERVER['REQUEST_URI'];
-            } else {
-                $this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
-            }
+			if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
+				$this->requestTarget = $_SERVER['REQUEST_URI'];
+			} else {
+				$this->requestTarget = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+			}
         }
         return $this->requestTarget;
     }
@@ -343,7 +350,7 @@ class FACTFinder_ParametersParser
      * @return array mapped parameters
      */
     private function doServerMappings(array $params)
-    {
+	{
         return $this->doMapping($params, $this->config->getServerMappings());
     }
 
