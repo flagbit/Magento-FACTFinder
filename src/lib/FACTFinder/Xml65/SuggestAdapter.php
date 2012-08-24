@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Xml65
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * suggest adapter using the xml interface. expects a xml formated string from the dataprovider
@@ -10,7 +17,7 @@
 class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter
 {
     /**
-     * {@inheritdoc}
+     * init
      */
     protected function init()
     {
@@ -31,7 +38,6 @@ class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter
     }
 
     /**
-     * {@inheritdoc}
      * this implementation returns raw suggestions strings
      *
      * @return array of FACTFinder_SuggestQuery objects
@@ -50,7 +56,7 @@ class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter
                     $paramsParser->createPageLink(array('query' => $query)),
                     strval($xmlSuggestQuery->attributes()->hitcount),
                     $encodingHandler->encodeServerContentForPage(strval($xmlSuggestQuery->attributes()->type)),
-                    isset($xmlSuggestQuery->attributes()->hitcount) ? strval($xmlSuggestQuery->attributes()->hitcount) : ''
+					isset($xmlSuggestQuery->attributes()->hitcount) ? strval($xmlSuggestQuery->attributes()->hitcount) : ''
                 );
             }
         }

@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * this class represents a fact-finder search result. By iterating over a result object, you will get

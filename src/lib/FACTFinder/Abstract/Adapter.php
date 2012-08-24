@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Abstract
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * handles the issue to create useable object from the data delivered by the dataprovider.
@@ -14,15 +21,18 @@ abstract class FACTFinder_Abstract_Adapter
     protected $paramsParser;
     protected $dataProvider;
     protected $encodingHandler;
-    
-    protected $log;
-    
-    protected $data;
-    
+	
+	protected $log;
+	
+	protected $data;
+	
     final public function __construct(FACTFinder_Abstract_DataProvider $dataProvider, FACTFinder_ParametersParser $paramsParser,
-        FACTFinder_EncodingHandler $encodingHandler)
+        FACTFinder_EncodingHandler $encodingHandler, FACTFinder_Abstract_Logger $log = null)
     {
-        $this->log = FF::getLogger();
+		if(isset($log))
+			$this->log = $log;
+		else
+			$this->log = FF::getSingleton('nullLogger');
         $this->setDataProvider($dataProvider);
         $this->setParamsParser($paramsParser);
         $this->setEncodingHandler($encodingHandler);
@@ -36,25 +46,25 @@ abstract class FACTFinder_Abstract_Adapter
      * @return void
      */
     protected function init(){}
-    
+	
     /**
      * returns the data lazily. if it isn't available yet, it will be requested from the dataprovider.
-     * decorates the dataprovider::getData method so a inheriting class does not have to use the dataprovider
+	 * decorates the dataprovider::getData method so a inheriting class does not have to use the dataprovider
      */
     protected function getData()
     {
-        if(!isset($this->data)) {
-            $this->data = $this->getDataProvider()->getData();
-        }
+		if(!isset($this->data)) {
+			$this->data = $this->getDataProvider()->getData();
+		}
         return $this->data;
     }
-    
-    protected function reloadData()
+	
+	protected function reloadData()
     {
-        $this->data = $this->getDataProvider()->getData();
-        return $this->data;
+		$this->data = $this->getDataProvider()->getData();
+		return $this->data;
     }
-    
+	
     /**
      * set data provider
      *

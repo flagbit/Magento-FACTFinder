@@ -1,5 +1,13 @@
 <?php
 /**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
+ 
+/**
  * represents the whole collection of campaigns. decorates some campaign functions to execute on every campaign.
  * By iterating over an CampaignIterator you get FACTFinder_Campaign objects in the loop.
  *
@@ -112,7 +120,7 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $feedback;
     }
-    
+	
     /**
      * true if active advisor questions exist in any campaign
      *
@@ -145,8 +153,8 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $activeQuestions;
     }
-    
-        
+	
+		
     /**
      * true if an advisor tree exists in any campaign
      *
@@ -163,8 +171,8 @@ class FACTFinder_CampaignIterator extends ArrayIterator
         }
         return $hasAdvisorTree;
     }
-    
-    /**
+	
+	/**
      * decorates FACTFinder_Campaign::getAdvisorTree() for all campaigns
      *
      * @see FACTFinder_Campaign::getAdvisorTree()

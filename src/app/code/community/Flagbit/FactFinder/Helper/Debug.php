@@ -20,7 +20,7 @@
  * @version   $Id$
  */
 class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
-    implements FACTFinder_Logger_LoggerInterface
+    implements FACTFinder_Abstract_Logger
 {
     /**
      * Module Configuration File
@@ -64,16 +64,31 @@ class Flagbit_FactFinder_Helper_Debug extends Mage_Core_Helper_Abstract
 
         return $this;
     }
-    
-    public function error($error)
-    {
-        return $this->log('ERROR: ' . $error);
-    }
-    
-    public function info($message)
-    {
-        return $this->log('INFO: ' . $message);
-    }
+	
+	public function trace($message)
+	{
+		return $this->log('TRACE: ' . $message);
+	}
+	public function debug($message)
+	{
+		return $this->log('DEBUG: ' . $message);
+	}
+	public function info($message)
+	{
+		return $this->log('INFO: ' . $message);
+	}
+	public function warn($message)
+	{
+		return $this->log('WARNING: ' . $message);
+	}
+	public function error($message)
+	{
+		return $this->log('ERROR: ' . $message);
+	}
+	public function fatal($message)
+	{
+		return $this->log('FATAL ERROR: ' . $message);
+	}
 
     /**
      * get Class Rewrite Conflicts for the current Modul

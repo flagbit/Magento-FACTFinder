@@ -8,15 +8,15 @@
  */
 
 /**
- * adapter for the factfinder recommendation engine, working with the XML interface of FF6.6
+ * import adapter using the xml interface
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id$
+ * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Xml66
  */
-class FACTFinder_Xml66_RecommendationAdapter extends FACTFinder_Xml65_RecommendationAdapter
+class FACTFinder_Xml66_ImportAdapter extends FACTFinder_Xml65_ImportAdapter
 {
-     /**
+    /**
      * no changes in FF6.6
      **/
 }

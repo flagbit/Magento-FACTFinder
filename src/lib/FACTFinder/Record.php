@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * represents a FACT-Finder data record
@@ -16,11 +23,11 @@ class FACTFinder_Record
     protected $fieldValues;
     protected $fieldNames;
 
-    /**
-     * new values since FACT-Finder 6.6
-     */
-    protected $seoPath = '';
-    protected $keywords = array();
+	/**
+	 * new values since FACT-Finder 6.6
+	 */
+	protected $seoPath = '';
+	protected $keywords = array();
 
     /**
      * class constructor - creates a record using the given values. if the array contains fieldnames as array-keys, they
@@ -90,31 +97,31 @@ class FACTFinder_Record
         return $this->position;
     }
 
-    /**
-     * get array of keywords for this record. this keywords can be used as meta-keywords on the website
-     * for seo-optimization.
-     * by default (if used with an older FF-version or when the seo features are not enabled) the keywords are an empty array
-     *
-     * @version since FF6.6
-     * @return array
-     */
-    public function getKeywords()
-    {
-        return $this->keywords;
-    }
+	/**
+	 * get array of keywords for this record. this keywords can be used as meta-keywords on the website
+	 * for seo-optimization.
+	 * by default (if used with an older FF-version or when the seo features are not enabled) the keywords are an empty array
+	 *
+	 * @version since FF6.6
+	 * @return array
+	 */
+	public function getKeywords()
+	{
+		return $this->keywords;
+	}
 
-    /**
-     * returnes the seo path which can be used to fetch the data from this record from FACT-Finder.
-     * this can be used as link to the detail page of this product.
-     * by default (if used with an older FF-version or when the seo features are not enabled) this path is an empty string
-     *
-     * @version since FF6.6
-     * @return string seoPath to this record
-     */
-    public function getSeoPath()
-    {
-        return $this->seoPath;
-    }
+	/**
+	 * returnes the seo path which can be used to fetch the data from this record from FACT-Finder.
+	 * this can be used as link to the detail page of this product.
+	 * by default (if used with an older FF-version or when the seo features are not enabled) this path is an empty string
+	 *
+	 * @version since FF6.6
+	 * @return string seoPath to this record
+	 */
+	public function getSeoPath()
+	{
+		return $this->seoPath;
+	}
 
     /**
      * get a value from a field defined by the argument $field, which can be a fieldnumber or a fieldname
@@ -145,55 +152,55 @@ class FACTFinder_Record
         return $this->getValue($name);
     }
 
-    /**
-     * set seo path for this record. this seo path can't be set by the constructor, because it was added
-     * in a later version.
-     *
-     * @version since FF6.6
-     * @param string seo path
-     */
-    public function setSeoPath($seoPath)
-    {
-        if ($seoPath != null) {
-            $this->seoPath = strval($seoPath);
-        }
-    }
+	/**
+	 * set seo path for this record. this seo path can't be set by the constructor, because it was added
+	 * in a later version.
+	 *
+	 * @version since FF6.6
+	 * @param string seo path
+	 */
+	public function setSeoPath($seoPath)
+	{
+		if ($seoPath != null) {
+			$this->seoPath = strval($seoPath);
+		}
+	}
 
-    /**
-     * add keyword to this record.
-     *
-     * @version since FF6.6
-     * @see FACTFinder_Record::getKeywords()
-     * @param string keyword
-     */
-    public function addKeyword($keyword) {
-        $this->keywords[] = $keyword;
-    }
+	/**
+	 * add keyword to this record.
+	 *
+	 * @version since FF6.6
+	 * @see FACTFinder_Record::getKeywords()
+	 * @param string keyword
+	 */
+	public function addKeyword($keyword) {
+		$this->keywords[] = $keyword;
+	}
 
-    /**
-     * add keywords to this record.
-     * the keys of the array are ignored, so only the values are used to set the keywords.
-     *
-     * @version since FF6.6
-     * @see FACTFinder_Record::getKeywords()
-     * @param array of strings/keywords
-     */
-    public function addKeywords(array $keywords) {
-        $this->keywords += array_values($keywords);
-    }
+	/**
+	 * add keywords to this record.
+	 * the keys of the array are ignored, so only the values are used to set the keywords.
+	 *
+	 * @version since FF6.6
+	 * @see FACTFinder_Record::getKeywords()
+	 * @param array of strings/keywords
+	 */
+	public function addKeywords(array $keywords) {
+		$this->keywords += array_values($keywords);
+	}
 
-    /**
-     * set keywords for this record.
-     * the keys of the array are ignored, so only the values are used to set the keywords.
-     *
-     * @version since FF6.6
-     * @see FACTFinder_Record::getKeywords()
-     * @param array of strings/keywords
-     */
-    public function setKeywords(array $keywords)
-    {
-        $this->keywords = array_values($keywords);
-    }
+	/**
+	 * set keywords for this record.
+	 * the keys of the array are ignored, so only the values are used to set the keywords.
+	 *
+	 * @version since FF6.6
+	 * @see FACTFinder_Record::getKeywords()
+	 * @param array of strings/keywords
+	 */
+	public function setKeywords(array $keywords)
+	{
+		$this->keywords = array_values($keywords);
+	}
 
     /**
      * set a value to field defined by the argument $field, which can be a fieldnumber or a fieldname
@@ -216,7 +223,7 @@ class FACTFinder_Record
                 $this->fieldValues[$this->fieldNames[$field]] = $value;
             }
         } else {
-            $this->log->error("Could not refer to a field using ".gettype($field));
+			$this->log->error("Could not refer to a field using ".gettype($field));
             throw new Exception("it is not (yet) possible to refer to a field using ".gettype($field));
         }
     }

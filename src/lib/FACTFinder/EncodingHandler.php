@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * this class handles the different issues of encoding between the values of page-url, server-url, result and pagecontent
@@ -12,13 +19,16 @@ class FACTFinder_EncodingHandler
     protected $pageContentEncoding;
     protected $pageUrlEncoding;
     protected $serverUrlEncoding;
-    
-    protected $log;
+	
+	protected $log;
 
-    public function __construct(FACTFinder_Abstract_Configuration $config)
+    public function __construct(FACTFinder_Abstract_Configuration $config, FACTFinder_Abstract_Logger $log = null)
     {
-        $this->log = FF::getLogger();
-        
+		if(isset($log))
+			$this->log = $log;
+		else
+			$this->log = FF::getSingleton('nullLogger');
+		
         $this->pageContentEncoding = $config->getPageContentEncoding();
         $this->pageUrlEncoding     = $config->getPageUrlEncoding();
         $this->serverUrlEncoding   = $config->getServerUrlEncoding();
@@ -30,57 +40,57 @@ class FACTFinder_EncodingHandler
         }
     }
 
-    /**
-     * converts the string from "inCharset" encoding into "outCharset" encoding. if the running php have no iconv support,
-     * the utf8_encode/decode are used, so only the encodings "utf-8" and "iso-8859-?" can be used
-     *
-     * @param input charset
-     * @param output charset
-     * @param string which should be converted
-     * @return string in specified output charset
-     * @throws exception for not supported charset
-     */
-    public function convert($inCharset, $outCharset, $string)
-    {
-        return $this->{$this->convertMethod}($inCharset, $outCharset, $string);
-    }
+	/**
+	 * converts the string from "inCharset" encoding into "outCharset" encoding. if the running php have no iconv support,
+	 * the utf8_encode/decode are used, so only the encodings "utf-8" and "iso-8859-?" can be used
+	 *
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 * @throws exception for not supported charset
+	 */
+	public function convert($inCharset, $outCharset, $string)
+	{
+		return $this->{$this->convertMethod}($inCharset, $outCharset, $string);
+	}
 
-    /**
-     * uses iconvert to convert string
-     *
-     * @link http://bg.php.net/manual/en/book.iconv.php
-     * @param input charset
-     * @param output charset
-     * @param string which should be converted
-     * @return string in specified output charset
-     */
+	/**
+	 * uses iconvert to convert string
+	 *
+	 * @link http://bg.php.net/manual/en/book.iconv.php
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 */
     protected function iConvert($inCharset, $outCharset, $string)
     {
-        // see http://de2.php.net/manual/de/function.iconv.php to understand '//IGNORE'
+		// see http://de2.php.net/manual/de/function.iconv.php to understand '//IGNORE'
         return ($inCharset == $outCharset || empty($inCharset) || empty($outCharset)) ? $string : iconv($inCharset, $outCharset.'//IGNORE', $string);
     }
 
-    /**
-     * uses utf8-convert functions to convert string
-     *
-     * @param input charset
-     * @param output charset
-     * @param string which should be converted
-     * @return string in specified output charset
-     * @throws exception for not supported charset
-     */
+	/**
+	 * uses utf8-convert functions to convert string
+	 *
+	 * @param input charset
+	 * @param output charset
+	 * @param string which should be converted
+	 * @return string in specified output charset
+	 * @throws exception for not supported charset
+	 */
     protected function utf8Convert($inCharset, $outCharset, $string)
     {
         if (strtolower($inCharset) != strtolower($outCharset) && !empty($inCharset) && !empty($outCharset)) {
-            if (strtolower($inCharset) == 'utf-8') {
-                $string = utf8_decode($string);
-            } else if (strtolower($outCharset) == 'utf-8') {
-                $string = utf8_encode($string);
-            } else {
-                $this->log->error("Could not convert between non-UTF-8 charsets.");
-                throw new Exception("can not handle $inCharset to $outCharset conversion!");
-            }
-        }
+			if (strtolower($inCharset) == 'utf-8') {
+				$string = utf8_decode($string);
+			} else if (strtolower($outCharset) == 'utf-8') {
+				$string = utf8_encode($string);
+			} else {
+				$this->log->error("Could not convert between non-UTF-8 charsets.");
+				throw new Exception("can not handle $inCharset to $outCharset conversion!");
+			}
+		}
         return $string;
     }
 

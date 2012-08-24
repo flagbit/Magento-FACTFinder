@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Abstract
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * adapter for the factfinder search
@@ -19,22 +26,23 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
     private $campaigns;
     private $singleWordSearch;
 
-    const NO_QUERY      = 'noQuery';
+	const NO_QUERY      = 'noQuery';
     const NO_RESULT     = 'noResult';
     const RESULTS_FOUND = 'resultsFound';
     const NOTHING_FOUND = 'nothingFound';
 
-    /**
-     * @throws Exception if there is no query or no catalog-parameter set at the dataprovider
-     */
-    protected function getData()
+	/**
+	 * @throws Exception if there is no query or no catalog-parameter set at the dataprovider
+	 */
+	protected function getData()
     {
-        $params = $this->getDataProvider()->getParams();
-        if (empty($params['query']) && empty($params['seoPath'])
-            && (empty($params['catalog']) || $params['catalog'] != 'true')) {
-            $this->log->error("No query was set.");
-            throw new Exception(self::NO_QUERY);
-        }
+		$params = $this->getDataProvider()->getParams();
+		if ((!isset($params['query']) || strlen($params['query']) == 0)
+			&& (!isset($params['seoPath']) || strlen($params['seoPath']) == 0)
+			&& (!isset($params['catalog']) || $params['catalog'] != 'true')) {
+			$this->log->error("No query was set.");
+			throw new Exception(self::NO_QUERY);
+		}
         return $this->getDataProvider()->getData();
     }
 
@@ -239,7 +247,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * FACTFinder_SuggestQuery objects, for each word a single item. by clicking at a singleWordSearch item, the result
      * will get better
      * please notice, that this feature has to be actived in the FACT-Finder search environment, so this method returns
-     * an empty array, if there are no singleWordSearch items
+	 * an empty array, if there are no singleWordSearch items
      *
      * @return array of FACTFinder_SuggestQuery objects
      */
