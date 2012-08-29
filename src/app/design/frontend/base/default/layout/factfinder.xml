@@ -49,7 +49,7 @@
     	    <block name="product.info.upsell">
     	    	<action method="setItemLimit"><type>upsell</type><limit>20</limit></action>
     	    </block>  	
-    	</reference>
+		</reference>
     </catalog_product_view>
 
     <checkout_cart_index>

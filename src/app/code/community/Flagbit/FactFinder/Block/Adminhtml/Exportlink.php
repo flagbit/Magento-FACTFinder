@@ -36,13 +36,28 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $this->setElement($element);
-	 $shopdomain = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-	 $password = Mage::getStoreConfig('factfinder/search/auth_password');
-	 $store = $this->getRequest()->getParam('store');
-	 if ($store) 	$storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
-	 else 		$storeParam = '';
-	 $linktext = Mage::helper('factfinder')->__('Download export'); //TODO: translate
-        $html = '<a href="'.$shopdomain.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$linktext.'</a>';
+		$shopdomain = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+		$activeStore = '';
+		$store = $this->getRequest()->getParam('store');
+		if(Mage::getStoreConfig('web/url/use_store'))
+		{
+			if ($store)
+			{
+				$activeStore = $store.'/';
+			}
+			else
+			{
+				$websites = Mage::app()->getWebsites();
+				$activeStore = $websites[1]->getDefaultStore()->getCode().'/';
+			}
+		}
+		$password = Mage::getStoreConfig('factfinder/search/auth_password');
+		
+		if ($store) $storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
+		else 		$storeParam = '';
+		$linktext = Mage::helper('factfinder')->__('Download export');
+		
+		$html = '<a href="'.$shopdomain.$activeStore.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$linktext.'</a>';
         return $html;
     }
 }
