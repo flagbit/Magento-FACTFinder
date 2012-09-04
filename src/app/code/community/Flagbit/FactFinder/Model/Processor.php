@@ -137,7 +137,10 @@ class Flagbit_FactFinder_Model_Processor
 				break;
 
 			case 'factfinder_proxy_suggest':
-		        return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
+				if($this->_getRequestParam('channel') == null)
+					return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
+				else
+					return $this->getSearchAdapter()->getSecondarySuggestResultJsonp($this->_getRequestParam('channel'), $this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
 				break;
 
 		}

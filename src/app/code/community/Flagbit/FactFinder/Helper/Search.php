@@ -147,6 +147,25 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         }
         return $url;
     }
+	
+	/**
+     * get FACT-Finder Suggest URLs for the specified secondary channel
+     *
+     * @return string
+     */
+    public function getSecondarySuggestUrl($channel)
+    {		
+        $url = Mage::getSingleton('factfinder/adapter')->getSecondarySuggestUrl($channel);
+        if (Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)) {
+            $params = array();
+            if (Mage::app()->getStore()->isCurrentlySecure()) {
+                $params['_secure'] = true;
+            }
+			$params['channel'] = $channel;
+            $url = $this->_getUrl('factfinder/proxy/suggest', $params);
+        }
+        return $url;
+    }
 
 
     /**

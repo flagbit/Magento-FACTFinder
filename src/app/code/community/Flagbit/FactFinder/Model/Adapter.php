@@ -94,6 +94,12 @@ class Flagbit_FactFinder_Model_Adapter
      * @var array
      */
     protected $_secondarySearchResults = null;
+	
+	/**
+     * FACT-Finder secondary suggest results
+     * @var array
+     */
+    protected $_secondarySuggestResults = null;
 
 	
     /**
@@ -330,6 +336,30 @@ class Flagbit_FactFinder_Model_Adapter
 
         return $dataprovider->getNonAuthenticationUrl();
     }
+	
+	/**
+     * get Secondary Search Suggest URL for specified secondary channel
+     *
+     * @return string
+     */
+    public function getSecondarySuggestUrl($channel)
+    {
+		// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
+		$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return "";
+		}
+		
+        $dataprovider = $this->_getDataProvider();
+        $dataprovider->setType('Suggest.ff');
+        $dataprovider->setParams(array());
+		$dataprovider->setParam('channel', $channel);
+
+        return $dataprovider->getNonAuthenticationUrl();
+    }
 
     /**
      * get Suggest Adapter
@@ -348,6 +378,32 @@ class Flagbit_FactFinder_Model_Adapter
 
         return $this->_suggestAdapter;
     }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SuggestAdapter
+     */
+    protected function _getSecondarySuggestAdapter($channel, $query, $format)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getDataProvider();
+				
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', $query);
+		$dataProvider->setParam('format', $format);
+		
+		$suggestAdapter = FF::getInstance(
+			'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/suggestAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+        return $suggestAdapter;
+    }
 
     /**
      * get Suggest Results as Array
@@ -362,7 +418,37 @@ class Flagbit_FactFinder_Model_Adapter
 
         return Zend_Json_Decoder::decode($this->_getSuggestAdapter()->getSuggestions());
     }
+	
+	/**
+     * get secondary Suggest Results as Array for specified channel
+     *
+     * @param string $query
+     * @return array
+     */
+    public function getSecondarySuggestResult($channel, $query)
+    {
+		// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
+		$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return array();
+		}
+		
+		$suggestResult = array();
+		
+		try {
+			$suggestAdapter = $this->_getSecondarySuggestAdapter($currentChannel, $query, 'json');
+			$suggestResult = Zend_Json_Decoder::decode($suggestAdapter->getSuggestions());
+		}
+		catch (Exception $e) {
+			Mage::logException($e);
+		}
 
+        return $suggestResult;
+    }
+	
     /**
      * get Suggest Results as JSON
      *
@@ -375,6 +461,36 @@ class Flagbit_FactFinder_Model_Adapter
         $this->_setParam('format', 'jsonp', false);
 
         return $this->_getSuggestAdapter()->getSuggestions();
+    }
+	
+	/**
+     * get secondary Suggest Results as JSON for specified channel
+     *
+     * @param string $query
+     * @return array
+     */
+    public function getSecondarySuggestResultJsonp($channel, $query, $jqueryCallback)
+    {
+		// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
+		$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return array();
+		}
+		
+		$suggestResult = array();
+		
+		try {
+			$suggestAdapter = $this->_getSecondarySuggestAdapter($currentChannel, $query, 'jsonp');
+			$suggestResult = $suggestAdapter->getSuggestions();
+		}
+		catch (Exception $e) {
+			Mage::logException($e);
+		}
+
+        return $suggestResult;
     }
     
     /**
@@ -810,7 +926,7 @@ class Flagbit_FactFinder_Model_Adapter
     {
 		$config              = $this->_getConfiguration();
 		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
-		$dataProvider        = $this->_getParallelDataProvider($channel);
+		$dataProvider        = $this->_getParallelDataProvider();
 				
 		// Overwrite the channel set by the configuration
 		$dataProvider->setParam('channel', $channel);
