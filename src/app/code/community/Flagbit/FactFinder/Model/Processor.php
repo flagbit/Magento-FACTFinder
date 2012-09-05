@@ -139,7 +139,7 @@ class Flagbit_FactFinder_Model_Processor
 				break;
 
 			case 'factfinder_proxy_suggest':
-				$channels = $this->getSearchAdapter()->_getConfiguration()->getSecondaryChannels();
+				$channels = FF::getSingleton('configuration')->getSecondaryChannels(); //$this->getSearchAdapter()->_getConfiguration()
 				if(empty($channels))
 					return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
 				else
@@ -220,7 +220,7 @@ class Flagbit_FactFinder_Model_Processor
      */
     public function getRequestId()
     {
-        return $this->_requestId;
+        return $this->_requestId . (isset($_COOKIE['store']) ? $_COOKIE['store'] : '');
     }
 
     /**

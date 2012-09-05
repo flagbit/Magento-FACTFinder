@@ -155,10 +155,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
                         });
                     }
                     Effect.Appear(update,{duration:0});
-                },
-				onHide : function(element, update) {
-					
-				}
+                }
             }
         );
 		this.request.caller = this;
@@ -167,7 +164,6 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 	_loadData: function(data) {
 		var content = '<ul>';
 		content += '<li style="display: none" class="selected"></li>';
-		console.log(data);
 		data.each(function(item) {
 			var hitCount = item.hitCount == '0' ? '' : item.hitCount;
 			content += '<li title="'+item.query+'"><span class="amount">' + hitCount + '</span>' + item.query + '</li>';
