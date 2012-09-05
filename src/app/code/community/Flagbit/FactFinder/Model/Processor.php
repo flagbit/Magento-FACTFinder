@@ -6,6 +6,8 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
+ 
+require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
 
 /**
  * Model class
@@ -137,12 +139,12 @@ class Flagbit_FactFinder_Model_Processor
 				break;
 
 			case 'factfinder_proxy_suggest':
-				if($this->_getRequestParam('channel') == null)
+				$channels = $this->getSearchAdapter()->_getConfiguration()->getSecondaryChannels();
+				if(empty($channels))
 					return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
 				else
-					return $this->getSearchAdapter()->getSecondarySuggestResultJsonp($this->_getRequestParam('channel'), $this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
+					return $this->getSearchAdapter()->getAllSuggestResultsJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback')); 
 				break;
-
 		}
     }
 
