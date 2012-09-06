@@ -133,6 +133,13 @@ var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {
 })
 
 var FactFinderSuggest = Class.create(Varien.searchForm, {
+	initialize : function($super, form, field, emptyText, itemFormat) {
+		$super(form, field, emptyText);
+		this.itemFormat = itemFormat;
+	},
+	
+	itemFormat: '',
+	
 	request: null,
 	
     initAutocomplete : function(url, destinationElement){
@@ -155,7 +162,8 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
                         });
                     }
                     Effect.Appear(update,{duration:0});
-                }
+                },
+				onHide : function(element, update) {}
             }
         );
 		this.request.caller = this;
@@ -165,8 +173,16 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 		var content = '<ul>';
 		content += '<li style="display: none" class="selected"></li>';
 		data.each(function(item) {
-			var hitCount = item.hitCount == '0' ? '' : item.hitCount;
-			content += '<li title="'+item.query+'"><span class="amount">' + hitCount + '</span>' + item.query + '</li>';
+			
+			if(item.hitCount == '0')
+				item.hitCount = '';
+			var temp = itemFormat;
+			var left = /\{\{/;
+			var right = /\}\}/;
+			$H(item).each(function(pair) {
+				temp = temp.replace(new RegExp(left.source+pair.key+right.source, "g"), pair.value);
+			});
+			content += temp;
 		});		
 		content += '</ul>';
 		
