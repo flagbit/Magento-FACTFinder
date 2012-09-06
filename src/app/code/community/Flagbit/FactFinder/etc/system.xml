@@ -109,7 +109,7 @@
                         </channel>
                         <secondary_channels translate="label">
                             <label>Secondary Channels</label>
-                            <comment>Enter any secondary channels you want to search. Multiple channels can be separated by semicolons.</comment>
+                            <comment>Enter any secondary channels you want to search. Multiple channels can be separated by semicolons. NOTICE: Secondary channels will only be regarded for Suggest results if the proxy is used (see option in section "FACT-Finder Config Data")!</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>75</sort_order>
                             <show_in_default>1</show_in_default>
@@ -244,6 +244,7 @@
                         </redirectOnSingleResult>
                         <proxy translate="label">
                             <label>Use Proxy for Suggest</label>
+							<comment>This option has to be enabled for secondary channels to be regarded for Suggest results.</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>

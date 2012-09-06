@@ -51,6 +51,7 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
 				$activeStore = $websites[1]->getDefaultStore()->getCode().'/';
 			}
 		}
+		
 		$password = Mage::getStoreConfig('factfinder/search/auth_password');
 		
 		if ($store) $storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');

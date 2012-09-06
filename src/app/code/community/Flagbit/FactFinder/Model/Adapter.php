@@ -94,6 +94,12 @@ class Flagbit_FactFinder_Model_Adapter
      * @var array
      */
     protected $_secondarySearchResults = null;
+	
+	/**
+     * FACT-Finder secondary suggest results
+     * @var array
+     */
+    protected $_secondarySuggestResults = null;
 
 	
     /**
@@ -132,7 +138,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_searchAdapter = FF::getSingleton(
-                'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/searchAdapter',
+                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -334,19 +340,56 @@ class Flagbit_FactFinder_Model_Adapter
     /**
      * get Suggest Adapter
      *
+	 * @param	string	$query		query param for FF request
+	 * @param	string	$format		format param for FF request
+	 * @param	bool	$parallel	use a parallel data provider if true; use the default one, otherwise
+	 
      * @return FACTFinder_Abstract_SuggestAdapter
      */
-    protected function _getSuggestAdapter()
+    protected function _getSuggestAdapter($query, $format, $parallel = false)
     {
         if ($this->_suggestAdapter == null) {
-            $config               = $this->_getConfiguration();
-            $encodingHandler      = FF::getSingleton('encodingHandler', $config);
-            $params               = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider         = $this->_getDataProvider();
-            $this->_suggestAdapter = FF::getSingleton('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $config					= $this->_getConfiguration();
+            $encodingHandler		= FF::getSingleton('encodingHandler', $config);
+            $params					= $this->_getParamsParser()->getServerRequestParams();
+			if($parallel)
+				$dataProvider		= $this->_getParallelDataProvider();
+			else
+				$dataProvider		= $this->_getDataProvider();
+
+            $this->_suggestAdapter	= FF::getInstance('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
+		
+		$dataProvider->setParam('query', $query);
+		$dataProvider->setParam('format', $format);
 
         return $this->_suggestAdapter;
+    }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SuggestAdapter
+     */
+    protected function _getSecondarySuggestAdapter($channel, $query, $format)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getDataProvider();
+				
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', $query);
+		$dataProvider->setParam('format', $format);
+		
+		$suggestAdapter = FF::getInstance(
+			'http/suggestAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+        return $suggestAdapter;
     }
 
     /**
@@ -357,12 +400,9 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSuggestResult($query)
     {
-        $this->_setParam('query', $query);
-        $this->_setParam('format', 'json');
-
-        return Zend_Json_Decoder::decode($this->_getSuggestAdapter()->getSuggestions());
+        return Zend_Json_Decoder::decode($this->_getSuggestAdapter($query, 'json', false)->getSuggestions());
     }
-
+	
     /**
      * get Suggest Results as JSON
      *
@@ -371,10 +411,51 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSuggestResultJsonp($query, $jqueryCallback)
     {
-        $this->_setParam('query', $query, false);
-        $this->_setParam('format', 'jsonp', false);
-
-        return $this->_getSuggestAdapter()->getSuggestions();
+        return $this->_getSuggestAdapter($query, 'jsonp', false)->getSuggestions();
+    }
+	
+	/**
+     * get Suggest Results for primary and all secondary channels in parallel as JSON
+     *
+     * @param string $query
+     * @return string json
+     */
+    public function getAllSuggestResultsJsonp($query, $jqueryCallback)
+    {
+		
+        $primarySuggestAdapter = $this->_getSuggestAdapter($query, 'json', true);
+		
+		// load adapters for secondary channels
+		
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+        $secondarySuggestAdapters = array();
+			
+		foreach($channels AS $channel)
+		{
+			try {
+				$secondarySuggestAdapters[$channel] = $this->_getSecondarySuggestAdapter($channel, $query, 'json');
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+		
+		FACTFinder_Http_ParallelDataProvider::loadAllData();
+				
+		$suggestResult = Zend_Json_Decoder::decode($primarySuggestAdapter->getSuggestions());
+		
+		foreach($secondarySuggestAdapters AS $channel => $suggestAdapter)
+		{
+			try {
+				$suggestResult = array_merge($suggestResult, Zend_Json_Decoder::decode($suggestAdapter->getSuggestions())); 
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+		
+		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');';
     }
     
     /**
@@ -389,7 +470,7 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_tagCloudAdapter = FF::getSingleton(
-                'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/tagCloudAdapter',
+                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/tagCloudAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
@@ -446,7 +527,7 @@ class Flagbit_FactFinder_Model_Adapter
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
     }
@@ -459,7 +540,7 @@ class Flagbit_FactFinder_Model_Adapter
     public function getProductCampaignAdapter()
     {
 		// Note: this will only work as long as version numbers are used with the same amount of decimal points
-		if (Mage::getStoreConfig('factfinder/search/ffversion') < 67)
+		if ($this->_getConfiguration()->getFactFinderVersion() < 67)
 			throw new Exception('Feature not supported by used FACT-Finder version.');
 			
         if ($this->_productCampaignAdapter == null) {
@@ -468,7 +549,7 @@ class Flagbit_FactFinder_Model_Adapter
             $params            = $this->_getParamsParser()->getServerRequestParams();
             $dataProvider      = $this->_getDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_productCampaignAdapter = FF::getSingleton('xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_productCampaignAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_productCampaignAdapter;
     }
@@ -752,8 +833,7 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSecondarySearchResult($channel)
     {
-		// array_filter() is used to turn a one-element array into an empty array in the case of an empty config-string
-		$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
 		
 		if(!in_array($channel, $channels))
 		{
@@ -810,14 +890,14 @@ class Flagbit_FactFinder_Model_Adapter
     {
 		$config              = $this->_getConfiguration();
 		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
-		$dataProvider        = $this->_getParallelDataProvider($channel);
+		$dataProvider        = $this->_getParallelDataProvider();
 				
 		// Overwrite the channel set by the configuration
 		$dataProvider->setParam('channel', $channel);
 		$dataProvider->setParam('query', $query);
 		
 		$searchAdapter = FF::getInstance(
-			'xml'.Mage::getStoreConfig('factfinder/search/ffversion').'/searchAdapter',
+			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
 			$dataProvider,
 			$this->_getParamsParser(),
 			$encodingHandler
@@ -914,7 +994,7 @@ class Flagbit_FactFinder_Model_Adapter
      *
      * @return FACTFinder_Abstract_Configuration config
      */
-    protected function _getConfiguration($configarray = null)
+    public function _getConfiguration($configarray = null)
     {
         if ($this->_config == null) {
             $this->_config = FF::getSingleton('configuration', $configarray);

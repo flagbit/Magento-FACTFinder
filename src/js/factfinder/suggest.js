@@ -148,7 +148,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
                 updateElement: this._selectAutocompleteItem.bind(this),
                 onShow : function(element, update) {
                     if(!update.style.position || update.style.position=='absolute') {
-                        update.style.position = 'absolute';
+						update.style.position = 'absolute';
                         Position.clone(element, update, {
                             setHeight: false,
                             offsetTop: element.offsetHeight

@@ -11,16 +11,11 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     const HTTP_AUTH     = 'http';
     const SIMPLE_AUTH   = 'simple';
     const ADVANCED_AUTH = 'advanced';
-    const XML_CONFIG_PATH = 'factfinder/search/';
+    const XML_CONFIG_PATH = 'factfinder/search';
 
     private $config;
     private $authType;
-    private $pageMappings;
-    private $serverMappings;
-    private $pageIgnores;
-    private $serverIgnores;
-    private $requiredPageParams;
-    private $requiredServerParams;
+	private $secondaryChannels;
     private $storeId = null;
 
     public function __construct($config = null)
@@ -28,7 +23,9 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     	$this->config = new Varien_Object($config);
     	if(is_array($config)){
     		$this->config->setData($config);
-    	}
+    	} else {
+			$this->config->setData(Mage::getStoreConfig(self::XML_CONFIG_PATH));
+		}
     }
 
     /**
@@ -53,7 +50,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     {
     	if(!$this->config->hasData($name)){
     		try{
-    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.$name, $this->storeId));
+    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.'/'.$name, $this->storeId));
     		}catch (Exception $e){
     			$this->config->setData($name, null);
     		}
@@ -113,6 +110,13 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     public function getContext() {
 		return $this->getCustomValue('context');
     }
+	
+	/**
+	 * @return string
+	 **/
+	public function getFactFinderVersion() {
+		return $this->getCustomValue('ffversion');
+	}
 
     /**
      * @return string
@@ -120,6 +124,18 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     public function getChannel() {
         return $this->getCustomValue('channel');
     }
+	
+	/**
+	 * @return array of strings
+	 **/
+	public function getSecondaryChannels() {
+		if($this->secondaryChannels == null)
+		{
+			// array_filter() is used to remove empty channel names
+			$this->secondaryChannels = array_filter(explode(';', $this->getCustomValue('secondary_channels')));
+		}
+		return $this->secondaryChannels;
+	}
 
     /**
      * @return string

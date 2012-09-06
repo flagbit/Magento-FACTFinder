@@ -195,8 +195,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 }
             }
 
-            $productIndexes     = array();
-            $productAttributes  = $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
+            $productIndexes			= array();
+            $productAttributes		= $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
             foreach ($products as $productData) {
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
