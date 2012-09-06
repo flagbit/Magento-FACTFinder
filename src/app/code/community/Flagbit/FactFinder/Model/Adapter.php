@@ -442,7 +442,7 @@ class Flagbit_FactFinder_Model_Adapter
 		}
 		
 		FACTFinder_Http_ParallelDataProvider::loadAllData();
-				
+		
 		$suggestResult = Zend_Json_Decoder::decode($primarySuggestAdapter->getSuggestions());
 		foreach($suggestResult as &$item)
 		{
@@ -464,7 +464,7 @@ class Flagbit_FactFinder_Model_Adapter
 			}
 		}
 		
-		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');';
+		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');'; //print_r($suggestResult,true); //
     }
     
     /**
