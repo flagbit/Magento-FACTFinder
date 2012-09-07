@@ -78,7 +78,7 @@
 				//  - Any item with a non-empty title tag will be clickable and the title will be used as the search term. Clicking
 				//    on an item with an empty or without a title tag will not trigger the search. However, it might close the result
 				//	  list.
-				
+								
 				var loadDataCallback = function(data) {
 					// Internationalization lookup:
 					// Add a new anonymous object for every string you want to internationalize (with the property being the string).
@@ -96,12 +96,18 @@
 						}
 					};
 					var locale = '<?php echo Mage::app()->getLocale()->getDefaultLocale(); ?>';
+					var translate = function(string, locale) {
+						if(i18n[string] == undefined || i18n[string][locale] == undefined)
+							return string;
+						else
+							return i18n[string][locale];
+					}
 				
 					var content = '<ul>';
 					content += '<li style="display: none" class="selected selectable-item"></li>';
 					var currentChannel = '';
 					if(data.length) {
-						content += '<li class="delimiter">' + i18n['Products'][locale] + '</li>';
+						content += '<li class="delimiter">' + translate('Products', locale) + '</li>';
 						currentChannel = data[0].channel;
 					}
 						
@@ -109,7 +115,7 @@
 						var item = data[i];
 						if(item.channel != currentChannel)
 						{
-							content += '<li class="delimiter">' + i18n['Channel: ' + item.channel][locale] + '</li>';
+							content += '<li class="delimiter">' + translate('Channel: ' + item.channel, locale) + '</li>';
 							currentChannel = item.channel;
 						}
 						var temp = '';
