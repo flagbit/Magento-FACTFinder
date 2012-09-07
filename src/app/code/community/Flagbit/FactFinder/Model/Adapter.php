@@ -442,20 +442,29 @@ class Flagbit_FactFinder_Model_Adapter
 		}
 		
 		FACTFinder_Http_ParallelDataProvider::loadAllData();
-				
+		
 		$suggestResult = Zend_Json_Decoder::decode($primarySuggestAdapter->getSuggestions());
+		foreach($suggestResult as &$item)
+		{
+			$item["channel"] = $this->_getConfiguration()->getChannel();
+		}
 		
 		foreach($secondarySuggestAdapters AS $channel => $suggestAdapter)
 		{
 			try {
-				$suggestResult = array_merge($suggestResult, Zend_Json_Decoder::decode($suggestAdapter->getSuggestions())); 
+				$result = Zend_Json_Decoder::decode($suggestAdapter->getSuggestions());
+				foreach($result as &$item)
+				{
+					$item["channel"] = $channel;
+				}
+				$suggestResult = array_merge($suggestResult, $result); 
 			}
 			catch (Exception $e) {
 				Mage::logException($e);
 			}
 		}
 		
-		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');';
+		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');'; //print_r($suggestResult,true); //
     }
     
     /**
@@ -994,7 +1003,7 @@ class Flagbit_FactFinder_Model_Adapter
      *
      * @return FACTFinder_Abstract_Configuration config
      */
-    public function _getConfiguration($configarray = null)
+    protected function _getConfiguration($configarray = null)
     {
         if ($this->_config == null) {
             $this->_config = FF::getSingleton('configuration', $configarray);

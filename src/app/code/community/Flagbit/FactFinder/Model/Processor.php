@@ -139,7 +139,7 @@ class Flagbit_FactFinder_Model_Processor
 				break;
 
 			case 'factfinder_proxy_suggest':
-				$channels = FF::getSingleton('configuration')->getSecondaryChannels(); //$this->getSearchAdapter()->_getConfiguration()
+				$channels = FF::getSingleton('configuration')->getSecondaryChannels();
 				if(empty($channels))
 					return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
 				else

@@ -112,27 +112,68 @@ FactFinderAjax.Request = Class.create(Ajax.Request, {
   }
 });
 
-var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {
+var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {	
 	caller: null,
 	rq: null,
-  getUpdatedChoices: function() {
-    this.startIndicator();
+	getUpdatedChoices: function() {
+		this.startIndicator();
 
-    var entry = encodeURIComponent(this.options.paramName) + '=' +
-      encodeURIComponent(this.getToken());
+		var entry = encodeURIComponent(this.options.paramName) + '=' +
+		  encodeURIComponent(this.getToken());
 
-    this.options.parameters = this.options.callback ?
-      this.options.callback(this.element, entry) : entry;
+		this.options.parameters = this.options.callback ?
+		  this.options.callback(this.element, entry) : entry;
 
-    if(this.options.defaultParams)
-      this.options.parameters += '&' + this.options.defaultParams;
+		if(this.options.defaultParams)
+		  this.options.parameters += '&' + this.options.defaultParams;
 
-    this.rq = new FactFinderAjax.Request(this.url, this.options);
-	this.rq.transport.onreadystatechange = this.caller._loadData.bind(this.caller);
-  }
+		this.rq = new FactFinderAjax.Request(this.url, this.options);
+		this.rq.transport.onreadystatechange = this.caller._loadData.bind(this.caller);
+	},
+
+	updateChoices: function(choices) {
+		if(!this.changed && this.hasFocus) {
+			this.update.innerHTML = choices;
+			Element.cleanWhitespace(this.update);
+			Element.cleanWhitespace(this.update.down());
+
+			if(this.update.firstChild && this.update.select('.selectable-item')) {
+				this.entryCount =
+					this.update.select('.selectable-item').length;
+				for (var i = 0; i < this.entryCount; i++) {
+					var entry = this.getEntry(i);
+					entry.autocompleteIndex = i;
+					this.addObservers(entry);
+				}
+			} else {
+				this.entryCount = 0;
+			}
+
+			this.stopIndicator();
+			this.index = 0;
+
+			if(this.entryCount==1 && this.options.autoSelect) {
+				this.selectEntry();
+				this.hide();
+			} else {
+				this.render();
+			}
+		}
+	},
+
+	getEntry: function(index) {
+		return this.update.select('.selectable-item')[index];
+	}
 })
 
 var FactFinderSuggest = Class.create(Varien.searchForm, {
+	initialize : function($super, form, field, emptyText, loadDataCallback) {
+		$super(form, field, emptyText);
+		this.loadDataCallback = loadDataCallback;
+	},
+	
+	loadDataCallback: null,
+	
 	request: null,
 	
     initAutocomplete : function(url, destinationElement){
@@ -156,21 +197,15 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
                     }
                     Effect.Appear(update,{duration:0});
                 }
+				// uncomment for debugging
+				//, onHide : function(element, update) {}
             }
         );
 		this.request.caller = this;
     },
 	
 	_loadData: function(data) {
-		var content = '<ul>';
-		content += '<li style="display: none" class="selected"></li>';
-		data.each(function(item) {
-			var hitCount = item.hitCount == '0' ? '' : item.hitCount;
-			content += '<li title="'+item.query+'"><span class="amount">' + hitCount + '</span>' + item.query + '</li>';
-		});		
-		content += '</ul>';
-		
-		this.request.updateChoices(content);
+		this.request.updateChoices(this.loadDataCallback(data));
 	},
 
     _selectAutocompleteItem : function(element){		
@@ -179,7 +214,8 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 			this.form.insert('<input type="hidden" name="userInput" value="'+this.field.value+'" />');
 			
             this.field.value = element.title;
+			
+			this.form.submit();
         }
-        this.form.submit();
     }
 });
