@@ -119,8 +119,8 @@ class Flagbit_FactFinder_Model_Adapter
 	 * @var FACTFinder_Abstract_Logger
 	 */
 	protected $_logger = null;
-    
-    public function __construct($arg = null)
+	
+	public function __construct($arg = null)
     {
         if ($arg != null && $arg instanceof FACTFinder_Abstract_Logger) {
             FF::setLogger($arg);
@@ -254,7 +254,7 @@ class Flagbit_FactFinder_Model_Adapter
             
             case "xmlconnect":
                 $_query = $helper->getQueryText();
-                $this->_setParam('idsOnly', 'true', true, $dataProvider)
+                $this->_setParam('idsOnly', $this->_getConfiguration()->getIdsOnly() ? 'true' : 'false', true, $dataProvider)
                     ->_setParam('query', $_query, true, $dataProvider);
                 
                 $count = $params['count'];
@@ -308,7 +308,7 @@ class Flagbit_FactFinder_Model_Adapter
                 }
                 
                 // add Default Params
-                $this->_setParam('idsOnly', 'true', true, $dataProvider)
+                $this->_setParam('idsOnly', $this->_getConfiguration()->getIdsOnly() ? 'true' : 'false', true, $dataProvider)
                     ->_setParam('productsPerPage', $helper->getPageLimit(), true, $dataProvider)
                     ->_setParam('query', $_query, true, $dataProvider)
                     ->_setParam('page', $helper->getCurrentPage(), true, $dataProvider);
