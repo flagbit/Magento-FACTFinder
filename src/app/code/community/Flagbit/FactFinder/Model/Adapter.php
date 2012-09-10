@@ -369,10 +369,14 @@ class Flagbit_FactFinder_Model_Adapter
         $status = false;
         try {
             $this->_getConfiguration($configarray);
+			
+			
             $this->_setParam('query', 'FACT-Finder Version');
             $this->_setParam('productsPerPage', '1');
-
-            $status = $this->_getSearchAdapter(false)->getStatus() == 'resultsFound';
+			
+			$searchAdapter = $this->_getSearchAdapter(false);
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			$status = $searchAdapter->getStatus() == 'resultsFound';
         } catch (Exception $e) {
             $status = false;
         }
