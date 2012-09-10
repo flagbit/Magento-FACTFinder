@@ -232,6 +232,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 
             return $productCampaignAdapter->getCampaigns();
         } catch(Exception $e) {
+			// TODO: log exception
             return array();
         }
     }	 

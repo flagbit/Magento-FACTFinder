@@ -170,6 +170,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </urls>
+						<suggest_image_size translate="label comment">
+                            <label>Size of Suggest images</label>
+							<comment>Please enter the desired side length of the Suggest images in pixels. If you do not want to resize them, enter 0.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suggest_image_size>
                         <clicktracking translate="label">
                             <label>Track product-clicks</label>
                             <frontend_type>select</frontend_type>
