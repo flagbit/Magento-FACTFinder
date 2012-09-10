@@ -5,3 +5,8 @@
 .project
 .settings
 build
+
+/build.mb.properties
+/build.mb.xml
+/build.mb.properties
+/build.mb.xml

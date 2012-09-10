@@ -339,6 +339,65 @@ class FACTFinder_Configuration implements FACTFinder_Abstract_Configuration
         return $this->requiredServerParams;
     }
 
+	/**
+	 * get default connect timeout for all adapters
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultConnectTimeout() {
+		return $this->zendConfig->search->timeouts->defaultConnectTimeout;
+	}
+	
+	/**
+	 * get default timeout for all adapters
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultTimeout() {
+		return $this->zendConfig->search->timeouts->defaultTimeout;
+	}
+	
+	/**
+	 * get connect timeout for suggest adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestConnectTimeout() {
+		return $this->zendConfig->search->timeouts->suggestConnectTimeout;
+	}
+	
+	/**
+	 * get timeout for suggest adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestTimeout() {
+		return $this->zendConfig->search->timeouts->suggestTimeout;
+	}
+	
+	/**
+	 * get connect timeout for import adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportConnectTimeout() {
+		return $this->zendConfig->search->timeouts->importConnectTimeout;
+	}
+	
+	/**
+	 * get timeout for import adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportTimeout() {
+		return $this->zendConfig->search->timeouts->importTimeout;
+	}
 
     /**
      * get encoding for the webpage

@@ -18,8 +18,7 @@
 class FACTFinder_Http_ParallelDataProvider
 {
 	protected static $instance;
-	protected static $dataProvider = array();
-	protected static $dataLoaded = false;
+	protected static $dataProviders = array();
 	
     protected $data;
 	
@@ -35,11 +34,11 @@ class FACTFinder_Http_ParallelDataProvider
 		if (self::$instance == null) {
 			self::$instance = new FACTFinder_Http_ParallelDataProvider();
 		}
-		$id = 'proxy' . count(self::$dataProvider); // use prefix so the id is a string
-		self::$dataProvider[$id] = new FACTFinder_Http_DataProviderProxy($params, $config);
-		self::$dataProvider[$id]->register($id, self::$instance);
+		$id = 'proxy' . count(self::$dataProviders); // use prefix so the id is a string
+		self::$dataProviders[$id] = new FACTFinder_Http_DataProviderProxy($params, $config);
+		self::$dataProviders[$id]->register($id, self::$instance);
 		
-		return self::$dataProvider[$id];
+		return self::$dataProviders[$id];
 	}
 
     /**
@@ -49,12 +48,11 @@ class FACTFinder_Http_ParallelDataProvider
      **/
     public static function loadAllData()
     {
-		if (self::$instance == null) {
-			throw new Exception("no dataprovider initialized");
+		if (self::$instance == null || count(self::$dataProviders) == 0) {
+			return;
 		}
 		
 		// TODO: optimize:
-			// - deny multiple loading of single requests that were already loaded
 			// - warn if several loadings were done
 			// - add logging
 	
@@ -64,12 +62,17 @@ class FACTFinder_Http_ParallelDataProvider
 		$data = self::executeHandles($multiHandle, $handles);
 		
 		self::$instance->setData($data);
-		self::$dataLoaded = true;
     }
 
 	protected static function initHandles($multiHandle) {
 		$handles = array();
-		foreach(self::$dataProvider AS $id => $dataProvider) {
+		foreach(self::$dataProviders AS $id => $dataProvider) {
+			if(!$dataProvider->hasUrlChanged())
+			{
+				$handles[$id] = null;
+				continue;
+			}
+			$dataProvider->setPreviousUrl($dataProvider->getNonAuthenticationUrl());
 			$handle = curl_init($dataProvider->getAuthenticationUrl());
 			
 			$curlOptions = $dataProvider->getCurlOptions();
@@ -104,6 +107,11 @@ class FACTFinder_Http_ParallelDataProvider
 		//close the handles
 		$data = array();
 		foreach($handles AS $id => $handle) {
+			if($handle == null)
+			{
+				$data[$id] = null;
+				continue;
+			}
 			$data[$id] = curl_multi_getcontent($handle);
 			curl_multi_remove_handle($multiHandle, $handle);
 		}
@@ -116,7 +124,12 @@ class FACTFinder_Http_ParallelDataProvider
 	 * internal method to apply data to 
 	 */
 	protected function setData(array $data) {
-		$this->data = $data;
+		foreach($data as $id => $dataItem)
+		{
+			if($dataItem == null)
+				continue;
+			$this->data[$id] = $data[$id];
+		}		
 	}
 	
     /**
@@ -126,8 +139,8 @@ class FACTFinder_Http_ParallelDataProvider
      */
     public function getData($id)
     {
-        if (!self::$dataLoaded) {
-           throw new DataNotLoadedException("Implementation Error: please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data");
+		if (self::$dataProviders[$id]->hasUrlChanged()) {
+           throw new DataNotLoadedException("Implementation Error: the data is not up to date. Please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data!");
         }
         return isset($this->data[$id]) ? $this->data[$id] : null;
     }

@@ -264,6 +264,66 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     function getRequiredServerParams(){
         return array();
     }
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultConnectTimeout() {
+		return 2;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultTimeout() {
+		return 4;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestConnectTimeout() {
+		return 1;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestTimeout() {
+		return 2;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportConnectTimeout() {
+		return 10;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportTimeout() {
+		return 360;
+	}
 
 
     /**

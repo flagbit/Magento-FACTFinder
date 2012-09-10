@@ -15,7 +15,7 @@
  * @package   FACTFinder\Xml67
  */
 class FACTFinder_Xml67_SearchAdapter extends FACTFinder_Xml66_SearchAdapter
-{
+{	
     /**
      * @return array of FACTFinder_Campaign objects
      */

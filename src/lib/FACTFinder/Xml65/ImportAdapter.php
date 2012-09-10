@@ -45,8 +45,8 @@ class FACTFinder_Xml65_ImportAdapter extends FACTFinder_Abstract_ImportAdapter
     protected function triggerImport($download, $type = 'data')
     {
         $this->getDataProvider()->setCurlOptions(array(
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_TIMEOUT => 360
+            CURLOPT_CONNECTTIMEOUT => $this->getDataProvider()->getConfig()->getImportConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getDataProvider()->getConfig()->getImportTimeout()
         ));
         
         $this->getDataProvider()->setParam('download', $download ? 'true' : 'false');

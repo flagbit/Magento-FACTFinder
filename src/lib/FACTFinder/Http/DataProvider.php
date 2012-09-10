@@ -17,16 +17,22 @@
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
-    protected $previousUrl;
+    protected $previousUrl = '';
     protected $httpHeader = array();
     protected $curlOptions = array(
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_SSL_VERIFYHOST => false
             );
 
+	function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null) {
+		parent::__construct($params, $config, $log);
+		$this->setCurlOptions(array(
+            CURLOPT_CONNECTTIMEOUT => $this->getConfig()->getDefaultConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getConfig()->getDefaultTimeout()
+        ));
+	}
+			
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
      * please ensure that this is the full action name, i.e. "Search.ff"
@@ -84,13 +90,28 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getData()
     {
-		$url = $this->getAuthenticationUrl();
-        if ($this->data == null || $url != $this->previousUrl) {
-            $this->previousUrl = $url;
-            $this->data = $this->loadResponse($url);
+		if ($this->hasUrlChanged()) {
+			$this->setPreviousUrl($this->getNonAuthenticationUrl());
+            $this->data = $this->loadResponse($this->getAuthenticationUrl());
         }
         return $this->data;
     }
+	
+	/**
+	 * sets the URL that was used for the most recent request
+	 **/
+	public function setPreviousUrl($url)
+	{
+		$this->previousUrl = $url;
+	}
+	
+	/**
+	 * checks whether the URL (and thus the parameters) have changed since last loading the data
+	 **/
+	public function hasUrlChanged()
+	{
+		return $this->getNonAuthenticationUrl() != $this->previousUrl;
+	}
 
     /**
      * this function sends the request to the server and loads the response data
