@@ -31,17 +31,37 @@ class FACTFinder_ProductsPerPageOptions implements IteratorAggregate
         $selectedOption = intval($selectedOption);
 
         $this->options = new ArrayIterator();
-        foreach($options AS $option => $url) {
-            $item = FF::getInstance('item', intval($option), $url, ($option == $selectedOption));
-            if ($option == $selectedOption) {
-                $this->selectedOption = $item;
-            }
-            if ($option == $defaultOption) {
-                $this->defaultOption = $item;
-            }
-            $this->options->append($item);
-        }
-
+		
+		if(!empty($options))
+		{
+			foreach($options AS $option => $url) {
+				$item = FF::getInstance('item', intval($option), $url, ($option == $selectedOption));
+				if ($option == $selectedOption) {
+					$this->selectedOption = $item;
+				}
+				if ($option == $defaultOption) {
+					$this->defaultOption = $item;
+				}
+				$this->options->append($item);
+			}
+		}
+		else // FF 6.7 may occasionally return stripped down results
+		{
+			$defaultItem = FF::getInstance('item', $defaultOption, $defaultOption == $selectedOption);
+			$this->defaultOption = $defaultItem;
+			$this->options->append($defaultItem);
+			if($defaultOption == $selectedOption)
+			{
+				$this->selectedOption = $defaultItem;
+			}
+			else
+			{
+				$selectedItem = FF::getInstance('item', $selectedOption, true);
+				$this->selectedOption = $selectedItem;
+				$this->options->append($selectedItem);
+			}	
+		}
+		
         if ($this->defaultOption == null && $this->options->count() > 0) {
             $this->defaultOption = $this->options[0];
         }

@@ -113,9 +113,11 @@ abstract class FACTFinder_Abstract_DataProvider
     }
 
     /**
+	 * This is public, so that adapters don't need their own config objects.
+	 *
      * @return FACTFinder_Abstract_IConfiguration
      **/
-    protected function getConfig()
+    public function getConfig()
     {
         return $this->config;
     }

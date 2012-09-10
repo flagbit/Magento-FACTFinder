@@ -24,8 +24,8 @@ class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
 		$this->log->info("Initializing new suggest adapter.");
         $this->getDataProvider()->setType('Suggest.ff');
         $this->getDataProvider()->setCurlOptions(array(
-            CURLOPT_CONNECTTIMEOUT => 1,
-            CURLOPT_TIMEOUT => 2
+            CURLOPT_CONNECTTIMEOUT => $this->getDataProvider()->getConfig()->getSuggestConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getDataProvider()->getConfig()->getSuggestTimeout()
         ));
     }
 
