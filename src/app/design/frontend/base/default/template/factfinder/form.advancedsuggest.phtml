@@ -84,30 +84,26 @@
 					// Add a new anonymous object for every string you want to internationalize (with the property being the string).
 					// These objects consist of one string for each locale, where the property is the locale code.
 					var i18n = {
-						"Products" : {
-							"de_DE" : "Produkte",
-							"en_US" : "Products",
-							"fr_FR" : "Produits"
-						},
-						"Channel: dev-content" : {
-							"de_DE" : "Inhalte",
-							"en_US" : "Content Results",
-							"fr_FR" : "Teneurs"
-						}
+						<?php
+						$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+						$output = array();
+						foreach($channels as $channel)
+							$output[] = '"Channel: '.$channel.'" : "'.$this->__('Channel: '.$channel).'"';
+						echo implode(',', $output);
+						?>
 					};
-					var locale = '<?php echo Mage::app()->getLocale()->getDefaultLocale(); ?>';
-					var translate = function(string, locale) {
-						if(i18n[string] == undefined || i18n[string][locale] == undefined)
+					var translate = function(string) {
+						if(i18n[string] == undefined)
 							return string;
 						else
-							return i18n[string][locale];
+							return i18n[string];
 					}
 				
 					var content = '<ul>';
 					content += '<li style="display: none" class="selected selectable-item"></li>';
 					var currentChannel = '';
 					if(data.length) {
-						content += '<li class="delimiter">' + translate('Products', locale) + '</li>';
+						content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
 						currentChannel = data[0].channel;
 					}
 						
@@ -115,7 +111,7 @@
 						var item = data[i];
 						if(item.channel != currentChannel)
 						{
-							content += '<li class="delimiter">' + translate('Channel: ' + item.channel, locale) + '</li>';
+							content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
 							currentChannel = item.channel;
 						}
 						var temp = '';
