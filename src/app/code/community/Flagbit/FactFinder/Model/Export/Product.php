@@ -230,7 +230,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
-                
+				
                 if ($productChilds = $productRelations[$productData['entity_id']]) {       
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
