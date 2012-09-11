@@ -1,6 +1,8 @@
 "advanced", "fortgeschritten"
 "Advanced Authentication Postfix", "Suffix für fortgeschrittene Authentifizierung"
 "Advanced Authentication Prefix", "Präfix für fortgeschrittene Authentifizierung"
+"Another export is already running. Please wait for it to finish before you start a new export.", "Ein anderer Export wurde bereits gestartet. Bitte warten Sie auf dessen Fertigstellung, bevor Sie ein neuen Export beginnen."
+"If you receive this message after another export has crashed, please delete the file ""export.lock"" within your Magento directory.", "Wenn Sie diese Meldung sehen, nachdem ein anderer Export abgebrochen wurde, löschen Sie bitte die Datei ""export.lock"" aus Ihrem Magento-Verzeichnis."
 "Authentication Type", "Authentifizierungstyp"
 "Catalog", "Katalog"
 "Channel", "Channel"

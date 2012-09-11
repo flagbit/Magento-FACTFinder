@@ -12,11 +12,13 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     const SIMPLE_AUTH   = 'simple';
     const ADVANCED_AUTH = 'advanced';
     const XML_CONFIG_PATH = 'factfinder/search';
+	const DEFAULT_SEMAPHORE_TIMEOUT = 7200; // 60 seconds = 2 hours
 
     private $config;
     private $authType;
 	private $secondaryChannels;
     private $storeId = null;
+	private $semaphoreTimeout = self::DEFAULT_SEMAPHORE_TIMEOUT;
 	
 	// Should the search adapters retrieve only product ids? (otherwise, full records will be requested)
 	private $idsOnly = true;
@@ -391,5 +393,23 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
 	 **/
 	public function getIdsOnly() {
 		return $this->idsOnly;
+	}
+	
+	/**
+	 * Sets the time span in seconds after which semaphores expire
+	 *
+	 * @param	int		value in seconds
+	 **/
+	public function setSemaphoreTimeout($valueInSeconds) {
+		$this->semaphoreTimeout = $valueInSeconds;
+	}
+	
+	/**
+	 * Gets the time span in seconds after which semaphores expire
+	 *
+	 * @return int
+	 **/
+	public function getSemaphoreTimeout() {
+		return $this->semaphoreTimeout;
 	}
 }
