@@ -22,7 +22,8 @@ var factfinderSCIC = new FactfinderSCIC(
     '.col-main',
     $H(<?php echo $this->getJsonDataObject();?>),
     $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
-    '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>'
+    '<?php echo $this->getUrl('factfinder/proxy/scic'); ?>',
+	false
 );
 
 Event.observe(document, 'dom:loaded', function(event) {

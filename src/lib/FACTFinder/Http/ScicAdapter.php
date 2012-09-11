@@ -19,9 +19,14 @@ class FACTFinder_Http_ScicAdapter extends FACTFinder_Abstract_ScicAdapter
     /**
      * init
      */
-    protected function init() {
+    protected function init()
+	{
 		$this->log->info("Initializing new SCIC adapter.");
         $this->getDataProvider()->setType('SCIC.ff');
+        $this->getDataProvider()->setCurlOptions(array(
+            CURLOPT_CONNECTTIMEOUT => $this->getDataProvider()->getConfig()->getScicConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getDataProvider()->getConfig()->getScicTimeout()
+        ));
     }
 
     /**

@@ -316,6 +316,26 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
 	 * @return string
 	 **/
 	 
+	function getScicConnectTimeout() {
+		return 1;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getScicTimeout() {
+		return 1;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
 	function getImportConnectTimeout() {
 		return 10;
 	}
