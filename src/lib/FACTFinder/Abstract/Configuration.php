@@ -169,6 +169,22 @@ interface FACTFinder_Abstract_Configuration
 	function getSuggestTimeout();
 	
 	/**
+	 * get connect timeout for scic adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getScicConnectTimeout();
+	
+	/**
+	 * get timeout for scic adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getScicTimeout();
+	
+	/**
 	 * get connect timeout for import adapter
 	 *
 	 * @return string

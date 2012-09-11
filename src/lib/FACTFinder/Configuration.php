@@ -380,6 +380,26 @@ class FACTFinder_Configuration implements FACTFinder_Abstract_Configuration
 	}
 	
 	/**
+	 * get connect timeout for scic adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getScicConnectTimeout() {
+		return $this->zendConfig->search->timeouts->scicConnectTimeout;
+	}
+	
+	/**
+	 * get timeout for scic adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getScicTimeout() {
+		return $this->zendConfig->search->timeouts->scicTimeout;
+	}
+	
+	/**
 	 * get connect timeout for import adapter
 	 *
 	 * @return string
