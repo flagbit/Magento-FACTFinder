@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Http
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * this data provider loads the data from local static xml files
@@ -6,32 +13,32 @@
  *
  * @author    Rudolf Batt <rb@omikron.net>, Martin Buettner <martin.buettner@omikron.net>
  * @version   $Id: DummyProvider.php 44086 2012-02-29 17:19:43Z martin.buettner $
- * @package   FACTFinder\Xml65
+ * @package   FACTFinder\Http
  */
 class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
-    protected $previousFileName;
-    
-    protected $fileLocation;
-    
-    public function setFileLocation($loc)
-    {
-        $this->fileLocation = substr($loc, -1) == DS ? $loc : $loc.DS;
-    }
-    
-    /**
-     * we just offer this function, for compatibility with the DataProvider API
-     *
+	protected $previousFileName;
+	
+	protected $fileLocation;
+	
+	public function setFileLocation($loc)
+	{
+		$this->fileLocation = substr($loc, -1) == DS ? $loc : $loc.DS;
+	}
+	
+	/**
+	 * we just offer this function, for compatibility with the DataProvider API
+	 *
      * @link http://php.net/manual/en/function.curl-setopt.php
      * @param the option key (should be a cURL constant)
-     * @param the option value
-     * @param boolean whether to overwrite existing options or not. optional, default = true
+	 * @param the option value
+	 * @param boolean whether to overwrite existing options or not. optional, default = true
      * @return void
-     */
-    public function setCurlOption($option, $value, $overwriteExisting = true) {
-        return;
-    }
+	 */
+	public function setCurlOption($option, $value, $overwriteExisting = true) {
+		return;
+	}
 
     /**
      * we just offer this function, for compatibility with the DataProvider API
@@ -41,7 +48,7 @@ class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
      * @return void
      */
     public function setCurlOptions(array $options) {
-        return;
+		return;
     }
 
     /**
@@ -56,22 +63,21 @@ class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
     }
 
     /**
-     * {@inheritdoc}
      * this implementation returns the data as string
      *
      * @return string data
      */
     public function getData()
     {
-        $fileName = $this->getFileName();
+		$fileName = $this->getFileName();
         if ($this->data == null || $fileName != $this->previousFileName) {
             $this->previousFileName = $fileName;
             $this->data = $this->loadFileContent($fileName);
         }
         return $this->data;
     }
-    
-    /**
+	
+	/**
      * this function loads the correct file and returns its contents
      *
      * @throws Exception on connection error
@@ -79,52 +85,52 @@ class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
      **/
     protected function loadFileContent($fileName)
     {
-        return file_get_contents($fileName);
+		return file_get_contents($fileName);
     }
-    
-    protected function getFileName()
-    {
-        if ($this->type == null) {
-            $this->log->error("Request type missing.");
+	
+	protected function getFileName()
+	{
+	    if ($this->type == null) {
+			$this->log->error("Request type missing.");
             throw new Exception('request type not set! can not do a request without knowing the type.');
         }
-        
-        // Remove ".ff" from the type name
-        $fileName = substr_replace($this->type, '', '-3')."_";
-        $config = $this->getConfig();
-        $params = $this->getParams();
-        unset($params["format"]);
-        unset($params["user"]);
-        unset($params["pw"]);
-        unset($params["timestamp"]);
-        unset($params["channel"]);
+		
+		// Remove ".ff" from the type name
+		$fileName = substr_replace($this->type, '', '-3')."_";
+		$config = $this->getConfig();
+		$params = $this->getParams();
+		unset($params["format"]);
+		unset($params["user"]);
+		unset($params["pw"]);
+		unset($params["timestamp"]);
+		unset($params["channel"]);
 
-        ksort($params, SORT_STRING);
-        $fileName .= http_build_query($params, '', '_');
-        $fileName .= ".xml";
-        
-        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
-        $fileName = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $fileName);
-        
-        $this->log->info("Trying to load ".$this->fileLocation.$fileName);
-        
-        return $this->fileLocation.$fileName;
-    }
-    
-    /**
-     * get channel from params or config (params override config)
-     *
-     * @param array parameterse
-     * @FACTFinderAbstractConfiguration config
-     * @return string channel
-     **/
-    protected function getChannel($params, $config) {
-        $channel = '';
-        if (!empty($params['channel'])) {
-            $channel = $params['channel'];
-        } else if($config->getChannel() != '') {
+		ksort($params, SORT_STRING);
+		$fileName .= http_build_query($params, '', '_');
+		$fileName .= ".xml";
+		
+		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
+		$fileName = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $fileName);
+		
+		$this->log->info("Trying to load ".$this->fileLocation.$fileName);
+		
+		return $this->fileLocation.$fileName;
+	}
+	
+	/**
+	 * get channel from params or config (params override config)
+	 *
+	 * @param array parameters
+	 * @param FACTFinderAbstractConfiguration config
+	 * @return string channel
+	 **/
+	protected function getChannel($params, $config) {
+		$channel = '';
+		if (isset($params['channel']) && strlen($params['channel'] > 0)) {
+			$channel = $params['channel'];
+		} else if($config->getChannel() != '') {
             $channel = $config->getChannel();
         }
-        return $channel;
-    }
+		return $channel;
+	}
 }

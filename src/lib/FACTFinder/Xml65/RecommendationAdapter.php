@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Xml65
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * adapter for the factfinder recommendation engine, working with the XML interface of FF6.5
@@ -10,20 +17,20 @@
 class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_RecommendationAdapter
 {
 
-    protected $xmlData = null;
+	protected $xmlData = null;
 
-    /**
-     * {@inheritdoc}
+	/**
+     * init
      */
     protected function init()
     {
-        parent::init();
-        $this->log->info("Initializing new recommendation adapter.");
+		parent::init();
+		$this->log->info("Initializing new recommendation adapter.");
         $this->getDataProvider()->setParam('do', 'getRecommendation');
-        $this->getDataProvider()->setParam('format', 'xml');
+		$this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Recommender.ff');
     }
-    
+	
     /**
      * try to parse data as xml
      *
@@ -51,33 +58,33 @@ class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_Recomme
      *
      */
     protected function createRecommendations() {
-        $xmlResult = $this->getData(); //throws exception on error
+		$xmlResult = $this->getData(); //throws exception on error
 
-        $records = array();
-        if (!empty($xmlResult->results)) {
+		$records = array();
+		if (!empty($xmlResult->results)) {
             $count = (int) $xmlResult->results->attributes()->count;
             $encodingHandler = $this->getEncodingHandler();
 
             //load result
             foreach($xmlResult->results->record AS $xmlRecord){
 
-                if ($this->idsOnly) {
-                    $records[] = FF::getInstance('record', $xmlRecord->attributes()->id);
-                    continue;
-                }
-            
+				if ($this->idsOnly) {
+					$records[] = FF::getInstance('record', $xmlRecord->attributes()->id);
+					continue;
+				}
+			
                 // fetch record values
                 $fieldValues = array();
                 foreach($xmlRecord->field AS $xmlField){
                     $fieldName = (string) $xmlField->attributes()->name;
-                    $fieldValues[$fieldName] = (string) $xmlField;
+					$fieldValues[$fieldName] = (string) $xmlField;
                 }
 
                 $record = FF::getInstance('record', $xmlRecord->attributes()->id, 100.0, $xmlRecord->attributes()->nr);
-                $record->setValues($fieldValues);
-                $records[] = $record;
+				$record->setValues($fieldValues);
+				$records[] = $record;
             }
         }
-        return FF::getInstance('result', $records, $count);
-    }
+		return FF::getInstance('result', $records, $count);
+	}
 }

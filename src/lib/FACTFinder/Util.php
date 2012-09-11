@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * util class for some repeated issues which do not fit to a single class
@@ -30,9 +37,11 @@ class FACTFinder_Util
         $pageSize          = $this->searchAdapter->getProductsPerPageOptions()->getSelectedOption()->getValue();
 
         $position          = $record->getPosition();
-        if ($position != 0) {
+        if ($position != 0 && $query != '') {
             $originalPosition  = $record->getOriginalPosition();
-            $similarity        = $record->getSimilarity();
+			if (!$originalPosition) $originalPosition = $position;
+			
+            $similarity        = number_format($record->getSimilarity(), 2, '.', '');
             $id                = $record->getId();
 
             $title             = addslashes($title);

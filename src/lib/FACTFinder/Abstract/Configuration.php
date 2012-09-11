@@ -1,9 +1,15 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Abstract
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * interface to access the needed configuration values
  *
- * @category FACTFinderLib
  * @package FACTFinder\Abstract
  */
 interface FACTFinder_Abstract_Configuration
@@ -22,7 +28,7 @@ interface FACTFinder_Abstract_Configuration
     /**
      * @return string
      */
-    function getRequestProtocol();
+	function getRequestProtocol();
 
     /**
      * @return string
@@ -129,7 +135,55 @@ interface FACTFinder_Abstract_Configuration
      * @return array string to string map (param-name as array-key; default value as array-value)
      */
     function getRequiredServerParams();
-
+	
+	/**
+	 * get default connect timeout for all adapters
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultConnectTimeout();
+	
+	/**
+	 * get default timeout for all adapters
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultTimeout();
+	
+	/**
+	 * get connect timeout for suggest adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestConnectTimeout();
+	
+	/**
+	 * get timeout for suggest adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestTimeout();
+	
+	/**
+	 * get connect timeout for import adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportConnectTimeout();
+	
+	/**
+	 * get timeout for import adapter
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportTimeout();
+	
     /**
      * get encoding of the page content
      *

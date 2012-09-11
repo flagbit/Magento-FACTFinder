@@ -1,5 +1,13 @@
 <?php
 /**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
+ 
+/**
  * boot strap file which should be called on every request
  * it defines some basic constants and loads the autoloader class, which handles the classloading,
  * constructing and holds the singletons
@@ -28,7 +36,7 @@ if (!defined('LIB_DIR')) {
  */
 $includePaths = explode(PATH_SEPARATOR, get_include_path());
 if ( array_search(LIB_DIR, $includePaths, true) === false ) {
-    set_include_path( get_include_path() . PATH_SEPARATOR . LIB_DIR);
+	set_include_path( get_include_path() . PATH_SEPARATOR . LIB_DIR);
 }
 spl_autoload_register(array('FACTFinder_Loader', 'autoload'));
 
@@ -41,6 +49,7 @@ if (function_exists('__autoload') && array_search('__autoload', spl_autoload_fun
  * shortcut / alias for the loader class
  *
  * @author    Rudolf Batt <rb@omikron.net>
+ * @package  FACTFinder\Common
  */
 final class FF extends FACTFinder_Loader{}
 
@@ -49,12 +58,13 @@ final class FF extends FACTFinder_Loader{}
  * handles different loading tasks
  *
  * @author    Rudolf Batt <rb@omikron.net>
+ * @package  FACTFinder\Common
  */
 class FACTFinder_Loader
 {
     protected static $singletons = array();
     protected static $classNames = array();
-    protected static $logger = null;
+	protected static $logger = null;
 
     public static function autoload($classname)
     {
@@ -125,29 +135,26 @@ class FACTFinder_Loader
         }
         return self::$singletons[$name];
     }
-
-    /**
-     * sets the static Logger class from code
-     * be aware that only the root loggers configuration will affect how the framework's interna are logged
+	
+	/**
+     * set a logger which will log the Loaders activity
      *
      * @param    string file name of the configuration file
      */
-    public static function setLogger(FACTFinder_Logger_LoggerInterface $logger)
+    public static function setLogger(FACTFinder_Abstract_Logger $logger)
     {
         self::$logger = $logger;
     }
     
     /**
-     * gets a logger. if no logger is specified, the root logger is returned. otherwise, the specified one.
-     * this can be configured differently to use it within the shop for example
+     * gets the set logger. if none is set, a NullLogger will be initialized, which does not log anything.
      *
-     * @param      string the logger's name
-     * @return    Logger the specified logger
+     * @return    Logger 	the Loader's logger
      */
-    public static function getLogger($name = null)
+    public static function getLogger()
     {
         if (self::$logger == null) {
-            self::$logger = new FACTFinder_Logger_BlackHole();
+            self::$logger = FF::getSingleton('nullLogger');
         }
         
         return self::$logger;
@@ -177,7 +184,7 @@ class FACTFinder_Loader
         } else if (class_exists($defaultClassName)) { //trigger other autload methods
             $className = $defaultClassName;
         } else {
-            $this->log->error("Could not load class '$defaultClassName'.");
+            self::getLogger()->error("Could not load class '$defaultClassName'.");
             throw new Exception("class '$defaultClassName' not found");
         }
         return $className;

@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Http
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * this data provider loads the data via http
@@ -10,16 +17,22 @@
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
-    protected $previousUrl;
+    protected $previousUrl = '';
     protected $httpHeader = array();
     protected $curlOptions = array(
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_CONNECTTIMEOUT => 2,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_SSL_VERIFYHOST => false
             );
 
+	function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null) {
+		parent::__construct($params, $config, $log);
+		$this->setCurlOptions(array(
+            CURLOPT_CONNECTTIMEOUT => $this->getConfig()->getDefaultConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getConfig()->getDefaultTimeout()
+        ));
+	}
+			
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
      * please ensure that this is the full action name, i.e. "Search.ff"
@@ -31,21 +44,21 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         $this->type = $type;
     }
 
-    /**
-     * set a option for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}.
-     * The second parameter can be set to false, so the option will not be overwritten if it already exists
-     *
+	/**
+	 * set a option for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}.
+	 * The second parameter can be set to false, so the option will not be overwritten if it already exists
+	 *
      * @link http://php.net/manual/en/function.curl-setopt.php
      * @param the option key (should be a cURL constant)
-     * @param the option value
-     * @param boolean whether to overwrite existing options or not. optional, default = true
+	 * @param the option value
+	 * @param boolean whether to overwrite existing options or not. optional, default = true
      * @return void
-     */
-    public function setCurlOption($option, $value, $overwriteExisting = true) {
-        if ($overwriteExisting || !isset($this->curlOptions[$option])) {
-            $this->curlOptions[$option] = $value;
-        }
-    }
+	 */
+	public function setCurlOption($option, $value, $overwriteExisting = true) {
+		if ($overwriteExisting || !isset($this->curlOptions[$option])) {
+			$this->curlOptions[$option] = $value;
+		}
+	}
 
     /**
      * Set multiple options for a cURL request like described at {@link http://php.net/manual/en/function.curl-setopt.php}
@@ -55,9 +68,9 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      * @return void
      */
     public function setCurlOptions(array $options) {
-        foreach($options AS $option => $value) {
-            $this->setCurlOption($option, $value);
-        }
+		foreach($options AS $option => $value) {
+			$this->setCurlOption($option, $value);
+		}
     }
 
     /**
@@ -71,20 +84,34 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     }
 
     /**
-     * {@inheritdoc}
      * this implementation returns the data as string, no matter what content type set at the http response
      *
      * @return string data
      */
     public function getData()
     {
-        $url = $this->getAuthenticationUrl();
-        if ($this->data == null || $url != $this->previousUrl) {
-            $this->previousUrl = $url;
-            $this->data = $this->loadResponse($url);
+		if ($this->hasUrlChanged()) {
+			$this->setPreviousUrl($this->getNonAuthenticationUrl());
+            $this->data = $this->loadResponse($this->getAuthenticationUrl());
         }
         return $this->data;
     }
+	
+	/**
+	 * sets the URL that was used for the most recent request
+	 **/
+	public function setPreviousUrl($url)
+	{
+		$this->previousUrl = $url;
+	}
+	
+	/**
+	 * checks whether the URL (and thus the parameters) have changed since last loading the data
+	 **/
+	public function hasUrlChanged()
+	{
+		return $this->getNonAuthenticationUrl() != $this->previousUrl;
+	}
 
     /**
      * this function sends the request to the server and loads the response data
@@ -95,7 +122,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected function loadResponse($url)
     {
         if ($this->type == null) {
-            $this->log->error("Request type missing.");
+			$this->log->error("Request type missing.");
             throw new Exception('request type not set! can not do a request without knowing the type.');
         }
 
@@ -104,11 +131,11 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             $this->addHttpHeaderFields(array('Accept-Language: ' . $config->getLanguage()));
         }
 
-        if ($this->getConfig()->isDebugEnabled()) {
-            $url .= '&verbose=true';
-            if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
-        }
-        return $this->sendRequest($url);
+		if ($this->getConfig()->isDebugEnabled()) {
+			$url .= '&verbose=true';
+			if (isset($_SERVER['HTTP_REFERER'])) $this->setCurlOption(CURLOPT_REFERER, $_SERVER['HTTP_REFERER'], false);
+		}
+		return $this->sendRequest($url);
     }
 
     /**
@@ -138,12 +165,12 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function sendRequest($url)
     {
-        $this->log->info("Trying to send request to ".$url."...");
+		$this->log->info("Trying to send request to ".$url."...");
         $cResource = curl_init($url);
 
-        if (!empty($this->httpHeader)) {
-            $this->curlOptions[CURLOPT_HTTPHEADER] = $this->httpHeader;
-        }
+		if (!empty($this->httpHeader)) {
+			$this->curlOptions[CURLOPT_HTTPHEADER] = $this->httpHeader;
+		}
 
         if (sizeof($this->curlOptions) > 0) {
             curl_setopt_array($cResource, $this->curlOptions);
@@ -155,15 +182,15 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         curl_close($cResource);
 
         if (intval($httpCode) >= 400) {
-            $this->log->error("Conntection failed. HTTP code: $httpCode");
+			$this->log->error("Conntection failed. HTTP code: $httpCode");
             throw new Exception("Connection failed. HTTP code: $httpCode", $httpCode);
         } else if ($httpCode == 0) {
-            $this->log->error("Connection refused. $curlErr");
+			$this->log->error("Connection refused. $curlErr");
             throw new Exception("Connection refused. $curlErr");
         } else if (floor(intval($httpCode) / 100) == 2) { // all successful status codes (2**)
-            $this->log->info("Received response from ".$url.".");
-        }        
-        
+			$this->log->info("Received response from ".$url.".");
+		}		
+		
         return $response;
     }
 
@@ -174,10 +201,13 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getAdvancedAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();        
-        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
+        $params = $this->getParams();		
+		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        $params['channel'] = $this->getChannel($params, $config);
+		$channel = $this->getChannel($params, $config);
+		if ($channel != '') {
+			$params['channel'] = $channel;
+		}
 
         $ts         = time() . '000'; //millisecondes needed
         $prefix     = $config->getAdvancedAuthPrefix();
@@ -189,10 +219,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
-            
-        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
-        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-        $this->log->info("Request Url: ".$url);
+			
+		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
+		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+		$this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -203,10 +233,13 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getSimpleAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();        
-        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
+        $params = $this->getParams();		
+		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        $params['channel'] = $this->getChannel($params, $config);
+        $channel = $this->getChannel($params, $config);
+		if ($channel != '') {
+			$params['channel'] = $channel;
+		}
 
         $ts = time() . '000'; //millisecondes needed but won't be considered
         $authParams = "timestamp=$ts&username=".$config->getAuthUser()
@@ -216,10 +249,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
-        
-        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
-        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-        $this->log->info("Request Url: ".$url);
+		
+		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
+		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+		$this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -230,10 +263,13 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     protected function getHttpAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();        
-        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
+        $params = $this->getParams();		
+		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        $params['channel'] = $this->getChannel($params, $config);
+		$channel = $this->getChannel($params, $config);
+		if ($channel != '') {
+			$params['channel'] = $channel;
+		}
 
         $auth = $config->getAuthUser() . ':' . $config->getAuthPasswort() . '@';
         if ($auth == ':@') $auth = '';
@@ -242,10 +278,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
-            
-        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
-        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-        $this->log->info("Request Url: ".$url);
+			
+		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
+		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+		$this->log->info("Request Url: ".$url);
         return $url;
     }
 
@@ -256,36 +292,39 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getNonAuthenticationUrl() {
         $config = $this->getConfig();
-        $params = $this->getParams();        
-        $this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
+        $params = $this->getParams();		
+		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
 
-        $params['channel'] = $this->getChannel($params, $config);
+        $channel = $this->getChannel($params, $config);
+		if ($channel != '') {
+			$params['channel'] = $channel;
+		}
 
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
             . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
             . http_build_query($params, '', '&');
 
-        // The following line removes all []-indices from array parameters, because tomcat doesn't need them
-        $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-        $this->log->info("Request Url: ".$url);
+		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
+		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
+		$this->log->info("Request Url: ".$url);
         return $url;
     }
 
-    /**
-     * get channel from params or config (params override config)
-     *
-     * @param array parameterse
-     * @FACTFinderAbstractConfiguration config
-     * @return string channel
-     */
-    protected function getChannel($params, $config) {
-        $channel = '';
-        if (!empty($params['channel'])) {
-            $channel = $params['channel'];
-        } else if($config->getChannel() != '') {
+	/**
+	 * get channel from params or config (params override config)
+	 *
+	 * @param array parameterse
+	 * @param FACTFinderAbstractConfiguration config
+	 * @return string channel
+	 */
+	protected function getChannel($params, $config) {
+		$channel = '';
+		if (isset($params['channel']) && strlen($params['channel']) > 0) {
+			$channel = $params['channel'];
+		} else if($config->getChannel() != '') {
             $channel = $config->getChannel();
         }
-        return $channel;
-    }
+		return $channel;
+	}
 }

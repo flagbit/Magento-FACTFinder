@@ -11,24 +11,26 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     const HTTP_AUTH     = 'http';
     const SIMPLE_AUTH   = 'simple';
     const ADVANCED_AUTH = 'advanced';
-    const XML_CONFIG_PATH = 'factfinder/search/';
+    const XML_CONFIG_PATH = 'factfinder/search';
+	const DEFAULT_SEMAPHORE_TIMEOUT = 7200; // 60 seconds = 2 hours
 
     private $config;
     private $authType;
-    private $pageMappings;
-    private $serverMappings;
-    private $pageIgnores;
-    private $serverIgnores;
-    private $requiredPageParams;
-    private $requiredServerParams;
+	private $secondaryChannels;
     private $storeId = null;
+	private $semaphoreTimeout = self::DEFAULT_SEMAPHORE_TIMEOUT;
+	
+	// Should the search adapters retrieve only product ids? (otherwise, full records will be requested)
+	private $idsOnly = true;
 
     public function __construct($config = null)
     {
     	$this->config = new Varien_Object($config);
     	if(is_array($config)){
     		$this->config->setData($config);
-    	}
+    	} else {
+			$this->config->setData(Mage::getStoreConfig(self::XML_CONFIG_PATH));
+		}
     }
 
     /**
@@ -53,7 +55,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     {
     	if(!$this->config->hasData($name)){
     		try{
-    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.$name, $this->storeId));
+    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.'/'.$name, $this->storeId));
     		}catch (Exception $e){
     			$this->config->setData($name, null);
     		}
@@ -113,6 +115,13 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     public function getContext() {
 		return $this->getCustomValue('context');
     }
+	
+	/**
+	 * @return string
+	 **/
+	public function getFactFinderVersion() {
+		return $this->getCustomValue('ffversion');
+	}
 
     /**
      * @return string
@@ -120,6 +129,18 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     public function getChannel() {
         return $this->getCustomValue('channel');
     }
+	
+	/**
+	 * @return array of strings
+	 **/
+	public function getSecondaryChannels() {
+		if($this->secondaryChannels == null)
+		{
+			// array_filter() is used to remove empty channel names
+			$this->secondaryChannels = array_filter(explode(';', $this->getCustomValue('secondary_channels')));
+		}
+		return $this->secondaryChannels;
+	}
 
     /**
      * @return string
@@ -248,6 +269,66 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     function getRequiredServerParams(){
         return array();
     }
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultConnectTimeout() {
+		return 2;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getDefaultTimeout() {
+		return 4;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestConnectTimeout() {
+		return 1;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getSuggestTimeout() {
+		return 2;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportConnectTimeout() {
+		return 10;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return string
+	 **/
+	 
+	function getImportTimeout() {
+		return 360;
+	}
 
 
     /**
@@ -294,4 +375,41 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
 
         return $this;
     }
+	
+	/**
+	 * Sets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters.
+	 * Request only products ids if true, full records otherwise
+	 *
+	 * @param	bool	value
+	 **/
+	public function setIdsOnly($value) {
+		$this->idsOnly = $value;
+	}
+	
+	/**
+	 * Gets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters
+	 *
+	 * @return bool
+	 **/
+	public function getIdsOnly() {
+		return $this->idsOnly;
+	}
+	
+	/**
+	 * Sets the time span in seconds after which semaphores expire
+	 *
+	 * @param	int		value in seconds
+	 **/
+	public function setSemaphoreTimeout($valueInSeconds) {
+		$this->semaphoreTimeout = $valueInSeconds;
+	}
+	
+	/**
+	 * Gets the time span in seconds after which semaphores expire
+	 *
+	 * @return int
+	 **/
+	public function getSemaphoreTimeout() {
+		return $this->semaphoreTimeout;
+	}
 }

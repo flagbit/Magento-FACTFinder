@@ -1,5 +1,13 @@
 <?php
 /**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
+
+/**
  * represents a question of an advisor campaign
  * relevant for FF versions >= 6.7
  *
@@ -12,24 +20,24 @@ class FACTFinder_AdvisorQuestion
     private $text;
 
     private $answers = array();
-    
-    /**
+	
+	/**
      * @param string question text
      * @param array answers; array of FACTFinder_AdvisorAnswer objects
      */
-    public function __construct($text = '', $answers = array()) {
+	public function __construct($text = '', $answers = array()) {
         $this->text = trim($text);
         $this->addAnswers($answers);
     }
-    
-    /**
+	
+	/**
      * @return string text
      */
-    public function getText() {
-        return $this->text;
-    }
-    
-    /**
+	public function getText() {
+		return $this->text;
+	}
+	
+	/**
      * add answers to this question
      *
      * @param array of FACTFinder_AdvisorAnswer objects

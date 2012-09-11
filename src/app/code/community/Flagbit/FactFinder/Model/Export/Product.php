@@ -195,8 +195,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 }
             }
 
-            $productIndexes     = array();
-            $productAttributes  = $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
+            $productIndexes			= array();
+            $productAttributes		= $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
             foreach ($products as $productData) {
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
@@ -223,14 +223,14 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product = Mage::getModel("catalog/product");
                     $product->load($productData['entity_id']);
                     
-                    $productIndex[] = $this->_imageHelper->init($product, 'image')->resize(120)->__toString();
+                    $productIndex[] = $this->_imageHelper->init($product, 'image')->resize(intval(Mage::getStoreConfig('factfinder/export/suggest_image_size')))->__toString();
                     $productIndex[] = $product->getProductUrl();
                 }
                 
                 $this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
-                
+				
                 if ($productChilds = $productRelations[$productData['entity_id']]) {       
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {

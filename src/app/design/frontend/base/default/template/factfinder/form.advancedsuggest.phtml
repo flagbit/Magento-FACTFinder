@@ -8,7 +8,8 @@
  */
 
 /**
- * Template to replace Javascript Suggest
+ * Advanced Template to replace Javascript Suggest
+ * NOTICE: This template will only work if suggests are requested from the proxy (see option in section "FACT-Finder Config Data" in Magento's backend)!
  * 
  * @category  Mage
  * @package   Flagbit_FactFinder
@@ -17,6 +18,37 @@
  * @version   $Id$
  */
 ?>
+
+<style type="text/css"><!--
+
+.header .form-search .search-autocomplete li.delimiter {
+	cursor: default;
+	padding-left: 4px;
+	font-weight: bold;
+	font-size: 10px;
+	background-color: #4F4F4F;
+	color: #F4EEE7;
+}
+
+.header .form-search .search-autocomplete li.category {
+	background-color: #E4DED7;
+}
+
+.header .form-search .search-autocomplete li.category.selected {
+	background-color: #E4D6CF;
+}
+
+.header .form-search .search-autocomplete img.thumbnail {
+	float:left;
+	margin-top: 2px;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	width: 31px;
+	height: 31px;
+}
+
+--></style>
+
 <form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
     <div class="form-search">
         <label for="search"><?php echo $this->__('Search:') ?></label>
@@ -46,18 +78,53 @@
 				//  - Any item with a non-empty title tag will be clickable and the title will be used as the search term. Clicking
 				//    on an item with an empty or without a title tag will not trigger the search. However, it might close the result
 				//	  list.
-				
+								
 				var loadDataCallback = function(data) {
+					// Internationalization lookup:
+					// Add a new anonymous object for every string you want to internationalize (with the property being the string).
+					// These objects consist of one string for each locale, where the property is the locale code.
+					var i18n = {
+						<?php
+						$channels = array_filter(explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels')));
+						$output = array();
+						foreach($channels as $channel)
+							$output[] = '"Channel: '.$channel.'" : "'.$this->__('Channel: '.$channel).'"';
+						echo implode(',', $output);
+						?>
+					};
+					var translate = function(string) {
+						if(i18n[string] == undefined)
+							return string;
+						else
+							return i18n[string];
+					}
+				
 					var content = '<ul>';
-					content += '<li style="display: none;" class="selected selectable-item"></li>';
-					data.each(function(item) {
+					content += '<li style="display: none" class="selected selectable-item"></li>';
+					var currentChannel = '';
+					if(data.length) {
+						content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
+						currentChannel = data[0].channel;
+					}
+						
+					for(var i = 0; i < data.length; i++) {
+						var item = data[i];
+						if(item.channel != currentChannel)
+						{
+							content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
+							currentChannel = item.channel;
+						}
 						var temp = '';
-						temp += '<li title="' + item.query + '" class="selectable-item">';
+						temp += '<li title="' + item.query + '" class="selectable-item ' + item.type + '">';
 						temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
+						if(item.imageURL)
+						{
+							temp += '<img src="' + item.imageURL + '" title="' + item.query + '" class="thumbnail"/>';
+						}
 						temp += item.query;
 						temp += '</li>';
 						content += temp;
-					});		
+					}
 					content += '</ul>';
 					return content;
 				};

@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Xml65
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * search adapter using the xml interface. expects a xml formated string from the dataprovider
@@ -14,11 +21,11 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     protected $xmlData = null;
 
     /**
-     * {@inheritdoc}
+     * init
      */
     protected function init()
     {
-        $this->log->info("Initializing new search adapter.");
+		$this->log->info("Initializing new search adapter.");
         $this->getDataProvider()->setParam('format', 'xml');
         $this->getDataProvider()->setType('Search.ff');
     }
@@ -40,7 +47,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * get status of the article number search
      *
      * @return string status
      **/
@@ -58,7 +65,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * returns true if the search was an article number search
      *
      * @return boolean isArticleNumberSearch
      **/
@@ -98,7 +105,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * returns true if the search-process was aborted because of an timeout
      *
      * @return boolean true if search timed out
      **/
@@ -113,7 +120,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * get search status
      *
      * @return string status
      **/
@@ -135,9 +142,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         return $this->status;
     }
 
-    /**
-     * {@inheritdoc}
-     **/
     protected function createSearchParams()
     {
         $breadCrumbTrail = $this->getBreadCrumbTrail();
@@ -150,9 +154,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         return $searchParams;
     }
 
-    /**
-     * {@inheritdoc}
-     **/
     protected function createResult()
     {
         //init default values
@@ -203,8 +204,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return FACTFinder_Asn
      **/
     protected function createAsn()
@@ -273,8 +272,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array of FACTFinder_SortItem objects
      **/
     protected function createSorting()
@@ -301,8 +298,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array of FACTFinder_Item objects
      **/
     protected function createPaging()
@@ -323,8 +318,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return FACTFinder_ProductsPerPageOptions
      */
     protected function createProductsPerPageOptions()
@@ -350,8 +343,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array of FACTFinder_BreadCrumbItem objects
      */
     protected function createBreadCrumbTrail()
@@ -394,8 +385,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array of FACTFinder_Campaign objects
      */
     protected function createCampaigns()
@@ -455,8 +444,6 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return array of FACTFinder_SuggestQuery objects
      */
     protected function createSingleWordSearch() {

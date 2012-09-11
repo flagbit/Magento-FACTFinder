@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Common
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * represents an asn filter slider item
@@ -30,9 +37,9 @@ class FACTFinder_AsnSliderFilter
         $this->field = strval($field);
     }
 
-    public function getType() {
-        return 'slider';
-    }
+	public function getType() {
+		return 'slider';
+	}
 
     /**
      * @param float absolute min
@@ -103,22 +110,22 @@ class FACTFinder_AsnSliderFilter
         return $this->selectedMin != $this->absoluteMin || $this->selectedMax != $this->absoluteMax;
     }
 
-    /**
-     * returns the associated field name to this filter
-     *
-     * @return string field-name
-     */
-    public function getField() {
-        return $this->field;
-    }
+	/**
+	 * returns the associated field name to this filter
+	 *
+	 * @return string field-name
+	 */
+	public function getField() {
+		return $this->field;
+	}
 
-    /**
-     * returns the absolute values as parameters and the select parameter-key, so the selected values must be
-     * appended to set the selection.
-     *
-     * @return string parameters for this filter
-     */
-    public function getValue() {
-        return 'filter'.$this->getField().'Absolute='.$this->getAbsoluteMin().' - '.$this->getAbsoluteMax().'&filter'.$this->getField().'=';
-    }
+	/**
+	 * returns the absolute values as parameters and the select parameter-key, so the selected values must be
+	 * appended to set the selection.
+	 *
+	 * @return string parameters for this filter
+	 */
+	public function getValue() {
+		return 'filter'.$this->getField().'Absolute='.$this->getAbsoluteMin().' - '.$this->getAbsoluteMax().'&filter'.$this->getField().'=';
+	}
 }

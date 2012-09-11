@@ -24,10 +24,16 @@ class Flagbit_FactFinder_Model_Adapter
 {
 
     /**
-     * FACT-Finder Searchadapter
+     * FACT-Finder search adapter
      * @var FACTFinder_Abstract_SearchAdapter
      */
     protected $_searchAdapter = null;
+	
+	/**
+	 * FACT-Finder search adapters for secondary channels
+	 * @var array of FACTFinder_Abstract_SearchAdapter
+	 **/
+	protected $_secondarySearchAdapters = null;
 
     /**
      * FACT-Finder Suggestadapter
@@ -84,25 +90,45 @@ class Flagbit_FactFinder_Model_Adapter
     protected $_afterSearchNavigation = null;
 
     /**
-     * FACT-Finder Searchadapter
+     * FACT-Finder product IDs of primary search result
      * @var array
      */
     protected $_searchResultProductIds = null;
 
+	/**
+     * FACT-Finder secondary search results
+     * @var array
+     */
+    protected $_secondarySearchResults = null;
+	
+	/**
+     * FACT-Finder secondary suggest results
+     * @var array
+     */
+    protected $_secondarySuggestResults = null;
+
+	
     /**
      * current FACT-Finder Category Path
      * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
     
-    
-    public function __construct($arg = null)
+	/**
+	 * logger object to log all module interna
+	 * @var FACTFinder_Abstract_Logger
+	 */
+	protected $_logger = null;
+	
+	public function __construct($arg = null)
     {
-        if ($arg != null && $arg instanceof FACTFinder_Logger_LoggerInterface) {
+        if ($arg != null && $arg instanceof FACTFinder_Abstract_Logger) {
             FF::setLogger($arg);
+			$this->_logger = $arg;
         } else {
             $logger = Mage::helper('factfinder/debug');
             FF::setLogger($logger);
+			$this->_logger = $logger;
         }
     }
 
@@ -113,26 +139,107 @@ class Flagbit_FactFinder_Model_Adapter
      */
     protected function _getSearchAdapter($collectParams = true)
     {
-        if ($this->_searchAdapter == null) {
-            $config              = $this->_getConfiguration();
-            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
-            $dataProvider        = $this->_getDataProvider();
-            $this->_searchAdapter = FF::getSingleton(
-                'xml67/searchAdapter',
-                $dataProvider,
-                $this->_getParamsParser(),
-                $encodingHandler
-            );
-
-            if($collectParams == true){
-                $this->_collectParams();
-            }
+        if ($this->_searchAdapter == null)
+		{
+			$channels = $this->_getConfiguration()->getSecondaryChannels();
+			if(empty($channels))
+			{
+				$this->_loadSearchAdapter($collectParams);
+			}
+			else
+			{
+				$this->_loadAllSearchAdapters($collectParams);
+			}
         }
 
         return $this->_searchAdapter;
     }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SearchAdapter
+     */
+    protected function _getSecondarySearchAdapter($channel)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getParallelDataProvider();
+		
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', Mage::helper('factfinder/search')->getQueryText());
+		
+		$searchAdapter = FF::getInstance(
+			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
 
-    protected function _collectParams()
+        return $searchAdapter;
+    }
+	
+	/**
+	 * loads the main search adapter
+	 **/
+	 
+	protected function _loadSearchAdapter($collectParams = true, $parallel = false)
+	{
+		$config					= $this->_getConfiguration();
+		$encodingHandler		= FF::getSingleton('encodingHandler', $config);
+		if(!$parallel)
+		{
+			$dataProvider			= $this->_getGlobalDataProvider();
+		}
+		else
+		{
+			$dataProvider			= $this->_getParallelDataProvider();
+			if($this->_globalDataProviderExists())
+				$dataProvider->setParams($this->_getGlobalDataProvider()->getParams());
+			$this->_setGlobalDataProvider($dataProvider);
+		}
+		
+		$this->_searchAdapter	= FF::getSingleton(
+			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+		if($collectParams == true){
+			$this->_collectParams();
+		}
+	}
+	
+	/**
+	 * loads the main search adapter and all search adapters for secondary channels
+	 *
+	 **/
+	protected function _loadAllSearchAdapters($collectParams = true)
+	{
+		$this->_loadSearchAdapter($collectParams, true);
+		
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+		foreach($channels AS $currentChannel)
+		{
+			try {
+				$this->_secondarySearchAdapters[$currentChannel] = $this->_getSecondarySearchAdapter($currentChannel);
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+	}
+
+	/**
+	 * prepares all request parameters for the primary search adapter
+	 *
+	 * @param FACTFinder_Abstract_DataProvider	the data provider object to fill with the params
+	 **/
+	
+    protected function _collectParams($dataProvider)
     {
         // search Helper
         $helper = Mage::helper('factfinder/search');
@@ -140,20 +247,20 @@ class Flagbit_FactFinder_Model_Adapter
         $params = $this->_getParamsParser()->getRequestParams();
 
         if (strpos(Mage::getStoreConfig('factfinder/config/internal_ip'), Mage::helper('core/http')->getRemoteAddr()) !== false) {
-            $this->_setParam('log', 'internal');
+            $this->_setParam('log', 'internal', true, $dataProvider);
         }
 
         switch($_request->getModuleName()){
             
             case "xmlconnect":
                 $_query = $helper->getQueryText();
-                $this->_setParam('idsOnly', 'true')
-                    ->_setParam('query', $_query);
+                $this->_setParam('idsOnly', $this->_getConfiguration()->getIdsOnly() ? 'true' : 'false', true, $dataProvider)
+                    ->_setParam('query', $_query, true, $dataProvider);
                 
                 $count = $params['count'];
                 if ($count > 0) {
-                    $this->_setParam('productsPerPage', $count)
-                         ->_setParam('page', ($params['offset'] / $count) + 1);
+                    $this->_setParam('productsPerPage', $count, true, $dataProvider)
+                         ->_setParam('page', ($params['offset'] / $count) + 1, true, $dataProvider);
                 }
 
                 // add Sorting Param
@@ -161,7 +268,7 @@ class Flagbit_FactFinder_Model_Adapter
                     if(substr($key, 0, 6) == 'order_'){
                         $key = substr($key, 6);
                         if(!in_array($key, array('position', 'relevance'))){
-                            $this->_setParam('sort'.$key, $value);
+                            $this->_setParam('sort'.$key, $value, true, $dataProvider);
                         }
                     }
                 }
@@ -177,11 +284,11 @@ class Flagbit_FactFinder_Model_Adapter
                             $filterkey = '';
                             foreach($categories as $category){
                                 $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                $this->_setParam('filtercategoryROOT'.$filterkey, $category);
+                                $this->_setParam('filtercategoryROOT'.$filterkey, $category, true, $dataProvider);
                                 $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                             }
                         }else{
-                            $this->_setParam('filter'.$param[0], $param[1]);
+                            $this->_setParam('filter'.$param[0], $param[1], true, $dataProvider);
                         }
                     }
                 }
@@ -201,10 +308,10 @@ class Flagbit_FactFinder_Model_Adapter
                 }
                 
                 // add Default Params
-                $this->_setParam('idsOnly', 'true')
-                    ->_setParam('productsPerPage', $helper->getPageLimit())
-                    ->_setParam('query', $_query)
-                    ->_setParam('page', $helper->getCurrentPage());
+                $this->_setParam('idsOnly', $this->_getConfiguration()->getIdsOnly() ? 'true' : 'false', true, $dataProvider)
+                    ->_setParam('productsPerPage', $helper->getPageLimit(), true, $dataProvider)
+                    ->_setParam('query', $_query, true, $dataProvider)
+                    ->_setParam('page', $helper->getCurrentPage(), true, $dataProvider);
 
                 // add Sorting Param, but only if it was set explicit via url
                 foreach($params as $key => $value){
@@ -213,7 +320,7 @@ class Flagbit_FactFinder_Model_Adapter
                     && $helper->getCurrentDirection()
                     && $helper->getCurrentOrder() != 'position'
                     && $helper->getCurrentOrder() != 'relevance'){
-                        $this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection());
+                        $this->_setParam('sort'.$helper->getCurrentOrder(), $helper->getCurrentDirection(), true, $dataProvider);
                     }
                 }
 
@@ -225,9 +332,9 @@ class Flagbit_FactFinder_Model_Adapter
 
                             case 'slider':
                                 $subparam = explode(':', $param[2]);
-                                $this->_setParam($subparam[0], $subparam[1]);
+                                $this->_setParam($subparam[0], $subparam[1], true, $dataProvider);
                                 $subparam = explode(':', $param[3]);
-                                $this->_setParam($subparam[0], $subparam[1]);
+                                $this->_setParam($subparam[0], $subparam[1], true, $dataProvider);
                                 break;
 
                             default:
@@ -237,12 +344,12 @@ class Flagbit_FactFinder_Model_Adapter
                                     $filterkey = '';
                                     foreach($categories as $category){
                          $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                        $this->_setParam('filtercategoryROOT'.$filterkey, $category);
+                                        $this->_setParam('filtercategoryROOT'.$filterkey, $category, true, $dataProvider);
                                         $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                                     }
 
                                 }else{
-                                    $this->_setParam('filter'.$param[0], $param[1]);
+                                    $this->_setParam('filter'.$param[0], $param[1], true, $dataProvider);
                                 }
                                 break;
                         }
@@ -262,10 +369,14 @@ class Flagbit_FactFinder_Model_Adapter
         $status = false;
         try {
             $this->_getConfiguration($configarray);
+			
+			
             $this->_setParam('query', 'FACT-Finder Version');
             $this->_setParam('productsPerPage', '1');
-
-            $status = $this->_getSearchAdapter(false)->getStatus() == 'resultsFound';
+			
+			$searchAdapter = $this->_getSearchAdapter(false);
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			$status = $searchAdapter->getStatus() == 'resultsFound';
         } catch (Exception $e) {
             $status = false;
         }
@@ -295,7 +406,9 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $campaigns = null;
         try {
-            $campaigns = $this->_getSearchAdapter()->getCampaigns();
+			$searchAdapter = $this->_getSearchAdapter();
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $campaigns = $searchAdapter->getCampaigns();
         }
         catch (Exception $e) {
             Mage::logException($e);
@@ -310,7 +423,7 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSuggestUrl()
     {
-        $dataprovider = $this->_getDataProvider();
+        $dataprovider = $this->_getGlobalDataProvider();
         $dataprovider->setType('Suggest.ff');
         $dataprovider->setParams(array());
 
@@ -320,19 +433,56 @@ class Flagbit_FactFinder_Model_Adapter
     /**
      * get Suggest Adapter
      *
+	 * @param	string	$query		query param for FF request
+	 * @param	string	$format		format param for FF request
+	 * @param	bool	$parallel	use a parallel data provider if true; use the default one, otherwise
+	 
      * @return FACTFinder_Abstract_SuggestAdapter
      */
-    protected function _getSuggestAdapter()
+    protected function _getSuggestAdapter($query, $format, $parallel = false)
     {
         if ($this->_suggestAdapter == null) {
-            $config               = $this->_getConfiguration();
-            $encodingHandler      = FF::getSingleton('encodingHandler', $config);
-            $params               = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider         = $this->_getDataProvider();
-            $this->_suggestAdapter = FF::getSingleton('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $config					= $this->_getConfiguration();
+            $encodingHandler		= FF::getSingleton('encodingHandler', $config);
+            $params					= $this->_getParamsParser()->getServerRequestParams();
+			if($parallel)
+				$dataProvider		= $this->_getParallelDataProvider();
+			else
+				$dataProvider		= $this->_getGlobalDataProvider();
+
+            $this->_suggestAdapter	= FF::getInstance('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
+		
+		$dataProvider->setParam('query', $query);
+		$dataProvider->setParam('format', $format);
 
         return $this->_suggestAdapter;
+    }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SuggestAdapter
+     */
+    protected function _getSecondarySuggestAdapter($channel, $query, $format)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getGlobalDataProvider();
+				
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', $query);
+		$dataProvider->setParam('format', $format);
+		
+		$suggestAdapter = FF::getInstance(
+			'http/suggestAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+        return $suggestAdapter;
     }
 
     /**
@@ -343,12 +493,9 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSuggestResult($query)
     {
-        $this->_setParam('query', $query);
-        $this->_setParam('format', 'json');
-
-        return Zend_Json_Decoder::decode($this->_getSuggestAdapter()->getSuggestions());
+        return Zend_Json_Decoder::decode($this->_getSuggestAdapter($query, 'json', false)->getSuggestions());
     }
-
+	
     /**
      * get Suggest Results as JSON
      *
@@ -357,10 +504,60 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getSuggestResultJsonp($query, $jqueryCallback)
     {
-        $this->_setParam('query', $query, false);
-        $this->_setParam('format', 'jsonp', false);
-
-        return $this->_getSuggestAdapter()->getSuggestions();
+        return $this->_getSuggestAdapter($query, 'jsonp', false)->getSuggestions();
+    }
+	
+	/**
+     * get Suggest Results for primary and all secondary channels in parallel as JSON
+     *
+     * @param string $query
+     * @return string json
+     */
+    public function getAllSuggestResultsJsonp($query, $jqueryCallback)
+    {
+		
+        $primarySuggestAdapter = $this->_getSuggestAdapter($query, 'json', true);
+		
+		// load adapters for secondary channels
+		
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+        $secondarySuggestAdapters = array();
+			
+		foreach($channels AS $channel)
+		{
+			try {
+				$secondarySuggestAdapters[$channel] = $this->_getSecondarySuggestAdapter($channel, $query, 'json');
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+		
+		FACTFinder_Http_ParallelDataProvider::loadAllData();
+		
+		$suggestResult = Zend_Json_Decoder::decode($primarySuggestAdapter->getSuggestions());
+		foreach($suggestResult as &$item)
+		{
+			$item["channel"] = $this->_getConfiguration()->getChannel();
+		}
+		
+		foreach($secondarySuggestAdapters AS $channel => $suggestAdapter)
+		{
+			try {
+				$result = Zend_Json_Decoder::decode($suggestAdapter->getSuggestions());
+				foreach($result as &$item)
+				{
+					$item["channel"] = $channel;
+				}
+				$suggestResult = array_merge($suggestResult, $result); 
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+		
+		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');'; //print_r($suggestResult,true); //
     }
     
     /**
@@ -375,12 +572,11 @@ class Flagbit_FactFinder_Model_Adapter
             $encodingHandler     = FF::getSingleton('encodingHandler', $config);
             $dataProvider        = $this->_getDataProvider();
             $this->_tagCloudAdapter = FF::getSingleton(
-                'xml67/tagCloudAdapter',
+                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/tagCloudAdapter',
                 $dataProvider,
                 $this->_getParamsParser(),
                 $encodingHandler
             );
-    
         }
     
         return $this->_tagCloudAdapter;
@@ -413,7 +609,7 @@ class Flagbit_FactFinder_Model_Adapter
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getDataProvider();
+            $dataProvider      = $this->_getGlobalDataProvider();
             $this->_scicAdapter = FF::getSingleton('http/scicAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_scicAdapter;
@@ -430,9 +626,9 @@ class Flagbit_FactFinder_Model_Adapter
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getDataProvider();
+            $dataProvider      = $this->_getGlobalDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml67/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
     }
@@ -444,13 +640,17 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getProductCampaignAdapter()
     {
+		// Note: this will only work as long as version numbers are used with the same amount of decimal points
+		if ($this->_getConfiguration()->getFactFinderVersion() < 67)
+			throw new Exception('Feature not supported by used FACT-Finder version.');
+			
         if ($this->_productCampaignAdapter == null) {
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getDataProvider();
+            $dataProvider      = $this->_getGlobalDataProvider();
             $dataProvider->setParam('idsOnly', 'true');
-            $this->_productCampaignAdapter = FF::getSingleton('xml67/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
+            $this->_productCampaignAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_productCampaignAdapter;
     }
@@ -464,7 +664,9 @@ class Flagbit_FactFinder_Model_Adapter
     {
         $count = 0;
         try {
-            $count = $this->_getSearchAdapter()->getResult()->getFoundRecordsCount();
+			$searchAdapter = $this->_getSearchAdapter();
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $count = $searchAdapter->getResult()->getFoundRecordsCount();
         }
         catch (Exception $e) {
             Mage::logException($e);
@@ -486,7 +688,9 @@ class Flagbit_FactFinder_Model_Adapter
 
             $result = array();
             try {
-                $result = $this->_getSearchAdapter()->getAsn();
+				$searchAdapter = $this->_getSearchAdapter();
+				FACTFinder_Http_ParallelDataProvider::loadAllData();
+                $result = $searchAdapter->getAsn();
             }
             catch (Exception $e) {
                 Mage::logException($e);
@@ -509,7 +713,6 @@ class Flagbit_FactFinder_Model_Adapter
                 }
             }
         }
-
         return $this->_afterSearchNavigation;
     }
 
@@ -646,7 +849,9 @@ class Flagbit_FactFinder_Model_Adapter
      */
     protected function _getAttributeOptionValue($option)
     {
-        $selectOptions = $this->_getSearchAdapter()->getSearchParams()->getFilters();
+		$searchAdapter = $this->_getSearchAdapter();
+		FACTFinder_Http_ParallelDataProvider::loadAllData();
+        $selectOptions = $searchAdapter->getSearchParams()->getFilters();
         $value = null;
         switch ($option->getType()) {
 
@@ -700,7 +905,9 @@ class Flagbit_FactFinder_Model_Adapter
     {
         if($this->_searchResultProductIds == null){
             try {
-                $result = $this->_getSearchAdapter()->getResult();
+				$searchAdapter = $this->_getSearchAdapter();
+				FACTFinder_Http_ParallelDataProvider::loadAllData();
+                $result = $searchAdapter->getResult();
 
                 $this->_searchResultProductIds = array();
                 if($result instanceof FACTFinder_Result){
@@ -726,6 +933,49 @@ class Flagbit_FactFinder_Model_Adapter
 
         return $this->_searchResultProductIds;
     }
+	
+	/**
+     * get secondary Search Results
+     *
+     * @return array Products Ids
+     */
+    public function getSecondarySearchResult($channel)
+    {
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return array();
+		}
+			
+        if($this->_secondarySearchResults == null)
+		{
+			$this->_secondarySearchResults = array();
+			
+			$this->_loadAllSearchAdapters();
+			
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			
+			foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
+			{
+				try {
+					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
+				}
+				catch (Exception $e) {
+					Mage::logException($e);
+				}
+			}
+        }
+		
+		if(!array_key_exists($channel, $this->_secondarySearchResults))
+		{
+			Mage::logException(new Exception("Result for channel '".$channel."' could not be retrieved."));
+			return array();
+		}
+
+        return $this->_secondarySearchResults[$channel];
+    }
 
     /**
      * set single parameter, which will be looped through to the FACT-Finder request
@@ -733,30 +983,76 @@ class Flagbit_FactFinder_Model_Adapter
      * @param string name
      * @param string value
      */
-    protected function _setParam($name, $value, $log = true)
+    protected function _setParam($name, $value, $log = true, $dataProvider = null)
     {
         if($log){
             Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
         }
-        $this->_getDataProvider()->setParam($name, $value);
+		if($dataProvider == null)
+			$this->_getGlobalDataProvider()->setParam($name, $value);
+		else
+			$dataProvider->setParam($name, $value);
         return $this;
     }
+	
+	/**
+	 * set FactFinder DataProvider
+	 *
+	 * @param FACTFinder_Abstract_DataProvider
+	 **/
+	protected function _setGlobalDataProvider($dataProvider)
+	{
+		$this->_dataProvider = $dataProvider;
+	}
 
     /**
-     * get FactFinder DataProvider
+     * gets the global FactFinder DataProvider
      *
      * @return FACTFinder_Abstract_DataProvider
      */
-    protected function _getDataProvider()
+    protected function _getGlobalDataProvider()
     {
         if ($this->_dataProvider == null) {
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
-            
-            $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config);
+
+            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config));
         }
         return $this->_dataProvider;
     }
+	
+	protected function _globalDataProviderExists()
+	{
+		return is_subclass_of($this->_dataProvider, 'FACTFinder_Abstract_DataProvider');
+	}
+	
+	/**
+     * gets a new FactFinder DataProvider
+     *
+     * @return FACTFinder_Abstract_DataProvider
+     **/
+    protected function _getDataProvider()
+    {
+        $config = $this->_getConfiguration();
+        $params = $this->_getParamsParser()->getServerRequestParams();
+		
+        return FF::getInstance('http/dataProvider', $params, $config);
+    }
+	
+	/**
+	 * get a (new) FactFinder DataProvider that works in parallel
+	 *
+	 * @return FACTFinder_Abstract_Dataprovider
+	 **/
+	protected function _getParallelDataProvider()
+	{
+		$config = $this->_getConfiguration();
+		$params = $this->_getParamsParser()->getServerRequestParams();
+		
+		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config);
+				
+		return $dp;
+	}
 
     /**
      * get Autentivation URL
@@ -765,7 +1061,7 @@ class Flagbit_FactFinder_Model_Adapter
      */
     public function getAuthenticationUrl()
     {
-        $dataprovider = $this->_getDataProvider();
+        $dataprovider = $this->_getGlobalDataProvider();
         $dataprovider->setType('Management.ff');
         return $dataprovider->getNonAuthenticationUrl();
     }

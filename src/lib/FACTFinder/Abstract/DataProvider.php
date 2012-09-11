@@ -1,4 +1,11 @@
 <?php
+/**
+ * FACT-Finder PHP Framework
+ *
+ * @category  Library
+ * @package   FACTFinder\Abstract
+ * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ */
 
 /**
  * abstract data provider
@@ -12,13 +19,16 @@ abstract class FACTFinder_Abstract_DataProvider
     protected $params = array();
     protected $config = array();
     protected $type;
-    
-    protected $log;
+	
+	protected $log;
 
-    public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null)
+    public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null)
     {
-        $this->log = FF::getLogger();
-        $this->log->info("Initializing data provider.");
+		if(isset($log))
+			$this->log = $log;
+		else
+			$this->log = FF::getSingleton('nullLogger');
+		$this->log->info("Initializing data provider.");
         if ($params != null) $this->setParams($params);
         if ($config != null) $this->setConfig($config);
     }
@@ -62,8 +72,8 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         $this->params[$name] = $value;
     }
-    
-    /**
+	
+	/**
      * unset single param
      *
      * @param string name
@@ -73,8 +83,8 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         unset($this->params[$name]);
     }
-    
-    /**
+	
+	/**
      * set single param with multiple values
      *
      * @param string name
@@ -85,7 +95,7 @@ abstract class FACTFinder_Abstract_DataProvider
     {
         $this->params[$name] = $values;
     }
-    
+	
     /**
      * @param FACTFinder_Abstract_IConfiguration config
      **/
@@ -103,9 +113,11 @@ abstract class FACTFinder_Abstract_DataProvider
     }
 
     /**
+	 * This is public, so that adapters don't need their own config objects.
+	 *
      * @return FACTFinder_Abstract_IConfiguration
      **/
-    protected function getConfig()
+    public function getConfig()
     {
         return $this->config;
     }
