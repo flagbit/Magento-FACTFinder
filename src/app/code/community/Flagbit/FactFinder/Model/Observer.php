@@ -169,7 +169,10 @@ class Flagbit_FactFinder_Model_Observer
         $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields']);
         if (!empty($errors)) {
         	$groups['search']['fields']['enabled']['errors'] = $errors;
-        }
+        } else {
+			// If there were no errors, reset the fallback feature
+			Mage::helper('factfinder/search')->saveFailedAttempts(array());
+		}
 
         // if we have an error - unset inherit field so that Backend model processing is activated
         if (!empty($errors) && isset($groups['search']['fields']['enabled']['inherit'])) {

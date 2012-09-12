@@ -122,7 +122,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 			{
 				$failedAttempts = $this->_loadFailedAttempts();
 				$failedAttempts = $this->_removeOldEntries($failedAttempts);
-				$this->_saveFailedAttempts($failedAttempts);
+				$this->saveFailedAttempts($failedAttempts);
 				
 				self::$_skipFactFinder = (count($failedAttempts) >= 3);
 		
@@ -151,7 +151,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 		
 		$failedAttempts = $this->_loadFailedAttempts();
 		$failedAttempts[] = intval(time() / 60);
-		$this->_saveFailedAttempts($failedAttempts);
+		$this->saveFailedAttempts($failedAttempts);
 		
 		self::$_failedAttemptRegistered = true;
 		
@@ -179,7 +179,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 *
 	 * @param	array of int	failed attempts
 	 **/
-	protected function _saveFailedAttempts($failedAttempts)
+	public function saveFailedAttempts($failedAttempts)
 	{
 		Mage::app()->saveCache(serialize($failedAttempts), $this->_getCacheId(), array(self::CACHE_TAG));
 	}
