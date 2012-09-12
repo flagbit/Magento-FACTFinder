@@ -127,7 +127,9 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 				self::$_skipFactFinder = (count($failedAttempts) >= 3);
 		
 				if(self::$_skipFactFinder)
+				{
 					Mage::helper('factfinder/debug')->log('Failed to connect to FACT-Finder 3 times. Falling back to Magento\'s search.');
+				}
 			}
 		}
 		
@@ -156,6 +158,13 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 		self::$_failedAttemptRegistered = true;
 		
 		Mage::helper('factfinder/debug')->log('Registered failed attempt to connect to FACT-Finder. '.count($failedAttempts).' failed attempts registered.');
+		if(count($failedAttempts) >= 3)
+		{
+			$delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
+			Mage::getModel('adminnotification/inbox')->addMajor(
+				'FACT-Finder unreachable! Falling back to Magento\'s search for '.$delay.' minutes.',
+				'FACT-Finder did not respond for the third time. Magento will now use its own search for '.$delay.' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.');
+		}
 	}
 	
 	/**
