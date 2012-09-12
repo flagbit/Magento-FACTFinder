@@ -20,35 +20,15 @@
  */
 class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
-{
-    const CACHE_TAG  = 'FACTFINDER';
-	const CACHE_ID = "FallbackCache";
-    const REQUEST_ID_PREFIX = 'FACTFINDER_';
-	
-	protected $_failedAttemptRegistered = false;
-	
+{	
     /**
      * Get collection size
      *
      * @return int
      */
     public function getSize()
-    {
-		if($this->_skipFactFinder())
-		{
-			parent::_loadEntities($printQuery, $logQuery);
-			return $this;
-		}
-		
-		$count = $this->_getAdapter()->getSearchResultCount();
-		
-		if(!$count && $this->_useFallback())
-		{
-			$this->_registerFailedAttempt();
-			$count = parent::getSize();
-		}
-		
-		return $count;
+    {		
+		return $this->_getAdapter()->getSearchResultCount();
     }
     
     /**
@@ -68,26 +48,13 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
-		if($this->_skipFactFinder())
-		{
-			parent::_loadEntities($printQuery, $logQuery);
-			return $this;
-		}
-		// get product Ids from Fact-Finder
+		// get product IDs from Fact-Finder
     	$productIds = $this->_getAdapter()->getSearchResultProductIds();
-		
-		if(!count($productIds) && $this->_useFallback())
-		{
-			$this->_registerFailedAttempt();
-			parent::_loadEntities($printQuery, $logQuery);
-			return $this;
-		}
-		
-		$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
+			
+		if (!empty($productIds)) {
+			$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
-        if (!empty($productIds)) {
-
-        	// add Filter to Query
+           	// add Filter to Query
         	$this->addFieldToFilter(
         		$idFieldName,
         		array('in'=>array_keys($productIds))
@@ -159,82 +126,4 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     {
         return $this;
     }
-	
-	/**
-	 * Determines whether the fallback should be used
-	 *
-	 * @return	bool
-	 **/
-	protected function _useFallback()
-	{
-		return Mage::getStoreConfig('factfinder/fallback/use_fallback');
-	}
-	
-	/**
-	 * Determines whether FACT-Finder should be skipped completely, because it has failed to respond too often
-	 *
-	 * @return bool
-	 **/
-	protected function _skipFactFinder()
-	{
-		if(!$this->useFallback)
-			return false;
-		
-		$failedAttempts = $this->_loadFailedAttempts();
-		
-		$delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
-		$skip = false;
-		$newFailedAttempts = array();
-		
-		foreach($failedAttempts as $attempt)
-		{
-			if(intval(time() / 60) - $attempt < $delay)
-			{
-				$newFailedAttempts[] = $attempt;
-				$skip = true;
-			}
-		}
-		
-		Mage::app()->saveCache(serialize($newFailedAttempts), $this->_getCacheId(), array(self::CACHE_TAG));
-		return $skip;
-	}
-	
-	protected function _getCacheId()
-	{
-		return self::REQUEST_ID_PREFIX . self::CACHE_ID;
-	}
-	
-	/**
-	 * Registers that FACT-Finder has failed to respond.
-	 * Only one failed attempt per lifetime of this object will be registered.
-	 **/
-	protected function _registerFailedAttempt()
-	{
-		if($this->_failedAttemptRegistered)
-			return;
-			
-		$failedAttempts = $this->_loadFailedAttempts();
-		
-		$failedAttempts[] = intval(time() / 60);
-		
-		Mage::app()->saveCache(serialize($failedAttempts), $this->_getCacheId(), array(self::CACHE_TAG));
-		
-		$this->_failedAttemptRegistered = true;
-	}
-	
-	/**
-	 * Loads previously registered failed attempts from cache, if they exist.
-	 * Returns an empty array, otherwise.
-	 *
-	 * @return	array of int
-	 **/
-	protected function _loadFailedAttempts()
-	{
-		$cachedContent = Mage::app()->loadCache($this->_getCacheId());
-		$failedAttempts = array();
-		if($cachedContent)
-			$failedAttempts = unserialize($cachedContent);
-		
-		return $failedAttempts;
-	}
 }

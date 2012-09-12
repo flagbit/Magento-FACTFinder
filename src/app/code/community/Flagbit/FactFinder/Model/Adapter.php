@@ -208,7 +208,7 @@ class Flagbit_FactFinder_Model_Adapter
 		);
 
 		if($collectParams == true){
-			$this->_collectParams();
+			$this->_collectParams($dataProvider);
 		}
 	}
 	
@@ -907,8 +907,10 @@ class Flagbit_FactFinder_Model_Adapter
             try {
 				$searchAdapter = $this->_getSearchAdapter();
 				FACTFinder_Http_ParallelDataProvider::loadAllData();
-                $result = $searchAdapter->getResult();
-
+				$result = $searchAdapter->getResult();
+				$error = $searchAdapter->getError();
+				if($error)
+					throw new Exception($error);
                 $this->_searchResultProductIds = array();
                 if($result instanceof FACTFinder_Result){
                     foreach ($result AS $record){
@@ -927,6 +929,7 @@ class Flagbit_FactFinder_Model_Adapter
             }
             catch (Exception $e) {
                 Mage::logException($e);
+				Mage::helper('factfinder/search')->registerFailedAttempt();
                 $this->_searchResultProductIds = array();
             }
         }
