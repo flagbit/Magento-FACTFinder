@@ -267,6 +267,10 @@
                 <channel></channel>
                 <language></language>
             </search>
+			<fallback>
+				<use_fallback>0</use_fallback>
+				<wait_time>60</wait_time>
+			</fallback>
             <export>
                 <urls>0</urls>
 				<suggest_image_size>40</suggest_image_size>
