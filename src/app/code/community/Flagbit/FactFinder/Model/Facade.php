@@ -132,106 +132,156 @@ class Flagbit_FactFinder_Model_Facade
         }
     }
 
+	
+	
+
+    
+    
+
     /**
-     * get FactFinder SearchAdapter
+     * get FactFinder Params Parser
      *
-     * @return FACTFinder_Abstract_SearchAdapter
+     * @return FACTFinder_ParametersParser
      */
-    protected function _getSearchAdapter($collectParams = true)
+    protected function _getParamsParser()
     {
-        if ($this->_searchAdapter == null)
-		{
-			$channels = $this->_getConfiguration()->getSecondaryChannels();
-			if(empty($channels))
-			{
-				$this->_loadSearchAdapter($collectParams);
-			}
-			else
-			{
-				$this->_loadAllSearchAdapters($collectParams);
-			}
+        if ($this->_paramsParser == null) {
+            $config = $this->_getConfiguration();
+            $encodingHandler = FF::getSingleton('encodingHandler', $config);
+            $this->_paramsParser = FF::getInstance('parametersParser', $config, $encodingHandler);
         }
-
-        return $this->_searchAdapter;
+        return $this->_paramsParser;
     }
 	
-	/**
-     * get a (new) FactFinder SearchAdapter for a secondary channel
+	// This is not a function!
+	// It's actually a headline for Notepad++'s Function List plug-in.
+	// And yes, I feel bad about it.
+	private function _________Configuration_Handling__________() { }
+
+    /**
+     * set FactFinder Configuration
      *
-     * @return FACTFinder_Abstract_SearchAdapter
+     * @param array $configarray
      */
-    protected function _getSecondarySearchAdapter($channel)
+    public function setConfiguration($configarray)
     {
-		$config              = $this->_getConfiguration();
-		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
-		$dataProvider        = $this->_getParallelDataProvider();
-		
-		// Overwrite the channel set by the configuration
-		$dataProvider->setParam('channel', $channel);
-		$dataProvider->setParam('query', Mage::helper('factfinder/search')->getQueryText());
-		
-		$searchAdapter = FF::getInstance(
-			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
-			$dataProvider,
-			$this->_getParamsParser(),
-			$encodingHandler
-		);
+        $this->_config = FF::getSingleton('configuration', $configarray);
+    }
 
-        return $searchAdapter;
+    /**
+     * get FactFinder Configuration
+     *
+     * @return FACTFinder_Abstract_Configuration config
+     */
+    protected function _getConfiguration($configarray = null)
+    {
+        if ($this->_config == null) {
+            $this->_config = FF::getSingleton('configuration', $configarray);
+        }
+        return $this->_config;
+    }
+
+    /**
+     * Set StoreId for current configuration
+     *
+     * @param unknown_type $storeId
+     */
+    public function setStoreId($storeId) {
+        $this->_getConfiguration()->setStoreId($storeId);
+
+        return $this;
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// This is not a function!
+	// It's actually a headline for Notepad++'s Function List plug-in.
+	// And yes, I feel bad about it.
+	private function _________Data_Provider_Handling__________() { }
+	
+	/**
+	 * set FactFinder DataProvider
+	 *
+	 * @param FACTFinder_Abstract_DataProvider
+	 **/
+	protected function _setGlobalDataProvider($dataProvider)
+	{
+		$this->_dataProvider = $dataProvider;
+	}
+
+    /**
+     * gets the global FactFinder DataProvider
+     *
+     * @return FACTFinder_Abstract_DataProvider
+     */
+    protected function _getGlobalDataProvider()
+    {
+        if ($this->_dataProvider == null) {
+            $config = $this->_getConfiguration();
+            $params = $this->_getParamsParser()->getServerRequestParams();
+
+            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config));
+        }
+        return $this->_dataProvider;
+    }
+	
+	protected function _globalDataProviderExists()
+	{
+		return is_subclass_of($this->_dataProvider, 'FACTFinder_Abstract_DataProvider');
+	}
+	
+	/**
+     * gets a new FactFinder DataProvider
+     *
+     * @return FACTFinder_Abstract_DataProvider
+     **/
+    protected function _getDataProvider()
+    {
+        $config = $this->_getConfiguration();
+        $params = $this->_getParamsParser()->getServerRequestParams();
+		
+        return FF::getInstance('http/dataProvider', $params, $config);
     }
 	
 	/**
-	 * loads the main search adapter
-	 **/
-	 
-	protected function _loadSearchAdapter($collectParams = true, $parallel = false)
-	{
-		$config					= $this->_getConfiguration();
-		$encodingHandler		= FF::getSingleton('encodingHandler', $config);
-		if(!$parallel)
-		{
-			$dataProvider			= $this->_getGlobalDataProvider();
-		}
-		else
-		{
-			$dataProvider			= $this->_getParallelDataProvider();
-			if($this->_globalDataProviderExists())
-				$dataProvider->setParams($this->_getGlobalDataProvider()->getParams());
-			$this->_setGlobalDataProvider($dataProvider);
-		}
-		
-		$this->_searchAdapter	= FF::getSingleton(
-			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
-			$dataProvider,
-			$this->_getParamsParser(),
-			$encodingHandler
-		);
-
-		if($collectParams == true){
-			$this->_collectParams($dataProvider);
-		}
-	}
-	
-	/**
-	 * loads the main search adapter and all search adapters for secondary channels
+	 * get a (new) FactFinder DataProvider that works in parallel
 	 *
+	 * @return FACTFinder_Abstract_Dataprovider
 	 **/
-	protected function _loadAllSearchAdapters($collectParams = true)
+	protected function _getParallelDataProvider()
 	{
-		$this->_loadSearchAdapter($collectParams, true);
+		$config = $this->_getConfiguration();
+		$params = $this->_getParamsParser()->getServerRequestParams();
 		
-		$channels = $this->_getConfiguration()->getSecondaryChannels();
-		
-		foreach($channels AS $currentChannel)
-		{
-			try {
-				$this->_secondarySearchAdapters[$currentChannel] = $this->_getSecondarySearchAdapter($currentChannel);
-			}
-			catch (Exception $e) {
-				Mage::logException($e);
-			}
-		}
+		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config);
+				
+		return $dp;
 	}
+
+    /**
+     * set single parameter, which will be looped through to the FACT-Finder request
+     *
+     * @param string name
+     * @param string value
+     */
+    protected function _setParam($name, $value, $log = true, $dataProvider = null)
+    {
+        if($log){
+            Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
+        }
+		if($dataProvider == null)
+			$this->_getGlobalDataProvider()->setParam($name, $value);
+		else
+			$dataProvider->setParam($name, $value);
+        return $this;
+    }
 
 	/**
 	 * prepares all request parameters for the primary search adapter
@@ -359,75 +409,120 @@ class Flagbit_FactFinder_Model_Facade
 
         }
     }
-
-
+	
+	
+	
+	
+	
+	
+    // This is not a function!
+	// It's actually a headline for Notepad++'s Function List plug-in.
+	// And yes, I feel bad about it.
+	private function ___________FF_Adapter_Getters___________() { }	
+	
     /**
-     * execute search
+     * get Product Campaign Adapter
+     *
+     * @return FACTFinder_Abstract_ProductCampaignAdapter
      */
-    public function checkStatus($configarray = null)
+    public function getProductCampaignAdapter()
     {
-        $status = false;
-        try {
-            $this->_getConfiguration($configarray);
+		// Note: this will only work as long as version numbers are used with the same amount of decimal points
+		if ($this->_getConfiguration()->getFactFinderVersion() < 67)
+			throw new Exception('Feature not supported by used FACT-Finder version.');
 			
-			
-            $this->_setParam('query', 'FACT-Finder Version');
-            $this->_setParam('productsPerPage', '1');
-			
-			$searchAdapter = $this->_getSearchAdapter(false);
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
-			$status = $searchAdapter->getStatus() == 'resultsFound';
-        } catch (Exception $e) {
-            $status = false;
+        if ($this->_productCampaignAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getGlobalDataProvider();
+            $dataProvider->setParam('idsOnly', 'true');
+            $this->_productCampaignAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
-        return $status;
+        return $this->_productCampaignAdapter;
     }
 
     /**
-     * get Redirect URL if there is set one
+     * get Recommendation Adapter
      *
-     * @return string
+     * @return FACTFinder_Abstract_RecommendationAdapter
      */
-    public function getRedirect()
+    public function getRecommendationAdapter()
     {
-        $url = null;
-        $campaigns = $this->getCampaigns();
-
-        if (!empty($campaigns) && $campaigns->hasRedirect()) {
-            $url = $campaigns->getRedirectUrl();
+        if ($this->_recommendationAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getGlobalDataProvider();
+            $dataProvider->setParam('idsOnly', 'true');
+            $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
-        return $url;
+        return $this->_recommendationAdapter;
     }
 
     /**
+     * get Scic Adapter
      *
+     * @return FACTFinder_Abstract_ScicAdapter
      */
-    public function getCampaigns()
+    public function getScicAdapter()
     {
-        $campaigns = null;
-        try {
-			$searchAdapter = $this->_getSearchAdapter();
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
-            $campaigns = $searchAdapter->getCampaigns();
+        if ($this->_scicAdapter == null) {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $params            = $this->_getParamsParser()->getServerRequestParams();
+            $dataProvider      = $this->_getGlobalDataProvider();
+            $this->_scicAdapter = FF::getSingleton('http/scicAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
-        catch (Exception $e) {
-            Mage::logException($e);
-        }
-        return $campaigns;
+        return $this->_scicAdapter;
     }
 
     /**
-     * get Search Suggest URL
+     * get FactFinder SearchAdapter
      *
-     * @return string
+     * @return FACTFinder_Abstract_SearchAdapter
      */
-    public function getSuggestUrl()
+    protected function _getSearchAdapter($collectParams = true)
     {
-        $dataprovider = $this->_getGlobalDataProvider();
-        $dataprovider->setType('Suggest.ff');
-        $dataprovider->setParams(array());
+        if ($this->_searchAdapter == null)
+		{
+			$channels = $this->_getConfiguration()->getSecondaryChannels();
+			if(empty($channels))
+			{
+				$this->_loadSearchAdapter($collectParams);
+			}
+			else
+			{
+				$this->_loadAllSearchAdapters($collectParams);
+			}
+        }
 
-        return $dataprovider->getNonAuthenticationUrl();
+        return $this->_searchAdapter;
+    }
+	
+	/**
+     * get a (new) FactFinder SearchAdapter for a secondary channel
+     *
+     * @return FACTFinder_Abstract_SearchAdapter
+     */
+    protected function _getSecondarySearchAdapter($channel)
+    {
+		$config              = $this->_getConfiguration();
+		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
+		$dataProvider        = $this->_getParallelDataProvider();
+		
+		// Overwrite the channel set by the configuration
+		$dataProvider->setParam('channel', $channel);
+		$dataProvider->setParam('query', Mage::helper('factfinder/search')->getQueryText());
+		
+		$searchAdapter = FF::getInstance(
+			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+        return $searchAdapter;
     }
 
     /**
@@ -483,6 +578,319 @@ class Flagbit_FactFinder_Model_Facade
 		);
 
         return $suggestAdapter;
+    }
+    
+    /**
+    * get FactFinder TagCloudAdapter
+    *
+    * @return FACTFinder_Abstract_TagCloudAdapter
+    */
+    protected function _getTagCloudAdapter()
+    {
+        if ($this->_tagCloudAdapter == null) {
+            $config              = $this->_getConfiguration();
+            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
+            $dataProvider        = $this->_getDataProvider();
+            $this->_tagCloudAdapter = FF::getSingleton(
+                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/tagCloudAdapter',
+                $dataProvider,
+                $this->_getParamsParser(),
+                $encodingHandler
+            );
+        }
+    
+        return $this->_tagCloudAdapter;
+    }
+
+	
+	
+	/**
+	 * loads the main search adapter
+	 **/
+	 
+	protected function _loadSearchAdapter($collectParams = true, $parallel = false)
+	{
+		$config					= $this->_getConfiguration();
+		$encodingHandler		= FF::getSingleton('encodingHandler', $config);
+		if(!$parallel)
+		{
+			$dataProvider			= $this->_getGlobalDataProvider();
+		}
+		else
+		{
+			$dataProvider			= $this->_getParallelDataProvider();
+			if($this->_globalDataProviderExists())
+				$dataProvider->setParams($this->_getGlobalDataProvider()->getParams());
+			$this->_setGlobalDataProvider($dataProvider);
+		}
+		
+		$this->_searchAdapter	= FF::getSingleton(
+			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
+			$dataProvider,
+			$this->_getParamsParser(),
+			$encodingHandler
+		);
+
+		if($collectParams == true){
+			$this->_collectParams($dataProvider);
+		}
+	}
+	
+	/**
+	 * loads the main search adapter and all search adapters for secondary channels
+	 *
+	 **/
+	protected function _loadAllSearchAdapters($collectParams = true)
+	{
+		$this->_loadSearchAdapter($collectParams, true);
+		
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+		foreach($channels AS $currentChannel)
+		{
+			try {
+				$this->_secondarySearchAdapters[$currentChannel] = $this->_getSecondarySearchAdapter($currentChannel);
+			}
+			catch (Exception $e) {
+				Mage::logException($e);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	// This is not a function!
+	// It's actually a headline for Notepad++'s Function List plug-in.
+	// And yes, I feel bad about it.
+	private function ___________FF_Object_Getters____________() { }	
+	
+	/**
+     * get Authentication URL
+     *
+     * @return string
+     */
+    public function getAuthenticationUrl()
+    {
+        $dataprovider = $this->_getGlobalDataProvider();
+        $dataprovider->setType('Management.ff');
+        return $dataprovider->getNonAuthenticationUrl();
+    }
+	
+	/**
+     * get After Search Navigation as Array
+     * this simulates Magento Filter Attributes with Options
+     *
+     * @return array
+     */
+    public function getAfterSearchNavigation()
+    {
+        if($this->_afterSearchNavigation == null){
+            $this->_afterSearchNavigation = array();
+
+            $result = array();
+            try {
+				$searchAdapter = $this->_getSearchAdapter();
+				FACTFinder_Http_ParallelDataProvider::loadAllData();
+                $result = $searchAdapter->getAsn();
+            }
+            catch (Exception $e) {
+                Mage::logException($e);
+            }
+
+
+            if ($result instanceof FACTFinder_Asn
+                && count($result)){
+
+                foreach ($result as $row) {
+                    $this->_afterSearchNavigation[] = array(
+                        'attribute_code' => $row->getName(),
+                        'name' => $row->getName(),
+                        'unit' => $row->getUnit(),
+                        'items' => $this->_getAttributeOptions($row->getArrayCopy(), $row->getUnit()),
+                        'count' => $row->count(),
+                        'type'    => $this->_getFilterType($row->getArrayCopy()),
+                        'store_label' => $row->getName()
+                    );
+                }
+            }
+        }
+        return $this->_afterSearchNavigation;
+    }
+
+    /**
+     *
+     */
+    public function getCampaigns()
+    {
+        $campaigns = null;
+        try {
+			$searchAdapter = $this->_getSearchAdapter();
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $campaigns = $searchAdapter->getCampaigns();
+        }
+        catch (Exception $e) {
+            Mage::logException($e);
+        }
+        return $campaigns;
+    }
+
+    /**
+     * get Redirect URL if there is set one
+     *
+     * @return string
+     */
+    public function getRedirect()
+    {
+        $url = null;
+        $campaigns = $this->getCampaigns();
+
+        if (!empty($campaigns) && $campaigns->hasRedirect()) {
+            $url = $campaigns->getRedirectUrl();
+        }
+        return $url;
+    }
+
+    /**
+     * get Search Result Count
+     *
+     * @return int
+     */
+    public function getSearchResultCount()
+    {
+        $count = 0;
+        try {
+			$searchAdapter = $this->_getSearchAdapter();
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $count = $searchAdapter->getResult()->getFoundRecordsCount();
+        }
+        catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        return $count;
+    }
+
+    /**
+     * get Search Result Product Ids and additional Data
+     *
+     * @return array Products Ids
+     */
+    public function getSearchResultProductIds()
+    {
+        if($this->_searchResultProductIds == null){
+            try {
+				$searchAdapter = $this->_getSearchAdapter();
+				FACTFinder_Http_ParallelDataProvider::loadAllData();
+				$result = $searchAdapter->getResult();
+				$error = $searchAdapter->getError();
+				if($error)
+					throw new Exception($error);
+                $this->_searchResultProductIds = array();
+                if($result instanceof FACTFinder_Result){
+                    foreach ($result AS $record){
+                        if(isset($this->_searchResultProductIds[$record->getId()])){
+                            continue;
+                        }
+                        $this->_searchResultProductIds[$record->getId()] = new Varien_Object(
+                            array(
+                                'similarity' => $record->getSimilarity(),
+                                'position' => $record->getPosition(),
+                                'original_position' => $record->getOriginalPosition()
+                            )
+                        );
+                    }
+                }
+            }
+            catch (Exception $e) {
+                Mage::logException($e);
+				Mage::helper('factfinder/search')->registerFailedAttempt();
+                $this->_searchResultProductIds = array();
+            }
+        }
+
+        return $this->_searchResultProductIds;
+    }
+	
+	/**
+     * get secondary Search Results
+     *
+     * @return array Products Ids
+     */
+    public function getSecondarySearchResult($channel)
+    {
+		$channels = $this->_getConfiguration()->getSecondaryChannels();
+		
+		if(!in_array($channel, $channels))
+		{
+			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+			return array();
+		}
+			
+        if($this->_secondarySearchResults == null)
+		{
+			$this->_secondarySearchResults = array();
+			
+			$this->_loadAllSearchAdapters();
+			
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			
+			foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
+			{
+				try {
+					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
+				}
+				catch (Exception $e) {
+					Mage::logException($e);
+				}
+			}
+        }
+		
+		if(!array_key_exists($channel, $this->_secondarySearchResults))
+		{
+			Mage::logException(new Exception("Result for channel '".$channel."' could not be retrieved."));
+			return array();
+		}
+
+        return $this->_secondarySearchResults[$channel];
+    }
+	
+    /**
+     * execute search
+     */
+    public function checkStatus($configarray = null)
+    {
+        $status = false;
+        try {
+            $this->_getConfiguration($configarray);
+			
+			
+            $this->_setParam('query', 'FACT-Finder Version');
+            $this->_setParam('productsPerPage', '1');
+			
+			$searchAdapter = $this->_getSearchAdapter(false);
+			FACTFinder_Http_ParallelDataProvider::loadAllData();
+			$status = $searchAdapter->getStatus() == 'resultsFound';
+        } catch (Exception $e) {
+            $status = false;
+        }
+        return $status;
+    }
+
+    /**
+     * get Search Suggest URL
+     *
+     * @return string
+     */
+    public function getSuggestUrl()
+    {
+        $dataprovider = $this->_getGlobalDataProvider();
+        $dataprovider->setType('Suggest.ff');
+        $dataprovider->setParams(array());
+
+        return $dataprovider->getNonAuthenticationUrl();
     }
 
     /**
@@ -559,28 +967,6 @@ class Flagbit_FactFinder_Model_Facade
 		
 		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');'; //print_r($suggestResult,true); //
     }
-    
-    /**
-    * get FactFinder TagCloudAdapter
-    *
-    * @return FACTFinder_Abstract_TagCloudAdapter
-    */
-    protected function _getTagCloudAdapter()
-    {
-        if ($this->_tagCloudAdapter == null) {
-            $config              = $this->_getConfiguration();
-            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
-            $dataProvider        = $this->_getDataProvider();
-            $this->_tagCloudAdapter = FF::getSingleton(
-                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/tagCloudAdapter',
-                $dataProvider,
-                $this->_getParamsParser(),
-                $encodingHandler
-            );
-        }
-    
-        return $this->_tagCloudAdapter;
-    }
 
     /**
      * get tag cloud information as Array
@@ -597,124 +983,17 @@ class Flagbit_FactFinder_Model_Facade
 			return array();
         }
     }
-
-    /**
-     * get Scic Adapter
-     *
-     * @return FACTFinder_Abstract_ScicAdapter
-     */
-    public function getScicAdapter()
-    {
-        if ($this->_scicAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $this->_scicAdapter = FF::getSingleton('http/scicAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_scicAdapter;
-    }
-
-    /**
-     * get Recommendation Adapter
-     *
-     * @return FACTFinder_Abstract_RecommendationAdapter
-     */
-    public function getRecommendationAdapter()
-    {
-        if ($this->_recommendationAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_recommendationAdapter;
-    }
-    
-    /**
-     * get Product Campaign Adapter
-     *
-     * @return FACTFinder_Abstract_ProductCampaignAdapter
-     */
-    public function getProductCampaignAdapter()
-    {
-		// Note: this will only work as long as version numbers are used with the same amount of decimal points
-		if ($this->_getConfiguration()->getFactFinderVersion() < 67)
-			throw new Exception('Feature not supported by used FACT-Finder version.');
-			
-        if ($this->_productCampaignAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $dataProvider->setParam('idsOnly', 'true');
-            $this->_productCampaignAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_productCampaignAdapter;
-    }
-
-    /**
-     * get Search Result Count
-     *
-     * @return int
-     */
-    public function getSearchResultCount()
-    {
-        $count = 0;
-        try {
-			$searchAdapter = $this->_getSearchAdapter();
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
-            $count = $searchAdapter->getResult()->getFoundRecordsCount();
-        }
-        catch (Exception $e) {
-            Mage::logException($e);
-        }
-
-        return $count;
-    }
-
-    /**
-     * get After Search Navigation as Array
-     * this simulates Magento Filter Attributes with Options
-     *
-     * @return array
-     */
-    public function getAfterSearchNavigation()
-    {
-        if($this->_afterSearchNavigation == null){
-            $this->_afterSearchNavigation = array();
-
-            $result = array();
-            try {
-				$searchAdapter = $this->_getSearchAdapter();
-				FACTFinder_Http_ParallelDataProvider::loadAllData();
-                $result = $searchAdapter->getAsn();
-            }
-            catch (Exception $e) {
-                Mage::logException($e);
-            }
-
-
-            if ($result instanceof FACTFinder_Asn
-                && count($result)){
-
-                foreach ($result as $row) {
-                    $this->_afterSearchNavigation[] = array(
-                        'attribute_code' => $row->getName(),
-                        'name' => $row->getName(),
-                        'unit' => $row->getUnit(),
-                        'items' => $this->_getAttributeOptions($row->getArrayCopy(), $row->getUnit()),
-                        'count' => $row->count(),
-                        'type'    => $this->_getFilterType($row->getArrayCopy()),
-                        'store_label' => $row->getName()
-                    );
-                }
-            }
-        }
-        return $this->_afterSearchNavigation;
-    }
+	
+	
+	
+	
+	
+	
+	
+	// This is not a function!
+	// It's actually a headline for Notepad++'s Function List plug-in.
+	// And yes, I feel bad about it.
+	private function ___________Random_Functions____________() { }
 
     /**
      * get Filter Type by FACT-Finder FilterItem
@@ -893,229 +1172,5 @@ class Flagbit_FactFinder_Model_Facade
                 break;
         }
           return $value;
-    }
-
-
-    /**
-     * get Search Result Product Ids and additional Data
-     *
-     * @return array Products Ids
-     */
-    public function getSearchResultProductIds()
-    {
-        if($this->_searchResultProductIds == null){
-            try {
-				$searchAdapter = $this->_getSearchAdapter();
-				FACTFinder_Http_ParallelDataProvider::loadAllData();
-				$result = $searchAdapter->getResult();
-				$error = $searchAdapter->getError();
-				if($error)
-					throw new Exception($error);
-                $this->_searchResultProductIds = array();
-                if($result instanceof FACTFinder_Result){
-                    foreach ($result AS $record){
-                        if(isset($this->_searchResultProductIds[$record->getId()])){
-                            continue;
-                        }
-                        $this->_searchResultProductIds[$record->getId()] = new Varien_Object(
-                            array(
-                                'similarity' => $record->getSimilarity(),
-                                'position' => $record->getPosition(),
-                                'original_position' => $record->getOriginalPosition()
-                            )
-                        );
-                    }
-                }
-            }
-            catch (Exception $e) {
-                Mage::logException($e);
-				Mage::helper('factfinder/search')->registerFailedAttempt();
-                $this->_searchResultProductIds = array();
-            }
-        }
-
-        return $this->_searchResultProductIds;
-    }
-	
-	/**
-     * get secondary Search Results
-     *
-     * @return array Products Ids
-     */
-    public function getSecondarySearchResult($channel)
-    {
-		$channels = $this->_getConfiguration()->getSecondaryChannels();
-		
-		if(!in_array($channel, $channels))
-		{
-			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
-			return array();
-		}
-			
-        if($this->_secondarySearchResults == null)
-		{
-			$this->_secondarySearchResults = array();
-			
-			$this->_loadAllSearchAdapters();
-			
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
-			
-			foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
-			{
-				try {
-					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
-				}
-				catch (Exception $e) {
-					Mage::logException($e);
-				}
-			}
-        }
-		
-		if(!array_key_exists($channel, $this->_secondarySearchResults))
-		{
-			Mage::logException(new Exception("Result for channel '".$channel."' could not be retrieved."));
-			return array();
-		}
-
-        return $this->_secondarySearchResults[$channel];
-    }
-
-    /**
-     * set single parameter, which will be looped through to the FACT-Finder request
-     *
-     * @param string name
-     * @param string value
-     */
-    protected function _setParam($name, $value, $log = true, $dataProvider = null)
-    {
-        if($log){
-            Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
-        }
-		if($dataProvider == null)
-			$this->_getGlobalDataProvider()->setParam($name, $value);
-		else
-			$dataProvider->setParam($name, $value);
-        return $this;
-    }
-	
-	/**
-	 * set FactFinder DataProvider
-	 *
-	 * @param FACTFinder_Abstract_DataProvider
-	 **/
-	protected function _setGlobalDataProvider($dataProvider)
-	{
-		$this->_dataProvider = $dataProvider;
-	}
-
-    /**
-     * gets the global FactFinder DataProvider
-     *
-     * @return FACTFinder_Abstract_DataProvider
-     */
-    protected function _getGlobalDataProvider()
-    {
-        if ($this->_dataProvider == null) {
-            $config = $this->_getConfiguration();
-            $params = $this->_getParamsParser()->getServerRequestParams();
-
-            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config));
-        }
-        return $this->_dataProvider;
-    }
-	
-	protected function _globalDataProviderExists()
-	{
-		return is_subclass_of($this->_dataProvider, 'FACTFinder_Abstract_DataProvider');
-	}
-	
-	/**
-     * gets a new FactFinder DataProvider
-     *
-     * @return FACTFinder_Abstract_DataProvider
-     **/
-    protected function _getDataProvider()
-    {
-        $config = $this->_getConfiguration();
-        $params = $this->_getParamsParser()->getServerRequestParams();
-		
-        return FF::getInstance('http/dataProvider', $params, $config);
-    }
-	
-	/**
-	 * get a (new) FactFinder DataProvider that works in parallel
-	 *
-	 * @return FACTFinder_Abstract_Dataprovider
-	 **/
-	protected function _getParallelDataProvider()
-	{
-		$config = $this->_getConfiguration();
-		$params = $this->_getParamsParser()->getServerRequestParams();
-		
-		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config);
-				
-		return $dp;
-	}
-
-    /**
-     * get Autentivation URL
-     *
-     * @return string
-     */
-    public function getAuthenticationUrl()
-    {
-        $dataprovider = $this->_getGlobalDataProvider();
-        $dataprovider->setType('Management.ff');
-        return $dataprovider->getNonAuthenticationUrl();
-    }
-
-    /**
-     * get FactFinder Params Parser
-     *
-     * @return FACTFinder_ParametersParser
-     */
-    protected function _getParamsParser()
-    {
-        if ($this->_paramsParser == null) {
-            $config = $this->_getConfiguration();
-            $encodingHandler = FF::getSingleton('encodingHandler', $config);
-            $this->_paramsParser = FF::getInstance('parametersParser', $config, $encodingHandler);
-        }
-        return $this->_paramsParser;
-    }
-
-    /**
-     * set FactFinder Configuration
-     *
-     * @param array $configarray
-     */
-    public function setConfiguration($configarray)
-    {
-        $this->_config = FF::getSingleton('configuration', $configarray);
-    }
-
-    /**
-     * get FactFinder Configuration
-     *
-     * @return FACTFinder_Abstract_Configuration config
-     */
-    protected function _getConfiguration($configarray = null)
-    {
-        if ($this->_config == null) {
-            $this->_config = FF::getSingleton('configuration', $configarray);
-        }
-        return $this->_config;
-    }
-
-
-    /**
-     * Set StoreId for current configuration
-     *
-     * @param unknown_type $storeId
-     */
-    public function setStoreId($storeId) {
-        $this->_getConfiguration()->setStoreId($storeId);
-
-        return $this;
     }
 }
