@@ -78,7 +78,7 @@ class Flagbit_FactFinder_Model_Facade
     protected $_productCampaignAdapter = null;
 
     /**
-     * FACT-Finder TagCloudadapter
+     * FACT-Finder TagCloudAdapter
      * @var FACTFinder_Abstract_TagCloudAdapter
      */
     protected $_tagCloudAdapter = null;
@@ -171,7 +171,7 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * get FactFinder Configuration
      *
-     * @return FACTFinder_Abstract_Configuration config
+     * @return FACTFinderCustom_Configuration config
      */
     protected function _getConfiguration($configarray = null)
     {
@@ -980,7 +980,7 @@ class Flagbit_FactFinder_Model_Facade
 			return $this->_getTagCloudAdapter()->getTagCloud();
 		} catch (Exception $e) {
             Mage::logException($e);
-			return array();
+			return null;
         }
     }
 	
