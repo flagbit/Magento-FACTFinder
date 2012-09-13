@@ -8,7 +8,7 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
         }
         
         if (empty($this->_terms)) {
-            $terms = Mage::getSingleton('factfinder/adapter')->getTagCloud();
+            $terms = Mage::getSingleton('factfinder/facade')->getTagCloud();
             
             if (count($terms) == 0) {
                 return $this;

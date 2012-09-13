@@ -3,9 +3,9 @@ class Flagbit_FactFinder_Block_Secondaryresult extends Mage_Core_Block_Template
 {
     protected function getSecondaryResult($channel)
     {
-        $adapter = Mage::getSingleton('factfinder/adapter');
+        $facade = Mage::getSingleton('factfinder/facade');
 		
-		$result = $adapter->getSecondarySearchResult($channel);
+		$result = $facade->getSecondarySearchResult($channel);
 		
 		return $result;
     }

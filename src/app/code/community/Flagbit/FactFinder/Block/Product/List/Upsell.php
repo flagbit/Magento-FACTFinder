@@ -114,7 +114,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
             $searchHelper = Mage::helper('factfinder/search');
             $idFieldName = $searchHelper->getIdFieldName();
 
-            $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
+            $recommendationAdapter = Mage::getModel('factfinder/facade')->getRecommendationAdapter();
             $recommendationAdapter->setProductId($product->getData($idFieldName));
             $recommendations = $recommendationAdapter->getRecommendations();
         }

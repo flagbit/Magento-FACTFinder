@@ -40,7 +40,7 @@ class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block
                 ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
                 ->addStoreFilter();
 
-            $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
+            $recommendationAdapter = Mage::getModel('factfinder/facade')->getRecommendationAdapter();
             $recommendationAdapter->setProductId($product->getData($idFieldName));
             $recommendations = $recommendationAdapter->getRecommendations();
             $this->_itemCollection->setRecommendations($recommendations);

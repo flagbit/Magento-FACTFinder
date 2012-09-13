@@ -28,17 +28,17 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
      */
     public function getSize()
     {		
-		return $this->_getAdapter()->getSearchResultCount();
+		return $this->_getFacade()->getSearchResultCount();
     }
     
     /**
-     * get Factfinder Search Adapter
+     * get Factfinder Facade
      * 
-     * @return Flagbit_FactFinder_Model_Adapter
+     * @return Flagbit_FactFinder_Model_Facade
      */
-    protected function _getAdapter()
+    protected function _getFacade()
     {
-    	return Mage::getSingleton('factfinder/adapter');	
+    	return Mage::getSingleton('factfinder/facade');	
     }
     
     /**
@@ -49,7 +49,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
 		// get product IDs from Fact-Finder
-    	$productIds = $this->_getAdapter()->getSearchResultProductIds();
+    	$productIds = $this->_getFacade()->getSearchResultProductIds();
 			
 		if (!empty($productIds)) {
 			$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
