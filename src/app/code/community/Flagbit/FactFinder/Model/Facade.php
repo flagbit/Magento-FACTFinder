@@ -22,6 +22,13 @@ require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
  */
 class Flagbit_FactFinder_Model_Facade
 {
+    /**
+     * Two-dimensional array of FACT-Finder adapters
+     * First-dimension index corresponds to type
+     * Second-dimension index corresponds to channel
+     * @var array of FACTFinder_Abstract_Adapter
+     */
+    protected $_adapters = array();
 
     /**
      * FACT-Finder search adapter
@@ -115,7 +122,7 @@ class Flagbit_FactFinder_Model_Facade
     protected $_currentFactfinderCategoryPath = null;
     
 	/**
-	 * logger object to log all module interna
+	 * logger object to log all module internals
 	 * @var FACTFinder_Abstract_Logger
 	 */
 	protected $_logger = null;
@@ -132,11 +139,37 @@ class Flagbit_FactFinder_Model_Facade
         }
     }
 
-	
-	
+    /**
+     * Used to allow and delegate generic get_____Adapter($channel) methods
+     *
+     * @param string $function
+     * @param array $arguments
+     * @return FACTFinder_Abstract_Adapter
+     * @throws Exception
+     */
+    public function __call($function, $arguments)
+    {
+        $matches = array();
+        if (!preg_match('/^get(.+)Adapter$/', $function, $matches))
+        {
+            throw new Exception("Call to undefined method ".$function."() in file ".__FILE__." on line ".__LINE__);
+        }
 
-    
-    
+        // We have a get______Adapter($channel) method!
+        // The first argument (if any) will be treated as a channel
+
+
+        $type = $matches[1];
+        $type{0} = strtolower($type{0});
+
+        $format = $this->_getFormat($type);
+
+        $channel = null;
+        if(count($arguments))
+            $channel = $arguments[0];
+
+        return $this->_getAdapter($format, $type, $channel);
+    }
 
     /**
      * get FactFinder Params Parser
@@ -161,22 +194,23 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * set FactFinder Configuration
      *
-     * @param array $configarray
+     * @param array $configArray
      */
-    public function setConfiguration($configarray)
+    public function setConfiguration($configArray)
     {
-        $this->_config = FF::getSingleton('configuration', $configarray);
+        $this->_config = FF::getSingleton('configuration', $configArray);
     }
 
     /**
      * get FactFinder Configuration
      *
+     * @param $configArray
      * @return FACTFinderCustom_Configuration config
      */
-    protected function _getConfiguration($configarray = null)
+    protected function _getConfiguration($configArray = null)
     {
         if ($this->_config == null) {
-            $this->_config = FF::getSingleton('configuration', $configarray);
+            $this->_config = FF::getSingleton('configuration', $configArray);
         }
         return $this->_config;
     }
@@ -184,7 +218,8 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * Set StoreId for current configuration
      *
-     * @param unknown_type $storeId
+     * @param int $storeId
+     * @return \Flagbit_FactFinder_Model_Facade
      */
     public function setStoreId($storeId) {
         $this->_getConfiguration()->setStoreId($storeId);
@@ -253,7 +288,7 @@ class Flagbit_FactFinder_Model_Facade
 	/**
 	 * get a (new) FactFinder DataProvider that works in parallel
 	 *
-	 * @return FACTFinder_Abstract_Dataprovider
+	 * @return FACTFinder_Abstract_DataProvider
 	 **/
 	protected function _getParallelDataProvider()
 	{
@@ -268,8 +303,11 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * set single parameter, which will be looped through to the FACT-Finder request
      *
-     * @param string name
-     * @param string value
+     * @param string $name
+     * @param string $value
+     * @param bool $log
+     * @param null|FACTFinder_Abstract_DataProvider $dataProvider
+     * @return \Flagbit_FactFinder_Model_Facade
      */
     protected function _setParam($name, $value, $log = true, $dataProvider = null)
     {
@@ -331,11 +369,11 @@ class Flagbit_FactFinder_Model_Facade
                         if($key == 'Category'){
                             $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                             foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
-                            $filterkey = '';
+                            $filterKey = '';
                             foreach($categories as $category){
                                 $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                $this->_setParam('filtercategoryROOT'.$filterkey, $category, true, $dataProvider);
-                                $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
+                                $this->_setParam('filtercategoryROOT'.$filterKey, $category, true, $dataProvider);
+                                $filterKey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                             }
                         }else{
                             $this->_setParam('filter'.$param[0], $param[1], true, $dataProvider);
@@ -381,21 +419,21 @@ class Flagbit_FactFinder_Model_Facade
                         switch($param[1]){
 
                             case 'slider':
-                                $subparam = explode(':', $param[2]);
-                                $this->_setParam($subparam[0], $subparam[1], true, $dataProvider);
-                                $subparam = explode(':', $param[3]);
-                                $this->_setParam($subparam[0], $subparam[1], true, $dataProvider);
+                                $subParam = explode(':', $param[2]);
+                                $this->_setParam($subParam[0], $subParam[1], true, $dataProvider);
+                                $subParam = explode(':', $param[3]);
+                                $this->_setParam($subParam[0], $subParam[1], true, $dataProvider);
                                 break;
 
                             default:
                                 if($key == 'Category'){
                                     $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                                     foreach($categories AS $k => $v) { $categories[$k] = $v; }
-                                    $filterkey = '';
+                                    $filterKey = '';
                                     foreach($categories as $category){
                          $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                        $this->_setParam('filtercategoryROOT'.$filterkey, $category, true, $dataProvider);
-                                        $filterkey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
+                                        $this->_setParam('filtercategoryROOT'.$filterKey, $category, true, $dataProvider);
+                                        $filterKey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
                                     }
 
                                 }else{
@@ -409,6 +447,11 @@ class Flagbit_FactFinder_Model_Facade
 
         }
     }
+
+    protected function _loadAllData()
+    {
+        FACTFinder_Http_ParallelDataProvider::loadAllData();
+    }
 	
 	
 	
@@ -418,11 +461,71 @@ class Flagbit_FactFinder_Model_Facade
     // This is not a function!
 	// It's actually a headline for Notepad++'s Function List plug-in.
 	// And yes, I feel bad about it.
-	private function ___________FF_Adapter_Getters___________() { }	
-	
+	private function ___________FF_Adapter_Getters___________() { }
+
+
+    /**
+     * Determines which format to use for an adapter of a certain type
+     *
+     * @param $type
+     * @return string
+     */
+    protected function _getFormat($type)
+    {
+        $format = 'http';
+        if ($type != 'scic' && $type != 'suggest') {
+            $version = $this->_getConfiguration()->getFactFinderVersion();
+            $format = 'xml' . $version;
+            return $format;
+        }
+        return $format;
+    }
+
+    /**
+     * @param string $format
+     * @param string $type
+     * @param null|string $channel
+     * @return FACTFinder_Abstract_Adapter
+     */
+    public function _getAdapter($format, $type, $channel = null)
+    {
+        if(!$channel)
+            $channel = $this->_getConfiguration()->getChannel();
+
+        if(!isset($this->_adapters[$type][$channel]))
+        {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $dataProvider      = $this->_getParallelDataProvider();
+
+            $dataProvider->setParam('channel', $channel);
+
+            $this->_adapters[$type][$channel] = FF::getInstance(
+                $format.'/'.$type.'Adapter',
+                $dataProvider,
+                $this->_getParamsParser(),
+                $encodingHandler
+            );
+        }
+        return $this->_adapters[$type][$channel];
+    }
+
+    /**
+     * @param string $query
+     * @param string $channel
+     */
+    protected function _configureSuggestAdapter($query, $channel = null)
+    {
+        $adapter = $this->getSuggestAdapter($channel);
+
+        $adapter->setParam('format', 'json');
+        $adapter->setParam('query', $query);
+    }
+
     /**
      * get Product Campaign Adapter
      *
+     * @throws Exception
      * @return FACTFinder_Abstract_ProductCampaignAdapter
      */
     public function getProductCampaignAdapter()
@@ -480,6 +583,7 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * get FactFinder SearchAdapter
      *
+     * @param bool $collectParams
      * @return FACTFinder_Abstract_SearchAdapter
      */
     protected function _getSearchAdapter($collectParams = true)
@@ -499,10 +603,11 @@ class Flagbit_FactFinder_Model_Facade
 
         return $this->_searchAdapter;
     }
-	
-	/**
+
+    /**
      * get a (new) FactFinder SearchAdapter for a secondary channel
      *
+     * @param string $channel
      * @return FACTFinder_Abstract_SearchAdapter
      */
     protected function _getSecondarySearchAdapter($channel)
@@ -524,85 +629,6 @@ class Flagbit_FactFinder_Model_Facade
 
         return $searchAdapter;
     }
-
-    /**
-     * get Suggest Adapter
-     *
-	 * @param	string	$query		query param for FF request
-	 * @param	string	$format		format param for FF request
-	 * @param	bool	$parallel	use a parallel data provider if true; use the default one, otherwise
-	 
-     * @return FACTFinder_Abstract_SuggestAdapter
-     */
-    protected function _getSuggestAdapter($query, $format, $parallel = false)
-    {
-        if ($this->_suggestAdapter == null) {
-            $config					= $this->_getConfiguration();
-            $encodingHandler		= FF::getSingleton('encodingHandler', $config);
-            $params					= $this->_getParamsParser()->getServerRequestParams();
-			if($parallel)
-				$dataProvider		= $this->_getParallelDataProvider();
-			else
-				$dataProvider		= $this->_getGlobalDataProvider();
-
-            $this->_suggestAdapter	= FF::getInstance('http/suggestAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-		
-		$dataProvider->setParam('query', $query);
-		$dataProvider->setParam('format', $format);
-
-        return $this->_suggestAdapter;
-    }
-	
-	/**
-     * get a (new) FactFinder SearchAdapter for a secondary channel
-     *
-     * @return FACTFinder_Abstract_SuggestAdapter
-     */
-    protected function _getSecondarySuggestAdapter($channel, $query, $format)
-    {
-		$config              = $this->_getConfiguration();
-		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
-		$dataProvider        = $this->_getGlobalDataProvider();
-				
-		// Overwrite the channel set by the configuration
-		$dataProvider->setParam('channel', $channel);
-		$dataProvider->setParam('query', $query);
-		$dataProvider->setParam('format', $format);
-		
-		$suggestAdapter = FF::getInstance(
-			'http/suggestAdapter',
-			$dataProvider,
-			$this->_getParamsParser(),
-			$encodingHandler
-		);
-
-        return $suggestAdapter;
-    }
-    
-    /**
-    * get FactFinder TagCloudAdapter
-    *
-    * @return FACTFinder_Abstract_TagCloudAdapter
-    */
-    protected function _getTagCloudAdapter()
-    {
-        if ($this->_tagCloudAdapter == null) {
-            $config              = $this->_getConfiguration();
-            $encodingHandler     = FF::getSingleton('encodingHandler', $config);
-            $dataProvider        = $this->_getDataProvider();
-            $this->_tagCloudAdapter = FF::getSingleton(
-                'xml'.$this->_getConfiguration()->getFactFinderVersion().'/tagCloudAdapter',
-                $dataProvider,
-                $this->_getParamsParser(),
-                $encodingHandler
-            );
-        }
-    
-        return $this->_tagCloudAdapter;
-    }
-
-	
 	
 	/**
 	 * loads the main search adapter
@@ -674,9 +700,9 @@ class Flagbit_FactFinder_Model_Facade
      */
     public function getAuthenticationUrl()
     {
-        $dataprovider = $this->_getGlobalDataProvider();
-        $dataprovider->setType('Management.ff');
-        return $dataprovider->getNonAuthenticationUrl();
+        $dataProvider = $this->_getGlobalDataProvider();
+        $dataProvider->setType('Management.ff');
+        return $dataProvider->getNonAuthenticationUrl();
     }
 	
 	/**
@@ -693,7 +719,7 @@ class Flagbit_FactFinder_Model_Facade
             $result = array();
             try {
 				$searchAdapter = $this->_getSearchAdapter();
-				FACTFinder_Http_ParallelDataProvider::loadAllData();
+				$this->_loadAllData();
                 $result = $searchAdapter->getAsn();
             }
             catch (Exception $e) {
@@ -728,7 +754,7 @@ class Flagbit_FactFinder_Model_Facade
         $campaigns = null;
         try {
 			$searchAdapter = $this->_getSearchAdapter();
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $this->_loadAllData();
             $campaigns = $searchAdapter->getCampaigns();
         }
         catch (Exception $e) {
@@ -763,7 +789,7 @@ class Flagbit_FactFinder_Model_Facade
         $count = 0;
         try {
 			$searchAdapter = $this->_getSearchAdapter();
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $this->_loadAllData();
             $count = $searchAdapter->getResult()->getFoundRecordsCount();
         }
         catch (Exception $e) {
@@ -776,6 +802,7 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * get Search Result Product Ids and additional Data
      *
+     * @throws Exception
      * @return array Products Ids
      */
     public function getSearchResultProductIds()
@@ -783,7 +810,7 @@ class Flagbit_FactFinder_Model_Facade
         if($this->_searchResultProductIds == null){
             try {
 				$searchAdapter = $this->_getSearchAdapter();
-				FACTFinder_Http_ParallelDataProvider::loadAllData();
+				$this->_loadAllData();
 				$result = $searchAdapter->getResult();
 				$error = $searchAdapter->getError();
 				if($error)
@@ -813,10 +840,11 @@ class Flagbit_FactFinder_Model_Facade
 
         return $this->_searchResultProductIds;
     }
-	
-	/**
+
+    /**
      * get secondary Search Results
      *
+     * @param string $channel
      * @return array Products Ids
      */
     public function getSecondarySearchResult($channel)
@@ -834,10 +862,10 @@ class Flagbit_FactFinder_Model_Facade
 			$this->_secondarySearchResults = array();
 			
 			$this->_loadAllSearchAdapters();
-			
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
-			
-			foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
+
+            $this->_loadAllData();
+
+            foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
 			{
 				try {
 					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
@@ -856,22 +884,22 @@ class Flagbit_FactFinder_Model_Facade
 
         return $this->_secondarySearchResults[$channel];
     }
-	
+
     /**
      * execute search
      */
-    public function checkStatus($configarray = null)
+    public function checkStatus($configArray = null)
     {
         $status = false;
         try {
-            $this->_getConfiguration($configarray);
+            $this->_getConfiguration($configArray);
 			
 			
             $this->_setParam('query', 'FACT-Finder Version');
             $this->_setParam('productsPerPage', '1');
 			
 			$searchAdapter = $this->_getSearchAdapter(false);
-			FACTFinder_Http_ParallelDataProvider::loadAllData();
+            $this->_loadAllData();
 			$status = $searchAdapter->getStatus() == 'resultsFound';
         } catch (Exception $e) {
             $status = false;
@@ -886,11 +914,29 @@ class Flagbit_FactFinder_Model_Facade
      */
     public function getSuggestUrl()
     {
-        $dataprovider = $this->_getGlobalDataProvider();
-        $dataprovider->setType('Suggest.ff');
-        $dataprovider->setParams(array());
+        $dataProvider = $this->_getGlobalDataProvider();
+        $dataProvider->setType('Suggest.ff');
+        $dataProvider->setParams(array());
 
-        return $dataprovider->getNonAuthenticationUrl();
+        return $dataProvider->getNonAuthenticationUrl();
+    }
+
+    /**
+     * @param string $channel
+     * @return string
+     */
+    public function getSuggestions($channel = null)
+    {
+        try
+        {
+            $this->_loadAllData();
+            return $this->getSuggestAdapter($channel)->getSuggestions();
+        }
+        catch (Exception $e)
+        {
+            Mage::logException($e);
+            return '';
+        }
     }
 
     /**
@@ -901,63 +947,65 @@ class Flagbit_FactFinder_Model_Facade
      */
     public function getSuggestResult($query)
     {
-        return Zend_Json_Decoder::decode($this->_getSuggestAdapter($query, 'json', false)->getSuggestions());
+        $this->_configureSuggestAdapter($query);
+
+        return Zend_Json_Decoder::decode($this->getSuggestions());
     }
-	
+
     /**
      * get Suggest Results as JSON
      *
      * @param string $query
+     * @param string $jqueryCallback
      * @return string json
      */
     public function getSuggestResultJsonp($query, $jqueryCallback)
     {
-        return $this->_getSuggestAdapter($query, 'jsonp', false)->getSuggestions();
+        $this->_configureSuggestAdapter($query);
+
+        return $jqueryCallback.'('.$this->getSuggestions().');';
     }
-	
-	/**
+
+    /**
      * get Suggest Results for primary and all secondary channels in parallel as JSON
      *
      * @param string $query
+     * @param string $jqueryCallback
      * @return string json
      */
     public function getAllSuggestResultsJsonp($query, $jqueryCallback)
     {
-		
-        $primarySuggestAdapter = $this->_getSuggestAdapter($query, 'json', true);
+        $this->_configureSuggestAdapter($query);
 		
 		// load adapters for secondary channels
 		
 		$channels = $this->_getConfiguration()->getSecondaryChannels();
-		
-        $secondarySuggestAdapters = array();
 			
 		foreach($channels AS $channel)
 		{
 			try {
-				$secondarySuggestAdapters[$channel] = $this->_getSecondarySuggestAdapter($channel, $query, 'json');
+                $this->_configureSuggestAdapter($query, $channel);
 			}
 			catch (Exception $e) {
 				Mage::logException($e);
 			}
 		}
+
+        // Retrieve and merge all suggestions
+        // Add a new "channel" field in the process
 		
-		FACTFinder_Http_ParallelDataProvider::loadAllData();
-		
-		$suggestResult = Zend_Json_Decoder::decode($primarySuggestAdapter->getSuggestions());
+		$suggestResult = Zend_Json_Decoder::decode($this->getSuggestions());
 		foreach($suggestResult as &$item)
-		{
 			$item["channel"] = $this->_getConfiguration()->getChannel();
-		}
+
 		
-		foreach($secondarySuggestAdapters AS $channel => $suggestAdapter)
+		foreach($channels AS $channel)
 		{
 			try {
-				$result = Zend_Json_Decoder::decode($suggestAdapter->getSuggestions());
+				$result = Zend_Json_Decoder::decode($this->getSuggestions($channel));
 				foreach($result as &$item)
-				{
 					$item["channel"] = $channel;
-				}
+
 				$suggestResult = array_merge($suggestResult, $result); 
 			}
 			catch (Exception $e) {
@@ -971,13 +1019,14 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * get tag cloud information as Array
      *
-     * @param string $query
+     * @param string $channel
      * @return array
      */
-    public function getTagCloud()
+    public function getTagCloud($channel = null)
     {
 		try {
-			return $this->_getTagCloudAdapter()->getTagCloud();
+            $this->_loadAllData();
+			return $this->getTagCloudAdapter($channel)->getTagCloud();
 		} catch (Exception $e) {
             Mage::logException($e);
 			return null;
@@ -1018,6 +1067,7 @@ class Flagbit_FactFinder_Model_Facade
      * get Attribute Options Array from FactFinder FilterGroupItems
      *
      * @param FACTFinder_AsnFilterItem $options
+     * @param string $unit
      * @return array
      */
     protected function _getAttributeOptions($options, $unit = '')
@@ -1077,6 +1127,7 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * get current FACT-Finder Catgory Path
      *
+     * @param bool $all
      * @return string
      */
     protected function _getCurrentFactfinderCategoryPath($all = false)
@@ -1129,7 +1180,7 @@ class Flagbit_FactFinder_Model_Facade
     protected function _getAttributeOptionValue($option)
     {
 		$searchAdapter = $this->_getSearchAdapter();
-		FACTFinder_Http_ParallelDataProvider::loadAllData();
+		$this->_loadAllData();
         $selectOptions = $searchAdapter->getSearchParams()->getFilters();
         $value = null;
         switch ($option->getType()) {
@@ -1144,7 +1195,7 @@ class Flagbit_FactFinder_Model_Facade
                 $value = $option->getField();
                 if($option->isSelected()){
 
-                    // handle multiselectable Attributes
+                    // handle multi-selectable Attributes
                     if(!empty($selectOptions[$option->getField()]) ){
                         if(strpos($option->getField(), 'categoryROOT') === false){
                             $values = explode('~~~', $selectOptions[$option->getField()]);
@@ -1164,7 +1215,7 @@ class Flagbit_FactFinder_Model_Facade
                     }
                 }else{
                     $value .= '|'.$option->getValue();
-                    // handle multiselectable Attributes
+                    // handle multi-selectable Attributes
                     if(!empty($selectOptions[$option->getField()])){
                         $value .= '~~~'.$selectOptions[$option->getField()];
                     }

@@ -18,6 +18,15 @@ class Flagbit_FactFinder_Model_Handler_TagCloud
     protected $_tagCloud;
 
     /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        // Registering the needed tag cloud adapter
+        $this->_getFacade()->getTagCloudAdapter();
+    }
+
+    /**
      * @return array
      */
     public function getTerms()

@@ -48,6 +48,7 @@ class Flagbit_FactFinder_Model_Processor
 
     /**
      * get Fact-Finder Facade
+     * we do it manually, because we do not have the full magento context
      *
      * @return Flagbit_FactFinder_Model_Facade
      */
@@ -131,8 +132,7 @@ class Flagbit_FactFinder_Model_Processor
      */
     protected function _handleRequest($request)
     {
-		switch ($request){
-
+		switch ($request) {
 			case 'factfinder_proxy_scic':
 		        $scic = $this->getFacade()->getScicAdapter();
 		        return $scic->doTrackingFromRequest();

@@ -6,6 +6,12 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
      */
     protected $_tagCloudHandler;
 
+    protected function _prepareLayout()
+    {
+        $this->_tagCloudHandler = Mage::getSingleton('factfinder/handler_tagCloud');
+        return parent::_prepareLayout();
+    }
+
     /**
      * @return Flagbit_FactFinder_Block_TagCloud|Mage_CatalogSearch_Block_Term
      */
@@ -16,7 +22,7 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
         }
         
         if (empty($this->_terms)) {
-            $this->_terms = $this->_getTagCloudHandler()->getTerms();
+            $this->_terms = $this->_tagCloudHandler->getTerms();
             
             if (count($this->_terms) == 0)
                 return $this;
@@ -42,16 +48,5 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
             if ($term->getPopularity() < $this->_minPopularity)
                 $this->_minPopularity = $term->getPopularity();
         }
-    }
-
-    /**
-     * @return Flagbit_FactFinder_Model_Handler_TagCloud
-     */
-    protected function _getTagCloudHandler()
-    {
-        if($this->_tagCloudHandler === null)
-            $this->_tagCloudHandler = Mage::getModel('factfinder/handler_tagCloud');
-
-        return $this->_tagCloudHandler;
     }
 }

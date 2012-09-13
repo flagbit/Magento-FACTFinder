@@ -9,13 +9,24 @@
  * @version     $Id: Abstract.php 13.09.12 14:19 $
  *
  **/
-class Flagbit_FactFinder_Model_Handler_Abstract
+abstract class Flagbit_FactFinder_Model_Handler_Abstract
 {
     /**
      * @var Flagbit_FactFinder_Model_Facade
      **/
     private $_facade;
 
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->configure();
+    }
+
+    /**
+     * @return Flagbit_FactFinder_Model_Facade
+     */
     protected function _getFacade()
     {
         if($this->_facade === null)
@@ -24,4 +35,11 @@ class Flagbit_FactFinder_Model_Handler_Abstract
         }
         return $this->_facade;
     }
+
+    /**
+     * Implement this method to set up any adapters the handler will need later on.
+     * WARNING: You will always have to get...() the adapter once, even if you do not configure anything.
+     *          This will register the adapter with the Facade and lets it query all data in parallel.
+     */
+    abstract protected function configure();
 }
