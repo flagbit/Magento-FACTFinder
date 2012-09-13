@@ -47,7 +47,7 @@ class Flagbit_FactFinder_Model_Observer
         }
 
         try {
-            $scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
+            $scic = Mage::getModel('factfinder/facade')->getScicAdapter();
             $result = $scic->trackCart($product->getData($idFieldName), md5(Mage::getSingleton('core/session')->getSessionId()), $qty, $product->getFinalPrice($qty), $customerId);
         }
         catch (Exception $e) {
@@ -117,7 +117,7 @@ class Flagbit_FactFinder_Model_Observer
         foreach ($collection as $item) {
             try {
                 if ($item->getStoreId() != $storeId) {
-                    $scic = Mage::getModel('factfinder/adapter')->setStoreId($item->getStoreId())->getScicAdapter();
+                    $scic = Mage::getModel('factfinder/facade')->setStoreId($item->getStoreId())->getScicAdapter();
                     $storeId = $item->getStoreId();
                 }
 
@@ -206,7 +206,7 @@ class Flagbit_FactFinder_Model_Observer
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
         preg_match($pattern, $html, $matches);
         
-        $url = Mage::getSingleton('factfinder/adapter')->getAuthenticationUrl();
+        $url = Mage::getSingleton('factfinder/facade')->getAuthenticationUrl();
         $replace = str_replace($matches[2], $url, $matches[1]) . ' target="_blank"';
         
         $transport->setHtml(str_replace($matches[1], $replace, $html));
@@ -271,7 +271,7 @@ class Flagbit_FactFinder_Model_Observer
 				$searchHelper = Mage::helper('factfinder/search');
 				
 				try {
-					$scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
+					$scic = Mage::getModel('factfinder/facade')->getScicAdapter();
 			        $idFieldName = $searchHelper->getIdFieldName();
 					if ($idFieldName == 'entity_id') {
 						$idFieldName = 'product_id'; // sales_order_item does not contain a entity_id

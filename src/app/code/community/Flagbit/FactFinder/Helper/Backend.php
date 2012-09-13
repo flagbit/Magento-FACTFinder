@@ -57,8 +57,8 @@ class Flagbit_FactFinder_Helper_Backend extends Mage_Core_Helper_Abstract
         }
 
         if (count($errors) == 0) {
-            $adapter = Mage::getSingleton('factfinder/adapter');
-            if(!$adapter->checkStatus($dataArray)){
+            $facade = Mage::getSingleton('factfinder/facade');
+            if(!$facade->checkStatus($dataArray)){
                 $errors[] = Mage::helper('factfinder')->__('WARNING: was not able to connect to FACT-Finder.');
             }
         }

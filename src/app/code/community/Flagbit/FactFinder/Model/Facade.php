@@ -12,15 +12,15 @@ require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
 /**
  * Model class
  *
- * Adapter between FACT-Finder API Framework and Magento
+ * Facade that hides FACT-Finder API Framework for Magento
  *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Adapter.php 906 2011-09-30 14:10:05Z tuerk $
+ * @version   $Id: Facade.php 906 2011-09-30 14:10:05Z tuerk $
  */
-class Flagbit_FactFinder_Model_Adapter
+class Flagbit_FactFinder_Model_Facade
 {
 
     /**

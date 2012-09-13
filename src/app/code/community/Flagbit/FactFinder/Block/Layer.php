@@ -30,7 +30,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     {
         if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
             // handle redirects
-            $redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
+            $redirect = Mage::getSingleton('factfinder/facade')->getRedirect();
             if($redirect){
                 Mage::app()->getResponse()->setRedirect($redirect);
             }

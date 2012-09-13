@@ -34,7 +34,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_Xm
                return $suggestXmlObj->asNiceXml();
         }
               
-        $suggestData = Mage::getSingleton('factfinder/adapter')->getSuggestResult($this->getRequest()->getParam('q'));
+        $suggestData = Mage::getSingleton('factfinder/facade')->getSuggestResult($this->getRequest()->getParam('q'));
 		
         if (!($count = count($suggestData))) {
             return $suggestXmlObj->asNiceXml();

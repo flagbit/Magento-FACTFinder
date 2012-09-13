@@ -279,7 +279,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
             }
             $url = $this->_getUrl('factfinder/proxy/suggest', $params);
         } else {
-			$url = Mage::getSingleton('factfinder/adapter')->getSuggestUrl(); 
+			$url = Mage::getSingleton('factfinder/facade')->getSuggestUrl(); 
 		}
         return $url;
     }
@@ -360,7 +360,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     {
         try {
             // get productcampaign adapter and set product id or sku array
-            $productCampaignAdapter = Mage::getModel('factfinder/adapter')->getProductCampaignAdapter();
+            $productCampaignAdapter = Mage::getModel('factfinder/facade')->getProductCampaignAdapter();
             $productCampaignAdapter->setProductIds($productIds);
             $productCampaignAdapter->makeProductCampaign();
 
