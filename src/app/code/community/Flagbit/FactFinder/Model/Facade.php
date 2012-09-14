@@ -523,29 +523,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get Product Campaign Adapter
-     *
-     * @throws Exception
-     * @return FACTFinder_Abstract_ProductCampaignAdapter
-     */
-    public function getProductCampaignAdapter()
-    {
-		// Note: this will only work as long as version numbers are used with the same amount of decimal points
-		if ($this->_getConfiguration()->getFactFinderVersion() < 67)
-			throw new Exception('Feature not supported by used FACT-Finder version.');
-			
-        if ($this->_productCampaignAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $dataProvider->setParam('idsOnly', 'true');
-            $this->_productCampaignAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/productCampaignAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_productCampaignAdapter;
-    }
-
-    /**
      * get Recommendation Adapter
      *
      * @return FACTFinder_Abstract_RecommendationAdapter

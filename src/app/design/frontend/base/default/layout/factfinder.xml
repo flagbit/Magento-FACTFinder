@@ -55,7 +55,7 @@
 
     <checkout_cart_index>
     	<reference name="checkout.cart.form.before">
-<!--            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" /-->
+            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" />
             <block type="factfinder/campaign_cart_feedback" before="-" template="factfinder/campaign/cart/feedback.phtml" />
     	</reference>
     </checkout_cart_index>

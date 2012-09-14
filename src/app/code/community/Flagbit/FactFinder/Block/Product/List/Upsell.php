@@ -21,6 +21,17 @@
  */
 class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Product_List_Upsell
 {
+    protected $_productCampaignHandler;
+
+    protected function _prepareLayout()
+    {
+        $productIds = array(
+            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+        );
+        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productDetailCampaign', $productIds);
+        return parent::_prepareLayout();
+    }
+
     /**
      * Method overwritten. Data is not read from product link collection but from FACT-Finder interface instead.
      */
@@ -132,10 +143,8 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
     protected function getPushedProducts()
     {
         $pushedProducts = array();
-        
-        $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
-            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
-        ));
+
+        $_campaigns = $this->_productCampaignHandler->getCampaigns();
 
         if($_campaigns && $_campaigns->hasPushedProducts()){
             $pushedProducts = $_campaigns->getPushedProducts();

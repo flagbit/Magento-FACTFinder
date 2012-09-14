@@ -9,7 +9,7 @@
  * @version     $Id: ProductCampaign.php 14.09.12 08:42 $
  *
  **/
-class Flagbit_FactFinder_Model_Handler_ProductCampaign
+abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
     extends Flagbit_FactFinder_Model_Handler_Abstract
 {
     protected $_productIds = array();
@@ -28,7 +28,7 @@ class Flagbit_FactFinder_Model_Handler_ProductCampaign
     protected function configureFacade()
     {
         $adapter = $this->_getFacade()->getProductCampaignAdapter();
-        $adapter->makeProductCampaign();
+        $this->_setType($adapter);
         $adapter->setParam('idsOnly', 'true');
         $adapter->setProductIds($this->_productIds);
     }
@@ -43,4 +43,6 @@ class Flagbit_FactFinder_Model_Handler_ProductCampaign
         }
         return $this->_campaigns;
     }
+
+    abstract protected function _setType($adapter);
 }

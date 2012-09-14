@@ -18,6 +18,21 @@
  */
 class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Template
 {
+    protected $_product;
+    protected $_productCampaignHandler;
+
+    protected function _prepareLayout()
+    {
+        $this->_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
+
+        $productIds = array(
+            $this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())
+        );
+
+        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_shoppingCartCampaign', array($productIds, true));
+        return parent::_prepareLayout();
+    }
+
     /**
     * get campaign questions and answers
     *
@@ -37,15 +52,12 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Te
         }
             
         $questions = array();
-        
-        $_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
-        if (!$_product->getData(Mage::helper('factfinder/search')->getIdFieldName())) {
+
+        if (!$this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())) {
             return array();
         }
-        
-        $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
-            $_product->getData(Mage::helper('factfinder/search')->getIdFieldName())
-        ));
+
+        $_campaigns = $this->_productCampaignHandler->getCampaigns();
         
         if($_campaigns && $_campaigns->hasActiveQuestions()){
             $questions = $_campaigns->getActiveQuestions();

@@ -25,7 +25,7 @@ class Flagbit_FactFinder_Block_Campaign_Product_Feedback extends Mage_Core_Block
         $productIds = array(
             Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
         );
-        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productCampaign', $productIds);
+        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productDetailCampaign', $productIds);
         return parent::_prepareLayout();
     }
 
