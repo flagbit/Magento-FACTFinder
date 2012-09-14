@@ -43,80 +43,42 @@ class Flagbit_FactFinder_Model_Facade
 	protected $_secondarySearchAdapters = null;
 
     /**
-     * FACT-Finder Suggestadapter
-     * @var FACTFinder_Abstract_SuggestAdapter
-     */
-    protected $_suggestAdapter = null;
-
-    /**
-     * FACT-Finder Config
      * @var FACTFinder_Abstract_Configuration
      */
     protected $_config = null;
 
     /**
-     * FACT-Finder Parameter Parser
      * @var FACTFinder_ParametersParser
      */
     protected $_paramsParser = null;
 
     /**
-     * FACT-Finder Data Provider
      * @var FACTFinder_Abstract_DataProvider
      */
     protected $_dataProvider = null;
 
     /**
-     * FACT-Finder Scic Adapter
      * @var FACTFinder_Abstract_ScicAdapter
      */
     protected $_scicAdapter = null;
 
     /**
-     * FACT-Finder Recommendation Adapter
-     * @var FACTFinder_Abstract_RecommendationAdapter
-     */
-    protected $_recommendationAdapter = null;
-
-    /**
-     * FACT-Finder Product Campaign Adapter
-     * @var FACTFinder_Abstract_ProductCampaignAdapter
-     */
-    protected $_productCampaignAdapter = null;
-
-    /**
-     * FACT-Finder TagCloudAdapter
-     * @var FACTFinder_Abstract_TagCloudAdapter
-     */
-    protected $_tagCloudAdapter = null;
-
-    /**
-     * FACT-Finder After Search Navigation
      * @var array
      */
     protected $_afterSearchNavigation = null;
 
     /**
-     * FACT-Finder product IDs of primary search result
      * @var array
      */
     protected $_searchResultProductIds = null;
 
 	/**
-     * FACT-Finder secondary search results
      * @var array
      */
     protected $_secondarySearchResults = null;
-	
-	/**
-     * FACT-Finder secondary suggest results
-     * @var array
-     */
-    protected $_secondarySuggestResults = null;
 
 	
     /**
-     * current FACT-Finder Category Path
      * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
@@ -172,8 +134,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get FactFinder Params Parser
-     *
      * @return FACTFinder_ParametersParser
      */
     protected function _getParamsParser()
@@ -192,8 +152,6 @@ class Flagbit_FactFinder_Model_Facade
 	private function _________Configuration_Handling__________() { }
 
     /**
-     * set FactFinder Configuration
-     *
      * @param array $configArray
      */
     public function setConfiguration($configArray)
@@ -202,8 +160,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get FactFinder Configuration
-     *
      * @param $configArray
      * @return FACTFinderCustom_Configuration config
      */
@@ -216,8 +172,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * Set StoreId for current configuration
-     *
      * @param int $storeId
      * @return \Flagbit_FactFinder_Model_Facade
      */
@@ -242,8 +196,6 @@ class Flagbit_FactFinder_Model_Facade
 	private function _________Data_Provider_Handling__________() { }
 	
 	/**
-	 * set FactFinder DataProvider
-	 *
 	 * @param FACTFinder_Abstract_DataProvider
 	 **/
 	protected function _setGlobalDataProvider($dataProvider)
@@ -252,8 +204,6 @@ class Flagbit_FactFinder_Model_Facade
 	}
 
     /**
-     * gets the global FactFinder DataProvider
-     *
      * @return FACTFinder_Abstract_DataProvider
      */
     protected function _getGlobalDataProvider()
@@ -273,8 +223,6 @@ class Flagbit_FactFinder_Model_Facade
 	}
 	
 	/**
-     * gets a new FactFinder DataProvider
-     *
      * @return FACTFinder_Abstract_DataProvider
      **/
     protected function _getDataProvider()
@@ -286,8 +234,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 	
 	/**
-	 * get a (new) FactFinder DataProvider that works in parallel
-	 *
 	 * @return FACTFinder_Abstract_DataProvider
 	 **/
 	protected function _getParallelDataProvider()
@@ -465,8 +411,6 @@ class Flagbit_FactFinder_Model_Facade
 
 
     /**
-     * Determines which format to use for an adapter of a certain type
-     *
      * @param $type
      * @return string
      */
@@ -523,26 +467,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get Recommendation Adapter
-     *
-     * @return FACTFinder_Abstract_RecommendationAdapter
-
-    public function getRecommendationAdapter()
-    {
-        if ($this->_recommendationAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $dataProvider->setParam('idsOnly', 'true');
-            $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_recommendationAdapter;
-    }     */
-
-    /**
-     * get Scic Adapter
-     *
      * @return FACTFinder_Abstract_ScicAdapter
      */
     public function getScicAdapter()
@@ -558,8 +482,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get FactFinder SearchAdapter
-     *
      * @param bool $collectParams
      * @return FACTFinder_Abstract_SearchAdapter
      */
@@ -606,11 +528,7 @@ class Flagbit_FactFinder_Model_Facade
 
         return $searchAdapter;
     }
-	
-	/**
-	 * loads the main search adapter
-	 **/
-	 
+
 	protected function _loadSearchAdapter($collectParams = true, $parallel = false)
 	{
 		$config					= $this->_getConfiguration();
@@ -639,10 +557,6 @@ class Flagbit_FactFinder_Model_Facade
 		}
 	}
 	
-	/**
-	 * loads the main search adapter and all search adapters for secondary channels
-	 *
-	 **/
 	protected function _loadAllSearchAdapters($collectParams = true)
 	{
 		$this->_loadSearchAdapter($collectParams, true);
@@ -671,8 +585,6 @@ class Flagbit_FactFinder_Model_Facade
 	private function ___________FF_Object_Getters____________() { }	
 	
 	/**
-     * get Authentication URL
-     *
      * @return string
      */
     public function getAuthenticationUrl()
@@ -723,9 +635,6 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_afterSearchNavigation;
     }
 
-    /**
-     *
-     */
     public function getCampaigns()
     {
         $campaigns = null;
@@ -763,8 +672,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get Redirect URL if there is set one
-     *
      * @return string
      */
     public function getRedirect()
@@ -779,8 +686,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get Search Result Count
-     *
      * @return int
      */
     public function getSearchResultCount()
@@ -841,8 +746,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get secondary Search Results
-     *
      * @param string $channel
      * @return array Products Ids
      */
@@ -907,8 +810,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get Search Suggest URL
-     *
      * @return string
      */
     public function getSuggestUrl()
@@ -1016,8 +917,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * get tag cloud information as Array
-     *
      * @param string $channel
      * @return array
      */
