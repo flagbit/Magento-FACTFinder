@@ -526,7 +526,7 @@ class Flagbit_FactFinder_Model_Facade
      * get Recommendation Adapter
      *
      * @return FACTFinder_Abstract_RecommendationAdapter
-     */
+
     public function getRecommendationAdapter()
     {
         if ($this->_recommendationAdapter == null) {
@@ -538,7 +538,7 @@ class Flagbit_FactFinder_Model_Facade
             $this->_recommendationAdapter = FF::getSingleton('xml'.$this->_getConfiguration()->getFactFinderVersion().'/recommendationAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
         }
         return $this->_recommendationAdapter;
-    }
+    }     */
 
     /**
      * get Scic Adapter
@@ -745,6 +745,17 @@ class Flagbit_FactFinder_Model_Facade
         try {
             $this->_loadAllData();
             return $this->getProductCampaignAdapter($channel)->getCampaigns();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
+    public function getRecommendations($channel = null)
+    {
+        try {
+            $this->_loadAllData();
+            return $this->getRecommendationAdapter($channel)->getRecommendations();
         } catch (Exception $e) {
             Mage::logException($e);
             return null;

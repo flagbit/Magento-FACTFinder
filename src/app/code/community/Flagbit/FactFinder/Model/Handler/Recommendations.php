@@ -1,0 +1,42 @@
+<?php
+/**
+ * Handles product campaign data
+ *
+ * @category    Mage
+ * @package     Flagbit_FactFinder
+ * @copyright   Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author      Martin Buettner <martin.buettner@omikron.net>
+ * @version     $Id: Recommendations.php 14.09.12 11:53 $
+ *
+ **/
+class Flagbit_FactFinder_Model_Handler_Recommendations
+    extends Flagbit_FactFinder_Model_Handler_Abstract
+{
+    protected $_productIds = array();
+
+    protected $_recommendations;
+
+    public function __construct($productIds)
+    {
+        $this->_productIds = $productIds;
+        parent::__construct();
+    }
+
+    protected function configureFacade()
+    {
+        $adapter = $this->_getFacade()->getRecommendationAdapter();
+        $adapter->setParam('idsOnly', 'true');
+        $adapter->setProductIds($this->_productIds);
+    }
+
+    public function getRecommendations()
+    {
+        if($this->_recommendations === null)
+        {
+            $this->_recommendations = $this->_getFacade()->getRecommendations();
+            if ($this->_recommendations === null)
+                $this->_recommendations = array();
+        }
+        return $this->_recommendations;
+    }
+}

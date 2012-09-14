@@ -16,6 +16,8 @@ abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
 
     protected $_campaigns;
 
+    protected $_featureAvailable = true;
+
     public function __construct($productIds)
     {
         $this->_productIds = $productIds;
@@ -27,7 +29,13 @@ abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
      */
     protected function configureFacade()
     {
-        $adapter = $this->_getFacade()->getProductCampaignAdapter();
+        try {
+            $adapter = $this->_getFacade()->getProductCampaignAdapter();
+        } catch(Exception $e) {
+            Mage::helper('factfinder/debug')->log('Product Campaigns not available before FACT-Finder 6.7.');
+            $this->_featureAvailable = false;
+            return;
+        }
         $this->_setType($adapter);
         $adapter->setParam('idsOnly', 'true');
         $adapter->setProductIds($this->_productIds);
@@ -35,6 +43,9 @@ abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
 
     public function getCampaigns()
     {
+        if(!$this->_featureAvailable)
+            $this->_campaigns = array();
+
         if($this->_campaigns === null)
         {
             $this->_campaigns = $this->_getFacade()->getProductCampaigns();
