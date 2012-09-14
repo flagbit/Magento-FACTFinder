@@ -21,7 +21,7 @@ abstract class Flagbit_FactFinder_Model_Handler_Abstract
      */
     public function __construct()
     {
-        $this->configure();
+        $this->configureFacade();
     }
 
     /**
@@ -41,5 +41,5 @@ abstract class Flagbit_FactFinder_Model_Handler_Abstract
      * WARNING: You will always have to get...() the adapter once, even if you do not configure anything.
      *          This will register the adapter with the Facade and lets it query all data in parallel.
      */
-    abstract protected function configure();
+    abstract protected function configureFacade();
 }

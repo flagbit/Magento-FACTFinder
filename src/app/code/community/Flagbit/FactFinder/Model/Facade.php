@@ -763,6 +763,17 @@ class Flagbit_FactFinder_Model_Facade
         return $campaigns;
     }
 
+    public function getProductCampaigns($channel = null)
+    {
+        try {
+            $this->_loadAllData();
+            return $this->getProductCampaignAdapter($channel)->getCampaigns();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
     /**
      * get Redirect URL if there is set one
      *

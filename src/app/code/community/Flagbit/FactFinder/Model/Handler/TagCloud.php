@@ -20,7 +20,7 @@ class Flagbit_FactFinder_Model_Handler_TagCloud
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configureFacade()
     {
         // Registering the needed tag cloud adapter
         $this->_getFacade()->getTagCloudAdapter();

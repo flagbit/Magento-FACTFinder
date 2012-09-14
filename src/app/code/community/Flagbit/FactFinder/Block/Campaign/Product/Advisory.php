@@ -18,6 +18,17 @@
  */
 class Flagbit_FactFinder_Block_Campaign_Product_Advisory extends Mage_Core_Block_Template
 {
+    protected $_productCampaignHandler;
+
+    protected function _prepareLayout()
+    {
+        $productIds = array(
+            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+        );
+        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productCampaign', $productIds);
+        return parent::_prepareLayout();
+    }
+
     /**
     * get campaign questions and answers
     *
@@ -28,9 +39,7 @@ class Flagbit_FactFinder_Block_Campaign_Product_Advisory extends Mage_Core_Block
         $questions = array();
         
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && Mage::registry('current_product')) {
-            $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
-                Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
-            ));
+            $_campaigns = $this->_productCampaignHandler->getCampaigns();
             
             if($_campaigns && $_campaigns->hasActiveQuestions()){
                 $questions = $_campaigns->getActiveQuestions();
