@@ -102,35 +102,64 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * Used to allow and delegate generic get_____Adapter($channel) methods
+     * Used to allow and delegate generic methods. Valid signatures:
+     * get_____Adapter($channel = null)
+     * configure____Adapter($params = array(), $channel = null)
      *
      * @param string $function
      * @param array $arguments
-     * @return FACTFinder_Abstract_Adapter
+     * @return FACTFinder_Abstract_Adapter|null
      * @throws Exception
      */
     public function __call($function, $arguments)
     {
         $matches = array();
-        if (!preg_match('/^get(.+)Adapter$/', $function, $matches))
+        if (preg_match('/^get(.+)Adapter$/', $function, $matches))
+        {
+            // We have a get______Adapter($channel) method!
+            // The first argument (if any) will be treated as a channel
+
+
+            $type = $matches[1];
+            $type{0} = strtolower($type{0});
+
+            $format = $this->_getFormat($type);
+
+            $channel = null;
+            if(count($arguments))
+                $channel = $arguments[0];
+
+            return $this->_getAdapter($format, $type, $channel);
+        }
+        elseif (preg_match('/^configure(.+)Adapter$/', $function, $matches))
+        {
+            // We have a configure_____Adapter($params, $channel) method!
+            // The first argument (if any) will be treated as an array of params as key-value pairs
+            // The second argument (if any) will be treated as a channel
+
+            $type = $matches[1];
+            $type{0} = strtolower($type{0});
+
+            $format = $this->_getFormat($type);
+
+            $channel = null;
+            if(count($arguments) > 1)
+                $channel = $arguments[1];
+
+            $adapter = $this->_getAdapter($format, $type, $channel);
+
+            if(count($arguments))
+            {
+                foreach($arguments[0] as $key => $value)
+                    $adapter->setParam($key, $value);
+            }
+
+            return null;
+        }
+        else
         {
             throw new Exception("Call to undefined method ".$function."() in file ".__FILE__." on line ".__LINE__);
         }
-
-        // We have a get______Adapter($channel) method!
-        // The first argument (if any) will be treated as a channel
-
-
-        $type = $matches[1];
-        $type{0} = strtolower($type{0});
-
-        $format = $this->_getFormat($type);
-
-        $channel = null;
-        if(count($arguments))
-            $channel = $arguments[0];
-
-        return $this->_getAdapter($format, $type, $channel);
     }
 
     /**
@@ -448,7 +477,8 @@ class Flagbit_FactFinder_Model_Facade
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
                 $this->_getParamsParser(),
-                $encodingHandler
+                $encodingHandler,
+                $this->_logger
             );
         }
         return $this->_adapters[$type][$channel];

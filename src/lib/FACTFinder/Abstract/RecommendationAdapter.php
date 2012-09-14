@@ -90,8 +90,11 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
      **/
     public function getRecommendations() {
 		if (empty($this->productIds)) {
+            $dataProviderParams = $this->getDataProvider()->getParams();
 			$requestParams = $this->getParamsParser()->getRequestParams();
-			if (isset($requestParams['id'])) {
+            if (isset($dataProviderParams['id'])) {
+                $this->productIds = $dataProviderParams['id'];
+            } elseif (isset($requestParams['id'])) {
 				$this->productIds = array($requestParams['id']);
 			}
 			if (empty($this->productIds)) {

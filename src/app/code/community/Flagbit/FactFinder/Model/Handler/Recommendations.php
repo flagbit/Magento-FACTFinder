@@ -24,9 +24,12 @@ class Flagbit_FactFinder_Model_Handler_Recommendations
 
     protected function configureFacade()
     {
-        $adapter = $this->_getFacade()->getRecommendationAdapter();
-        $adapter->setParam('idsOnly', 'true');
-        $adapter->setProductIds($this->_productIds);
+        $params = array();
+        $params['idsOnly'] = 'true';
+        $params['id'] = $this->_getIdParam();
+        $adapter = $this->_getFacade()->configureRecommendationAdapter($params);
+        //$adapter->setParam('idsOnly', 'true');
+        //$adapter->setProductIds($this->_productIds);
     }
 
     public function getRecommendations()
@@ -38,5 +41,13 @@ class Flagbit_FactFinder_Model_Handler_Recommendations
                 $this->_recommendations = array();
         }
         return $this->_recommendations;
+    }
+
+    protected function _getIdParam()
+    {
+        if(is_array($this->_productIds))
+            return $this->_productIds;
+        else
+            return array($this->_productIds);
     }
 }

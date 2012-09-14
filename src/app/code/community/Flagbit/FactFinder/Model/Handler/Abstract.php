@@ -38,7 +38,7 @@ abstract class Flagbit_FactFinder_Model_Handler_Abstract
 
     /**
      * Implement this method to set up any adapters the handler will need later on.
-     * WARNING: You will always have to get...() the adapter once, even if you do not configure anything.
+     * WARNING: You will always have to configure...() the adapter once, even if you do not set any parameters.
      *          This will register the adapter with the Facade and lets it query all data in parallel.
      */
     abstract protected function configureFacade();

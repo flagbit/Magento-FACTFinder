@@ -12,8 +12,16 @@
 class Flagbit_FactFinder_Model_Handler_ProductDetailCampaign
     extends Flagbit_FactFinder_Model_Handler_ProductCampaign
 {
-    protected function _setType($adapter)
+    protected function _getDoParam()
     {
-        $adapter->makeProductCampaign();
+        return 'getProductCampaigns';
+    }
+
+    protected function _getProductNumberParam()
+    {
+        if(is_array($this->_productIds))
+            return $this->_productIds[0];
+        else
+            return $this->_productIds;
     }
 }
