@@ -17,6 +17,11 @@
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
+
+    /**
+     * @var FACTFinder_Http_UrlBuilder
+     */
+    protected $urlBuilder;
     protected $previousUrl = '';
     protected $httpHeader = array();
     protected $curlOptions = array(
@@ -31,6 +36,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
             CURLOPT_CONNECTTIMEOUT => $this->getConfig()->getDefaultConnectTimeout(),
             CURLOPT_TIMEOUT => $this->getConfig()->getDefaultTimeout()
         ));
+        $this->urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $log);
 	}
 			
     /**
@@ -42,6 +48,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     public function setType($type)
     {
         $this->type = $type;
+        $this->urlBuilder->setType($type);
     }
 
 	/**
@@ -91,7 +98,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     public function getData()
     {
 		if ($this->hasUrlChanged()) {
-			$this->setPreviousUrl($this->getNonAuthenticationUrl());
+			$this->setPreviousUrl($this->urlBuilder->getNonAuthenticationUrl());
             $this->data = $this->loadResponse($this->getAuthenticationUrl());
         }
         return $this->data;
@@ -110,7 +117,8 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 	 **/
 	public function hasUrlChanged()
 	{
-		return $this->getNonAuthenticationUrl() != $this->previousUrl;
+        $this->updateUrlBuilder();
+		return $this->urlBuilder->getNonAuthenticationUrl() != $this->previousUrl;
 	}
 
     /**
@@ -145,16 +153,23 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getAuthenticationUrl() {
         $config = $this->getConfig();
+        $this->updateUrlBuilder();
         if ($config->isHttpAuthenticationType()) {
-            $url = $this->getHttpAuthenticationUrl();
+            $url = $this->urlBuilder->getHttpAuthenticationUrl();
         } else if ($config->isSimpleAuthenticationType()) {
-            $url = $this->getSimpleAuthenticationUrl();
+            $url = $this->urlBuilder->getSimpleAuthenticationUrl();
         } else if ($config->isAdvancedAuthenticationType()) {
-            $url = $this->getAdvancedAuthenticationUrl();
+            $url = $this->urlBuilder->getAdvancedAuthenticationUrl();
         } else {
-            $url = $this->getNonAuthenticationUrl();
+            $url = $this->urlBuilder->getNonAuthenticationUrl();
         }
         return $url;
+    }
+
+    public function getNonAuthenticationUrl()
+    {
+        $this->updateUrlBuilder();
+        return $this->urlBuilder->getNonAuthenticationUrl();
     }
 
     /**
@@ -182,7 +197,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         curl_close($cResource);
 
         if (intval($httpCode) >= 400) {
-			$this->log->error("Conntection failed. HTTP code: $httpCode");
+			$this->log->error("Connection failed. HTTP code: $httpCode");
             throw new Exception("Connection failed. HTTP code: $httpCode", $httpCode);
         } else if ($httpCode == 0) {
 			$this->log->error("Connection refused. $curlErr");
@@ -194,137 +209,8 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         return $response;
     }
 
-    /**
-     * get url with advanced authentication encryption
-     *
-     * @return string url
-     */
-    protected function getAdvancedAuthenticationUrl() {
-        $config = $this->getConfig();
-        $params = $this->getParams();		
-		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
-
-		$channel = $this->getChannel($params, $config);
-		if ($channel != '') {
-			$params['channel'] = $channel;
-		}
-
-        $ts         = time() . '000'; //millisecondes needed
-        $prefix     = $config->getAdvancedAuthPrefix();
-        $postfix    = $config->getAdvancedAuthPostfix();
-        $authParams = "timestamp=$ts&username=".$config->getAuthUser()
-        . '&password=' . md5($prefix . $ts . md5($config->getAuthPasswort()) . $postfix);
-
-        $url = $config->getRequestProtocol() . '://'
-            . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
-            . (count($params)?'&':'') . $authParams;
-			
-		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
-		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-		$this->log->info("Request Url: ".$url);
-        return $url;
+    protected function updateUrlBuilder()
+    {
+        $this->urlBuilder->setParams($this->getParams());
     }
-
-    /**
-     * get url with simple authentication encryption
-     *
-     * @return string url
-     */
-    protected function getSimpleAuthenticationUrl() {
-        $config = $this->getConfig();
-        $params = $this->getParams();		
-		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
-
-        $channel = $this->getChannel($params, $config);
-		if ($channel != '') {
-			$params['channel'] = $channel;
-		}
-
-        $ts = time() . '000'; //millisecondes needed but won't be considered
-        $authParams = "timestamp=$ts&username=".$config->getAuthUser()
-            . '&password=' . md5($config->getAuthPasswort());
-
-        $url = $config->getRequestProtocol() . '://'
-            . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
-            . (count($params)?'&':'') . $authParams;
-		
-		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
-		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-		$this->log->info("Request Url: ".$url);
-        return $url;
-    }
-
-    /**
-     * get url with http authentication
-     *
-     * @return string url
-     */
-    protected function getHttpAuthenticationUrl() {
-        $config = $this->getConfig();
-        $params = $this->getParams();		
-		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
-
-		$channel = $this->getChannel($params, $config);
-		if ($channel != '') {
-			$params['channel'] = $channel;
-		}
-
-        $auth = $config->getAuthUser() . ':' . $config->getAuthPasswort() . '@';
-        if ($auth == ':@') $auth = '';
-
-        $url = $config->getRequestProtocol() . '://' . $auth
-            . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
-            . http_build_query($params, '', '&');
-			
-		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
-		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-		$this->log->info("Request Url: ".$url);
-        return $url;
-    }
-
-    /**
-     * get url with no authentication.
-     *
-     * @return string url
-     */
-    public function getNonAuthenticationUrl() {
-        $config = $this->getConfig();
-        $params = $this->getParams();		
-		$this->log->info("Server Request Params: ".http_build_query($params, '', ', '));
-
-        $channel = $this->getChannel($params, $config);
-		if ($channel != '') {
-			$params['channel'] = $channel;
-		}
-
-        $url = $config->getRequestProtocol() . '://'
-            . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
-            . http_build_query($params, '', '&');
-
-		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
-		$url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-		$this->log->info("Request Url: ".$url);
-        return $url;
-    }
-
-	/**
-	 * get channel from params or config (params override config)
-	 *
-	 * @param array parameterse
-	 * @param FACTFinderAbstractConfiguration config
-	 * @return string channel
-	 */
-	protected function getChannel($params, $config) {
-		$channel = '';
-		if (isset($params['channel']) && strlen($params['channel']) > 0) {
-			$channel = $params['channel'];
-		} else if($config->getChannel() != '') {
-            $channel = $config->getChannel();
-        }
-		return $channel;
-	}
 }

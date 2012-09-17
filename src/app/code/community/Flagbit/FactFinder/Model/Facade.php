@@ -41,10 +41,10 @@ class Flagbit_FactFinder_Model_Facade
     protected $_paramsParser = null;
 
     /**
-     * @var FACTFinder_Abstract_DataProvider
+     * @var FACTFinder_Http_UrlBuilder
      */
-    protected $_dataProvider = null;
-    
+    protected $_urlBuilder = null;
+
 	/**
 	 * logger object to log all module internals
 	 * @var FACTFinder_Abstract_Logger
@@ -141,11 +141,6 @@ class Flagbit_FactFinder_Model_Facade
         }
         return $this->_paramsParser;
     }
-	
-	// This is not a function!
-	// It's actually a headline for Notepad++'s Function List plug-in.
-	// And yes, I feel bad about it.
-	private function _________Configuration_Handling__________() { }
 
     /**
      * @param array $configArray
@@ -177,42 +172,6 @@ class Flagbit_FactFinder_Model_Facade
         return $this;
     }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// This is not a function!
-	// It's actually a headline for Notepad++'s Function List plug-in.
-	// And yes, I feel bad about it.
-	private function _________Data_Provider_Handling__________() { }
-	
-	/**
-	 * @param FACTFinder_Abstract_DataProvider
-	 **/
-	protected function _setGlobalDataProvider($dataProvider)
-	{
-		$this->_dataProvider = $dataProvider;
-	}
-
-    /**
-     * @return FACTFinder_Abstract_DataProvider
-     */
-    protected function _getGlobalDataProvider()
-    {
-        if ($this->_dataProvider == null) {
-            $config = $this->_getConfiguration();
-            $params = $this->_getParamsParser()->getServerRequestParams();
-
-            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config, $this->_logger));
-        }
-        return $this->_dataProvider;
-    }
-	
 	/**
 	 * @return FACTFinder_Abstract_DataProvider
 	 **/
@@ -230,17 +189,17 @@ class Flagbit_FactFinder_Model_Facade
     {
         FACTFinder_Http_ParallelDataProvider::loadAllData();
     }
-	
-	
-	
-	
-	
-	
-    // This is not a function!
-	// It's actually a headline for Notepad++'s Function List plug-in.
-	// And yes, I feel bad about it.
-	private function ___________FF_Adapter_Getters___________() { }
 
+    protected function _getUrlBuilder()
+    {
+        if($this->_urlBuilder === null) {
+            $config = $this->_getConfiguration();
+            $params = $this->_getParamsParser()->getServerRequestParams();
+
+            $this->_urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $this->_logger);
+        }
+        return $this->_urlBuilder;
+    }
 
     /**
      * @param $type
@@ -290,11 +249,11 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * @return string
      */
-    public function getAuthenticationUrl()
+    public function getManagementUrl()
     {
-        $dataProvider = $this->_getGlobalDataProvider();
-        $dataProvider->setType('Management.ff');
-        return $dataProvider->getNonAuthenticationUrl();
+        $urlBuilder = $this->_getUrlBuilder();
+        $urlBuilder->setType('Management.ff');
+        return $urlBuilder->getNonAuthenticationUrl();
     }
 
     /**
@@ -302,17 +261,12 @@ class Flagbit_FactFinder_Model_Facade
      */
     public function getSuggestUrl()
     {
-        $dataProvider = $this->_getGlobalDataProvider();
-        $dataProvider->setType('Suggest.ff');
-        $dataProvider->setParams(array());
+        $urlBuilder = $this->_getUrlBuilder();
+        $urlBuilder->setType('Suggest.ff');
+        $urlBuilder->setParams(array());
 
-        return $dataProvider->getNonAuthenticationUrl();
+        return $urlBuilder->getNonAuthenticationUrl();
     }
-	
-	// This is not a function!
-	// It's actually a headline for Notepad++'s Function List plug-in.
-	// And yes, I feel bad about it.
-	private function ___________FF_Object_Getters____________() { }
 
     public function applyTracking($channel = null)
     {

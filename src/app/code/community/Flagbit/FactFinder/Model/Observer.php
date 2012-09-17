@@ -220,7 +220,7 @@ class Flagbit_FactFinder_Model_Observer
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
         preg_match($pattern, $html, $matches);
         
-        $url = Mage::getSingleton('factfinder/facade')->getAuthenticationUrl();
+        $url = Mage::getSingleton('factfinder/facade')->getManagementUrl();
         $replace = str_replace($matches[2], $url, $matches[1]) . ' target="_blank"';
         
         $transport->setHtml(str_replace($matches[1], $replace, $html));
