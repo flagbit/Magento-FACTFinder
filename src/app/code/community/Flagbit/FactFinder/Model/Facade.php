@@ -35,12 +35,6 @@ class Flagbit_FactFinder_Model_Facade
      * @var FACTFinder_Abstract_SearchAdapter
      */
     protected $_searchAdapter = null;
-	
-	/**
-	 * FACT-Finder search adapters for secondary channels
-	 * @var array of FACTFinder_Abstract_SearchAdapter
-	 **/
-	protected $_secondarySearchAdapters = null;
 
     /**
      * @var FACTFinder_Abstract_Configuration
@@ -68,12 +62,6 @@ class Flagbit_FactFinder_Model_Facade
     protected $_searchResultProductIds = null;
 
 	/**
-     * @var array
-     */
-    protected $_secondarySearchResults = null;
-
-	
-    /**
      * @var array
      */
     protected $_currentFactfinderCategoryPath = null;
@@ -476,44 +464,10 @@ class Flagbit_FactFinder_Model_Facade
     {
         if ($this->_searchAdapter == null)
 		{
-			$channels = $this->_getConfiguration()->getSecondaryChannels();
-			if(empty($channels))
-			{
-				$this->_loadSearchAdapter($collectParams);
-			}
-			else
-			{
-				$this->_loadAllSearchAdapters($collectParams);
-			}
+			$this->_loadSearchAdapter($collectParams);
         }
 
         return $this->_searchAdapter;
-    }
-
-    /**
-     * get a (new) FactFinder SearchAdapter for a secondary channel
-     *
-     * @param string $channel
-     * @return FACTFinder_Abstract_SearchAdapter
-     */
-    protected function _getSecondarySearchAdapter($channel)
-    {
-		$config              = $this->_getConfiguration();
-		$encodingHandler     = FF::getSingleton('encodingHandler', $config);
-		$dataProvider        = $this->_getParallelDataProvider();
-		
-		// Overwrite the channel set by the configuration
-		$dataProvider->setParam('channel', $channel);
-		$dataProvider->setParam('query', Mage::helper('factfinder/search')->getQueryText());
-		
-		$searchAdapter = FF::getInstance(
-			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
-			$dataProvider,
-			$this->_getParamsParser(),
-			$encodingHandler
-		);
-
-        return $searchAdapter;
     }
 
 	protected function _loadSearchAdapter($collectParams = true, $parallel = false)
@@ -543,28 +497,6 @@ class Flagbit_FactFinder_Model_Facade
 			$this->_collectParams($dataProvider);
 		}
 	}
-	
-	protected function _loadAllSearchAdapters($collectParams = true)
-	{
-		$this->_loadSearchAdapter($collectParams, true);
-		
-		$channels = $this->_getConfiguration()->getSecondaryChannels();
-		
-		foreach($channels AS $currentChannel)
-		{
-			try {
-				$this->_secondarySearchAdapters[$currentChannel] = $this->_getSecondarySearchAdapter($currentChannel);
-			}
-			catch (Exception $e) {
-				Mage::logException($e);
-			}
-		}
-	}
-	
-	
-	
-	
-	
 	
 	// This is not a function!
 	// It's actually a headline for Notepad++'s Function List plug-in.
@@ -683,6 +615,17 @@ class Flagbit_FactFinder_Model_Facade
         return $url;
     }
 
+    public function getSearchResult($channel = null)
+    {
+        try {
+            $this->_loadAllData();
+            return $this->getSearchAdapter($channel)->getResult();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
     /**
      * @return int
      */
@@ -741,48 +684,6 @@ class Flagbit_FactFinder_Model_Facade
         }
 
         return $this->_searchResultProductIds;
-    }
-
-    /**
-     * @param string $channel
-     * @return array Products Ids
-     */
-    public function getSecondarySearchResult($channel)
-    {
-		$channels = $this->_getConfiguration()->getSecondaryChannels();
-		
-		if(!in_array($channel, $channels))
-		{
-			Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
-			return array();
-		}
-			
-        if($this->_secondarySearchResults == null)
-		{
-			$this->_secondarySearchResults = array();
-			
-			$this->_loadAllSearchAdapters();
-
-            $this->_loadAllData();
-
-            foreach($this->_secondarySearchAdapters AS $currentChannel => $searchAdapter)
-			{
-				try {
-					$this->_secondarySearchResults[$currentChannel] = $searchAdapter->getResult();
-				}
-				catch (Exception $e) {
-					Mage::logException($e);
-				}
-			}
-        }
-		
-		if(!array_key_exists($channel, $this->_secondarySearchResults))
-		{
-			Mage::logException(new Exception("Result for channel '".$channel."' could not be retrieved."));
-			return array();
-		}
-
-        return $this->_secondarySearchResults[$channel];
     }
 
     /**
