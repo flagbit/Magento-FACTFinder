@@ -20,14 +20,14 @@
  */
 class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
-{	
+{
     /**
      * Get collection size
      *
      * @return int
      */
     public function getSize()
-    {		
+    {
 		return $this->_getSearchHandler()->getSearchResultCount();
     }
     

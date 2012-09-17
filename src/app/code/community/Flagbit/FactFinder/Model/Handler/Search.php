@@ -310,7 +310,10 @@ class Flagbit_FactFinder_Model_Handler_Search
      */
     protected function _getAttributeOptionValue($option)
     {
-        $selectOptions = $this->_getFacade()->getSearchFilters();
+        $searchParams = $this->_getFacade()->getSearchParams();
+        if($searchParams instanceof FACTFinder_Parameters)
+            $selectOptions = $searchParams->getFilters();
+
         $value = null;
         switch ($option->getType()) {
 
@@ -378,7 +381,9 @@ class Flagbit_FactFinder_Model_Handler_Search
     {
         if($this->_searchResultCount === null)
         {
-            $this->_searchResultCount = $this->_getFacade()->getSearchResultCount();
+            $result = $this->_getFacade()->getSearchResult();
+            if($result instanceof FACTFinder_Result)
+                $this->_searchResultCount = $result->getFoundRecordsCount();
             if($this->_searchResultCount === null)
                 $this->_searchResultCount = 0;
         }

@@ -124,87 +124,6 @@ class Flagbit_FactFinder_Model_Facade
         }
     }
 
-    public function getRequestParams()
-    {
-        return $this->_getParamsParser()->getRequestParams();
-    }
-
-    /**
-     * @return FACTFinder_ParametersParser
-     */
-    protected function _getParamsParser()
-    {
-        if ($this->_paramsParser == null) {
-            $config = $this->_getConfiguration();
-            $encodingHandler = FF::getSingleton('encodingHandler', $config);
-            $this->_paramsParser = FF::getInstance('parametersParser', $config, $encodingHandler);
-        }
-        return $this->_paramsParser;
-    }
-
-    /**
-     * @param array $configArray
-     */
-    public function setConfiguration($configArray)
-    {
-        $this->_config = FF::getSingleton('configuration', $configArray);
-    }
-
-    /**
-     * @param $configArray
-     * @return FACTFinderCustom_Configuration config
-     */
-    protected function _getConfiguration($configArray = null)
-    {
-        if ($this->_config == null) {
-            $this->_config = FF::getSingleton('configuration', $configArray);
-        }
-        return $this->_config;
-    }
-
-    /**
-     * @param int $storeId
-     * @return \Flagbit_FactFinder_Model_Facade
-     */
-    public function setStoreId($storeId) {
-        $this->_getConfiguration()->setStoreId($storeId);
-
-        return $this;
-    }
-	
-	/**
-	 * @return FACTFinder_Abstract_DataProvider
-	 **/
-	protected function _getParallelDataProvider()
-	{
-		$config = $this->_getConfiguration();
-		$params = $this->_getParamsParser()->getServerRequestParams();
-		
-		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config, $this->_logger);
-				
-		return $dp;
-	}
-
-    protected function _loadAllData()
-    {
-        FACTFinder_Http_ParallelDataProvider::loadAllData();
-    }
-
-    protected function _getUrlBuilder()
-    {
-        if($this->_urlBuilder === null) {
-            $config = $this->_getConfiguration();
-            $params = $this->_getParamsParser()->getServerRequestParams();
-
-            $this->_urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $this->_logger);
-        }
-        return $this->_urlBuilder;
-    }
-
-    /**
-     * @param $type
-     * @return string
-     */
     protected function _getFormat($type)
     {
         $format = 'http';
@@ -217,9 +136,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * @param string $format
-     * @param string $type
-     * @param null|string $channel
      * @return FACTFinder_Abstract_Adapter
      */
     public function _getAdapter($format, $type, $channel = null)
@@ -247,8 +163,57 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * @return string
+     * @return FACTFinderCustom_Configuration config
      */
+    protected function _getConfiguration($configArray = null)
+    {
+        if ($this->_config == null) {
+            $this->_config = FF::getSingleton('configuration', $configArray);
+        }
+        return $this->_config;
+    }
+
+    public function setConfiguration($configArray)
+    {
+        $this->_config = FF::getSingleton('configuration', $configArray);
+    }
+
+    /**
+     * @param int $storeId
+     * @return \Flagbit_FactFinder_Model_Facade
+     */
+    public function setStoreId($storeId) {
+        $this->_getConfiguration()->setStoreId($storeId);
+
+        return $this;
+    }
+
+    /**
+     * @return FACTFinder_Abstract_DataProvider
+     **/
+    protected function _getParallelDataProvider()
+    {
+        $config = $this->_getConfiguration();
+        $params = $this->_getParamsParser()->getServerRequestParams();
+
+        $dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config, $this->_logger);
+
+        return $dp;
+    }
+
+    /**
+     * @return FACTFinder_ParametersParser
+     */
+    protected function _getParamsParser()
+    {
+        if ($this->_paramsParser == null) {
+            $config = $this->_getConfiguration();
+            $encodingHandler = FF::getSingleton('encodingHandler', $config);
+            $this->_paramsParser = FF::getInstance('parametersParser', $config, $encodingHandler);
+        }
+        return $this->_paramsParser;
+    }
+
     public function getManagementUrl()
     {
         $urlBuilder = $this->_getUrlBuilder();
@@ -256,9 +221,6 @@ class Flagbit_FactFinder_Model_Facade
         return $urlBuilder->getNonAuthenticationUrl();
     }
 
-    /**
-     * @return string
-     */
     public function getSuggestUrl()
     {
         $urlBuilder = $this->_getUrlBuilder();
@@ -268,143 +230,91 @@ class Flagbit_FactFinder_Model_Facade
         return $urlBuilder->getNonAuthenticationUrl();
     }
 
+    protected function _getUrlBuilder()
+    {
+        if($this->_urlBuilder === null) {
+            $config = $this->_getConfiguration();
+            $params = $this->_getParamsParser()->getServerRequestParams();
+
+            $this->_urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $this->_logger);
+        }
+        return $this->_urlBuilder;
+    }
+
     public function applyTracking($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getScicAdapter($channel)->applyTracking();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Scic", "applyTracking", $channel);
     }
 
     public function getAfterSearchNavigation($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getAsn();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getAsn", $channel);
     }
 
     public function getCampaigns($channel = null)
     {
-        try {
-			$this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getCampaigns();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getCampaigns", $channel);
     }
 
     public function getProductCampaigns($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getProductCampaignAdapter($channel)->getCampaigns();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel);
     }
 
     public function getRecommendations($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getRecommendationAdapter($channel)->getRecommendations();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel);
     }
 
     public function getSearchError($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getError();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getError", $channel);
     }
 
-    public function getSearchFilters($channel = null)
+    public function getSearchParams($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getSearchParams()->getFilters();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getSearchParams", $channel);
     }
 
     public function getSearchResult($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getResult();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
-    }
-
-    public function getSearchResultCount($channel = null)
-    {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getResult()->getFoundRecordsCount();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getResult", $channel);
     }
 
     public function getSearchStatus($channel = null)
     {
-        try {
-            $this->_loadAllData();
-            return $this->getSearchAdapter($channel)->getStatus();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
+        return $this->_getFactFinderObject("Search", "getStatus", $channel);
     }
 
-    /**
-     * @param string $channel
-     * @return string
-     */
     public function getSuggestions($channel = null)
     {
+        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel);
+    }
+
+    public function getTagCloud($channel = null)
+    {
+        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel);
+    }
+
+    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null)
+    {
         try {
             $this->_loadAllData();
-            return $this->getSuggestAdapter($channel)->getSuggestions();
+            $adapterGetter = "get".$adapterType."Adapter";
+            return $this->$adapterGetter($channel)->$objectGetter();
         } catch (Exception $e) {
             Mage::logException($e);
             return null;
         }
     }
 
-    /**
-     * @param string $channel
-     * @return array
-     */
-    public function getTagCloud($channel = null)
+    protected function _loadAllData()
     {
-		try {
-            $this->_loadAllData();
-			return $this->getTagCloudAdapter($channel)->getTagCloud();
-		} catch (Exception $e) {
-            Mage::logException($e);
-			return null;
-        }
+        FACTFinder_Http_ParallelDataProvider::loadAllData();
+    }
+
+    public function getRequestParams()
+    {
+        return $this->_getParamsParser()->getRequestParams();
     }
 }
