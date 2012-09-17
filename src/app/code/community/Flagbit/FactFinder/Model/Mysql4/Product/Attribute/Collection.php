@@ -31,7 +31,7 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Attribute_Collection extends Mage_
      */
     public function getSize()
     {
-    	return count($this->_getFacade()->getAfterSearchNavigation());
+    	return count($this->_getSearchHandler()->getAfterSearchNavigation());
     }
     
     /**
@@ -39,9 +39,9 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Attribute_Collection extends Mage_
      * 
      * @return Flagbit_FactFinder_Model_Facade
      */
-    protected function _getFacade()
+    protected function _getSearchHandler()
     {
-    	return Mage::getSingleton('factfinder/facade');	
+    	return Mage::getSingleton('factfinder/handler_search');
     }
       
     /**
@@ -55,7 +55,7 @@ class Flagbit_FactFinder_Model_Mysql4_Product_Attribute_Collection extends Mage_
             return $this;
         }    	
 
-    	$result = $this->_getFacade()->getAfterSearchNavigation();
+    	$result = $this->_getSearchHandler()->getAfterSearchNavigation();
 
         if (count($result)) {
 	        $this->resetData();

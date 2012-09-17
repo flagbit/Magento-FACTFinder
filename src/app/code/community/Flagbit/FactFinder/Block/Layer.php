@@ -20,6 +20,7 @@
  */
 class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abstract
 {
+    protected $_searchHandler;
 
     /**
      * Prepare child blocks
@@ -28,9 +29,11 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _prepareLayout()
     {
+        $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+
         if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
             // handle redirects
-            $redirect = Mage::getSingleton('factfinder/facade')->getRedirect();
+            $redirect = $this->_searchHandler->getRedirect();
             if($redirect){
                 Mage::app()->getResponse()->setRedirect($redirect);
             }

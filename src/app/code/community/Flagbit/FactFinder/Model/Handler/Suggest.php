@@ -73,14 +73,13 @@ class Flagbit_FactFinder_Model_Handler_Suggest
         // Retrieve and merge all suggestions
         // Add a new "channel" field in the process
 
-        $suggestResult = Zend_Json_Decoder::decode($this->_getFacade()->getSuggestions());
+        $suggestResult = Zend_Json_Decoder::decode($this->_getAndSanitizeSuggestions());
         foreach($suggestResult as &$item)
             $item["channel"] = $this->_primaryChannel;
 
-
         foreach($this->_secondaryChannels AS $channel)
         {
-            $result = Zend_Json_Decoder::decode($this->_getFacade()->getSuggestions($channel));
+            $result = Zend_Json_Decoder::decode($this->_getAndSanitizeSuggestions($channel));
             foreach($result as &$item)
                 $item["channel"] = $channel;
 
@@ -93,6 +92,15 @@ class Flagbit_FactFinder_Model_Handler_Suggest
     protected function _assembleSuggestResultAsArray()
     {
         // TODO: Multiple channels
-        return Zend_Json_Decoder::decode($this->getSuggestions());
+        return Zend_Json_Decoder::decode($this->_getAndSanitizeSuggestions());
+    }
+
+    protected function _getAndSanitizeSuggestions($channel = null)
+    {
+        $result = $this->_getFacade()->getSuggestions($channel);
+        if($result === null)
+            $result = '';
+
+        return $result;
     }
 }
