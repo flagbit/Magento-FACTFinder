@@ -161,7 +161,9 @@ class FACTFinder_Http_UrlBuilder
 
         // The following line removes all []-indices from array parameters, because tomcat doesn't need them
         $url = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $url);
-        $this->log->info("Request Url: ".$url);
+        // Include the following line only for debugging purposes
+        // This method is called quite often for several checking tasks
+        //$this->log->info("Request Url: ".$url);
         return $url;
     }
 

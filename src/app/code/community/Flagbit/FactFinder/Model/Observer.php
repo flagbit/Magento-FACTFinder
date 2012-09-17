@@ -321,4 +321,10 @@ class Flagbit_FactFinder_Model_Observer
         $response->setHeader('Pragma', null, true);
     }
 
+    public function initializeAfterSearchNavigation()
+    {
+        $asnBlock = Mage::registry('FACTFINDER__asnBlock');
+        if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
+            $asnBlock->initializeAfterSearchNavigation();
+    }
 }
