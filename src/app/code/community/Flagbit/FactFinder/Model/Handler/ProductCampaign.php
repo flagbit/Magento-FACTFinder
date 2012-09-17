@@ -43,6 +43,22 @@ abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
         }
     }
 
+    abstract protected function _getDoParam();
+    abstract protected function _getProductNumberParam();
+
+    public function getActiveAdvisorQuestions()
+    {
+        $campaigns = $this->getCampaigns();
+
+        $questions = array();
+
+        if($campaigns && $campaigns->hasActiveQuestions()){
+            $questions = $campaigns->getActiveQuestions();
+        }
+
+        return $questions;
+    }
+
     public function getCampaigns()
     {
         if(!$this->_featureAvailable)
@@ -56,7 +72,4 @@ abstract class Flagbit_FactFinder_Model_Handler_ProductCampaign
         }
         return $this->_campaigns;
     }
-
-    abstract protected function _getDoParam();
-    abstract protected function _getProductNumberParam();
 }

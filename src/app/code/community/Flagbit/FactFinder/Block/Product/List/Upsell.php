@@ -46,7 +46,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 
         $recommendations = array();
         if (Mage::getStoreConfigFlag('factfinder/activation/upsell')) {
-            $recommendations = $this->getRecommendations();
+            $recommendations = $this->_recommendationsHandler->getRecommendations();
         }
 
         // if there are no recommendations or pushed products, use default magento upselling
@@ -110,16 +110,6 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
             Mage::logException($e);
             $this->_itemCollection = new Varien_Data_Collection();
         }
-    }
-    
-    /**
-     * get products from the ff recommendation engine
-     * 
-     * @return array (ArrayIterator)
-     */
-    protected function getRecommendations()
-    {
-        return $this->_recommendationsHandler->getRecommendations();
     }
     
     /**

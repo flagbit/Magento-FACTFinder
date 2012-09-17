@@ -52,7 +52,7 @@ class Flagbit_FactFinder_Model_Processor
      *
      * @return Flagbit_FactFinder_Model_Facade
      */
-    public function getFacade()
+    protected function _getFacade()
     {
     	if($this->_facade === null){
 			$logger = new Flagbit_FactFinder_Helper_Debug();
@@ -120,7 +120,7 @@ class Flagbit_FactFinder_Model_Processor
     	if(!is_array($config) || empty($config)){
     		return;
     	}
-    	$this->getFacade()->setConfiguration($config);
+    	$this->_getFacade()->setConfiguration($config);
     	return $this->_handleRequest($request);
     }
 
@@ -134,16 +134,16 @@ class Flagbit_FactFinder_Model_Processor
     {
 		switch ($request) {
 			case 'factfinder_proxy_scic':
-		        $scic = $this->getFacade()->getScicAdapter();
-		        return $scic->doTrackingFromRequest();
+		        $this->_getFacade()->getScicAdapter()->setupTrackingFromRequest();
+		        return $this->_getFacade()->applyTracking();
 				break;
 
 			case 'factfinder_proxy_suggest':
-				$channels = FF::getSingleton('configuration')->getSecondaryChannels();
-				if(empty($channels))
-					return $this->getFacade()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
-				else
-					return $this->getFacade()->getAllSuggestResultsJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback')); 
+				$handler = new Flagbit_FactFinder_Model_Handler_Suggest(
+                    $this->_getRequestParam('query'),
+                    $this->_getRequestParam('jquery_callback'),
+                    $this->_getFacade());
+				return $handler->getSuggestions();
 				break;
 		}
     }

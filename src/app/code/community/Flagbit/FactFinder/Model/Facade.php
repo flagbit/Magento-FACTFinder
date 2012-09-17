@@ -58,11 +58,6 @@ class Flagbit_FactFinder_Model_Facade
     protected $_dataProvider = null;
 
     /**
-     * @var FACTFinder_Abstract_ScicAdapter
-     */
-    protected $_scicAdapter = null;
-
-    /**
      * @var array
      */
     protected $_afterSearchNavigation = null;
@@ -250,17 +245,6 @@ class Flagbit_FactFinder_Model_Facade
 	{
 		return is_subclass_of($this->_dataProvider, 'FACTFinder_Abstract_DataProvider');
 	}
-	
-	/**
-     * @return FACTFinder_Abstract_DataProvider
-     **/
-    protected function _getDataProvider()
-    {
-        $config = $this->_getConfiguration();
-        $params = $this->_getParamsParser()->getServerRequestParams();
-		
-        return FF::getInstance('http/dataProvider', $params, $config);
-    }
 	
 	/**
 	 * @return FACTFinder_Abstract_DataProvider
@@ -485,33 +469,6 @@ class Flagbit_FactFinder_Model_Facade
     }
 
     /**
-     * @param string $query
-     * @param string $channel
-     */
-    protected function _configureSuggestAdapter($query, $channel = null)
-    {
-        $adapter = $this->getSuggestAdapter($channel);
-
-        $adapter->setParam('format', 'json');
-        $adapter->setParam('query', $query);
-    }
-
-    /**
-     * @return FACTFinder_Abstract_ScicAdapter
-     */
-    public function getScicAdapter()
-    {
-        if ($this->_scicAdapter == null) {
-            $config            = $this->_getConfiguration();
-            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
-            $params            = $this->_getParamsParser()->getServerRequestParams();
-            $dataProvider      = $this->_getGlobalDataProvider();
-            $this->_scicAdapter = FF::getSingleton('http/scicAdapter', $dataProvider, $this->_getParamsParser(), $encodingHandler);
-        }
-        return $this->_scicAdapter;
-    }
-
-    /**
      * @param bool $collectParams
      * @return FACTFinder_Abstract_SearchAdapter
      */
@@ -612,18 +569,19 @@ class Flagbit_FactFinder_Model_Facade
 	// This is not a function!
 	// It's actually a headline for Notepad++'s Function List plug-in.
 	// And yes, I feel bad about it.
-	private function ___________FF_Object_Getters____________() { }	
-	
-	/**
-     * @return string
-     */
-    public function getAuthenticationUrl()
+	private function ___________FF_Object_Getters____________() { }
+
+    public function applyTracking($channel = null)
     {
-        $dataProvider = $this->_getGlobalDataProvider();
-        $dataProvider->setType('Management.ff');
-        return $dataProvider->getNonAuthenticationUrl();
+        try {
+            $this->_loadAllData();
+            return $this->getScicAdapter($channel)->applyTracking();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
     }
-	
+
 	/**
      * get After Search Navigation as Array
      * this simulates Magento Filter Attributes with Options
@@ -663,6 +621,16 @@ class Flagbit_FactFinder_Model_Facade
             }
         }
         return $this->_afterSearchNavigation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthenticationUrl()
+    {
+        $dataProvider = $this->_getGlobalDataProvider();
+        $dataProvider->setType('Management.ff');
+        return $dataProvider->getNonAuthenticationUrl();
     }
 
     public function getCampaigns()
@@ -867,83 +835,6 @@ class Flagbit_FactFinder_Model_Facade
             Mage::logException($e);
             return '';
         }
-    }
-
-    /**
-     * get Suggest Results as Array
-     *
-     * @param string $query
-     * @return array
-     */
-    public function getSuggestResult($query)
-    {
-        $this->_configureSuggestAdapter($query);
-
-        return Zend_Json_Decoder::decode($this->getSuggestions());
-    }
-
-    /**
-     * get Suggest Results as JSON
-     *
-     * @param string $query
-     * @param string $jqueryCallback
-     * @return string json
-     */
-    public function getSuggestResultJsonp($query, $jqueryCallback)
-    {
-        $this->_configureSuggestAdapter($query);
-
-        return $jqueryCallback.'('.$this->getSuggestions().');';
-    }
-
-    /**
-     * get Suggest Results for primary and all secondary channels in parallel as JSON
-     *
-     * @param string $query
-     * @param string $jqueryCallback
-     * @return string json
-     */
-    public function getAllSuggestResultsJsonp($query, $jqueryCallback)
-    {
-        $this->_configureSuggestAdapter($query);
-		
-		// load adapters for secondary channels
-		
-		$channels = $this->_getConfiguration()->getSecondaryChannels();
-			
-		foreach($channels AS $channel)
-		{
-			try {
-                $this->_configureSuggestAdapter($query, $channel);
-			}
-			catch (Exception $e) {
-				Mage::logException($e);
-			}
-		}
-
-        // Retrieve and merge all suggestions
-        // Add a new "channel" field in the process
-		
-		$suggestResult = Zend_Json_Decoder::decode($this->getSuggestions());
-		foreach($suggestResult as &$item)
-			$item["channel"] = $this->_getConfiguration()->getChannel();
-
-		
-		foreach($channels AS $channel)
-		{
-			try {
-				$result = Zend_Json_Decoder::decode($this->getSuggestions($channel));
-				foreach($result as &$item)
-					$item["channel"] = $channel;
-
-				$suggestResult = array_merge($suggestResult, $result); 
-			}
-			catch (Exception $e) {
-				Mage::logException($e);
-			}
-		}
-		
-		return $jqueryCallback.'('.Zend_Json_Encoder::encode($suggestResult).');'; //print_r($suggestResult,true); //
     }
 
     /**

@@ -27,9 +27,7 @@ class Flagbit_FactFinder_Model_Handler_Recommendations
         $params = array();
         $params['idsOnly'] = 'true';
         $params['id'] = $this->_getIdParam();
-        $adapter = $this->_getFacade()->configureRecommendationAdapter($params);
-        //$adapter->setParam('idsOnly', 'true');
-        //$adapter->setProductIds($this->_productIds);
+        $this->_getFacade()->configureRecommendationAdapter($params);
     }
 
     public function getRecommendations()

@@ -47,8 +47,14 @@ class Flagbit_FactFinder_Model_Observer
         }
 
         try {
-            $scic = Mage::getModel('factfinder/facade')->getScicAdapter();
-            $result = $scic->trackCart($product->getData($idFieldName), md5(Mage::getSingleton('core/session')->getSessionId()), $qty, $product->getFinalPrice($qty), $customerId);
+            $facade = Mage::getModel('factfinder/facade');
+            $facade->getScicAdapter()->setupCartTracking(
+                $product->getData($idFieldName),
+                md5(Mage::getSingleton('core/session')->getSessionId()),
+                $qty,
+                $product->getFinalPrice($qty),
+                $customerId);
+            $facade->applyTracking();
         }
         catch (Exception $e) {
             Mage::helper('factfinder/debug')->log($e->getMessage());
@@ -116,12 +122,20 @@ class Flagbit_FactFinder_Model_Observer
         $scic = null;
         foreach ($collection as $item) {
             try {
+                $facade = Mage::getModel('factfinder/facade');
                 if ($item->getStoreId() != $storeId) {
-                    $scic = Mage::getModel('factfinder/facade')->setStoreId($item->getStoreId())->getScicAdapter();
+                    $facade->setStoreId($item->getStoreId());
                     $storeId = $item->getStoreId();
                 }
+                $facade->getScicAdapter()->setupCheckoutTracking(
+                    $item->getProductId(),
+                    $item->getSid(),
+                    $item->getCount(),
+                    $item->getPrice(),
+                    $item->getUserid());
 
-                $scic->trackCheckout($item->getProductId(), $item->getSid(), $item->getCount(), $item->getPrice(), $item->getUserid());
+                $facade->applyTracking();
+
                 $item->delete($item);
             }
             catch (Exception $e) {
@@ -271,12 +285,13 @@ class Flagbit_FactFinder_Model_Observer
 				$searchHelper = Mage::helper('factfinder/search');
 				
 				try {
-					$scic = Mage::getModel('factfinder/facade')->getScicAdapter();
-			        $idFieldName = $searchHelper->getIdFieldName();
-					if ($idFieldName == 'entity_id') {
-						$idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
-					}
-					$result = $scic->trackClick(
+                    $idFieldName = $searchHelper->getIdFieldName();
+                    if ($idFieldName == 'entity_id') {
+                        $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
+                    }
+
+                    $facade = Mage::getModel('factfinder/facade');
+					$facade->getScicAdapter()->setupClickTracking(
 						$product->getData($idFieldName),
 						md5(Mage::getSingleton('core/session')->getSessionId()),
 						$searchHelper->getQuery()->getQueryText(),
@@ -287,6 +302,7 @@ class Flagbit_FactFinder_Model_Observer
 						$product->getName(),
 						$searchHelper->getPageLimit(),
 						$searchHelper->getDefaultPerPageValue());
+                    $facade->applyTracking();
 				}
 				catch (Exception $e) {
 					Mage::helper('factfinder/debug')->log($e->getMessage());

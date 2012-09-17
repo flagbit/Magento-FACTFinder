@@ -42,27 +42,20 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Te
     {
         Mage::getSingleton('core/session', array('name'=>'frontend'));
 
-        if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')) {
-            return array();
-        }
-        
-        // only display campaign right after a new product was added to cart 
-        if (!Mage::getSingleton('checkout/session')->getLastAddedProductId()) {
-            return array();
-        }
-            
         $questions = array();
 
-        if (!$this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())) {
-            return array();
-        }
-
-        $_campaigns = $this->_productCampaignHandler->getCampaigns();
-        
-        if($_campaigns && $_campaigns->hasActiveQuestions()){
-            $questions = $_campaigns->getActiveQuestions();
+        if ($this->canCampaignBeDisplayed()) {
+            $questions = $this->_productCampaignHandler->getActiveAdvisorQuestions();
         }
     
         return $questions;
+    }
+
+    protected function canCampaignBeDisplayed()
+    {
+        return
+            Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') &&
+            Mage::getSingleton('checkout/session')->getLastAddedProductId() &&
+            $this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName());
     }
 }

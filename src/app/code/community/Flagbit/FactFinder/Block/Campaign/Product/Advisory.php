@@ -38,14 +38,17 @@ class Flagbit_FactFinder_Block_Campaign_Product_Advisory extends Mage_Core_Block
     {
         $questions = array();
         
-        if (Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') && Mage::registry('current_product')) {
-            $_campaigns = $this->_productCampaignHandler->getCampaigns();
-            
-            if($_campaigns && $_campaigns->hasActiveQuestions()){
-                $questions = $_campaigns->getActiveQuestions();
-            }
+        if ($this->canCampaignBeDisplay()) {
+            $questions = $this->_productCampaignHandler->getActiveAdvisorQuestions();
         }
         
         return $questions;
+    }
+
+    protected function canCampaignBeDisplay()
+    {
+        return
+            Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign') &&
+            Mage::registry('current_product');
     }
 }
