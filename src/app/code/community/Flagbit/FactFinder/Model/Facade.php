@@ -31,12 +31,6 @@ class Flagbit_FactFinder_Model_Facade
     protected $_adapters = array();
 
     /**
-     * FACT-Finder search adapter
-     * @var FACTFinder_Abstract_SearchAdapter
-     */
-    protected $_searchAdapter = null;
-
-    /**
      * @var FACTFinder_Abstract_Configuration
      */
     protected $_config = null;
@@ -50,21 +44,6 @@ class Flagbit_FactFinder_Model_Facade
      * @var FACTFinder_Abstract_DataProvider
      */
     protected $_dataProvider = null;
-
-    /**
-     * @var array
-     */
-    protected $_afterSearchNavigation = null;
-
-    /**
-     * @var array
-     */
-    protected $_searchResultProductIds = null;
-
-	/**
-     * @var array
-     */
-    protected $_currentFactfinderCategoryPath = null;
     
 	/**
 	 * logger object to log all module internals
@@ -229,15 +208,10 @@ class Flagbit_FactFinder_Model_Facade
             $config = $this->_getConfiguration();
             $params = $this->_getParamsParser()->getServerRequestParams();
 
-            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config));
+            $this->_setGlobalDataProvider(FF::getInstance('http/dataProvider', $params, $config, $this->_logger));
         }
         return $this->_dataProvider;
     }
-	
-	protected function _globalDataProviderExists()
-	{
-		return is_subclass_of($this->_dataProvider, 'FACTFinder_Abstract_DataProvider');
-	}
 	
 	/**
 	 * @return FACTFinder_Abstract_DataProvider
@@ -247,31 +221,10 @@ class Flagbit_FactFinder_Model_Facade
 		$config = $this->_getConfiguration();
 		$params = $this->_getParamsParser()->getServerRequestParams();
 		
-		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config);
+		$dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config, $this->_logger);
 				
 		return $dp;
 	}
-
-    /**
-     * set single parameter, which will be looped through to the FACT-Finder request
-     *
-     * @param string $name
-     * @param string $value
-     * @param bool $log
-     * @param null|FACTFinder_Abstract_DataProvider $dataProvider
-     * @return \Flagbit_FactFinder_Model_Facade
-     */
-    protected function _setParam($name, $value, $log = true, $dataProvider = null)
-    {
-        if($log){
-            Mage::helper('factfinder/debug')->log('set Param:'.$name.' => '.$value);
-        }
-		if($dataProvider == null)
-			$this->_getGlobalDataProvider()->setParam($name, $value);
-		else
-			$dataProvider->setParam($name, $value);
-        return $this;
-    }
 
     protected function _loadAllData()
     {
@@ -333,44 +286,6 @@ class Flagbit_FactFinder_Model_Facade
         }
         return $this->_adapters[$type][$channel];
     }
-
-    /**
-     * @param bool $collectParams
-     * @return FACTFinder_Abstract_SearchAdapter
-     */
-    protected function _getSearchAdapter()
-    {
-        if ($this->_searchAdapter == null)
-		{
-			$this->_loadSearchAdapter();
-        }
-
-        return $this->_searchAdapter;
-    }
-
-	protected function _loadSearchAdapter($parallel = false)
-	{
-		$config					= $this->_getConfiguration();
-		$encodingHandler		= FF::getSingleton('encodingHandler', $config);
-		if(!$parallel)
-		{
-			$dataProvider			= $this->_getGlobalDataProvider();
-		}
-		else
-		{
-			$dataProvider			= $this->_getParallelDataProvider();
-			if($this->_globalDataProviderExists())
-				$dataProvider->setParams($this->_getGlobalDataProvider()->getParams());
-			$this->_setGlobalDataProvider($dataProvider);
-		}
-		
-		$this->_searchAdapter	= FF::getSingleton(
-			'xml'.$this->_getConfiguration()->getFactFinderVersion().'/searchAdapter',
-			$dataProvider,
-			$this->_getParamsParser(),
-			$encodingHandler
-		);
-	}
 
     /**
      * @return string
@@ -498,26 +413,15 @@ class Flagbit_FactFinder_Model_Facade
         }
     }
 
-    /**
-     * execute search
-     */
-    public function checkStatus($configArray = null)
+    public function getSearchStatus($channel = null)
     {
-        $status = false;
         try {
-            $this->_getConfiguration($configArray);
-			
-			
-            $this->_setParam('query', 'FACT-Finder Version');
-            $this->_setParam('productsPerPage', '1');
-			
-			$searchAdapter = $this->_getSearchAdapter();
             $this->_loadAllData();
-			$status = $searchAdapter->getStatus() == 'resultsFound';
+            return $this->getSearchAdapter($channel)->getStatus();
         } catch (Exception $e) {
-            $status = false;
+            Mage::logException($e);
+            return null;
         }
-        return $status;
     }
 
     /**

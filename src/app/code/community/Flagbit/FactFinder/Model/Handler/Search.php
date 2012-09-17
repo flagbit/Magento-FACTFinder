@@ -221,6 +221,7 @@ class Flagbit_FactFinder_Model_Handler_Search
         }
         return $this->_afterSearchNavigation;
     }
+
     /**
      * get Filter Type by FACT-Finder FilterItem
      *
