@@ -38,6 +38,52 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         ));
         $this->urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $log);
 	}
+
+    /**
+     * sets factfinder params object
+     *
+     * @param array params
+     * @return void
+     **/
+    public function setParams(array $params)
+    {
+        $this->urlBuilder->setParams($params);
+    }
+
+    /**
+     * set single param
+     *
+     * @param string name
+     * @param string value
+     * @return void
+     **/
+    public function setParam($name, $value)
+    {
+        $this->urlBuilder->setParam($name, $value);
+    }
+
+    /**
+     * unset single param
+     *
+     * @param string name
+     * @return void
+     **/
+    public function unsetParam($name)
+    {
+        $this->urlBuilder->unsetParam($name);
+    }
+
+    /**
+     * set single param with multiple values
+     *
+     * @param string name
+     * @param array of strings values
+     * @return void
+     **/
+    public function setArrayParam($name, $values)
+    {
+        $this->urlBuilder->setArrayParam($name, $values);
+    }
 			
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
@@ -47,8 +93,15 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function setType($type)
     {
-        $this->type = $type;
         $this->urlBuilder->setType($type);
+    }
+
+    /**
+     * @return array
+     **/
+    public function getParams()
+    {
+        return $this->urlBuilder->getParams();
     }
 
 	/**
@@ -117,7 +170,6 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 	 **/
 	public function hasUrlChanged()
 	{
-        $this->updateUrlBuilder();
 		return $this->urlBuilder->getNonAuthenticationUrl() != $this->previousUrl;
 	}
 
@@ -153,7 +205,6 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      */
     public function getAuthenticationUrl() {
         $config = $this->getConfig();
-        $this->updateUrlBuilder();
         if ($config->isHttpAuthenticationType()) {
             $url = $this->urlBuilder->getHttpAuthenticationUrl();
         } else if ($config->isSimpleAuthenticationType()) {
@@ -168,7 +219,6 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 
     public function getNonAuthenticationUrl()
     {
-        $this->updateUrlBuilder();
         return $this->urlBuilder->getNonAuthenticationUrl();
     }
 
@@ -207,10 +257,5 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 		}		
 		
         return $response;
-    }
-
-    protected function updateUrlBuilder()
-    {
-        $this->urlBuilder->setParams($this->getParams());
     }
 }

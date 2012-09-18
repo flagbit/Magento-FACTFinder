@@ -53,14 +53,11 @@ class Flagbit_FactFinder_Model_Facade
 	
 	public function __construct($arg = null)
     {
-        if ($arg != null && $arg instanceof FACTFinder_Abstract_Logger) {
-            FF::setLogger($arg);
-			$this->_logger = $arg;
-        } else {
-            $logger = Mage::helper('factfinder/debug');
-            FF::setLogger($logger);
-			$this->_logger = $logger;
+        if ($arg === null || !($arg instanceof FACTFinder_Abstract_Logger)) {
+            $arg = Mage::helper('factfinder/debug');
         }
+        FF::setLogger($arg);
+        $this->_logger = $arg;
     }
 
     /**
@@ -76,22 +73,15 @@ class Flagbit_FactFinder_Model_Facade
     public function __call($function, $arguments)
     {
         $matches = array();
+        $configureAdapter = false;
+        $channelArgPos = 0;
         if (preg_match('/^get(.+)Adapter$/', $function, $matches))
         {
             // We have a get______Adapter($channel) method!
             // The first argument (if any) will be treated as a channel
 
+            $channelArgPos = 0;
 
-            $type = $matches[1];
-            $type{0} = strtolower($type{0});
-
-            $format = $this->_getFormat($type);
-
-            $channel = null;
-            if(count($arguments))
-                $channel = $arguments[0];
-
-            return $this->_getAdapter($format, $type, $channel);
         }
         elseif (preg_match('/^configure(.+)Adapter$/', $function, $matches))
         {
@@ -99,28 +89,35 @@ class Flagbit_FactFinder_Model_Facade
             // The first argument (if any) will be treated as an array of params as key-value pairs
             // The second argument (if any) will be treated as a channel
 
-            $type = $matches[1];
-            $type{0} = strtolower($type{0});
+            $configureAdapter = true;
+            $channelArgPos = 1;
+        }
+        else
+        {
+            throw new Exception("Call to undefined method ".$function."() in file ".__FILE__." on line ".__LINE__);
+        }
 
-            $format = $this->_getFormat($type);
+        $type = $matches[1];
+        $type{0} = strtolower($type{0});
 
-            $channel = null;
-            if(count($arguments) > 1)
-                $channel = $arguments[1];
+        $format = $this->_getFormat($type);
 
-            $adapter = $this->_getAdapter($format, $type, $channel);
+        $channel = null;
+        if(count($arguments) > $channelArgPos)
+            $channel = $arguments[$channelArgPos];
 
-            if(count($arguments))
-            {
-                foreach($arguments[0] as $key => $value)
-                    $adapter->setParam($key, $value);
-            }
+        $adapter = $this->_getAdapter($format, $type, $channel);
+
+        if($configureAdapter && count($arguments))
+        {
+            foreach($arguments[0] as $key => $value)
+                $adapter->setParam($key, $value);
 
             return null;
         }
         else
         {
-            throw new Exception("Call to undefined method ".$function."() in file ".__FILE__." on line ".__LINE__);
+            return $adapter;
         }
     }
 
@@ -138,7 +135,7 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * @return FACTFinder_Abstract_Adapter
      */
-    public function _getAdapter($format, $type, $channel = null)
+    protected function _getAdapter($format, $type, $channel = null)
     {
         if(!$channel)
             $channel = $this->_getConfiguration()->getChannel();

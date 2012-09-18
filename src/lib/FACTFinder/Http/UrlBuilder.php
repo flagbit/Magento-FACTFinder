@@ -47,9 +47,52 @@ class FACTFinder_Http_UrlBuilder
         $this->params = $params;
     }
 
+    /**
+     * set single param
+     *
+     * @param string name
+     * @param string value
+     * @return void
+     **/
+    public function setParam($name, $value)
+    {
+        $this->params[$name] = $value;
+    }
+
+    /**
+     * unset single param
+     *
+     * @param string name
+     * @return void
+     **/
+    public function unsetParam($name)
+    {
+        unset($this->params[$name]);
+    }
+
+    /**
+     * set single param with multiple values
+     *
+     * @param string name
+     * @param array of strings values
+     * @return void
+     **/
+    public function setArrayParam($name, $values)
+    {
+        $this->params[$name] = $values;
+    }
+
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return array
+     **/
+    public function getParams()
+    {
+        return $this->params;
     }
 
     /**

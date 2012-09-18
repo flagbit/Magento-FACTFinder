@@ -20,6 +20,7 @@
  */
 class Flagbit_FactFinder_Model_Observer
 {
+    const _asnBlockRegistryKey = 'FACTFINDER__asnBlock';
 
     /**
      * Observer method.
@@ -323,7 +324,7 @@ class Flagbit_FactFinder_Model_Observer
 
     public function initializeAfterSearchNavigation()
     {
-        $asnBlock = Mage::registry('FACTFINDER__asnBlock');
+        $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
         if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
             $asnBlock->initializeAfterSearchNavigation();
     }

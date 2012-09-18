@@ -47,7 +47,9 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
             return parent::_prepareLayout();
         }
 
-        Mage::register('FACTFINDER__asnBlock', $this);
+        // Make this block globally known so that initializeAfterSearchNavigation can be called on this instance
+        // when the controller_action_layout_generate_blocks_after event is fired
+        Mage::register(Flagbit_FactFinder_Model_Observer::_asnBlockRegistryKey, $this);
 
         return Mage_Core_Block_Template::_prepareLayout();
     }
