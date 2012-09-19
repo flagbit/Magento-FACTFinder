@@ -477,4 +477,19 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
         }
         return $error;
     }
+
+    /**
+     * get stacktrace if there is one
+     *
+     * @return string if stacktrace exists, else null
+     */
+    public function getStackTrace()
+    {
+        $stackTrace = null;
+        $xmlResult = $this->getData();
+        if (!empty($xmlResult->stacktrace)) {
+            $stackTrace = trim(strval($xmlResult->stacktrace));
+        }
+        return $stackTrace;
+    }
 }

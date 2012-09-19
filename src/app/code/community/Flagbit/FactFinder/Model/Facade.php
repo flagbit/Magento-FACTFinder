@@ -139,15 +139,12 @@ class Flagbit_FactFinder_Model_Facade
     {
         if(!$channel)
             $channel = $this->_getConfiguration()->getChannel();
-
         if(!isset($this->_adapters[$type][$channel]))
         {
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $dataProvider      = $this->_getParallelDataProvider();
-
             $dataProvider->setParam('channel', $channel);
-
             $this->_adapters[$type][$channel] = FF::getInstance(
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
@@ -192,9 +189,7 @@ class Flagbit_FactFinder_Model_Facade
     {
         $config = $this->_getConfiguration();
         $params = $this->_getParamsParser()->getServerRequestParams();
-
         $dp = FACTFinder_Http_ParallelDataProvider::getDataProvider($params, $config, $this->_logger);
-
         return $dp;
     }
 
@@ -276,6 +271,11 @@ class Flagbit_FactFinder_Model_Facade
     public function getSearchResult($channel = null)
     {
         return $this->_getFactFinderObject("Search", "getResult", $channel);
+    }
+
+    public function getSearchStackTrace($channel = null)
+    {
+        return $this->_getFactFinderObject("Search", "getStackTrace", $channel);
     }
 
     public function getSearchStatus($channel = null)
