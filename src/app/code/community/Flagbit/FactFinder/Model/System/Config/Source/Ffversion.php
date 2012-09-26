@@ -29,6 +29,10 @@ class Flagbit_FactFinder_Model_System_Config_Source_Ffversion
     {
         return array(
             array(
+                'value' => 68,
+                'label' => '6.8'
+            ),
+            array(
                 'value' => 67,
                 'label' => '6.7'
             ),

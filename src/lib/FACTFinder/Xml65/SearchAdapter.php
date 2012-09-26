@@ -105,7 +105,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * returns true if the search-process was aborted because of an timeout
+     * returns true if the search-process was aborted because of a timeout
      *
      * @return boolean true if search timed out
      **/
@@ -476,5 +476,20 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
             $error = trim(strval($xmlResult->error));
         }
         return $error;
+    }
+
+    /**
+     * get stacktrace if there is one
+     *
+     * @return string if stacktrace exists, else null
+     */
+    public function getStackTrace()
+    {
+        $stackTrace = null;
+        $xmlResult = $this->getData();
+        if (!empty($xmlResult->stacktrace)) {
+            $stackTrace = trim(strval($xmlResult->stacktrace));
+        }
+        return $stackTrace;
     }
 }

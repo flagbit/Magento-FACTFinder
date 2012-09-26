@@ -6,7 +6,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
- 
+
 require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
 
 /**
