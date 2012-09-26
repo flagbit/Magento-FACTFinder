@@ -25,9 +25,9 @@ class Flagbit_FactFinder_Block_Adminhtml_Cockpit extends Mage_Adminhtml_Block_Te
 	 * 
 	 * @return string
 	 */
-	public function getAuthenticationUrl()
+	public function getManagementUrl()
 	{
-		return Mage::getSingleton('factfinder/facade')->getAuthenticationUrl();
+		return Mage::getSingleton('factfinder/facade')->getManagementUrl();
 	}
 
 }

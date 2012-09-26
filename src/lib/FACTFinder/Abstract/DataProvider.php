@@ -22,7 +22,8 @@ abstract class FACTFinder_Abstract_DataProvider
 	
 	protected $log;
 
-    public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null)
+    public function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null,
+                                FACTFinder_Abstract_Logger $log = null)
     {
 		if(isset($log))
 			$this->log = $log;

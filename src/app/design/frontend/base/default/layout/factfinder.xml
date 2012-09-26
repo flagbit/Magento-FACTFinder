@@ -43,7 +43,7 @@
     
     <catalog_product_view>
     	<reference name="content">
-<!--            <block type="factfinder/campaign_product_advisory" before="product.info" template="factfinder/campaign/product/advisory.phtml" /-->
+<!--            <block type="factfinder/campaign_product_advisory" before="product.info" template="factfinder/campaign/product/advisory.phtml" /> -->
             <block type="factfinder/campaign_product_feedback" before="product.info" template="factfinder/campaign/product/feedback.phtml" />
     	</reference>
     	<reference>
@@ -55,7 +55,7 @@
 
     <checkout_cart_index>
     	<reference name="checkout.cart.form.before">
-<!--            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" /-->
+            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" />
             <block type="factfinder/campaign_cart_feedback" before="-" template="factfinder/campaign/cart/feedback.phtml" />
     	</reference>
     </checkout_cart_index>

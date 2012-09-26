@@ -20,6 +20,15 @@
  */
 class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_Crosssell
 {
+    protected $_recommendationsHandler;
+
+    protected function _prepareLayout()
+    {
+        $productIds = $this->_getCartProductIds();
+        $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        return parent::_prepareLayout();
+    }
+
     /**
      * Overwritten function. Gets information from FACT-Finder Collection instead of product link collection.
      */
@@ -31,34 +40,22 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
 
         $items = $this->getData('items');
         if (is_null($items)) {
-            try {
-                $items = array();
-                $ninProductIds = $this->_getCartProductIds();
-                if ($ninProductIds) {
-                    $lastAdded = (int) $this->_getLastAddedProductId();
-                    if ($lastAdded) {
-                        $searchHelper = Mage::helper('factfinder/search');
-                        $idFieldName = $searchHelper->getIdFieldName();
-
-                        $recommendationAdapter = Mage::getModel('factfinder/facade')->getRecommendationAdapter();
-                        $attributeValue = Mage::getModel('catalog/product')->getResource()->getAttributeRawValue($lastAdded, $idFieldName, Mage::app()->getStore()->getId());
-
-                        $collection = $this->_getCollection()
-                            ->setRecommendations($recommendationAdapter->getRecommendations($attributeValue));
-                        if (!empty($ninProductIds)) {
-                            $collection->addExcludeProductFilter($ninProductIds);
-                        }
-
-                        foreach ($collection as $item) {
-                            $items[] = $item;
-                        }
-                    }
-
+            $items = array();
+            $ninProductIds = $this->_getCartProductIds();
+            if ($ninProductIds) {
+                $collection = $this->_getCollection()
+                    ->setRecommendations($this->_recommendationsHandler->getRecommendations());
+                if (!empty($ninProductIds)) {
+                    // Before FF 6.7 only one product id will be considered.
+                    // In that case (only) it could happen that another product in the cart is among the
+                    // recommendations.
+                    // TODO: This filter does not seem to work.
+                    $collection->addExcludeProductFilter($ninProductIds);
                 }
-            }
-            catch (Exception $e) {
-                Mage::logException($e);
-                $items = array();
+
+                foreach ($collection as $item) {
+                    $items[] = $item;
+                }
             }
 
             $this->setData('items', $items);

@@ -21,7 +21,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      *
      * @return boolean $success
      */
-    abstract protected function applyTracking();
+    abstract public function applyTracking();
 
     /**
      * if all needed parameters are available at the request like described in the documentation, just use this method to
@@ -34,6 +34,12 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      */
     public function doTrackingFromRequest($sid = null)
     {
+        $this->setupTrackingFromRequest($sid);
+        return $this->applyTracking();
+    }
+
+    public function setupTrackingFromRequest($sid = null)
+    {
         $params = $this->getParamsParser()->getServerRequestParams();
         if (strlen($sid) > 0) {
             $params['sid'] = $sid;
@@ -41,7 +47,6 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
             $params['sid'] = session_id();
         }
         $this->getDataProvider()->setParams($params);
-        return $this->applyTracking();
     }
 
     /**
@@ -60,9 +65,16 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @return boolean $success
      */
     public function trackClick($id, $sid = null, $query, $pos, $origPos = -1, $page = 1, $simi = 100.0, $title = '',
-        $pageSize = 12, $origPageSize = -1)
+                               $pageSize = 12, $origPageSize = -1)
     {
-        if (strlen($sid) == 0) $sid  = session_id();
+        $this->setupClickTracking($id, $sid, $query, $pos, $origPos, $page, $simi, $title, $pageSize, $origPageSize);
+        return $this->applyTracking();
+    }
+
+    public function setupClickTracking($id, $sid = null, $query, $pos, $origPos = -1, $page = 1, $simi = 100.0,
+                                       $title = '', $pageSize = 12, $origPageSize = -1)
+    {
+        if (strlen($sid) == 0) $sid = session_id();
         if ($origPos == -1) $origPos = $pos;
         if ($origPageSize == -1) $origPageSize = $pageSize;
 
@@ -81,7 +93,6 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
                 'origPageSize' => $origPageSize
             )
         );
-        return $this->applyTracking();
     }
 
     /**
@@ -95,19 +106,24 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      */
     public function trackCart($id, $sid = null, $count = 1, $price = null, $userid = null)
     {
-        if (strlen($sid) == 0) $sid  = session_id();
+        $this->setupCartTracking($id, $sid, $count, $price, $userid);
+        return $this->applyTracking();
+    }
+
+    public function setupCartTracking($id, $sid = null, $count = 1, $price = null, $userid = null)
+    {
+        if (strlen($sid) == 0) $sid = session_id();
         $params = array(
-                'id' => $id,
-                'sid' => $sid,
-                'count' => $count,
-                'event' => 'cart'
-            );
+            'id' => $id,
+            'sid' => $sid,
+            'count' => $count,
+            'event' => 'cart'
+        );
 
         if (strlen($price) > 0) $params['price'] = $price;
         if (strlen($userid) > 0) $params['userid'] = $userid;
 
         $this->getDataProvider()->setParams($params);
-        return $this->applyTracking();
     }
 
     /**
@@ -121,19 +137,24 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      */
     public function trackCheckout($id, $sid = null, $count = 1, $price = null, $userid = null)
     {
-        if (strlen($sid) == 0) $sid  = session_id();
+        $this->setupCheckoutTracking($id, $sid, $count, $price, $userid);
+        return $this->applyTracking();
+    }
+
+    public function setupCheckoutTracking($id, $sid = null, $count = 1, $price = null, $userid = null)
+    {
+        if (strlen($sid) == 0) $sid = session_id();
         $params = array(
-                'id' => $id,
-                'sid' => $sid,
-                'count' => $count,
-                'event' => 'checkout'
-            );
+            'id' => $id,
+            'sid' => $sid,
+            'count' => $count,
+            'event' => 'checkout'
+        );
 
         if (strlen($price) > 0) $params['price'] = $price;
         if (strlen($userid) > 0) $params['userid'] = $userid;
 
         $this->getDataProvider()->setParams($params);
-        return $this->applyTracking();
     }
 
     /**
@@ -146,14 +167,19 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      */
     public function trackRecommendationClick($id, $sid = null, $mainId)
     {
-        if (strlen($sid) == 0) $sid  = session_id();
-        $params = array(
-                'id' => $id,
-                'sid' => $sid,
-                'mainId' => $mainId,
-                'event' => 'recommendationClick'
-            );
-        $this->getDataProvider()->setParams($params);
+        $this->setupRecommendationClickTracking($id, $sid, $mainId);
         return $this->applyTracking();
+    }
+
+    public function setupRecommendationClickTracking($id, $sid = null, $mainId)
+    {
+        if (strlen($sid) == 0) $sid = session_id();
+        $params = array(
+            'id' => $id,
+            'sid' => $sid,
+            'mainId' => $mainId,
+            'event' => 'recommendationClick'
+        );
+        $this->getDataProvider()->setParams($params);
     }
 }

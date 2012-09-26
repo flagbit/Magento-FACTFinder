@@ -20,25 +20,25 @@
  */
 class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
-{	
+{
     /**
      * Get collection size
      *
      * @return int
      */
     public function getSize()
-    {		
-		return $this->_getFacade()->getSearchResultCount();
+    {
+		return $this->_getSearchHandler()->getSearchResultCount();
     }
     
     /**
      * get Factfinder Facade
      * 
-     * @return Flagbit_FactFinder_Model_Facade
+     * @return Flagbit_FactFinder_Model_Handler_Search
      */
-    protected function _getFacade()
+    protected function _getSearchHandler()
     {
-    	return Mage::getSingleton('factfinder/facade');	
+    	return Mage::getSingleton('factfinder/handler_search');
     }
     
     /**
@@ -49,7 +49,7 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
 		// get product IDs from Fact-Finder
-    	$productIds = $this->_getFacade()->getSearchResultProductIds();
+    	$productIds = $this->_getSearchHandler()->getSearchResult();
 			
 		if (!empty($productIds)) {
 			$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
