@@ -19,7 +19,7 @@ class FACTFinder_Http_UrlBuilder
 {
     protected $params = array();
     protected $config = array();
-    protected $type;
+    protected $action;
 
     protected $log;
 
@@ -82,9 +82,14 @@ class FACTFinder_Http_UrlBuilder
         $this->params[$name] = $values;
     }
 
-    public function setType($type)
+    public function setAction($action)
     {
-        $this->type = $type;
+        $this->action = $action;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
     }
 
     /**
@@ -117,7 +122,7 @@ class FACTFinder_Http_UrlBuilder
 
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
+            . $config->getContext() . '/'.$this->action.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
 
         // The following line removes all []-indices from array parameters, because tomcat doesn't need them
@@ -146,7 +151,7 @@ class FACTFinder_Http_UrlBuilder
 
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/'.$this->type.'?' . http_build_query($params, '', '&')
+            . $config->getContext() . '/'.$this->action.'?' . http_build_query($params, '', '&')
             . (count($params)?'&':'') . $authParams;
 
         // The following line removes all []-indices from array parameters, because tomcat doesn't need them
@@ -174,7 +179,7 @@ class FACTFinder_Http_UrlBuilder
 
         $url = $config->getRequestProtocol() . '://' . $auth
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
+            . $config->getContext() . '/' . $this->action . (count($params)?'?':'')
             . http_build_query($params, '', '&');
 
         // The following line removes all []-indices from array parameters, because tomcat doesn't need them
@@ -199,7 +204,7 @@ class FACTFinder_Http_UrlBuilder
 
         $url = $config->getRequestProtocol() . '://'
             . $config->getServerAddress() . ':' . $config->getServerPort() . '/'
-            . $config->getContext() . '/' . $this->type . (count($params)?'?':'')
+            . $config->getContext() . '/' . $this->action . (count($params)?'?':'')
             . http_build_query($params, '', '&');
 
         // The following line removes all []-indices from array parameters, because tomcat doesn't need them

@@ -58,7 +58,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @param int $pos position of product in the search result
      * @param int $origPos original position of product in the search result. this data is delivered by FACT-Finder (optional - is set equals to $position by default)
      * @param int $page page number where the product was clicked (optional - is 1 by default)
-     * @param double $simi similiarity of the product (optional - is 100.00 by default)
+     * @param float $simi similiarity of the product (optional - is 100.00 by default)
      * @param string $title title of product (optional - is empty by default)
      * @param int $pageSize size of the page where the product was found (optional - is 12 by default)
      * @param int $origPageSize original size of the page before the user could have changed it (optional - is set equals to $page by default)
@@ -101,7 +101,7 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @param string $id id of product
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param int $count number of items purchased for each product (optional - default 1)
-     * @param double $price this is the single unit price (optional)
+     * @param float $price this is the single unit price (optional)
      * @return boolean $success
      */
     public function trackCart($id, $sid = null, $count = 1, $price = null, $userid = null)
@@ -132,7 +132,8 @@ abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapt
      * @param string $id id of product
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param int $count number of items purchased for each product (optional - default 1)
-     * @param double $price this is the single unit price (optional)
+     * @param float $price this is the single unit price (optional)
+     * @param string $userid id of user checking out
      * @return boolean $success
      */
     public function trackCheckout($id, $sid = null, $count = 1, $price = null, $userid = null)

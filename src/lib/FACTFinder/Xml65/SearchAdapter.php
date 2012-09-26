@@ -105,7 +105,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
     }
 
     /**
-     * returns true if the search-process was aborted because of an timeout
+     * returns true if the search-process was aborted because of a timeout
      *
      * @return boolean true if search timed out
      **/

@@ -24,11 +24,17 @@ class Flagbit_FactFinder_Model_Facade
 {
     /**
      * Two-dimensional array of FACT-Finder adapters
-     * First-dimension index corresponds to type
-     * Second-dimension index corresponds to channel
+     * First-dimension key corresponds to type
+     * Second-dimension key corresponds to channel
      * @var array of FACTFinder_Abstract_Adapter
      */
     protected $_adapters = array();
+
+    /**
+     * Key corresponds to channel
+     * @var array of FACTFinder_Http_StatusHelper
+     */
+    protected $_statusHelpers = array();
 
     /**
      * @var FACTFinder_Abstract_Configuration
@@ -98,7 +104,7 @@ class Flagbit_FactFinder_Model_Facade
         }
 
         $type = $matches[1];
-        $type{0} = strtolower($type{0});
+        $type[0] = strtolower($type[0]);
 
         $format = $this->_getFormat($type);
 
@@ -156,6 +162,23 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_adapters[$type][$channel];
     }
 
+    public function configureStatusHelper($channel = null)
+    {
+        if(!$channel)
+            $channel = $this->_getConfiguration()->getChannel();
+        if(!isset($this->_statusHelpers[$channel]))
+        {
+            $config            = $this->_getConfiguration();
+            $encodingHandler   = FF::getSingleton('encodingHandler', $config);
+            $this->_statusHelpers[$channel] = FF::getInstance(
+                'http/statusHelper',
+                $config,
+                $this->_logger,
+                $channel
+            );
+        }
+    }
+
     /**
      * @return FACTFinderCustom_Configuration config
      */
@@ -209,14 +232,14 @@ class Flagbit_FactFinder_Model_Facade
     public function getManagementUrl()
     {
         $urlBuilder = $this->_getUrlBuilder();
-        $urlBuilder->setType('Management.ff');
+        $urlBuilder->setAction('Management.ff');
         return $urlBuilder->getNonAuthenticationUrl();
     }
 
     public function getSuggestUrl()
     {
         $urlBuilder = $this->_getUrlBuilder();
-        $urlBuilder->setType('Suggest.ff');
+        $urlBuilder->setAction('Suggest.ff');
         $urlBuilder->setParams(array());
 
         return $urlBuilder->getNonAuthenticationUrl();
@@ -299,6 +322,43 @@ class Flagbit_FactFinder_Model_Facade
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
             return $this->$adapterGetter($channel)->$objectGetter();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
+    public function getActualFactFinderVersion()
+    {
+        try {
+            $channel = $this->_getConfiguration()->getChannel();
+            $this->_loadAllData();
+            return $this->_statusHelpers[$channel]->getVersionNumber();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
+    public function getActualFactFinderVersionString()
+    {
+        try {
+            $channel = $this->_getConfiguration()->getChannel();
+            $this->_loadAllData();
+            return $this->_statusHelpers[$channel]->getVersionString();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return null;
+        }
+    }
+
+    public function getFactFinderStatus($channel = null)
+    {
+        try {
+            if(!$channel)
+                $channel = $this->_getConfiguration()->getChannel();
+            $this->_loadAllData();
+            return $this->_statusHelpers[$channel]->getStatusCode();
         } catch (Exception $e) {
             Mage::logException($e);
             return null;
