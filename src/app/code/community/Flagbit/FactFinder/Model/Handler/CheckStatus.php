@@ -40,7 +40,9 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
 
     public function checkStatus($configuredVersion)
     {
-        ob_start();
+        // uncomment to see debug output
+        //ob_start();
+
         $statusOkay = true;
         $this->_errorMessage = array();
 
@@ -72,7 +74,8 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
             $statusOkay = false;
         }
 
-        $this->_errorMessages[] = ob_get_clean();
+        // uncomment to see debug output
+        //$this->_errorMessages[] = ob_get_clean();
 
         return $statusOkay;
     }

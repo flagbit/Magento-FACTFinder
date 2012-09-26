@@ -86,7 +86,14 @@ class FACTFinder_Http_StatusHelper
 
     public function getStatusCode()
     {
-        $ffError = $this->searchAdapter->getError();
+        try
+        {
+            $ffError = $this->searchAdapter->getError();
+        }
+        catch(Exception $e)
+        {
+            $ffError = $e->getMessage();
+        }
 
         $curlErrno = $this->dataProvider->getLastCurlErrno();
 
