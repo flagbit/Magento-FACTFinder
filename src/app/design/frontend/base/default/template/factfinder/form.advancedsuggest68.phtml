@@ -91,10 +91,10 @@
 					return content;
 				};
 				
-				var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>', loadDataCallback);
+				var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>', loadDataCallback);
 				searchForm.initAutocomplete('<?php echo $this->helper('factfinder/search')->getSuggestUrl() ?>', 'search_autocomplete');
             <?php else:?>
-				var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
+				var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>');
 				searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
             <?php endif;?>
         //]]>

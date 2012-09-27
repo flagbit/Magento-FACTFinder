@@ -100,7 +100,7 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
             $errorMessage .= $helper->__('Could not log into FACT-Finder with the given settings. Please check username, password, prefix and postfix.');
             return $errorMessage;
         case FFE_SERVER_TIME_MISMATCH:
-            $errorMessage .= $helper->__('Your server time does not conform to FACT-Finder\'s. Please make sure yours is set correctly.');
+            $errorMessage .= $helper->__('Your server\'s clock does not agree with FACT-Finder\'s. Please make sure your clock is set correctly.');
             return $errorMessage;
         }
 
@@ -113,14 +113,14 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
             $errorMessage .= ' cURL Error Code: '.($statusCode - $codeType);
             break;
         case FFE_HTTP_ERROR:
-            $errorMessage .= $helper->__('Could not reach FACT-Finder.');
+            $errorMessage .= $helper->__('Could not contact FACT-Finder.');
             $errorMessage .= ' HTTP Status Code: '.($statusCode - $codeType);
             break;
         case FFE_FACT_FINDER_ERROR:
-            $errorMessage .= $helper->__('There is a problem with FACT-Finder. Please contact the FACT-Finder support.');
+            $errorMessage .= $helper->__('There is a problem with FACT-Finder. Please contact FACT-Finder Support.');
             break;
         default:
-            $errorMessage .= $helper->__('There has been an unknown error. Please contact the FACT-Finder support.');
+            $errorMessage .= $helper->__('An unknown error has occurred. Please contact FACT-Finder Support.');
             break;
         }
 
