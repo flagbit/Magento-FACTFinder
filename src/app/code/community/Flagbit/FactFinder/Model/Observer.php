@@ -339,6 +339,9 @@ class Flagbit_FactFinder_Model_Observer
     {
         $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
         if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
+        {
+            $asnBlock->handleCampaignRedirect();
             $asnBlock->initializeAfterSearchNavigation();
+        }
     }
 }

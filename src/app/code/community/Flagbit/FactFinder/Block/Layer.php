@@ -33,14 +33,6 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     {
         $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
 
-        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
-            // handle redirects
-            $redirect = $this->_searchHandler->getRedirect();
-            if($redirect){
-                Mage::app()->getResponse()->setRedirect($redirect);
-            }
-        }
-
         $this->_usesAsn = Mage::helper('factfinder/search')->getIsEnabled(false, 'asn');
 
         if(!$this->_usesAsn){
@@ -52,6 +44,17 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         Mage::register(Flagbit_FactFinder_Model_Observer::_asnBlockRegistryKey, $this);
 
         return Mage_Core_Block_Template::_prepareLayout();
+    }
+
+    public function handleCampaignRedirect()
+    {
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            // handle redirects
+            $redirect = $this->_searchHandler->getRedirect();
+            if($redirect){
+                Mage::app()->getResponse()->setRedirect($redirect);
+            }
+        }
     }
 
     public function initializeAfterSearchNavigation()
