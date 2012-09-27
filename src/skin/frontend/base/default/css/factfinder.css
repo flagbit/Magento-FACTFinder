@@ -1,0 +1,25 @@
+.header .form-search .search-autocomplete.advanced-suggest li.delimiter {
+	cursor: default;
+	padding-left: 4px;
+	font-weight: bold;
+	font-size: 10px;
+	background-color: #4F4F4F;
+	color: #F4EEE7;
+}
+
+.header .form-search .search-autocomplete.advanced-suggest li.category {
+	background-color: #E4DED7;
+}
+
+.header .form-search .search-autocomplete.advanced-suggest li.category.selected {
+	background-color: #E4D6CF;
+}
+
+.header .form-search .search-autocomplete.advanced-suggest img.thumbnail {
+	float:left;
+	margin-top: 2px;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	width: 31px;
+	height: 31px;
+}

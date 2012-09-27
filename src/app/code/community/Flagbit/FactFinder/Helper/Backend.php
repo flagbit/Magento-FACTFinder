@@ -32,21 +32,21 @@ class Flagbit_FactFinder_Helper_Backend extends Mage_Core_Helper_Abstract
         $errors  = array();
 
         if (stripos($data->getAddress(), 'http://') === 0 || strpos($data->getAddress(), '/') !== false) {
-            $errors[] = Mage::helper('factfinder')->__('servername should only contain the IP address or the domain - no "http://" or any slashes!');
+            $errors[] = Mage::helper('factfinder')->__('The server name should contain only the IP address or the domain - no "http://" or any slashes!');
         }
 
         if ($data->getPort() == '') {
             $port = 80;
         }
         elseif (!is_numeric($data->getPort())) {
-            $errors[] = Mage::helper('factfinder')->__('the value for "port" must be numeric!');
+            $errors[] = Mage::helper('factfinder')->__('The value for "port" must be an integer!');
         }
         elseif(intval($data->getPort()) < 80) { //is there any http port lower 80?
-            $errors[] = Mage::helper('factfinder')->__('the value for "port" must be a number greater or equals 80!');
+            $errors[] = Mage::helper('factfinder')->__('The value for "port" must be an integer greater or equals 80!');
         }
 
         if ($data->getAuthPassword() != '' && $data->getAuthUser() == '') {
-            $errors[] = Mage::helper('factfinder')->__('there must be a username, if a password should be used');
+            $errors[] = Mage::helper('factfinder')->__('A user name must be provided if a password is to be used.');
         }
 
         $conflicts = Mage::helper('factfinder/debug')->getRewriteConflicts();

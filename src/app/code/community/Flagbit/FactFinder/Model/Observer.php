@@ -238,6 +238,19 @@ class Flagbit_FactFinder_Model_Observer
             $layout = $observer->getLayout();
             $update = $layout->getUpdate();
             $update->addHandle('factfinder_suggest_enabled');
+
+            if (Mage::getStoreConfig('factfinder/search/ffversion') <= 67)
+            {
+                $layout = $observer->getLayout();
+                $update = $layout->getUpdate();
+                $update->addHandle('factfinder_suggest_version_lt67');
+            }
+            else
+            {
+                $layout = $observer->getLayout();
+                $update = $layout->getUpdate();
+                $update->addHandle('factfinder_suggest_version_gt68');
+            }
         }
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'advisory')) {
             $layout = $observer->getLayout();
