@@ -52,7 +52,21 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
 		$this->getDataProvider()->setParam('id', $productId);
 		$this->recommendationUpToDate = false;
 	}
-	
+
+    /**
+     * Set ids of multiple products to base recommendation on
+     * This feature is only available in FF 6.7 and later
+     * Earlier versions will simply use the first product in the list
+     *
+     * @param array $productIds
+     * @return void
+     */
+    public function setProductIds($productIds) {
+        $this->productIds = array($productIds[0]);
+        $this->getDataProvider()->setParam('id', $this->productIds);
+        $this->recommendationUpToDate = false;
+    }
+
 	public function setIdsOnly($idsOnly) {
 		// Reset the recommendations, if more detail is wanted than before
 		if($this->idsOnly && !$idsOnly) $recommendationUpToDate = false;
@@ -76,8 +90,11 @@ abstract class FACTFinder_Abstract_RecommendationAdapter extends FACTFinder_Abst
      **/
     public function getRecommendations() {
 		if (empty($this->productIds)) {
+            $dataProviderParams = $this->getDataProvider()->getParams();
 			$requestParams = $this->getParamsParser()->getRequestParams();
-			if (isset($requestParams['id'])) {
+            if (isset($dataProviderParams['id'])) {
+                $this->productIds = $dataProviderParams['id'];
+            } elseif (isset($requestParams['id'])) {
 				$this->productIds = array($requestParams['id']);
 			}
 			if (empty($this->productIds)) {

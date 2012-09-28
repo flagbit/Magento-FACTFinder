@@ -21,6 +21,19 @@
  */
 class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Product_List_Upsell
 {
+    protected $_productCampaignHandler;
+    protected $_recommendationsHandler;
+
+    protected function _prepareLayout()
+    {
+        $productIds = array(
+            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+        );
+        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productDetailCampaign', $productIds);
+        $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        return parent::_prepareLayout();
+    }
+
     /**
      * Method overwritten. Data is not read from product link collection but from FACT-Finder interface instead.
      */
@@ -33,7 +46,7 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
 
         $recommendations = array();
         if (Mage::getStoreConfigFlag('factfinder/activation/upsell')) {
-            $recommendations = $this->getRecommendations();
+            $recommendations = $this->_recommendationsHandler->getRecommendations();
         }
 
         // if there are no recommendations or pushed products, use default magento upselling
@@ -100,31 +113,6 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
     }
     
     /**
-     * get products from the ff recommendation engine
-     * 
-     * @return array (ArrayIterator)
-     */
-    protected function getRecommendations()
-    {
-        $recommendations = array();
-        try {
-            $product = Mage::registry('product');
-            /* @var $product Mage_Catalog_Model_Product */
-
-            $searchHelper = Mage::helper('factfinder/search');
-            $idFieldName = $searchHelper->getIdFieldName();
-
-            $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-            $recommendationAdapter->setProductId($product->getData($idFieldName));
-            $recommendations = $recommendationAdapter->getRecommendations();
-        }
-        catch (Exception $e) {
-            Mage::logException($e);
-        }
-        return $recommendations;
-    }
-    
-    /**
      * get pushed products to combine with recommendations
      * 
      * @return array
@@ -132,10 +120,8 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
     protected function getPushedProducts()
     {
         $pushedProducts = array();
-        
-        $_campaigns = Mage::helper('factfinder/search')->getProductCampaigns(array(
-            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName()),
-        ));
+
+        $_campaigns = $this->_productCampaignHandler->getCampaigns();
 
         if($_campaigns && $_campaigns->hasPushedProducts()){
             $pushedProducts = $_campaigns->getPushedProducts();

@@ -162,6 +162,14 @@
                     </redirectToProductIfSingleResult>
                 </observers>
             </core_block_abstract_to_html_before>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <initializeAfterSearchNavigation>
+                        <class>factfinder/observer</class>
+                        <method>initializeAfterSearchNavigation</method>
+                    </initializeAfterSearchNavigation>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
         </events>
         <translate>
             <modules>
@@ -267,8 +275,13 @@
                 <channel></channel>
                 <language></language>
             </search>
+			<fallback>
+				<use_fallback>0</use_fallback>
+				<wait_time>15</wait_time>
+			</fallback>
             <export>
                 <urls>0</urls>
+				<suggest_image_size>40</suggest_image_size>
                 <track_carts>1</track_carts>
                 <track_checkout>1</track_checkout>
             </export>

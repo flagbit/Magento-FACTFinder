@@ -5,11 +5,14 @@ var FactfinderSCIC = Class.create({
 	mapping: null,
 	request: null,
 	regex: new RegExp(/product\/([0-9]+)\//),
-	initialize: function(classname, data, mapping, url) {
+	asynchronous: true,
+	initialize: function(classname, data, mapping, url, asynchronous) {
 		this.classname = classname;
 		this.data = data;
 		this.mapping = mapping;
 		this.url = url;
+		if(typeof asynchronous !== 'undefined')
+			this.asynchronous = asynchronous;
 	},
 	
 	init: function() {
@@ -49,8 +52,9 @@ var FactfinderSCIC = Class.create({
 
 		var data = this.data.get(id);
 		data.event = eventType;
-				
+		
 		this.request = new Ajax.Request(this.url, {
+			asynchronous: this.asynchronous,
 			method: 'post',
 			parameters: data
 		});

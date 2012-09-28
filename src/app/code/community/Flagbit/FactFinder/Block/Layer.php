@@ -20,6 +20,9 @@
  */
 class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abstract
 {
+    protected $_searchHandler;
+
+    protected $_usesAsn = false;
 
     /**
      * Prepare child blocks
@@ -28,23 +31,42 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _prepareLayout()
     {
+        $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+
+        $this->_usesAsn = Mage::helper('factfinder/search')->getIsEnabled(false, 'asn');
+
+        if(!$this->_usesAsn){
+            return parent::_prepareLayout();
+        }
+
+        // Make this block globally known so that initializeAfterSearchNavigation can be called on this instance
+        // when the controller_action_layout_generate_blocks_after event is fired
+        Mage::register(Flagbit_FactFinder_Model_Observer::_asnBlockRegistryKey, $this);
+
+        return Mage_Core_Block_Template::_prepareLayout();
+    }
+
+    public function handleCampaignRedirect()
+    {
         if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
             // handle redirects
-            $redirect = Mage::getSingleton('factfinder/adapter')->getRedirect();
+            $redirect = $this->_searchHandler->getRedirect();
             if($redirect){
                 Mage::app()->getResponse()->setRedirect($redirect);
             }
         }
+    }
 
-        if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
-            return parent::_prepareLayout();
-        }
+    public function initializeAfterSearchNavigation()
+    {
+        if(!$this->_usesAsn)
+            return;
 
         // set default sort Order
         if(Mage::getSingleton('catalog/session')->getSortOrder()){
             Mage::getSingleton('catalog/session')->setSortOrder('relevance');
         }
-        
+
         $stateBlock = $this->getLayout()->createBlock('catalog/layer_state')
             ->setLayer($this->getLayer());
 
@@ -55,12 +77,12 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
             $filterBlockName = $this->_getAttributeFilterBlockName();
 
             $filterBlock = $this->getLayout()->createBlock($filterBlockName)
-                    ->setLayer($this->getLayer())
-                    ->setAttributeModel($attribute)
-                    ->init();
+                ->setLayer($this->getLayer())
+                ->setAttributeModel($attribute)
+                ->init();
 
             switch($attribute->getType()){
-                              
+
                 case 'slider':
                     if(!($this->getLayout()->getBlock('ffslider') instanceof  Flagbit_FactFinder_Block_Filter_Slider)){
                         $this->getLayout()->getBlock('head')->setChild('ffslider', $this->getLayout()->createBlock('factfinder/filter_slider'));
@@ -70,13 +92,12 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
                     $filterBlock->setUnit($attribute->getUnit());
                     break;
             }
-            
+
             $this->setChild($attribute->getAttributeCode().'_filter', $filterBlock);
         }
-        
+
         $this->getLayer()->apply();
-        return Mage_Core_Block_Template::_prepareLayout();
-    }    
+    }
       
     /**
      * Get category filter block
