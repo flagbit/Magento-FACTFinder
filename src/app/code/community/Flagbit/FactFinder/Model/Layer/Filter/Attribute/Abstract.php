@@ -113,6 +113,20 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
     	}
 
         return $this->_filterItems;
-    }	
-	
+    }
+
+    /**
+     * PHP replace some chars in url parameters with _ ! After that magic replacement Magento isn't
+     * able to recognize the parameter to construct the corect url query.
+     * @see http://ca.php.net/variables.external
+     * @return string
+     */
+    public function getRequestVar()
+    {
+	if (strpbrk($this->_requestVar, ' .') != false) {
+		return str_replace(' ','_',$this->_requestVar);
+	} else {
+		return parent::getRequestVar();
+	}
+    }
 }
