@@ -72,7 +72,7 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 				'<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>',
 				'<body>',
 				$this->__('Another export is already running. Please wait for it to finish before you start a new export.'), "<br>\n",
-				$this->__('If you receive this message after another export has failed, please delete the file "export.lock" within your Magento directory.'),
+				$this->__('If you receive this message after another export has failed, please delete the file "ffexport.lock" within your Magento directory.'),
 				'</body></html>';
 			flush();
 			return;

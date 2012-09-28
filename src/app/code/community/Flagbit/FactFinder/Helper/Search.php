@@ -161,9 +161,34 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 		if(count($failedAttempts) >= 3)
 		{
 			$delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
-			Mage::getModel('adminnotification/inbox')->addMajor(
-				'FACT-Finder unreachable! Falling back to Magento\'s search for '.$delay.' minutes.',
-				'FACT-Finder did not respond for the third time. Magento will now use its own search for '.$delay.' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.');
+
+            $title = 'FACT-Finder unreachable! Falling back to Magento\'s search for '.$delay.' minutes.';
+            $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for '.$delay.' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.';
+
+            $versionInfo = Mage::getVersionInfo();
+
+            if ($versionInfo['major'] > 1 ||
+                $versionInfo['major'] >= 1 &&
+                $versionInfo['minor'] >= 7)
+            {
+                Mage::getModel('adminnotification/inbox')->addMajor($title, $message);
+            }
+            else
+            {
+                $severity       = Mage_AdminNotification_Model_Inbox::SEVERITY_MAJOR;
+
+                $date = date('Y-m-d H:i:s');
+                Mage::getModel('adminnotification/inbox')->parse(array(
+                    array(
+                        'severity'      => $severity,
+                        'date_added'    => $date,
+                        'title'         => $title,
+                        'description'   => $message,
+                        'url'           => '',
+                        'internal'      => true
+                    )
+                ));
+            }
 		}
 	}
 	
