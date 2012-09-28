@@ -395,8 +395,11 @@ class Flagbit_FactFinder_Model_Handler_Search
         if($this->_searchResult === null) {
             $result = $this->_getFacade()->getSearchResult();
             $error = $this->_getFacade()->getSearchError();
-            if($error)
-                throw new Exception($error);
+            if($result === null || $error)
+            {
+                Mage::helper('factfinder/search')->registerFailedAttempt();
+                Mage::logException(new Exception($error));
+            }
             $this->_searchResult = array();
             if($result instanceof FACTFinder_Result) {
                 foreach ($result AS $record){
