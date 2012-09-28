@@ -7,7 +7,7 @@
 "Authentication Type", "Authentifizierungstyp"
 "Catalog", "Katalog"
 "Channel", "Channel"
-"Channel does not exist.", "Channel existiert nicht."
+"Channel does not exist or the specified user does not have sufficient rights.", "Channel existiert nicht oder der verwendete User hat nicht die benötigten Rechte."
 "Channel: dev-content", "Inhalte"
 "Please select the version of your FACT-Finder application to enable all of its features.", "Wählen Sie die Version Ihrer FACT-Finder-Applikation um alle Funktionen nutzen zu können."
 "Context Name", "Kontext-Name"

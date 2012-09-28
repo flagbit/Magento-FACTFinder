@@ -94,7 +94,7 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
             $errorMessage .= $helper->__('FACT-Finder not found on server. Please check your context setting.');
             return $errorMessage;
         case FFE_CHANNEL_DOES_NOT_EXIST:
-            $errorMessage .= $helper->__('Channel does not exist.');
+            $errorMessage .= $helper->__('Channel does not exist or the specified user does not have sufficient rights.');
             return $errorMessage;
         case FFE_WRONG_CREDENTIALS:
             $errorMessage .= $helper->__('Could not log into FACT-Finder with the given settings. Please check username, password, prefix and postfix.');
