@@ -154,20 +154,16 @@
                     </addActivationLayoutHandles>
                 </observers>
             </controller_action_layout_load_before>
-            <core_block_abstract_to_html_before>
-                <observers>
-                    <redirectToProductIfSingleResult>
-                        <class>factfinder/observer</class>
-                        <method>redirectToProductIfSingleResult</method>
-                    </redirectToProductIfSingleResult>
-                </observers>
-            </core_block_abstract_to_html_before>
             <controller_action_layout_generate_blocks_after>
                 <observers>
                     <initializeAfterSearchNavigation>
                         <class>factfinder/observer</class>
                         <method>initializeAfterSearchNavigation</method>
                     </initializeAfterSearchNavigation>
+                    <redirectToProductIfSingleResult>
+                        <class>factfinder/observer</class>
+                        <method>redirectToProductIfSingleResult</method>
+                    </redirectToProductIfSingleResult>
                 </observers>
             </controller_action_layout_generate_blocks_after>
         </events>
