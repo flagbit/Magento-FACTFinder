@@ -52,7 +52,10 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
             // handle redirects
             $redirect = $this->_searchHandler->getRedirect();
             if($redirect){
-                Mage::app()->getResponse()->setRedirect($redirect);
+                $response = Mage::app()->getResponse();
+                $response->setRedirect($redirect);
+                $response->sendResponse();
+                exit;
             }
         }
     }

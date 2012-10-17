@@ -283,7 +283,6 @@ class Flagbit_FactFinder_Model_Observer
         }
         
         Mage::register('redirectAlreadyChecked', 1);
-        
         if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
             $block = Mage::app()->getLayout()->getBlock('search_result_list');
             
