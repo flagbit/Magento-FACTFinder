@@ -65,7 +65,7 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
         $actualVersion = $this->_getFacade()->getActualFactFinderVersion();
         $actualVersionString = $this->_getFacade()->getActualFactFinderVersionString();
 
-        if($statusOkay && $actualVersion < $configuredVersion)
+        if($statusOkay && intval($actualVersion) != 1 && $actualVersion < $configuredVersion)
         {
             $this->_errorMessages[] = $this->_getHelper()->__(
                 'The configured FACT-Finder version is higher than the actual version of your FACT-Finder. '.
