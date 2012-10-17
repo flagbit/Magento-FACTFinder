@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-09-28</date>
- <time>15:39:52</time>
+ <date>2012-10-17</date>
+ <time>13:59:12</time>
  <version>
-  <release>3.4.0</release>
-  <api>3.4.0</api>
+  <release>3.4.1</release>
+  <api>3.4.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,26 +25,7 @@
  </stability>
  <license>GPL</license>
  <notes>
-new features:
-* added support for FACT-Finder 6.8
-* new Suggest template system
-* including two new alternative suggest templates
-* Suggest image size is configurable in backend
-* Alternative slider template that uses script.aculo.us instead of Omikron&apos;s OneTouchSlider
-* Secondary Channels (searching one or more additional database(s) - for example &quot;content&quot;, &quot;community&quot; etc.)
-* Use of parallel requests between Magento and FACT-Finder
-* Parallel data exports are now prevented; this is relevant for large shops whose exports might take hours (and could be requested more frequently)
-* Optional fallback to Magento in case of FACT-Finder server problems
-* Added support for shopping cart campaigns	
-* extended error reporting at the installation process, for a better usability at the integration process
-* FACT-Finder Configuration displays export link
-* FACT-Finder version is configurable
-
-bugfixes since last release:
-* Explicit export attributes work now even if they are not searchable or filterable
-* Click tracking for product details works now with automatic redirect for single result searches
-* Click tracking for product details works now even if detail page is loaded very quickly
-* HTML tags in export data will not result in unseparated words any more
+bugfix: CheckStatus will not check version any more if version returned by FF is faulty.
  </notes>
  <contents>
   <dir name="/">
@@ -154,7 +135,7 @@ bugfixes since last release:
     <file md5sum="3bfa1e877269be17ee08c403254925bf" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml68 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="b87e7abe04f1601f0298cc1bb33001ce" name="Layer.php" role="magecommunity" />
+    <file md5sum="ad503d9839983c6a803481986d24cf7e" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
     <file md5sum="3b40908d8089ce30a1ab815e618800d3" name="Secondaryresult.php" role="magecommunity" />
     <file md5sum="bedca1b6a0a5b40bef6b4c263172a83f" name="TagCloud.php" role="magecommunity" />
@@ -214,7 +195,7 @@ bugfixes since last release:
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="58aef2514e99f4f2e281cbf6fe972129" name="config.xml" role="magecommunity" />
+    <file md5sum="0c90d3f5c293fe68576c4595c0ee9a04" name="config.xml" role="magecommunity" />
     <file md5sum="d3721503a1b346f60633e2f0a8e361a1" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -226,7 +207,7 @@ bugfixes since last release:
    <dir name="\Flagbit\FactFinder\Model">
     <file md5sum="340a0a5cd9a7f7dd99508fc88c13dcc9" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
-    <file md5sum="eae5f421c3cd8e39cbfc6eef5f96d304" name="Observer.php" role="magecommunity" />
+    <file md5sum="16b78ca3d1d40e4b961fdf023ea3d0a0" name="Observer.php" role="magecommunity" />
     <file md5sum="5e76103096faccd5b26b2d036bdc7c5e" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
@@ -236,7 +217,7 @@ bugfixes since last release:
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Handler">
     <file md5sum="f5724a1c82becbc4d76a6f46dc591977" name="Abstract.php" role="magecommunity" />
-    <file md5sum="8d595ae034bb373cca899dfe4f40aebb" name="CheckStatus.php" role="magecommunity" />
+    <file md5sum="60336786e622127ae3313b168a534ec5" name="CheckStatus.php" role="magecommunity" />
     <file md5sum="831d8d3ff2cd29e090cff10c3a9c8844" name="ProductCampaign.php" role="magecommunity" />
     <file md5sum="c714d9b43772f1665d64daea8d16594d" name="ProductDetailCampaign.php" role="magecommunity" />
     <file md5sum="47b12e1f2f1e1d83ecaba77fdb20b63b" name="Recommendations.php" role="magecommunity" />
@@ -618,6 +599,21 @@ bugfixes since last release:
 * Click tracking for product details works now with automatic redirect for single result searches
 * Click tracking for product details works now even if detail page is loaded very quickly
 * HTML tags in export data will not result in unseparated words any more
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>3.4.1</release>
+    <api>3.4.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-10-17</date>
+   <license>GPL</license>
+   <notes>
+bugfix: CheckStatus will not check version any more if version returned by FF is faulty.
    </notes>
   </release>
  </changelog>
