@@ -51,7 +51,8 @@
 				
 					var content = '<ul>';
 					content += '<li style="display: none" class="selected selectable-item"></li>';
-					var currentChannel = '';
+                    var currentChannel = '';
+                    <?php if (Mage::helper('factfinder/search')->isSuggestProxyActivated()): ?>
 					if(data.length) {
                         if(data[0].channel == '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>') {
                             content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
@@ -60,10 +61,11 @@
                         }
                         currentChannel = data[0].channel;
                     }
+                    <?php endif; ?> 
 						
 					for(var i = 0; i < data.length; i++) {
 						var item = data[i];
-						if(item.channel != currentChannel)
+						if(item.channel != undefined && item.channel != currentChannel)
 						{
 							content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
 							currentChannel = item.channel;
