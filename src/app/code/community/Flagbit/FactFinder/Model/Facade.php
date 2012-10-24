@@ -274,72 +274,72 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_urlBuilder;
     }
 
-    public function applyTracking($channel = null)
+    public function applyTracking($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Scic", "applyTracking", $channel);
+        return $this->_getFactFinderObject("Scic", "applyTracking", $channel, $id);
     }
 
-    public function getAfterSearchNavigation($channel = null)
+    public function getAfterSearchNavigation($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getAsn", $channel);
+        return $this->_getFactFinderObject("Search", "getAsn", $channel, $id);
     }
 
-    public function getCampaigns($channel = null)
+    public function getCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getCampaigns", $channel);
+        return $this->_getFactFinderObject("Search", "getCampaigns", $channel, $id);
     }
 
-    public function getProductCampaigns($channel = null)
+    public function getProductCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel);
+        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel, $id);
     }
 
-    public function getRecommendations($channel = null)
+    public function getRecommendations($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel);
+        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel, $id);
     }
 
-    public function getSearchError($channel = null)
+    public function getSearchError($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getError", $channel);
+        return $this->_getFactFinderObject("Search", "getError", $channel, $id);
     }
 
-    public function getSearchParams($channel = null)
+    public function getSearchParams($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getSearchParams", $channel);
+        return $this->_getFactFinderObject("Search", "getSearchParams", $channel, $id);
     }
 
-    public function getSearchResult($channel = null)
+    public function getSearchResult($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getResult", $channel);
+        return $this->_getFactFinderObject("Search", "getResult", $channel, $id);
     }
 
-    public function getSearchStackTrace($channel = null)
+    public function getSearchStackTrace($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStackTrace", $channel);
+        return $this->_getFactFinderObject("Search", "getStackTrace", $channel, $id);
     }
 
-    public function getSearchStatus($channel = null)
+    public function getSearchStatus($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStatus", $channel);
+        return $this->_getFactFinderObject("Search", "getStatus", $channel, $id);
     }
 
-    public function getSuggestions($channel = null)
+    public function getSuggestions($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel);
+        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel, $id);
     }
 
-    public function getTagCloud($channel = null)
+    public function getTagCloud($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel);
+        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel, $id);
     }
 
-    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null)
+    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null, $id = null)
     {
         try {
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
-            return $this->$adapterGetter($channel)->$objectGetter();
+            return $this->$adapterGetter($channel, $id)->$objectGetter();
         } catch (Exception $e) {
             Mage::logException($e);
             return null;
