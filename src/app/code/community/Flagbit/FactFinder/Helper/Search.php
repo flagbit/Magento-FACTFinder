@@ -296,8 +296,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getSuggestUrl()
     {
-        
-        if (Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)) {
+        if ($this->isSuggestProxyActivated()) {
             $params = array();
             if (Mage::app()->getStore()->isCurrentlySecure()) {
                 $params['_secure'] = true;
@@ -309,6 +308,12 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         return $url;
     }
 
+    /**
+     * @return bool
+     */
+    public function isSuggestProxyActivated() {
+        return Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY);
+    }
 
     /**
      * get current Order
