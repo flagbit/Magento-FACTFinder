@@ -34,7 +34,7 @@ class FACTFinder_Http_ScicAdapter extends FACTFinder_Abstract_ScicAdapter
      *
      * @return boolean $success
      */
-    protected function applyTracking() {
+    public function applyTracking() {
         $success = trim($this->getData());
         return $success == 'true';
     }

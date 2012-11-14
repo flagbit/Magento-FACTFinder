@@ -6,7 +6,14 @@
 .settings
 build
 
-/build.mb.properties
-/build.mb.xml
+/.idea/.name
+/.idea/Magento-FACTFinder.iml
+/.idea/dictionaries/martin_buettner.xml
+/.idea/encodings.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/scopes/scope_settings.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
 /build.mb.properties
 /build.mb.xml

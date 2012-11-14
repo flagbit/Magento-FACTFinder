@@ -26,26 +26,6 @@
         <script type="text/javascript">
         //<![CDATA[
 			<?php if (Mage::helper('factfinder/search')->getIsEnabled(false, 'suggest')):?>
-			
-				// loadDataCallback:
-				// This callback will be used by the Autocompleter to generate the complete contents of the autocompletion target
-				// (in this template #search_autocomplete). The only parameter to the callback is an array of Objects. Each item
-				// represents one Suggest result and its properties correspond to the fields returned by FACT-Finder.
-				// In addition, if secondary channels are considered for Suggest, each item will also contain a property "channel"
-				// which contains the identifier of the channel it is from.
-				// The callback should return the whole HTML structure that goes into the autocompletion target as one string.
-				// It is then passed to FactFinderSuggest in its constructor.
-				//
-				// HTML Structure:
-				// It is mostly up to you what the callback returns in terms of HTML structure and layout. There are a few caveats
-				// though:
-				//  - For keyboard control to work, every suggest item (whatever element type it is) has to have
-				//    the class "selectable-item".
-				//  - You should add an invisible element (style="display: none;") with both the "selected" and the "selectable-item"
-				//    classes above all others, so that on displaying the result list, no element is pre-selected.
-				//  - Any item with a non-empty title tag will be clickable and the title will be used as the search term. Clicking
-				//    on an item with an empty or without a title tag will not trigger the search. However, it might close the result
-				//	  list.
 				
 				var loadDataCallback = function(data) {
 					var content = '<ul>';
@@ -62,10 +42,10 @@
 					return content;
 				};
 				
-				var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>', loadDataCallback);
+				var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>', loadDataCallback);
 				searchForm.initAutocomplete('<?php echo $this->helper('factfinder/search')->getSuggestUrl() ?>', 'search_autocomplete');
             <?php else:?>
-				var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
+				var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>');
 				searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
             <?php endif;?>
         //]]>

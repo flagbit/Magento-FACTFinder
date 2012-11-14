@@ -33,8 +33,10 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_Xm
         if (!$this->getRequest()->getParam('q', false)) {
                return $suggestXmlObj->asNiceXml();
         }
-              
-        $suggestData = Mage::getSingleton('factfinder/adapter')->getSuggestResult($this->getRequest()->getParam('q'));
+
+        $handler = Mage::getSingleton('factfinder/handler_suggest', array($this->getRequest()->getParam('q')));
+
+        $suggestData = $handler->getSuggestionsAsArray();
 		
         if (!($count = count($suggestData))) {
             return $suggestXmlObj->asNiceXml();

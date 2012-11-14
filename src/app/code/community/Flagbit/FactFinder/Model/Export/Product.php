@@ -544,6 +544,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             }
         }
 
+        // Add spaces before HTML Tags, so that strip_tags() does not join word which were in different block elements
+        // Additional spaces are not an issue, because they will be removed in the next step anyway
+        $value = preg_replace('/</u', ' <', $value);
+
         $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
 
         return $value;

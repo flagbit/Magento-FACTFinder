@@ -208,8 +208,10 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 		this.request.updateChoices(this.loadDataCallback(data));
 	},
 
-    _selectAutocompleteItem : function(element){		
-        if(element.title){		
+    _selectAutocompleteItem : function(element){
+        if(element.attributes.rel) {
+            document.location.href = element.attributes.rel.nodeValue;
+        } else if(element.title) {
 			this.form.insert('<input type="hidden" name="queryFromSuggest" value="true" />');
 			this.form.insert('<input type="hidden" name="userInput" value="'+this.field.value+'" />');
 			

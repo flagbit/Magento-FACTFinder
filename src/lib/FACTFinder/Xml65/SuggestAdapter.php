@@ -44,7 +44,7 @@ class FACTFinder_Xml65_SuggestAdapter extends FACTFinder_Http_SuggestAdapter
      */
     protected function createSuggestions()
     {
-        $xmlResult = $this->getData();
+        $xmlResult = parent::createSuggestions();
         $encodingHandler = $this->getEncodingHandler();
         $paramsParser = $this->getParamsParser();
         $suggest = array();
