@@ -60,12 +60,14 @@
 			command="wget http://web13.site.flagbit.com/mageinstall/vagrant-magento.tgz -P /usr/local/src/magento; cd /usr/local/src/magento; tar xfz vagrant-magento.tgz"/>
 			
     </target> 
-	   	
 	
     <target name="prepare">
         <replaceregexp file="${basedir}/package.xml"
             match="(&lt;version&gt;.*?&lt;(release)&gt;).*?(&lt;/\2&gt;.*?&lt;(api)&gt;).*?(&lt;/\4&gt;.*?&lt;/version&gt;)"
             replace="\1${package.version}\3${package.version}\5" flags="gs" />
+        <replaceregexp file="${srcdir}/app/code/community/Flagbit/FactFinder/etc/config.xml"
+            match="(&lt;version&gt;).*?(&lt;/version&gt;)"
+            replace="\1${package.version}\2" flags="gs" />
     </target>
  
      <target name="phpcs" description="PHP_CodeSniffer">
@@ -124,6 +126,7 @@
             password="${ssh.pass}"
         	trust="true"
         	verbose="true"
+			port="${ssh.port}"
             >
             <fileset dir="${srcdir}/">
                 <include name="**/*"/>

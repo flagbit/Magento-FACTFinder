@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-10-17</date>
- <time>13:59:12</time>
+ <date>2012-11-14</date>
+ <time>11:12:50</time>
  <version>
-  <release>3.4.1</release>
-  <api>3.4.1</api>
+  <release>3.4.3</release>
+  <api>3.4.3</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,7 +25,13 @@
  </stability>
  <license>GPL</license>
  <notes>
-bugfix: CheckStatus will not check version any more if version returned by FF is faulty.
+[+BUGFIX] set category parameter for the catalog part into the correct array
+[~BUGFIX] Fixed layout definition causing &quot;Invalid block type&quot; exception
+[~BUGFIX] the method _getFactFinderObject also supports the id parameter
+[~BUGFIX] ignore header in suggest template if no proxy is activated, because without proxy there is no channel property at the suggest data
+[~FEATURE] add method isSuggestProxyActivated to Helper/Search.php
+[+FEATURE] added the parameter $id to the two generic methods (get|configure){type}Adapter methods; with the id it is possible to force separate adapters for the same type and channel!
+[+TASK] extended the documentation of the __call method
  </notes>
  <contents>
   <dir name="/">
@@ -195,17 +201,17 @@ bugfix: CheckStatus will not check version any more if version returned by FF is
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="0c90d3f5c293fe68576c4595c0ee9a04" name="config.xml" role="magecommunity" />
+    <file md5sum="60a3050acb2c4601ea35ba2cd283c798" name="config.xml" role="magecommunity" />
     <file md5sum="d3721503a1b346f60633e2f0a8e361a1" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="87b662c7c7242ef349f4606ad2ab5279" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
     <file md5sum="24b939b03efb2cd5f7815562f896576f" name="Debug.php" role="magecommunity" />
-    <file md5sum="40618065534d57a4db33f18ab4186989" name="Search.php" role="magecommunity" />
+    <file md5sum="5aa8ffe5b6045c0680d025984e024f28" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="340a0a5cd9a7f7dd99508fc88c13dcc9" name="Facade.php" role="magecommunity" />
+    <file md5sum="768397419ddb085279c7d9c5bdeb801f" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="16b78ca3d1d40e4b961fdf023ea3d0a0" name="Observer.php" role="magecommunity" />
     <file md5sum="5e76103096faccd5b26b2d036bdc7c5e" name="Processor.php" role="magecommunity" />
@@ -221,7 +227,7 @@ bugfix: CheckStatus will not check version any more if version returned by FF is
     <file md5sum="831d8d3ff2cd29e090cff10c3a9c8844" name="ProductCampaign.php" role="magecommunity" />
     <file md5sum="c714d9b43772f1665d64daea8d16594d" name="ProductDetailCampaign.php" role="magecommunity" />
     <file md5sum="47b12e1f2f1e1d83ecaba77fdb20b63b" name="Recommendations.php" role="magecommunity" />
-    <file md5sum="4d0438b67c59034e74e37ca66ace6967" name="Search.php" role="magecommunity" />
+    <file md5sum="165a115c5b92c40b03f7bfef04d13ef5" name="Search.php" role="magecommunity" />
     <file md5sum="de4ced818f7865a491438a4d103b431a" name="SecondarySearch.php" role="magecommunity" />
     <file md5sum="202fc9ab4018247dfb8e8bcefd417465" name="ShoppingCartCampaign.php" role="magecommunity" />
     <file md5sum="3b286cbda3cad188b10f7fac06e0ca32" name="Suggest.php" role="magecommunity" />
@@ -278,10 +284,10 @@ bugfix: CheckStatus will not check version any more if version returned by FF is
     <file md5sum="16766d07b20544e11184ee21f95b2692" name="factfinder.css" role="mageskin" />
    </dir> <!-- /\frontend\base\default\css -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="8afd0a0ae73978191ab07431360b3bef" name="factfinder.xml" role="magedesign" />
+    <file md5sum="c059bb14f9d4d929db8234bdf139c2cb" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
-    <file md5sum="bb848ea2403c737dbf46acbe5b8af6e2" name="form.advancedsuggest.phtml" role="magedesign" />
+    <file md5sum="68cf6f46b65e66e1bb88d91b854a339a" name="form.advancedsuggest.phtml" role="magedesign" />
     <file md5sum="2910c0f39c52e6e02eead79688f682af" name="form.advancedsuggest68.phtml" role="magedesign" />
     <file md5sum="eb49c2fb57594e2ebeed1ffb01c2606d" name="form.mini.phtml" role="magedesign" />
     <file md5sum="7a40d67bf648e65345f69b2cf9d3c6b6" name="logo.phtml" role="magedesign" />
@@ -333,287 +339,23 @@ bugfix: CheckStatus will not check version any more if version returned by FF is
  <changelog>
   <release>
    <version>
-    <release>3.1.3</release>
-    <api>3.1.3</api>
+    <release>3.4.3</release>
+    <api>3.4.3</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2011-09-29</date>
+   <date>2012-11-14</date>
    <license>GPL</license>
    <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.0</release>
-    <api>3.2.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-10-06</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.1</release>
-    <api>3.2.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-10-06</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.2</release>
-    <api>3.2.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-02</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.3</release>
-    <api>3.2.3</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-02</date>
-   <license>GPL</license>
-   <notes>
-FIX: correct export multiple filter-attributes
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.4</release>
-    <api>3.2.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-17</date>
-   <license>GPL</license>
-   <notes>
-- closed XSS bug - added English documentation
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.5</release>
-    <api>3.2.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-02-28</date>
-   <license>GPL</license>
-   <notes>
-- fixed encoding problem with one-touch-slider - checkout tracking with entity-id works now correctly
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.6</release>
-    <api>3.2.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-04-13</date>
-   <license>GPL</license>
-   <notes>
-BUGFIX: module handles slashes in category names correctly
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.1</release>
-    <api>3.3.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-05-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: dont load query from db if no query was specified via URL;
-bugfix: cached proxy request dont make problems;
-bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
-bugfix: cache category path calculation to avoid massive db queries;
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.2</release>
-    <api>3.3.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-05-22</date>
-   <license>GPL</license>
-   <notes>
-bugfix: constructor of the adapter accepts any parameter and checks its type inside
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.4</release>
-    <api>3.3.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-04</date>
-   <license>GPL</license>
-   <notes>
-added: advisor campaigns integration
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.5</release>
-    <api>3.3.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-06</date>
-   <license>GPL</license>
-   <notes>
-bugfix: plus character inside category path works now
-bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
-bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
-bugfix: make campaign redirect work even if asn is disabled
-feature: attribute-units are added to the label
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.6</release>
-    <api>3.3.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: dont fail if products campaigns cant be loaded.
-bugfix: dont use product campaigns, if campaigns are disabled.
-task: show ff search form only if suggest is enabled
-task: apply cluster level into attribute objects
-task: flush output buffer for each bulk on product export
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.7</release>
-    <api>3.3.7</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: show magento layered navigation if ff-navigation is disabled
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.8</release>
-    <api>3.3.8</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-07-04</date>
-   <license>GPL</license>
-   <notes>
-feature: export download link at the backend (configuration of factfinder)
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.4.0</release>
-    <api>3.4.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-09-28</date>
-   <license>GPL</license>
-   <notes>
-new features:
-* added support for FACT-Finder 6.8
-* new Suggest template system
-* including two new alternative suggest templates
-* Suggest image size is configurable in backend
-* Alternative slider template that uses script.aculo.us instead of Omikron&apos;s OneTouchSlider
-* Secondary Channels (searching one or more additional database(s) - for example &quot;content&quot;, &quot;community&quot; etc.)
-* Use of parallel requests between Magento and FACT-Finder
-* Parallel data exports are now prevented; this is relevant for large shops whose exports might take hours (and could be requested more frequently)
-* Optional fallback to Magento in case of FACT-Finder server problems
-* Added support for shopping cart campaigns	
-* extended error reporting at the installation process, for a better usability at the integration process
-* FACT-Finder Configuration displays export link
-* FACT-Finder version is configurable
-
-bugfixes since last release:
-* Explicit export attributes work now even if they are not searchable or filterable
-* Click tracking for product details works now with automatic redirect for single result searches
-* Click tracking for product details works now even if detail page is loaded very quickly
-* HTML tags in export data will not result in unseparated words any more
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.4.1</release>
-    <api>3.4.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-10-17</date>
-   <license>GPL</license>
-   <notes>
-bugfix: CheckStatus will not check version any more if version returned by FF is faulty.
+[+BUGFIX] set category parameter for the catalog part into the correct array
+[~BUGFIX] Fixed layout definition causing &quot;Invalid block type&quot; exception
+[~BUGFIX] the method _getFactFinderObject also supports the id parameter
+[~BUGFIX] ignore header in suggest template if no proxy is activated, because without proxy there is no channel property at the suggest data
+[~FEATURE] add method isSuggestProxyActivated to Helper/Search.php
+[+FEATURE] added the parameter $id to the two generic methods (get|configure){type}Adapter methods; with the id it is possible to force separate adapters for the same type and channel!
+[+TASK] extended the documentation of the __call method
    </notes>
   </release>
  </changelog>
