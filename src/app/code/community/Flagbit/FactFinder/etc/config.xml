@@ -22,7 +22,7 @@
     <modules>
         <Flagbit_FactFinder>
             <active>true</active>
-            <version>3.3.12</version>
+            <version>3.4.2</version>
         </Flagbit_FactFinder>
     </modules>
     <global>

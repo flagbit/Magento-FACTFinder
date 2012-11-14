@@ -89,7 +89,7 @@ class Flagbit_FactFinder_Model_Handler_Search
 
         case "catalog":
             if (!isset($requestParams['Category'])) {
-                $params['Category'] = $this->_getCurrentFactFinderCategoryPath();
+                $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
         case "catalogsearch":
