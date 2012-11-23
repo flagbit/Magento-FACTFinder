@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-11-14</date>
- <time>11:12:50</time>
+ <date>2012-11-23</date>
+ <time>17:50:21</time>
  <version>
-  <release>3.4.3</release>
-  <api>3.4.3</api>
+  <release>3.4.4</release>
+  <api>3.4.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -141,10 +141,10 @@
     <file md5sum="3bfa1e877269be17ee08c403254925bf" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml68 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="ad503d9839983c6a803481986d24cf7e" name="Layer.php" role="magecommunity" />
+    <file md5sum="78d3ccfc3f47852b853b8eea4148906a" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
-    <file md5sum="3b40908d8089ce30a1ab815e618800d3" name="Secondaryresult.php" role="magecommunity" />
-    <file md5sum="bedca1b6a0a5b40bef6b4c263172a83f" name="TagCloud.php" role="magecommunity" />
+    <file md5sum="cb1ca2347767ebed5671ad6a91dc881e" name="Secondaryresult.php" role="magecommunity" />
+    <file md5sum="6e3769771ef5a1b50fc1d9a963e90aad" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml">
     <file md5sum="e12c45f55d5fd31d164187bd9d16a0bd" name="Cockpit.php" role="magecommunity" />
@@ -155,19 +155,19 @@
     <file md5sum="cbaf317aa5ce4417cfcd02a6c4f36486" name="Attributes.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml\Form\Field -->
    <dir name="\Flagbit\FactFinder\Block\Campaign">
-    <file md5sum="0dab72c7edeb28479ef82c8c4f85c871" name="Advisory.php" role="magecommunity" />
-    <file md5sum="c30b7a27bbf05df9cafc259562cdc50b" name="Feedback.php" role="magecommunity" />
+    <file md5sum="04e35a0e8a75a7ddd4e3af385f933aa5" name="Advisory.php" role="magecommunity" />
+    <file md5sum="a1e1f1d393bea196e07f92e171e10513" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Cart">
-    <file md5sum="73d79fc1a899e2c94cd0301a3901c171" name="Advisory.php" role="magecommunity" />
-    <file md5sum="86818ceff0cbe0fea694448037d8c0a9" name="Feedback.php" role="magecommunity" />
+    <file md5sum="4faa30edab3a35fffd0e3cf0ebaa81b2" name="Advisory.php" role="magecommunity" />
+    <file md5sum="c5a0f657037274881f7d2846e004f164" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Product">
     <file md5sum="bd1f468d56b6bc1fa3541406796c133a" name="Advisory.php" role="magecommunity" />
     <file md5sum="576bd4801d14f08bc1c62688ffab2e04" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Product -->
    <dir name="\Flagbit\FactFinder\Block\Cart">
-    <file md5sum="aad1e79b0d9ef61b27e5f94d1a3fe2fe" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="96c00a397ef7e32cb0babfab8b109494" name="Crosssell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Filter">
     <file md5sum="159d3e1b403625dbbb970e5e7ada4ec7" name="Slider.php" role="magecommunity" />
@@ -176,8 +176,8 @@
     <file md5sum="f53a3e2d6ce0da4afee58b4ea806a342" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Layer -->
    <dir name="\Flagbit\FactFinder\Block\Product\List">
-    <file md5sum="80ac0ab275f3e903c3df80961d6afa35" name="Crosssell.php" role="magecommunity" />
-    <file md5sum="5141fb89f0c27970e9540dbbc27c1b25" name="Upsell.php" role="magecommunity" />
+    <file md5sum="86590a3e65ffe074950f4c630fc10826" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="dabfd0b10fd73dcdcf8ddc3fd12c8569" name="Upsell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Product\List -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog">
     <file md5sum="662f7b0df8d21626bf6193906aed5162" name="Search.php" role="magecommunity" />
@@ -201,19 +201,19 @@
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="60a3050acb2c4601ea35ba2cd283c798" name="config.xml" role="magecommunity" />
+    <file md5sum="d854839fee413eeee5f549e66f6d54e2" name="config.xml" role="magecommunity" />
     <file md5sum="d3721503a1b346f60633e2f0a8e361a1" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="87b662c7c7242ef349f4606ad2ab5279" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
     <file md5sum="24b939b03efb2cd5f7815562f896576f" name="Debug.php" role="magecommunity" />
-    <file md5sum="5aa8ffe5b6045c0680d025984e024f28" name="Search.php" role="magecommunity" />
+    <file md5sum="45d4f115efc2b601ed4385a51c351c5a" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
     <file md5sum="768397419ddb085279c7d9c5bdeb801f" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
-    <file md5sum="16b78ca3d1d40e4b961fdf023ea3d0a0" name="Observer.php" role="magecommunity" />
+    <file md5sum="3cfb83bd65ee37b8a7f6f6f3c36538d6" name="Observer.php" role="magecommunity" />
     <file md5sum="5e76103096faccd5b26b2d036bdc7c5e" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
@@ -339,14 +339,14 @@
  <changelog>
   <release>
    <version>
-    <release>3.4.3</release>
-    <api>3.4.3</api>
+    <release>3.4.4</release>
+    <api>3.4.4</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2012-11-14</date>
+   <date>2012-11-23</date>
    <license>GPL</license>
    <notes>
 [+BUGFIX] set category parameter for the catalog part into the correct array
