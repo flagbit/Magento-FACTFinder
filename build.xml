@@ -125,7 +125,6 @@
             todir="${ssh.user}@${ssh.server}:${ssh.path}" 
             password="${ssh.pass}"
         	trust="true"
-        	verbose="true"
 			port="${ssh.port}"
             >
             <fileset dir="${srcdir}/">

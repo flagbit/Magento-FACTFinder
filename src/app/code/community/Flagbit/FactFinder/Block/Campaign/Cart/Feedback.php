@@ -23,13 +23,15 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Feedback extends Mage_Core_Block_Te
 
     protected function _prepareLayout()
     {
-        $this->_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            $this->_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
 
-        $productIds = array(
-            $this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())
-        );
+            $productIds = array(
+                $this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())
+            );
 
-        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_shoppingCartCampaign', array($productIds, true));
+            $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_shoppingCartCampaign', array($productIds, true));
+        }
         return parent::_prepareLayout();
     }
 
