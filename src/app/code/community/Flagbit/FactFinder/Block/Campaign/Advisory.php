@@ -6,7 +6,9 @@ class Flagbit_FactFinder_Block_Campaign_Advisory extends Mage_Core_Block_Templat
 
     protected function _prepareLayout()
     {
-        $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+        }
     }
 
     /**
