@@ -8,7 +8,9 @@ class Flagbit_FactFinder_Block_TagCloud extends Mage_CatalogSearch_Block_Term
 
     protected function _prepareLayout()
     {
-        $this->_tagCloudHandler = Mage::getSingleton('factfinder/handler_tagCloud');
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'tagcloud')){
+            $this->_tagCloudHandler = Mage::getSingleton('factfinder/handler_tagCloud');
+        }
         return parent::_prepareLayout();
     }
 
