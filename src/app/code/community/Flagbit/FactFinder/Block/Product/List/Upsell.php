@@ -29,8 +29,15 @@ class Flagbit_FactFinder_Block_Product_List_Upsell extends Mage_Catalog_Block_Pr
         $productIds = array(
             Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
         );
-        $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productDetailCampaign', $productIds);
-        $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')) {
+            $this->_productCampaignHandler = Mage::getSingleton('factfinder/handler_productDetailCampaign', $productIds);
+        }
+        
+        if (Mage::getStoreConfigFlag('factfinder/activation/upsell')) {
+            $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        }
+        
         return parent::_prepareLayout();
     }
 
