@@ -24,8 +24,10 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
 
     protected function _prepareLayout()
     {
-        $productIds = $this->_getCartProductIds();
-        $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        if(Mage::getStoreConfigFlag('factfinder/activation/crosssell')){
+            $productIds = $this->_getCartProductIds();
+            $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        }
         return parent::_prepareLayout();
     }
 

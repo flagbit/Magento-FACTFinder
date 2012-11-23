@@ -9,9 +9,9 @@
 
 /**
  * Block class
- * 
- * This class is used to disable Magento´s default Price and Category Filter Output  
- * 
+ *
+ * This class is used to disable Magento´s default Price and Category Filter Output
+ *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
@@ -31,8 +31,11 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
      */
     protected function _prepareLayout()
     {
-        $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+        if(!Mage::helper('factfinder/search')->getIsEnabled()){
+            return parent::_prepareLayout();
+        }
 
+        $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
         $this->_usesAsn = Mage::helper('factfinder/search')->getIsEnabled(false, 'asn');
 
         if(!$this->_usesAsn){
@@ -101,7 +104,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
 
         $this->getLayer()->apply();
     }
-      
+
     /**
      * Get category filter block
      *
@@ -111,7 +114,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
             return parent::_getCategoryFilter();
-        }        
+        }
         return false;
     }
 
@@ -124,11 +127,11 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
             return parent::_getPriceFilter();
-        }        
-        
+        }
+
         return false;
     }
-    
+
     /**
      * Check availability display layer block
      *
@@ -142,11 +145,11 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         }
         if(!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')){
             return false;
-        } 
+        }
         if ($this->getLayer()->getFilterableAttributes()->count()
             && $this->getLayer()->getProductCollection()->getSize()) {
             return true;
         }
         return false;
-    }    
+    }
 }
