@@ -148,7 +148,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 **/
 	public function registerFailedAttempt()
 	{
-		if(self::$_failedAttemptRegistered)
+		if(!$this->_isFallbackActive() || self::$_failedAttemptRegistered)
 			return;
 		
 		$failedAttempts = $this->_loadFailedAttempts();
