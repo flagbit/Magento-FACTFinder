@@ -458,7 +458,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $categoryPath .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
                 }
                 if ($categoryIdsCount > 2) {
-                    $value .= rtrim($categoryPath,'/').'|';
+                    $value .= trim(rtrim($categoryPath,'/')).'|';
                 }
             }
             $value = trim($value, '|');
