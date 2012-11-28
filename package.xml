@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-09-28</date>
- <time>15:39:52</time>
+ <date>2012-11-28</date>
+ <time>08:48:29</time>
  <version>
-  <release>3.4.0</release>
-  <api>3.4.0</api>
+  <release>3.4.5</release>
+  <api>3.4.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,26 +25,13 @@
  </stability>
  <license>GPL</license>
  <notes>
-new features:
-* added support for FACT-Finder 6.8
-* new Suggest template system
-* including two new alternative suggest templates
-* Suggest image size is configurable in backend
-* Alternative slider template that uses script.aculo.us instead of Omikron&apos;s OneTouchSlider
-* Secondary Channels (searching one or more additional database(s) - for example &quot;content&quot;, &quot;community&quot; etc.)
-* Use of parallel requests between Magento and FACT-Finder
-* Parallel data exports are now prevented; this is relevant for large shops whose exports might take hours (and could be requested more frequently)
-* Optional fallback to Magento in case of FACT-Finder server problems
-* Added support for shopping cart campaigns	
-* extended error reporting at the installation process, for a better usability at the integration process
-* FACT-Finder Configuration displays export link
-* FACT-Finder version is configurable
-
-bugfixes since last release:
-* Explicit export attributes work now even if they are not searchable or filterable
-* Click tracking for product details works now with automatic redirect for single result searches
-* Click tracking for product details works now even if detail page is loaded very quickly
-* HTML tags in export data will not result in unseparated words any more
+[+BUGFIX] set category parameter for the catalog part into the correct array
+[~BUGFIX] Fixed layout definition causing &quot;Invalid block type&quot; exception
+[~BUGFIX] the method _getFactFinderObject also supports the id parameter
+[~BUGFIX] ignore header in suggest template if no proxy is activated, because without proxy there is no channel property at the suggest data
+[~FEATURE] add method isSuggestProxyActivated to Helper/Search.php
+[+FEATURE] added the parameter $id to the two generic methods (get|configure){type}Adapter methods; with the id it is possible to force separate adapters for the same type and channel!
+[+TASK] extended the documentation of the __call method
  </notes>
  <contents>
   <dir name="/">
@@ -154,10 +141,10 @@ bugfixes since last release:
     <file md5sum="3bfa1e877269be17ee08c403254925bf" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml68 -->
    <dir name="\Flagbit\FactFinder\Block">
-    <file md5sum="b87e7abe04f1601f0298cc1bb33001ce" name="Layer.php" role="magecommunity" />
+    <file md5sum="78d3ccfc3f47852b853b8eea4148906a" name="Layer.php" role="magecommunity" />
     <file md5sum="9ba6aa43204d0aae206d9f24f09aecfc" name="Scic.php" role="magecommunity" />
-    <file md5sum="3b40908d8089ce30a1ab815e618800d3" name="Secondaryresult.php" role="magecommunity" />
-    <file md5sum="bedca1b6a0a5b40bef6b4c263172a83f" name="TagCloud.php" role="magecommunity" />
+    <file md5sum="cb1ca2347767ebed5671ad6a91dc881e" name="Secondaryresult.php" role="magecommunity" />
+    <file md5sum="6e3769771ef5a1b50fc1d9a963e90aad" name="TagCloud.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
    <dir name="\Flagbit\FactFinder\Block\Adminhtml">
     <file md5sum="e12c45f55d5fd31d164187bd9d16a0bd" name="Cockpit.php" role="magecommunity" />
@@ -168,19 +155,19 @@ bugfixes since last release:
     <file md5sum="cbaf317aa5ce4417cfcd02a6c4f36486" name="Attributes.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Adminhtml\Form\Field -->
    <dir name="\Flagbit\FactFinder\Block\Campaign">
-    <file md5sum="0dab72c7edeb28479ef82c8c4f85c871" name="Advisory.php" role="magecommunity" />
-    <file md5sum="c30b7a27bbf05df9cafc259562cdc50b" name="Feedback.php" role="magecommunity" />
+    <file md5sum="04e35a0e8a75a7ddd4e3af385f933aa5" name="Advisory.php" role="magecommunity" />
+    <file md5sum="a1e1f1d393bea196e07f92e171e10513" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Cart">
-    <file md5sum="73d79fc1a899e2c94cd0301a3901c171" name="Advisory.php" role="magecommunity" />
-    <file md5sum="86818ceff0cbe0fea694448037d8c0a9" name="Feedback.php" role="magecommunity" />
+    <file md5sum="14791cddb1fd131f7f78928e7877fc48" name="Advisory.php" role="magecommunity" />
+    <file md5sum="c5a0f657037274881f7d2846e004f164" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Product">
     <file md5sum="bd1f468d56b6bc1fa3541406796c133a" name="Advisory.php" role="magecommunity" />
     <file md5sum="576bd4801d14f08bc1c62688ffab2e04" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Product -->
    <dir name="\Flagbit\FactFinder\Block\Cart">
-    <file md5sum="aad1e79b0d9ef61b27e5f94d1a3fe2fe" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="96c00a397ef7e32cb0babfab8b109494" name="Crosssell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Filter">
     <file md5sum="159d3e1b403625dbbb970e5e7ada4ec7" name="Slider.php" role="magecommunity" />
@@ -189,8 +176,8 @@ bugfixes since last release:
     <file md5sum="f53a3e2d6ce0da4afee58b4ea806a342" name="Abstract.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Layer -->
    <dir name="\Flagbit\FactFinder\Block\Product\List">
-    <file md5sum="80ac0ab275f3e903c3df80961d6afa35" name="Crosssell.php" role="magecommunity" />
-    <file md5sum="5141fb89f0c27970e9540dbbc27c1b25" name="Upsell.php" role="magecommunity" />
+    <file md5sum="86590a3e65ffe074950f4c630fc10826" name="Crosssell.php" role="magecommunity" />
+    <file md5sum="dabfd0b10fd73dcdcf8ddc3fd12c8569" name="Upsell.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Product\List -->
    <dir name="\Flagbit\FactFinder\Block\XmlConnect\Catalog">
     <file md5sum="662f7b0df8d21626bf6193906aed5162" name="Search.php" role="magecommunity" />
@@ -214,33 +201,33 @@ bugfixes since last release:
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="58aef2514e99f4f2e281cbf6fe972129" name="config.xml" role="magecommunity" />
+    <file md5sum="3e93c0eb1f2022638b56c3bd81252ab4" name="config.xml" role="magecommunity" />
     <file md5sum="d3721503a1b346f60633e2f0a8e361a1" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="87b662c7c7242ef349f4606ad2ab5279" name="Backend.php" role="magecommunity" />
     <file md5sum="afede9edaf2bcfbc93a4049eee5be89e" name="Data.php" role="magecommunity" />
     <file md5sum="24b939b03efb2cd5f7815562f896576f" name="Debug.php" role="magecommunity" />
-    <file md5sum="40618065534d57a4db33f18ab4186989" name="Search.php" role="magecommunity" />
+    <file md5sum="45d4f115efc2b601ed4385a51c351c5a" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="340a0a5cd9a7f7dd99508fc88c13dcc9" name="Facade.php" role="magecommunity" />
+    <file md5sum="768397419ddb085279c7d9c5bdeb801f" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
-    <file md5sum="eae5f421c3cd8e39cbfc6eef5f96d304" name="Observer.php" role="magecommunity" />
+    <file md5sum="3cfb83bd65ee37b8a7f6f6f3c36538d6" name="Observer.php" role="magecommunity" />
     <file md5sum="5e76103096faccd5b26b2d036bdc7c5e" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="2cc9fb277e4d598fb40f4a2b6858d9f2" name="Product.php" role="magecommunity" />
+    <file md5sum="196987136a58d6348ab650c404568acf" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Handler">
     <file md5sum="f5724a1c82becbc4d76a6f46dc591977" name="Abstract.php" role="magecommunity" />
-    <file md5sum="8d595ae034bb373cca899dfe4f40aebb" name="CheckStatus.php" role="magecommunity" />
+    <file md5sum="60336786e622127ae3313b168a534ec5" name="CheckStatus.php" role="magecommunity" />
     <file md5sum="831d8d3ff2cd29e090cff10c3a9c8844" name="ProductCampaign.php" role="magecommunity" />
     <file md5sum="c714d9b43772f1665d64daea8d16594d" name="ProductDetailCampaign.php" role="magecommunity" />
     <file md5sum="47b12e1f2f1e1d83ecaba77fdb20b63b" name="Recommendations.php" role="magecommunity" />
-    <file md5sum="4d0438b67c59034e74e37ca66ace6967" name="Search.php" role="magecommunity" />
+    <file md5sum="165a115c5b92c40b03f7bfef04d13ef5" name="Search.php" role="magecommunity" />
     <file md5sum="de4ced818f7865a491438a4d103b431a" name="SecondarySearch.php" role="magecommunity" />
     <file md5sum="202fc9ab4018247dfb8e8bcefd417465" name="ShoppingCartCampaign.php" role="magecommunity" />
     <file md5sum="3b286cbda3cad188b10f7fac06e0ca32" name="Suggest.php" role="magecommunity" />
@@ -297,10 +284,10 @@ bugfixes since last release:
     <file md5sum="16766d07b20544e11184ee21f95b2692" name="factfinder.css" role="mageskin" />
    </dir> <!-- /\frontend\base\default\css -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="8afd0a0ae73978191ab07431360b3bef" name="factfinder.xml" role="magedesign" />
+    <file md5sum="c059bb14f9d4d929db8234bdf139c2cb" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
-    <file md5sum="bb848ea2403c737dbf46acbe5b8af6e2" name="form.advancedsuggest.phtml" role="magedesign" />
+    <file md5sum="68cf6f46b65e66e1bb88d91b854a339a" name="form.advancedsuggest.phtml" role="magedesign" />
     <file md5sum="2910c0f39c52e6e02eead79688f682af" name="form.advancedsuggest68.phtml" role="magedesign" />
     <file md5sum="eb49c2fb57594e2ebeed1ffb01c2606d" name="form.mini.phtml" role="magedesign" />
     <file md5sum="7a40d67bf648e65345f69b2cf9d3c6b6" name="logo.phtml" role="magedesign" />
@@ -309,7 +296,7 @@ bugfixes since last release:
    </dir> <!-- /\frontend\base\default\template\factfinder -->
    <dir name="\frontend\base\default\template\factfinder\campaign">
     <file md5sum="d0ef29b97aa4c3bdfa2b94596beb5b21" name="advisory.phtml" role="magedesign" />
-    <file md5sum="a44c2521e961cfb62b4b89ad0cb71b15" name="feedback.phtml" role="magedesign" />
+    <file md5sum="a00ad977b82b199630371aef060f25ab" name="feedback.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\campaign -->
    <dir name="\frontend\base\default\template\factfinder\campaign\cart">
     <file md5sum="bb994272a6daaaba298a38023f6db212" name="advisory.phtml" role="magedesign" />
@@ -352,272 +339,23 @@ bugfixes since last release:
  <changelog>
   <release>
    <version>
-    <release>3.1.3</release>
-    <api>3.1.3</api>
+    <release>3.4.5</release>
+    <api>3.4.5</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2011-09-29</date>
+   <date>2012-11-28</date>
    <license>GPL</license>
    <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.0</release>
-    <api>3.2.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-10-06</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.1</release>
-    <api>3.2.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-10-06</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.2</release>
-    <api>3.2.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-02</date>
-   <license>GPL</license>
-   <notes>
-- initial Release
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.3</release>
-    <api>3.2.3</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-02</date>
-   <license>GPL</license>
-   <notes>
-FIX: correct export multiple filter-attributes
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.4</release>
-    <api>3.2.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2011-11-17</date>
-   <license>GPL</license>
-   <notes>
-- closed XSS bug - added English documentation
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.5</release>
-    <api>3.2.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-02-28</date>
-   <license>GPL</license>
-   <notes>
-- fixed encoding problem with one-touch-slider - checkout tracking with entity-id works now correctly
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.2.6</release>
-    <api>3.2.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-04-13</date>
-   <license>GPL</license>
-   <notes>
-BUGFIX: module handles slashes in category names correctly
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.1</release>
-    <api>3.3.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-05-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: dont load query from db if no query was specified via URL;
-bugfix: cached proxy request dont make problems;
-bugfix: load attributes correctly from database, even if they are not search-, filter- or sortable;
-bugfix: cache category path calculation to avoid massive db queries;
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.2</release>
-    <api>3.3.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-05-22</date>
-   <license>GPL</license>
-   <notes>
-bugfix: constructor of the adapter accepts any parameter and checks its type inside
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.4</release>
-    <api>3.3.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-04</date>
-   <license>GPL</license>
-   <notes>
-added: advisor campaigns integration
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.5</release>
-    <api>3.3.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-06</date>
-   <license>GPL</license>
-   <notes>
-bugfix: plus character inside category path works now
-bugfix: xmlconnect interface won&apos;t fail if parameter &apos;count&apos; is not set
-bugfix: collect parameters only from ff-lib, so even spaces inside parameter names work correctly
-bugfix: make campaign redirect work even if asn is disabled
-feature: attribute-units are added to the label
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.6</release>
-    <api>3.3.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: dont fail if products campaigns cant be loaded.
-bugfix: dont use product campaigns, if campaigns are disabled.
-task: show ff search form only if suggest is enabled
-task: apply cluster level into attribute objects
-task: flush output buffer for each bulk on product export
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.7</release>
-    <api>3.3.7</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-06-15</date>
-   <license>GPL</license>
-   <notes>
-bugfix: show magento layered navigation if ff-navigation is disabled
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.3.8</release>
-    <api>3.3.8</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-07-04</date>
-   <license>GPL</license>
-   <notes>
-feature: export download link at the backend (configuration of factfinder)
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>3.4.0</release>
-    <api>3.4.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2012-09-28</date>
-   <license>GPL</license>
-   <notes>
-new features:
-* added support for FACT-Finder 6.8
-* new Suggest template system
-* including two new alternative suggest templates
-* Suggest image size is configurable in backend
-* Alternative slider template that uses script.aculo.us instead of Omikron&apos;s OneTouchSlider
-* Secondary Channels (searching one or more additional database(s) - for example &quot;content&quot;, &quot;community&quot; etc.)
-* Use of parallel requests between Magento and FACT-Finder
-* Parallel data exports are now prevented; this is relevant for large shops whose exports might take hours (and could be requested more frequently)
-* Optional fallback to Magento in case of FACT-Finder server problems
-* Added support for shopping cart campaigns	
-* extended error reporting at the installation process, for a better usability at the integration process
-* FACT-Finder Configuration displays export link
-* FACT-Finder version is configurable
-
-bugfixes since last release:
-* Explicit export attributes work now even if they are not searchable or filterable
-* Click tracking for product details works now with automatic redirect for single result searches
-* Click tracking for product details works now even if detail page is loaded very quickly
-* HTML tags in export data will not result in unseparated words any more
+[+BUGFIX] set category parameter for the catalog part into the correct array
+[~BUGFIX] Fixed layout definition causing &quot;Invalid block type&quot; exception
+[~BUGFIX] the method _getFactFinderObject also supports the id parameter
+[~BUGFIX] ignore header in suggest template if no proxy is activated, because without proxy there is no channel property at the suggest data
+[~FEATURE] add method isSuggestProxyActivated to Helper/Search.php
+[+FEATURE] added the parameter $id to the two generic methods (get|configure){type}Adapter methods; with the id it is possible to force separate adapters for the same type and channel!
+[+TASK] extended the documentation of the __call method
    </notes>
   </release>
  </changelog>

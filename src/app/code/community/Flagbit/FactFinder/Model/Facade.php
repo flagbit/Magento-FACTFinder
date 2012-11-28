@@ -65,16 +65,29 @@ class Flagbit_FactFinder_Model_Facade
         FF::setLogger($arg);
         $this->_logger = $arg;
     }
-
+    
     /**
-     * Used to allow and delegate generic methods. Valid signatures:
-     * get_____Adapter($channel = null)
-     * configure____Adapter($params = array(), $channel = null)
+     * Used to allow and delegate generic methods.
+     * Valid signatures:
+     *
+     * @method FACTFinder_Abstract_<$type>Adapter get<$type>Adapter($channel = null, $id = null)
+     * get adapter class from the factfinder library; this is not recommended, but some cases this might be necessary.
+     *
+     * @method null configure<$type>Adapter(array $params, $channel = null, $id = null)
+     * @param array $params the parameters which should be set 
+     * set parameters for the specified adapter
+     *
+     * this applies to both kind of methods:
+     * - the (correct) implementation of the specified adapter will be determined automatically, depending on configuration and which adapters acutally exit
+     * - $type will be fetched out of the method name, so for example for the call "getSearchAdapter" $type is "search"
+     * - this are the two last (optional) accepted parameters:
+     * @param string $channel the factfinder channel which should be requested by this adapter. if channel is null, the primary channel from the configuration is used [default: null]
+     * @param string $id optional id to enable multiple adapters of the same type and for the same channel [default: null]
      *
      * @param string $function
      * @param array $arguments
-     * @return FACTFinder_Abstract_Adapter|null
-     * @throws Exception
+     * @return FACTFinder_Abstract_Adapter|null depending on which type is called
+     * @throws Exception if such an adapter does not exist or an non-existing method is called
      */
     public function __call($function, $arguments)
     {
@@ -83,20 +96,17 @@ class Flagbit_FactFinder_Model_Facade
         $channelArgPos = 0;
         if (preg_match('/^get(.+)Adapter$/', $function, $matches))
         {
-            // We have a get______Adapter($channel) method!
-            // The first argument (if any) will be treated as a channel
-
-            $channelArgPos = 0;
-
+            // We have a get______Adapter($channel = null, $id = null) method!
+            $channelArgPos = 0; // The first argument (if any) will be treated as a channel
+            $idArgPos = 1; // The second argument (if any) will be treated as $id
         }
         elseif (preg_match('/^configure(.+)Adapter$/', $function, $matches))
         {
-            // We have a configure_____Adapter($params, $channel) method!
-            // The first argument (if any) will be treated as an array of params as key-value pairs
-            // The second argument (if any) will be treated as a channel
-
+            // We have a configure_____Adapter(array $params, $channel = null, $id = null) method!
             $configureAdapter = true;
-            $channelArgPos = 1;
+            // The first argument (if any) will be treated as an array of params as key-value pairs
+            $channelArgPos = 1; // The second argument (if any) will be treated as a channel
+            $idArgPos = 2; // The third argument (if any) will be treated as $id
         }
         else
         {
@@ -112,7 +122,11 @@ class Flagbit_FactFinder_Model_Facade
         if(count($arguments) > $channelArgPos)
             $channel = $arguments[$channelArgPos];
 
-        $adapter = $this->_getAdapter($format, $type, $channel);
+        $id = null;
+        if(count($arguments) > $idArgPos)
+            $id = $arguments[$idArgPos];
+            
+        $adapter = $this->_getAdapter($format, $type, $channel, $id);
 
         if($configureAdapter && count($arguments))
         {
@@ -141,17 +155,21 @@ class Flagbit_FactFinder_Model_Facade
     /**
      * @return FACTFinder_Abstract_Adapter
      */
-    protected function _getAdapter($format, $type, $channel = null)
+    protected function _getAdapter($format, $type, $channel = null, $id = null)
     {
+        if(!$id)
+            $id = '';
         if(!$channel)
             $channel = $this->_getConfiguration()->getChannel();
-        if(!isset($this->_adapters[$type][$channel]))
+
+        $hashKey = $type.$id;
+        if(!isset($this->_adapters[$hashKey][$channel]))
         {
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $dataProvider      = $this->_getParallelDataProvider();
             $dataProvider->setParam('channel', $channel);
-            $this->_adapters[$type][$channel] = FF::getInstance(
+            $this->_adapters[$hashKey][$channel] = FF::getInstance(
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
                 $this->_getParamsParser(),
@@ -159,7 +177,7 @@ class Flagbit_FactFinder_Model_Facade
                 $this->_logger
             );
         }
-        return $this->_adapters[$type][$channel];
+        return $this->_adapters[$hashKey][$channel];
     }
 
     public function configureStatusHelper($channel = null)
@@ -256,72 +274,72 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_urlBuilder;
     }
 
-    public function applyTracking($channel = null)
+    public function applyTracking($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Scic", "applyTracking", $channel);
+        return $this->_getFactFinderObject("Scic", "applyTracking", $channel, $id);
     }
 
-    public function getAfterSearchNavigation($channel = null)
+    public function getAfterSearchNavigation($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getAsn", $channel);
+        return $this->_getFactFinderObject("Search", "getAsn", $channel, $id);
     }
 
-    public function getCampaigns($channel = null)
+    public function getCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getCampaigns", $channel);
+        return $this->_getFactFinderObject("Search", "getCampaigns", $channel, $id);
     }
 
-    public function getProductCampaigns($channel = null)
+    public function getProductCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel);
+        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel, $id);
     }
 
-    public function getRecommendations($channel = null)
+    public function getRecommendations($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel);
+        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel, $id);
     }
 
-    public function getSearchError($channel = null)
+    public function getSearchError($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getError", $channel);
+        return $this->_getFactFinderObject("Search", "getError", $channel, $id);
     }
 
-    public function getSearchParams($channel = null)
+    public function getSearchParams($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getSearchParams", $channel);
+        return $this->_getFactFinderObject("Search", "getSearchParams", $channel, $id);
     }
 
-    public function getSearchResult($channel = null)
+    public function getSearchResult($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getResult", $channel);
+        return $this->_getFactFinderObject("Search", "getResult", $channel, $id);
     }
 
-    public function getSearchStackTrace($channel = null)
+    public function getSearchStackTrace($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStackTrace", $channel);
+        return $this->_getFactFinderObject("Search", "getStackTrace", $channel, $id);
     }
 
-    public function getSearchStatus($channel = null)
+    public function getSearchStatus($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStatus", $channel);
+        return $this->_getFactFinderObject("Search", "getStatus", $channel, $id);
     }
 
-    public function getSuggestions($channel = null)
+    public function getSuggestions($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel);
+        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel, $id);
     }
 
-    public function getTagCloud($channel = null)
+    public function getTagCloud($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel);
+        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel, $id);
     }
 
-    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null)
+    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null, $id = null)
     {
         try {
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
-            return $this->$adapterGetter($channel)->$objectGetter();
+            return $this->$adapterGetter($channel, $id)->$objectGetter();
         } catch (Exception $e) {
             Mage::logException($e);
             return null;

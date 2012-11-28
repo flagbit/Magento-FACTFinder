@@ -34,21 +34,23 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      * @var string
      */
     const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';
-	
+
     const CACHE_TAG  = 'FACTFINDER';
 	const CACHE_ID = "FallbackCache";
     const REQUEST_ID_PREFIX = 'FACTFINDER_';
 
 	protected static $_skipFactFinder = null;
-	
-	protected static $_isFallbackActive = null;
-	
+
+	protected static $_isFallbackFeatureActive = null;
+
 	protected static $_failedAttemptRegistered = false;
-	
+
     /**
      * if FACT-Finder enabled?
      *
-     * @return boolean
+     * @param searchPageCheck if true, it will also check whether this is a request for a page with factfinder results
+     * @param functionality can be one of those: suggest, asn, campaign, clicktracking, tagcloud
+     * @return boolean true it the specified feature is enabled
      */
     public function getIsEnabled($searchPageCheck = true, $functionality = '')
     {
@@ -88,22 +90,36 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 
         return $result;
     }
-	
+
 	/**
 	 * Determines whether the fallback should be used
 	 *
 	 * @return	bool
 	 **/
-	protected function _isFallbackActive()
+	protected function _isFallbackFeatureActive()
 	{
-		if(self::$_isFallbackActive === null)
+		if(self::$_isFallbackFeatureActive === null)
 		{
-			self::$_isFallbackActive = Mage::getStoreConfig('factfinder/fallback/use_fallback');
+			self::$_isFallbackFeatureActive = Mage::getStoreConfig('factfinder/fallback/use_fallback');
 		}
-		
-		return self::$_isFallbackActive;
+
+		return self::$_isFallbackFeatureActive;
 	}
-	
+
+    protected function _enableFallback($delay)
+    {
+        $this->_skipFactFinder = true;
+        $nextRetryTimestamp = intval(time() / 60) + $delay;
+        Mage::app()->saveCache($nextRetryTimestamp, $this->_getCacheId('nextRetryTimestamp'), array(self::CACHE_TAG));
+    }
+    
+    protected function _disableFallback()
+    {
+        $this->_skipFactFinder = false;
+        $nextRetryTimestamp = 0;
+        Mage::app()->saveCache($nextRetryTimestamp, $this->_getCacheId('nextRetryTimestamp'), array(self::CACHE_TAG));
+    }
+
 	/**
 	 * Determines whether FACT-Finder should be skipped completely, because it has failed to respond too often
 	 * The check is made lazily so that it will return the same result for every call during one request to Magento.
@@ -114,33 +130,33 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	{
 		if(self::$_skipFactFinder === null)
 		{
-			if(!$this->_isFallbackActive())
+			if(!$this->_isFallbackFeatureActive())
 			{
 				self::$_skipFactFinder = false;
 			}
 			else
 			{
-				$failedAttempts = $this->_loadFailedAttempts();
-				$failedAttempts = $this->_removeOldEntries($failedAttempts);
-				$this->saveFailedAttempts($failedAttempts);
-				
-				self::$_skipFactFinder = (count($failedAttempts) >= 3);
-		
-				if(self::$_skipFactFinder)
-				{
-					Mage::helper('factfinder/debug')->log('Failed to connect to FACT-Finder 3 times. Falling back to Magento\'s search.');
-				}
+                $nextRetryTimestamp = intval(Mage::app()->loadCache($this->_getCacheId('nextRetryTimestamp')));
+                $currentTimestamp = intval(time() / 60);
+
+                self::$_skipFactFinder = ($currentTimestamp <= $nextRetryTimestamp);
 			}
 		}
-		
+
 		return self::$_skipFactFinder;
 	}
-	
-	protected function _getCacheId()
-	{
-		return self::REQUEST_ID_PREFIX . self::CACHE_ID;
-	}
-	
+    
+    /**
+     * resets all fallback counter values.
+     *
+     * @return void
+     */
+    public function resetFailedAttemptCount()
+    {
+        $this->_disableFallback();
+        $this->_saveFailedAttempts(array());
+    }
+
 	/**
 	 * Registers that FACT-Finder has failed to respond.
 	 * The attempt will be represented as an integer corresponding to attempt's timestamp in minutes.
@@ -148,50 +164,67 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 **/
 	public function registerFailedAttempt()
 	{
-		if(self::$_failedAttemptRegistered)
+		if(self::$_failedAttemptRegistered || !$this->_isFallbackFeatureActive() || $this->_skipFactFinder()) {
 			return;
-		
+        }
+
 		$failedAttempts = $this->_loadFailedAttempts();
-		$failedAttempts[] = intval(time() / 60);
-		$this->saveFailedAttempts($failedAttempts);
-		
+        $failedAttempts = $this->_removeOldEntries($failedAttempts);
+		$failedAttempts[] = intval(time() / 60);        
+		$this->_saveFailedAttempts($failedAttempts);
+
 		self::$_failedAttemptRegistered = true;
-		
-		Mage::helper('factfinder/debug')->log('Registered failed attempt to connect to FACT-Finder. '.count($failedAttempts).' failed attempts registered.');
-		if(count($failedAttempts) >= 3)
-		{
-			$delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
+        Mage::helper('factfinder/debug')->log('Registered failed attempt to connect to FACT-Finder. '.count($failedAttempts).' failed attempts registered.');
 
-            $title = 'FACT-Finder unreachable! Falling back to Magento\'s search for '.$delay.' minutes.';
-            $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for '.$delay.' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.';
+        if (count($failedAttempts) >= 3) {
+            $delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
 
-            $versionInfo = Mage::getVersionInfo();
+            $this->_enableFallback($delay);
 
-            if ($versionInfo['major'] > 1 ||
-                $versionInfo['major'] >= 1 &&
-                $versionInfo['minor'] >= 7)
-            {
-                Mage::getModel('adminnotification/inbox')->addMajor($title, $message);
+            // don't output a warning, if the delay is set to 0 as this would cause a lot of messages during a factfinder downtime
+            if($delay > 0) {
+                $this->_outputWarningMessage();
             }
-            else
-            {
-                $severity       = Mage_AdminNotification_Model_Inbox::SEVERITY_MAJOR;
-
-                $date = date('Y-m-d H:i:s');
-                Mage::getModel('adminnotification/inbox')->parse(array(
-                    array(
-                        'severity'      => $severity,
-                        'date_added'    => $date,
-                        'title'         => $title,
-                        'description'   => $message,
-                        'url'           => '',
-                        'internal'      => true
-                    )
-                ));
-            }
-		}
+        }
 	}
-	
+
+    protected function _outputWarningMessage()
+    {
+        $delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
+
+        $title = 'FACT-Finder unreachable! Falling back to Magento\'s search for '.$delay.' minutes.';
+        $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for '.$delay.' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.';
+
+        $adminNotificationInbox = Mage::getModel('adminnotification/inbox');
+
+        if (method_exists($adminNotificationInbox, 'addMajor')) {
+            Mage::getModel('adminnotification/inbox')->addMajor($title, $message);
+        } else {
+            $severity = Mage_AdminNotification_Model_Inbox::SEVERITY_MAJOR;
+            $date = date('Y-m-d H:i:s');
+
+            $adminNotificationInbox->parse(array(
+                array(
+                    'severity'      => $severity,
+                    'date_added'    => $date,
+                    'title'         => $title,
+                    'description'   => $message,
+                    'url'           => '',
+                    'internal'      => true
+                )
+            ));
+        }
+    }
+
+	protected function _getCacheId($suffix = null)
+	{
+        $cacheId = self::REQUEST_ID_PREFIX . self::CACHE_ID;
+        if ($suffix != null) {
+            $cacheId .= '_' . $suffix;
+        }
+		return $cacheId;
+	}
+
 	/**
 	 * Loads previously registered failed attempts from cache, if they exist.
 	 * Returns an empty array, otherwise.
@@ -200,26 +233,27 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	 **/
 	protected function _loadFailedAttempts()
 	{
-		$cachedContent = Mage::app()->loadCache($this->_getCacheId());
+		$cachedContent = Mage::app()->loadCache($this->_getCacheId('failedAttempts'));
 		$failedAttempts = array();
-		if($cachedContent)
+		if($cachedContent) {
 			$failedAttempts = unserialize($cachedContent);
-		
+        }
+
 		return $failedAttempts;
 	}
-	
+
 	/**
 	 * Save failed attempts to cache.
 	 *
 	 * @param	array of int	failed attempts
 	 **/
-	public function saveFailedAttempts($failedAttempts)
+	public function _saveFailedAttempts($failedAttempts)
 	{
-		Mage::app()->saveCache(serialize($failedAttempts), $this->_getCacheId(), array(self::CACHE_TAG));
+		Mage::app()->saveCache(serialize($failedAttempts), $this->_getCacheId('failedAttempts'), array(self::CACHE_TAG));
 	}
-	
+
 	/**
-	 * Removes entries from a list of minute-timestamps which are older than a given delay set within the configuration
+	 * Removes entries from a list of minute-timestamps which are older than 3 minutes
 	 *
 	 * @param	array of int	entries
 	 **/
@@ -227,13 +261,14 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 	{
 		$delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
 		$newEntries = array();
-		
-		foreach($entries as $entry)
-		{
-			if(intval(time() / 60) - $entry < $delay)
-				$newEntries[] = $entry;
-		}
-		
+
+        $minutesTimestamp = intval(time() / 60);
+        foreach($entries as $entry)
+        {
+            if($minutesTimestamp - $entry < 3)
+                $newEntries[] = $entry;
+        }
+
 		return $newEntries;
 	}
 
@@ -296,19 +331,24 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getSuggestUrl()
     {
-        
-        if (Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY)) {
+        if ($this->isSuggestProxyActivated()) {
             $params = array();
             if (Mage::app()->getStore()->isCurrentlySecure()) {
                 $params['_secure'] = true;
             }
             $url = $this->_getUrl('factfinder/proxy/suggest', $params);
         } else {
-			$url = Mage::getSingleton('factfinder/facade')->getSuggestUrl(); 
+			$url = Mage::getSingleton('factfinder/facade')->getSuggestUrl();
 		}
         return $url;
     }
 
+    /**
+     * @return bool
+     */
+    public function isSuggestProxyActivated() {
+        return Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY);
+    }
 
     /**
      * get current Order

@@ -6,9 +6,6 @@
 	$pushedProducts = $this->getPushedProductsCollection()->load()->toArray();
 	if (!empty($pushedProducts)) {
 		//customize here the pushed products output
-		echo ' <!-- ';
-		var_dump($pushedProducts);
-		echo ' --> ';
 	}
 ?>
 <?php endif;?>
