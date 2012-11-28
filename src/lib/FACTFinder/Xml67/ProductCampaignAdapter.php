@@ -14,7 +14,7 @@
  * @version   $Id: ProductCampaignAdapter.php 43440 2012-02-08 12:42:13Z martin.buettner $
  * @package   FACTFinder\Xml67
  */
-class FACTFinder_Xml67_ProductCampaignAdapter extends FACTFinder_Abstract_ProductCampaignAdapter
+class FACTFinder_Xml67_ProductCampaignAdapter extends FACTFinder_Default_ProductCampaignAdapter
 {
     protected $xmlData = null;
 	

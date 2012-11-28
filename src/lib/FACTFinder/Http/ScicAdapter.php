@@ -14,7 +14,7 @@
  * @version   $Id: ScicAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Http
  */
-class FACTFinder_Http_ScicAdapter extends FACTFinder_Abstract_ScicAdapter
+class FACTFinder_Http_ScicAdapter extends FACTFinder_Default_ScicAdapter
 {
     /**
      * init

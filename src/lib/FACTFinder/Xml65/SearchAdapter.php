@@ -14,7 +14,7 @@
  * @version   $Id: SearchAdapter.php 25985 2010-06-30 15:31:53Z rb $
  * @package   FACTFinder\Xml65
  */
-class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
+class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Default_SearchAdapter
 {
     protected $status = null;
     protected $isArticleNumberSearch;
@@ -221,18 +221,13 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Abstract_SearchAdapter
                 if (isset($xmlGroup->attributes()->unit)) {
                     $groupUnit = strval($xmlGroup->attributes()->unit);
                 }
-                
-                $groupStyle = 'DEFAULT';
-                if (isset($xmlGroup->attributes()->style)) {
-                    $groupStyle = strval($xmlGroup->attributes()->style);
-                }
 
                 $group = FF::getInstance('asnGroup',
                     array(),
                     $encodingHandler->encodeServerContentForPage((string)$xmlGroup->attributes()->name),
                     $encodingHandler->encodeServerContentForPage((string)$xmlGroup->attributes()->detailedLinks),
                     $groupUnit,
-                    $groupStyle
+                    strval($xmlGroup->attributes()->style) == 'SLIDER'
                 );
 
                 //get filters of the current group

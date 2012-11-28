@@ -3,18 +3,18 @@
  * FACT-Finder PHP Framework
  *
  * @category  Library
- * @package   FACTFinder\Abstract
+ * @package   FACTFinder\Xml67
  * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
  */
 
 /**
- * adapter for the factfinder tagcloud data
+ * tag cloud adapter using the xml interface
  *
  * @author    Rudolf Batt <rb@omikron.net>
  * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
- * @package   FACTFinder\Abstract
+ * @package   FACTFinder\Xml68
  */
-abstract class FACTFinder_Abstract_TagCloudAdapter extends FACTFinder_Abstract_Adapter
+class FACTFinder_Default_TagCloudAdapter extends FACTFinder_Abstract_Adapter
 {
     private $tagCloud;
 
@@ -33,5 +33,9 @@ abstract class FACTFinder_Abstract_TagCloudAdapter extends FACTFinder_Abstract_A
     /**
      * @return array $tagCloud list of FACTFinder_Tag objects
      */
-    abstract protected function createTagCloud();
+    protected function createTagCloud()
+    {
+        $this->log->debug("Tag cloud not available before FF 6.0!");
+        return array();
+    }
 }

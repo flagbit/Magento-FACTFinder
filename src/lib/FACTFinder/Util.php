@@ -19,7 +19,7 @@ class FACTFinder_Util
     protected $searchAdapter;
     protected $ffparams;
 
-    public function __construct(FACTFinder_Parameters $ffparams, FACTFinder_Abstract_SearchAdapter $searchAdapter) {
+    public function __construct(FACTFinder_Parameters $ffparams, FACTFinder_Default_SearchAdapter $searchAdapter) {
         $this->ffparams = $ffparams;
         $this->searchAdapter = $searchAdapter;
     }
