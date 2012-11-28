@@ -458,7 +458,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $categoryPath .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
                 }
                 if ($categoryIdsCount > 2) {
-                    $value .= rtrim($categoryPath,'/').'|';
+                    $value .= trim(rtrim($categoryPath,'/')).'|';
                 }
             }
             $value = trim($value, '|');
@@ -578,7 +578,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 			if ($attribute != null) {
 				$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
 				$dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-			}
+			} else {
+                // it is very unlikely that an attribute exists in the header but is not delivered by "getSearchableAttributes",
+                // but actually it might be a result of a broken database or something like that..
+                $dataArray[$pos] = null;
+            }
 		}
     }
 }

@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2012-11-23</date>
- <time>17:56:24</time>
+ <date>2012-11-28</date>
+ <time>08:48:29</time>
  <version>
-  <release>3.4.4</release>
-  <api>3.4.4</api>
+  <release>3.4.5</release>
+  <api>3.4.5</api>
  </version>
  <stability>
   <release>stable</release>
@@ -158,7 +158,7 @@
     <file md5sum="a1e1f1d393bea196e07f92e171e10513" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Cart">
-    <file md5sum="4faa30edab3a35fffd0e3cf0ebaa81b2" name="Advisory.php" role="magecommunity" />
+    <file md5sum="14791cddb1fd131f7f78928e7877fc48" name="Advisory.php" role="magecommunity" />
     <file md5sum="c5a0f657037274881f7d2846e004f164" name="Feedback.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block\Campaign\Cart -->
    <dir name="\Flagbit\FactFinder\Block\Campaign\Product">
@@ -200,7 +200,7 @@
    </dir> <!-- /\Flagbit\FactFinder\documentation -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="d854839fee413eeee5f549e66f6d54e2" name="config.xml" role="magecommunity" />
+    <file md5sum="3e93c0eb1f2022638b56c3bd81252ab4" name="config.xml" role="magecommunity" />
     <file md5sum="d3721503a1b346f60633e2f0a8e361a1" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -217,7 +217,7 @@
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="2cc9fb277e4d598fb40f4a2b6858d9f2" name="Product.php" role="magecommunity" />
+    <file md5sum="196987136a58d6348ab650c404568acf" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Handler">
@@ -295,7 +295,7 @@
    </dir> <!-- /\frontend\base\default\template\factfinder -->
    <dir name="\frontend\base\default\template\factfinder\campaign">
     <file md5sum="d0ef29b97aa4c3bdfa2b94596beb5b21" name="advisory.phtml" role="magedesign" />
-    <file md5sum="a44c2521e961cfb62b4b89ad0cb71b15" name="feedback.phtml" role="magedesign" />
+    <file md5sum="a00ad977b82b199630371aef060f25ab" name="feedback.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder\campaign -->
    <dir name="\frontend\base\default\template\factfinder\campaign\cart">
     <file md5sum="bb994272a6daaaba298a38023f6db212" name="advisory.phtml" role="magedesign" />
@@ -338,14 +338,14 @@
  <changelog>
   <release>
    <version>
-    <release>3.4.4</release>
-    <api>3.4.4</api>
+    <release>3.4.5</release>
+    <api>3.4.5</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2012-11-23</date>
+   <date>2012-11-28</date>
    <license>GPL</license>
    <notes>
 [+BUGFIX] use the fallback-offline delay correctly

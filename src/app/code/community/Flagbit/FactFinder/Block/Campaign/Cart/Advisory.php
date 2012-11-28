@@ -23,9 +23,9 @@ class Flagbit_FactFinder_Block_Campaign_Cart_Advisory extends Mage_Core_Block_Te
 
     protected function _prepareLayout()
     {
+        $this->_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
+        
         if($this->canCampaignBeDisplayed()){
-            $this->_product = Mage::getModel('catalog/product')->load(Mage::getSingleton('checkout/session')->getLastAddedProductId());
-
             $productIds = array(
                 $this->_product->getData(Mage::helper('factfinder/search')->getIdFieldName())
             );
