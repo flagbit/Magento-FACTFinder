@@ -65,98 +65,112 @@ class Flagbit_FactFinder_Model_Facade
         FF::setLogger($arg);
         $this->_logger = $arg;
     }
-    
-    /**
-     * Used to allow and delegate generic methods.
-     * Valid signatures:
-     *
-     * @method FACTFinder_Abstract_<$type>Adapter get<$type>Adapter($channel = null, $id = null)
-     * get adapter class from the factfinder library; this is not recommended, but some cases this might be necessary.
-     *
-     * @method null configure<$type>Adapter(array $params, $channel = null, $id = null)
-     * @param array $params the parameters which should be set 
-     * set parameters for the specified adapter
-     *
-     * this applies to both kind of methods:
-     * - the (correct) implementation of the specified adapter will be determined automatically, depending on configuration and which adapters acutally exit
-     * - $type will be fetched out of the method name, so for example for the call "getSearchAdapter" $type is "search"
-     * - this are the two last (optional) accepted parameters:
-     * @param string $channel the factfinder channel which should be requested by this adapter. if channel is null, the primary channel from the configuration is used [default: null]
-     * @param string $id optional id to enable multiple adapters of the same type and for the same channel [default: null]
-     *
-     * @param string $function
-     * @param array $arguments
-     * @return FACTFinder_Abstract_Adapter|null depending on which type is called
-     * @throws Exception if such an adapter does not exist or an non-existing method is called
-     */
-    public function __call($function, $arguments)
+
+    public function getSearchAdapter($channel = null)
     {
-        $matches = array();
-        $configureAdapter = false;
-        $channelArgPos = 0;
-        if (preg_match('/^get(.+)Adapter$/', $function, $matches))
-        {
-            // We have a get______Adapter($channel = null, $id = null) method!
-            $channelArgPos = 0; // The first argument (if any) will be treated as a channel
-            $idArgPos = 1; // The second argument (if any) will be treated as $id
-        }
-        elseif (preg_match('/^configure(.+)Adapter$/', $function, $matches))
-        {
-            // We have a configure_____Adapter(array $params, $channel = null, $id = null) method!
-            $configureAdapter = true;
-            // The first argument (if any) will be treated as an array of params as key-value pairs
-            $channelArgPos = 1; // The second argument (if any) will be treated as a channel
-            $idArgPos = 2; // The third argument (if any) will be treated as $id
-        }
-        else
-        {
-            throw new Exception("Call to undefined method ".$function."() in file ".__FILE__." on line ".__LINE__);
-        }
-
-        $type = $matches[1];
-        $type[0] = strtolower($type[0]);
-
-        $format = $this->_getFormat($type);
-
-        $channel = null;
-        if(count($arguments) > $channelArgPos)
-            $channel = $arguments[$channelArgPos];
-
-        $id = null;
-        if(count($arguments) > $idArgPos)
-            $id = $arguments[$idArgPos];
-            
-        $adapter = $this->_getAdapter($format, $type, $channel, $id);
-
-        if($configureAdapter && count($arguments))
-        {
-            foreach($arguments[0] as $key => $value)
-                $adapter->setParam($key, $value);
-
-            return null;
-        }
-        else
-        {
-            return $adapter;
-        }
+        return $this->_getAdapter("search", $channel);
     }
 
-    protected function _getFormat($type)
+    public function getScicAdapter($channel = null)
     {
-        $format = 'http';
-        if ($type != 'scic' && $type != 'suggest') {
-            $version = $this->_getConfiguration()->getFactFinderVersion();
-            $format = 'xml' . $version;
-            return $format;
-        }
-        return $format;
+        return $this->_getAdapter("scic", $channel);
+    }
+
+    public function getSuggestAdapter($channel = null)
+    {
+        return $this->_getAdapter("suggest", $channel);
+    }
+
+    public function getRecommendationAdapter($channel = null)
+    {
+        return $this->_getAdapter("recommendation", $channel);
+    }
+
+    public function getTagCloudAdapter($channel = null)
+    {
+        return $this->_getAdapter("tagCloud", $channel);
+    }
+
+    public function getCompareAdapter($channel = null)
+    {
+        return $this->_getAdapter("compare", $channel);
+    }
+
+    public function getImportAdapter($channel = null)
+    {
+        return $this->_getAdapter("import", $channel);
+    }
+
+    public function getProductCampaignAdapter($channel = null)
+    {
+        return $this->_getAdapter("productCampaign", $channel);
+    }
+
+    public function getSimilarRecordsAdapter($channel = null)
+    {
+        return $this->_getAdapter("similarRecords", $channel);
+    }
+
+    public function configureSearchAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "search", $channel, $id);
+    }
+
+    public function configureScicAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "scic", $channel, $id);
+    }
+
+    public function configureSuggestAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "suggest", $channel, $id);
+    }
+
+    public function configureRecommendationAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "recommendation", $channel, $id);
+    }
+
+    public function configureTagCloudAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "tagCloud", $channel, $id);
+    }
+
+    public function configureCompareAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "compare", $channel, $id);
+    }
+
+    public function configureImportAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "import", $channel, $id);
+    }
+
+    public function configureProductCampaignAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "productCampaign", $channel, $id);
+    }
+
+    public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "similarRecords", $channel, $id);
+    }
+
+    protected function _configureAdapter($params, $type, $channel = null, $id = null)
+    {
+        $adapter = $this->_getAdapter($type, $channel, $id);
+
+        foreach($params as $key => $value)
+            $adapter->setParam($key, $value);
     }
 
     /**
      * @return FACTFinder_Abstract_Adapter
      */
-    protected function _getAdapter($format, $type, $channel = null, $id = null)
+    protected function _getAdapter($type, $channel = null, $id = null)
     {
+        $format = $this->_getFormat($type);
+
         if(!$id)
             $id = '';
         if(!$channel)
@@ -178,6 +192,17 @@ class Flagbit_FactFinder_Model_Facade
             );
         }
         return $this->_adapters[$hashKey][$channel];
+    }
+
+    protected function _getFormat($type)
+    {
+        $format = 'http';
+        if ($type != 'scic' && $type != 'suggest') {
+            $version = $this->_getConfiguration()->getFactFinderVersion();
+            $format = 'xml' . $version;
+            return $format;
+        }
+        return $format;
     }
 
     public function configureStatusHelper($channel = null)
