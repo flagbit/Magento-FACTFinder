@@ -261,6 +261,8 @@
                 <port>8080</port>
                 <protocol>http</protocol> <!-- possible values: http, https -->
 
+                <ffversion>66</ffversion>
+
                 <auth_user>client</auth_user>
                 <auth_password></auth_password>
                 <auth_type>advanced</auth_type> <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
