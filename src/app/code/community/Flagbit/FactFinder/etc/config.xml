@@ -156,6 +156,10 @@
             </controller_action_layout_load_before>
             <controller_action_layout_generate_blocks_after>
                 <observers>
+                    <handleCampaignRedirect>
+                        <class>factfinder/observer</class>
+                        <method>handleCampaignRedirect</method>
+                    </handleCampaignRedirect>
                     <initializeAfterSearchNavigation>
                         <class>factfinder/observer</class>
                         <method>initializeAfterSearchNavigation</method>

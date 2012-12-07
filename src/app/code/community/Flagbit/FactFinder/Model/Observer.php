@@ -21,6 +21,7 @@
 class Flagbit_FactFinder_Model_Observer
 {
     const _asnBlockRegistryKey = 'FACTFINDER__asnBlock';
+    const _campaignRedirectRegistryKey = 'FACTFINDER__campaignRedirectBlock';
 
     /**
      * Observer method.
@@ -339,8 +340,16 @@ class Flagbit_FactFinder_Model_Observer
         $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
         if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
         {
-            $asnBlock->handleCampaignRedirect();
             $asnBlock->initializeAfterSearchNavigation();
+        }
+    }
+
+    public function handleCampaignRedirect()
+    {
+        $redirectBlock = Mage::registry(self::_campaignRedirectRegistryKey);
+        if($redirectBlock instanceof Flagbit_FactFinder_Block_Layer)
+        {
+            $redirectBlock->handleCampaignRedirect();
         }
     }
 }
