@@ -16,8 +16,8 @@
  <date>2012-11-28</date>
  <time>08:48:29</time>
  <version>
-  <release>3.4.5</release>
-  <api>3.4.5</api>
+  <release>3.4.6</release>
+  <api>3.4.6</api>
  </version>
  <stability>
   <release>stable</release>
@@ -338,8 +338,8 @@
  <changelog>
   <release>
    <version>
-    <release>3.4.5</release>
-    <api>3.4.5</api>
+    <release>3.4.6</release>
+    <api>3.4.6</api>
    </version>
    <stability>
     <release>stable</release>
