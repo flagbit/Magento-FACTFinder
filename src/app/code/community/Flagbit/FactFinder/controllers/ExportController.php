@@ -118,12 +118,12 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 	 **/
 	protected function lockSemaphore()
 	{
-		$mtime = @filemtime("ffexport.lock");
+		$mtime = @filemtime($this->_getLockFileName());
 		if($mtime && time() - $mtime < FF::getSingleton('configuration')->getSemaphoreTimeout())
 		{
 			throw new RuntimeException();
 		}
-		@touch("ffexport.lock");
+		@touch($this->_getLockFileName());
 	}
 	
 	/**
@@ -131,6 +131,11 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 	 **/
 	protected function releaseSemaphore()
 	{
-		@unlink("ffexport.lock");
+		@unlink($this->_getLockFileName());
 	}
+
+    protected function _getLockFileName()
+    {
+        return "ffexport_".$this->_getStoreId().".lock";
+    }
 }
