@@ -25,12 +25,9 @@
  </stability>
  <license>GPL</license>
  <notes>
-[+BUGFIX] use the fallback-offline delay correctly
-[~BUGFIX] don&apos;t add messages to FF if delay is set to 0 (too many messages)
-[~TASK] change search helper method access
-[+BUGFIX] only send request to FF if the module is activated
-[+BUGFIX] don&apos;t collect factfinder fails, if fallback isn&apos;t activated
-[+BUGFIX] don&apos;t make requests to the recommendation engine if the according features are disabled
+[+BUGFIX] Class FF not found in CheckStatus by loading the facade prior the usage of FF
+[~BUGFIX] avoid using non existing methods, if a different engine is used
+[+BUGFIX] don't override existing attributes in export data
  </notes>
  <contents>
   <dir name="/">
