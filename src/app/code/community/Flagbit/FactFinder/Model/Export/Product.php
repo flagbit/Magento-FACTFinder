@@ -520,7 +520,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         }
 
         if ($attribute->usesSource()) {
-            if ($this->_engine->allowAdvancedIndex()) {
+            if ($this->_engine !== null && method_exists($this->_engine, 'allowAdvancedIndex') && $this->_engine->allowAdvancedIndex()) {
                 return $value;
             }
 
