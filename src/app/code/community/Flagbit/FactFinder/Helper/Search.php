@@ -108,14 +108,14 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 
     protected function _enableFallback($delay)
     {
-        $this->_skipFactFinder = true;
+        self::$_skipFactFinder = true;
         $nextRetryTimestamp = intval(time() / 60) + $delay;
         Mage::app()->saveCache($nextRetryTimestamp, $this->_getCacheId('nextRetryTimestamp'), array(self::CACHE_TAG));
     }
     
     protected function _disableFallback()
     {
-        $this->_skipFactFinder = false;
+        self::$_skipFactFinder = false;
         $nextRetryTimestamp = 0;
         Mage::app()->saveCache($nextRetryTimestamp, $this->_getCacheId('nextRetryTimestamp'), array(self::CACHE_TAG));
     }
