@@ -195,8 +195,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 }
             }
 
-            $productIndexes			= array();
-            $productAttributes		= $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
+            $productAttributes		= $this->_getProductAttributes($storeId, array_keys($productAttributes), $dynamicFields);
             foreach ($products as $productData) {
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
@@ -436,7 +435,13 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                        null
                 )
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
-                ->where('main.visibility IN(3,4)') //TODO look for Constants
+                ->where(
+                    'main.visibility IN(?)',
+                    array(
+                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH,
+                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
+                    )
+                )
                 ->where('main.store_id = ?', $storeId)
                 ->where('e.path LIKE \'1/' . Mage::app()->getStore()->getRootCategoryId() .'/%\'')
                 ->group('main.product_id');
