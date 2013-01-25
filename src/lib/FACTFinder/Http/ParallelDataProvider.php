@@ -84,7 +84,15 @@ class FACTFinder_Http_ParallelDataProvider
 				$handles[$id] = null;
 				continue;
 			}
-            $dataProvider->prepareRequest();
+            try
+            {
+                $dataProvider->prepareRequest();
+            }
+            catch (NoRequestTypeException $e)
+            {
+                $handles[$id] = null;
+                continue;
+            }
 
 			$handle = curl_init();
 			curl_setopt_array($handle, $dataProvider->getCurlOptions());
@@ -122,6 +130,9 @@ class FACTFinder_Http_ParallelDataProvider
 			if($handle == null)
 			{
 				$data[$id] = null;
+                $httpCodes[$id] = null;
+                $curlErrnos[$id] = null;
+                $curlErrors[$id] = null;
 				continue;
 			}
 			$data[$id] = curl_multi_getcontent($handle);

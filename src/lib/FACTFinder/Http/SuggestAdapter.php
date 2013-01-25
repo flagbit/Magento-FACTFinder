@@ -14,7 +14,7 @@
  * @version   $Id: SuggestAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Http
  */
-class FACTFinder_Http_SuggestAdapter extends FACTFinder_Abstract_SuggestAdapter
+class FACTFinder_Http_SuggestAdapter extends FACTFinder_Default_SuggestAdapter
 {
     /**
      * init

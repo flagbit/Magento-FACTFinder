@@ -15,12 +15,10 @@
  * @package   FACTFinder\Http
  */
 
-include_once LIB_DIR . DS . 'SAI' . DS . 'Curl.php';
-
 class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 {
     /**
-     * @var SAI_CurlInterface
+     * @var FACTFinder_CurlInterface
      */
     protected $curl;
 
@@ -41,10 +39,10 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     protected $lastCurlErrno = null;
     protected $lastCurlError = null;
 
-	function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null, SAI_CurlInterface $curl = null) {
+	function __construct(array $params = null, FACTFinder_Abstract_Configuration $config = null, FACTFinder_Abstract_Logger $log = null, FACTFinder_CurlInterface $curl = null) {
         if($curl === null)
         {
-            $curl = new SAI_Curl();
+            $curl = FF::getInstance('curl');
         }
         $this->curl = $curl;
         $this->urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $log);
@@ -201,7 +199,14 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
      **/
     protected function loadResponse()
     {
-        $this->prepareRequest();
+        try
+        {
+            $this->prepareRequest();
+        }
+        catch(NoRequestTypeException $e)
+        {
+            return "";
+        }
 
         $cResource = $this->curl->curl_init();
 
@@ -234,8 +239,8 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     public function prepareRequest()
     {
         if ($this->getType() === null) {
-            $this->log->error("Request type missing.");
-            throw new Exception('Request type was not set! Cannot send request without knowing the type.');
+            $this->log->debug("Request type missing.");
+            throw new NoRequestTypeException('Request type was not set! Cannot send request without knowing the type.');
         }
 
         $config = $this->getConfig();
@@ -308,3 +313,11 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         return $this->lastCurlErrno;
     }
 }
+
+/**
+ * @internal
+ * Exception type needed for data provider
+ *
+ * @package   FACTFinder\Http
+ */
+class NoRequestTypeException extends Exception {}

@@ -11,10 +11,10 @@
  * product comparison adapter using the xml interface
  *
  * @author    Martin Buettner <martin.buettner@omikron.net>
- * @version   $Id: SimilarRecordsAdapter.php 42955 2012-01-25 17:04:47Z mb $
+ * @version   $Id: CompareAdapter.php 42955 2012-01-25 17:04:47Z mb $
  * @package   FACTFinder\Xml66
  */
-class FACTFinder_Xml66_CompareAdapter extends FACTFinder_Abstract_CompareAdapter
+class FACTFinder_Xml66_CompareAdapter extends FACTFinder_Default_CompareAdapter
 {
     /**
      * @return void

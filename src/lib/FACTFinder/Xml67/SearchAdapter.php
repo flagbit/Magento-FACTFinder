@@ -51,10 +51,12 @@ class FACTFinder_Xml67_SearchAdapter extends FACTFinder_Xml66_SearchAdapter
 						foreach ($xmlCampaign->feedback->text as $text) {
 							if(isset($text->attributes()->label)) {
 								$label = trim($text->attributes()->label);
-							} else {
-								$label = trim($text->attributes()->nr);
+                                $feedback[$label] = $encodingHandler->encodeServerContentForPage((string)$text);
 							}
-							$feedback[$label] = $encodingHandler->encodeServerContentForPage((string)$text);
+                            if(isset($text->attributes()->nr)) {
+								$label = trim($text->attributes()->nr);
+                                $feedback[$label] = $encodingHandler->encodeServerContentForPage((string)$text);
+							}
 						}
 						$campaign->addFeedback($feedback);
 					}

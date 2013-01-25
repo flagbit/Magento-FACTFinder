@@ -156,6 +156,10 @@
             </controller_action_layout_load_before>
             <controller_action_layout_generate_blocks_after>
                 <observers>
+                    <handleCampaignRedirect>
+                        <class>factfinder/observer</class>
+                        <method>handleCampaignRedirect</method>
+                    </handleCampaignRedirect>
                     <initializeAfterSearchNavigation>
                         <class>factfinder/observer</class>
                         <method>initializeAfterSearchNavigation</method>
@@ -260,6 +264,8 @@
                 <address>magento.fact-finder.de</address>
                 <port>8080</port>
                 <protocol>http</protocol> <!-- possible values: http, https -->
+
+                <ffversion>66</ffversion>
 
                 <auth_user>client</auth_user>
                 <auth_password></auth_password>
