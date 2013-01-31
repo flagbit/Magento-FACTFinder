@@ -255,6 +255,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     }
                 }             
             }
+
+            unset($products);
+            unset($productAttributes);
+            unset($productRelations);
             flush();
         }
     }
