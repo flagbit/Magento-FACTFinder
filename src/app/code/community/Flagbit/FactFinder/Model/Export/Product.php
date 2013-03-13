@@ -195,8 +195,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 }
             }
 
-            $productIndexes			= array();
-            $productAttributes		= $this->_getProductAttributes($storeId, $productAttributes, $dynamicFields);
+            $productAttributes		= $this->_getProductAttributes($storeId, array_keys($productAttributes), $dynamicFields);
             foreach ($products as $productData) {
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
@@ -440,7 +439,13 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                        null
                 )
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
-                ->where('main.visibility IN(3,4)') //TODO look for Constants
+                ->where(
+                    'main.visibility IN(?)',
+                    array(
+                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH,
+                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
+                    )
+                )
                 ->where('main.store_id = ?', $storeId)
                 ->where('e.path LIKE \'1/' . Mage::app()->getStore()->getRootCategoryId() .'/%\'')
                 ->group('main.product_id');
@@ -524,7 +529,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         }
 
         if ($attribute->usesSource()) {
-            if ($this->_engine->allowAdvancedIndex()) {
+            if ($this->_engine !== null && method_exists($this->_engine, 'allowAdvancedIndex') && $this->_engine->allowAdvancedIndex()) {
                 return $value;
             }
 
@@ -582,7 +587,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 			if ($attribute != null) {
 				$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
 				$dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-			} else {
+			} else if (!array_key_exists($pos, $dataArray)) {
                 // it is very unlikely that an attribute exists in the header but is not delivered by "getSearchableAttributes",
                 // but actually it might be a result of a broken database or something like that..
                 $dataArray[$pos] = null;
