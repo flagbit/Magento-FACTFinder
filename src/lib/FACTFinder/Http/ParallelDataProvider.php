@@ -15,13 +15,23 @@
  * @version   $Id: DataProvider.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Http
  */
+
 class FACTFinder_Http_ParallelDataProvider
 {
-	protected static $instance;
-	protected static $dataProvider = array();
-	protected static $dataLoaded = false;
+    /**
+     * @var FACTFinder_Http_ParallelDataProvider
+     */
+    protected static $instance;
+
+    /**
+     * @var array of FACTFinder_Http_DataProviderProxy
+     */
+    protected static $dataProviders = array();
 	
-    protected $data;
+    protected $data = array();
+    protected $httpCodes = array();
+    protected $curlErrnos = array();
+    protected $curlErrors = array();
 	
 	/**
 	 * singleton
@@ -31,15 +41,15 @@ class FACTFinder_Http_ParallelDataProvider
 	/**
 	 * @return FACTFinder_Abstract_DataProvider
 	 */
-	public static function getDataProvider(array $params = null, FACTFinder_Abstract_Configuration $config = null) {
+	public static function getDataProvider(array $params = null, FACTFinder_Abstract_Configuration $config = null, $log = null) {
 		if (self::$instance == null) {
 			self::$instance = new FACTFinder_Http_ParallelDataProvider();
 		}
-		$id = 'proxy' . count(self::$dataProvider); // use prefix so the id is a string
-		self::$dataProvider[$id] = new FACTFinder_Http_DataProviderProxy($params, $config);
-		self::$dataProvider[$id]->register($id, self::$instance);
+		$id = 'proxy' . count(self::$dataProviders); // use prefix so the id is a string
+		self::$dataProviders[$id] = new FACTFinder_Http_DataProviderProxy($params, $config, $log);
+		self::$dataProviders[$id]->register($id, self::$instance);
 		
-		return self::$dataProvider[$id];
+		return self::$dataProviders[$id];
 	}
 
     /**
@@ -49,33 +59,43 @@ class FACTFinder_Http_ParallelDataProvider
      **/
     public static function loadAllData()
     {
-		if (self::$instance == null) {
-			throw new Exception("no dataprovider initialized");
+		if (self::$instance == null || count(self::$dataProviders) == 0) {
+			return;
 		}
 		
 		// TODO: optimize:
-			// - deny multiple loading of single requests that were already loaded
 			// - warn if several loadings were done
 			// - add logging
 	
 		// init handles
 		$multiHandle = curl_multi_init();
         $handles = self::initHandles($multiHandle);
-		$data = self::executeHandles($multiHandle, $handles);
-		
-		self::$instance->setData($data);
-		self::$dataLoaded = true;
+		self::executeHandles($multiHandle, $handles);
     }
 
 	protected static function initHandles($multiHandle) {
 		$handles = array();
-		foreach(self::$dataProvider AS $id => $dataProvider) {
-			$handle = curl_init($dataProvider->getAuthenticationUrl());
-			
-			$curlOptions = $dataProvider->getCurlOptions();
-			$curlOptions[CURLOPT_HTTPHEADER] = $dataProvider->getHttpHeader();
-			$curlOptions[CURLOPT_RETURNTRANSFER] = true; // this is a must have option, so the data can be saved
-			curl_setopt_array($handle, $curlOptions);
+		foreach(self::$dataProviders AS $id => $dataProvider) {
+            /**
+             * @var $dataProvider FACTFinder_Http_DataProviderProxy
+             */
+            if(!$dataProvider->hasUrlChanged())
+			{
+				$handles[$id] = null;
+				continue;
+			}
+            try
+            {
+                $dataProvider->prepareRequest();
+            }
+            catch (NoRequestTypeException $e)
+            {
+                $handles[$id] = null;
+                continue;
+            }
+
+			$handle = curl_init();
+			curl_setopt_array($handle, $dataProvider->getCurlOptions());
 			
 			$handles[$id] = $handle;
 			curl_multi_add_handle($multiHandle,$handle);
@@ -103,21 +123,69 @@ class FACTFinder_Http_ParallelDataProvider
 
 		//close the handles
 		$data = array();
+        $httpCodes = array();
+        $curlErrnos = array();
+        $curlErrors = array();
 		foreach($handles AS $id => $handle) {
+			if($handle == null)
+			{
+				$data[$id] = null;
+                $httpCodes[$id] = null;
+                $curlErrnos[$id] = null;
+                $curlErrors[$id] = null;
+				continue;
+			}
 			$data[$id] = curl_multi_getcontent($handle);
+            $httpCodes[$id] = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+            $curlErrnos[$id] = curl_errno($handle);
+            $curlErrors[$id] = curl_error($handle);
+
 			curl_multi_remove_handle($multiHandle, $handle);
+            curl_close($handle);
 		}
 		curl_multi_close($multiHandle);
-		return $data;
+
+        self::$instance->setData($data);
+        self::$instance->setHttpCodes($httpCodes);
+        self::$instance->setCurlErrnos($curlErrnos);
+        self::$instance->setCurlErrors($curlErrors);
 	}
-	
-	/**
-	 * 
-	 * internal method to apply data to 
-	 */
+
 	protected function setData(array $data) {
-		$this->data = $data;
+		foreach($data as $id => $dataItem)
+		{
+			if($dataItem == null)
+				continue;
+			$this->data[$id] = $dataItem;
+		}		
 	}
+
+    protected function setHttpCodes(array $httpCodes) {
+        foreach($httpCodes as $id => $httpCode)
+        {
+            if($httpCode == null)
+                continue;
+            $this->httpCodes[$id] = $httpCode;
+        }
+    }
+
+    protected function setCurlErrnos(array $curlErrnos) {
+        foreach($curlErrnos as $id => $curlErrno)
+        {
+            if($curlErrno == null)
+                continue;
+            $this->curlErrnos[$id] = $curlErrno;
+        }
+    }
+
+    protected function setCurlErrors(array $curlErrors) {
+        foreach($curlErrors as $id => $curlError)
+        {
+            if($curlError == null)
+                continue;
+            $this->curlErrors[$id] = $curlError;
+        }
+    }
 	
     /**
 	 * this method is called by the proxy data providers on the one and only existing instance
@@ -126,10 +194,34 @@ class FACTFinder_Http_ParallelDataProvider
      */
     public function getData($id)
     {
-        if (!self::$dataLoaded) {
-           throw new DataNotLoadedException("Implementation Error: please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data");
+		if (self::$dataProviders[$id]->hasUrlChanged()) {
+           throw new DataNotLoadedException("Implementation Error: the data is not up to date. Please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data!");
         }
         return isset($this->data[$id]) ? $this->data[$id] : null;
+    }
+
+    public function getLastHttpCode($id)
+    {
+        if (self::$dataProviders[$id]->hasUrlChanged()) {
+            throw new DataNotLoadedException("Implementation Error: the data is not up to date. Please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data!");
+        }
+        return isset($this->httpCodes[$id]) ? $this->httpCodes[$id] : null;
+    }
+
+    public function getLastCurlErrno($id)
+    {
+        if (self::$dataProviders[$id]->hasUrlChanged()) {
+            throw new DataNotLoadedException("Implementation Error: the data is not up to date. Please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data!");
+        }
+        return isset($this->curlErrnos[$id]) ? $this->curlErrnos[$id] : null;
+    }
+
+    public function getLastCurlError($id)
+    {
+        if (self::$dataProviders[$id]->hasUrlChanged()) {
+            throw new DataNotLoadedException("Implementation Error: the data is not up to date. Please use 'FACTFinder_Http_ParallelDataProvider::loadAllData' before trying to get data!");
+        }
+        return isset($this->curlErrors[$id]) ? $this->curlErrors[$id] : null;
     }
 }
 
@@ -142,7 +234,11 @@ class FACTFinder_Http_ParallelDataProvider
 class FACTFinder_Http_DataProviderProxy extends FACTFinder_Http_DataProvider
 {
 	private $id;
-	private $master;
+
+    /**
+     * @var FACTFinder_Http_ParallelDataProvider
+     */
+    private $master;
 	
 	public function register($id, FACTFinder_Http_ParallelDataProvider $master) {
 		$this->id = $id;
@@ -152,6 +248,18 @@ class FACTFinder_Http_DataProviderProxy extends FACTFinder_Http_DataProvider
 	public function getData() {
 		return $this->master->getData($this->id);
 	}
+
+    public function getLastHttpCode() {
+        return $this->master->getLastHttpCode($this->id);
+    }
+
+    public function getLastCurlErrno() {
+        return $this->master->getLastCurlErrno($this->id);
+    }
+
+    public function getLastCurlError() {
+        return $this->master->getLastCurlError($this->id);
+    }
 	
 	public function getCurlOptions() {
 		return $this->curlOptions;

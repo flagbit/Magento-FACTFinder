@@ -14,7 +14,7 @@
  * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Xml65
  */
-class FACTFinder_Xml65_ImportAdapter extends FACTFinder_Abstract_ImportAdapter
+class FACTFinder_Xml65_ImportAdapter extends FACTFinder_Default_ImportAdapter
 {
     /**
      * @return void
@@ -45,8 +45,8 @@ class FACTFinder_Xml65_ImportAdapter extends FACTFinder_Abstract_ImportAdapter
     protected function triggerImport($download, $type = 'data')
     {
         $this->getDataProvider()->setCurlOptions(array(
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_TIMEOUT => 360
+            CURLOPT_CONNECTTIMEOUT => $this->getDataProvider()->getConfig()->getImportConnectTimeout(),
+            CURLOPT_TIMEOUT => $this->getDataProvider()->getConfig()->getImportTimeout()
         ));
         
         $this->getDataProvider()->setParam('download', $download ? 'true' : 'false');

@@ -27,6 +27,15 @@ class Flagbit_FactFinder_Block_Campaign_Feedback extends Mage_Core_Block_Templat
      */
     protected $_pushedProductsCollection = null;
 
+    protected $_searchHandler;
+
+    protected function _prepareLayout()
+    {
+        if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
+            $this->_searchHandler = Mage::getSingleton('factfinder/handler_search');
+        }
+    }
+
     /**
      * get Campaign Text
      *
@@ -37,7 +46,7 @@ class Flagbit_FactFinder_Block_Campaign_Feedback extends Mage_Core_Block_Templat
         $text = '';
         
         if(Mage::helper('factfinder/search')->getIsEnabled(false, 'campaign')){
-            $_campaigns = Mage::getSingleton('factfinder/adapter')->getCampaigns();
+            $_campaigns = $this->_searchHandler->getCampaigns();
             if($_campaigns && $_campaigns->hasFeedback() && $this->getTextNumber()){
                 $text = $_campaigns->getFeedback($this->getTextNumber() - 1);
             }

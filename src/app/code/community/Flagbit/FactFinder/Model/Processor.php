@@ -7,6 +7,8 @@
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
 
+require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+
 /**
  * Model class
  *
@@ -27,10 +29,10 @@ class Flagbit_FactFinder_Model_Processor
 
 
     /**
-     * Search Adapter
-     * @var Flagbit_FactFinder_Model_Adapter
+     * FactFinder Facade
+     * @var Flagbit_FactFinder_Model_Facade
      */
-    protected $_searchAdapter;
+    protected $_facade;
 
     /**
      * Class constructor
@@ -45,17 +47,18 @@ class Flagbit_FactFinder_Model_Processor
     }
 
     /**
-     * get Fact-Finder Search Adapter
+     * get Fact-Finder Facade
+     * we do it manually, because we do not have the full magento context
      *
-     * @return Flagbit_FactFinder_Model_Adapter
+     * @return Flagbit_FactFinder_Model_Facade
      */
-    public function getSearchAdapter()
+    protected function _getFacade()
     {
-    	if($this->_searchAdapter === null){
+    	if($this->_facade === null){
 			$logger = new Flagbit_FactFinder_Helper_Debug();
-    		$this->_searchAdapter = new Flagbit_FactFinder_Model_Adapter($logger);
+    		$this->_facade = new Flagbit_FactFinder_Model_Facade($logger);
     	}
-    	return $this->_searchAdapter;
+    	return $this->_facade;
     }
 
 
@@ -117,7 +120,7 @@ class Flagbit_FactFinder_Model_Processor
     	if(!is_array($config) || empty($config)){
     		return;
     	}
-    	$this->getSearchAdapter()->setConfiguration($config);
+    	$this->_getFacade()->setConfiguration($config);
     	return $this->_handleRequest($request);
     }
 
@@ -129,17 +132,19 @@ class Flagbit_FactFinder_Model_Processor
      */
     protected function _handleRequest($request)
     {
-		switch ($request){
-
+		switch ($request) {
 			case 'factfinder_proxy_scic':
-		        $scic = $this->getSearchAdapter()->getScicAdapter();
-		        return $scic->doTrackingFromRequest();
+		        $this->_getFacade()->getScicAdapter()->setupTrackingFromRequest();
+		        return $this->_getFacade()->applyTracking();
 				break;
 
 			case 'factfinder_proxy_suggest':
-		        return $this->getSearchAdapter()->getSuggestResultJsonp($this->_getRequestParam('query'), $this->_getRequestParam('jquery_callback'));
+				$handler = new Flagbit_FactFinder_Model_Handler_Suggest(
+                    $this->_getRequestParam('query'),
+                    $this->_getRequestParam('jquery_callback'),
+                    $this->_getFacade());
+				return $handler->getSuggestions();
 				break;
-
 		}
     }
 
@@ -215,7 +220,7 @@ class Flagbit_FactFinder_Model_Processor
      */
     public function getRequestId()
     {
-        return $this->_requestId;
+        return $this->_requestId . (isset($_COOKIE['store']) ? $_COOKIE['store'] : '');
     }
 
     /**

@@ -14,7 +14,7 @@
  * @version   $Id$
  * @package   FACTFinder\Xml65
  */
-class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Abstract_RecommendationAdapter
+class FACTFinder_Xml65_RecommendationAdapter extends FACTFinder_Default_RecommendationAdapter
 {
 
 	protected $xmlData = null;

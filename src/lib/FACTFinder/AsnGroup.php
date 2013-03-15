@@ -59,6 +59,20 @@ class FACTFinder_AsnGroup extends ArrayIterator
     public function isColorStyle() {
         return $this->style == 'COLOR';
     }
+    
+    /**
+     * @return boolean
+     */
+    public function isMultiSelectStyle() {
+        return $this->style == 'MULTISELECT';
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function isTreeStyle() {
+        return $this->style == 'TREE';
+    }
 
     /**
      * @return boolean

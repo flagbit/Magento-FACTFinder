@@ -14,7 +14,7 @@
  * @version   $Id: TagCloudAdapter.php 25893 2010-06-29 08:19:43Z rb $
  * @package   FACTFinder\Xml65
  */
-class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapter
+class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Default_TagCloudAdapter
 {
     /**
      * @return void
@@ -24,6 +24,7 @@ class FACTFinder_Xml65_TagCloudAdapter extends FACTFinder_Abstract_TagCloudAdapt
 		$this->log->info("Initializing new tag cloud adapter.");
         $this->getDataProvider()->setType('WhatsHot.ff');
         $this->getDataProvider()->setParam('do', 'getTagCloud');
+		$this->getDataProvider()->setParam('format', 'xml');
     }
 
     /**

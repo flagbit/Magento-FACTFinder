@@ -3,18 +3,18 @@
  * FACT-Finder PHP Framework
  *
  * @category  Library
- * @package   FACTFinder\Abstract
+ * @package   FACTFinder\Xml67
  * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
  */
 
 /**
- * adapter for the factfinder search
+ * search adapter using the xml interface. expects a xml formated string from the dataprovider
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: SearchAdapter.php 25935 2010-06-29 15:04:45Z rb $
- * @package   FACTFinder\Abstract
+ * @version   $Id: SearchAdapter.php 25985 2010-06-30 15:31:53Z rb $
+ * @package   FACTFinder\Xml68
  */
-abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Adapter
+class FACTFinder_Default_SearchAdapter extends FACTFinder_Abstract_Adapter
 {
     private $searchParams;
     private $result;
@@ -26,23 +26,23 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
     private $campaigns;
     private $singleWordSearch;
 
-	const NO_QUERY      = 'noQuery';
+    const NO_QUERY      = 'noQuery';
     const NO_RESULT     = 'noResult';
     const RESULTS_FOUND = 'resultsFound';
     const NOTHING_FOUND = 'nothingFound';
 
-	/**
-	 * @throws Exception if there is no query or no catalog-parameter set at the dataprovider
-	 */
-	protected function getData()
+    /**
+     * @throws Exception if there is no query or no catalog-parameter set at the dataprovider
+     */
+    protected function getData()
     {
-		$params = $this->getDataProvider()->getParams();
-		if ((!isset($params['query']) || strlen($params['query']) == 0)
-			&& (!isset($params['seoPath']) || strlen($params['seoPath']) == 0)
-			&& (!isset($params['catalog']) || $params['catalog'] != 'true')) {
-			$this->log->error("No query was set.");
-			throw new Exception(self::NO_QUERY);
-		}
+        $params = $this->getDataProvider()->getParams();
+        if ((!isset($params['query']) || strlen($params['query']) == 0)
+            && (!isset($params['seoPath']) || strlen($params['seoPath']) == 0)
+            && (!isset($params['catalog']) || $params['catalog'] != 'true')) {
+            $this->log->error("No query was set.");
+            throw new Exception(self::NO_QUERY);
+        }
         return $this->getDataProvider()->getData();
     }
 
@@ -54,23 +54,35 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns null, if no article number search was done
      *
      * @return string status
-    **/
-    abstract public function getArticleNumberSearchStatus();
+     **/
+    public function getArticleNumberSearchStatus()
+    {
+        $this->log->debug("Article number search status not available before FF 6.0!");
+        return self::RESULTS_FOUND;
+    }
 
     /**
      * returns true if the query matches the article number search regex, else false. also returns false, when there
      * was any error
      *
      * @return boolean isArticleNumberSearch
-    **/
-    abstract public function isArticleNumberSearch();
+     **/
+    public function isArticleNumberSearch()
+    {
+        $this->log->debug("Article number search not available before FF 6.0!");
+        return false;
+    }
 
     /**
      * returns true when search timed out. even if true, nevertheless result records may exist
      *
      * @return boolean
-    **/
-    abstract public function isSearchTimedOut();
+     **/
+    public function isSearchTimedOut()
+    {
+        $this->log->debug("Search timeout status not available before FF 6.0!");
+        return false;
+    }
 
     /**
      * returns the search status of the search, which is one of this class constants:
@@ -80,77 +92,117 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns null, if no article number search was done
      *
      * @return string status
-    **/
-    abstract public function getStatus();
+     **/
+    public function getStatus()
+    {
+        $this->log->debug("Search status not available before FF 6.0!");
+        return self::RESULTS_FOUND;
+    }
 
     /**
      * creates the result object
      *
      * @return FACTFinder_Result
-    **/
-    abstract protected function createResult();
+     **/
+    protected function createResult()
+    {
+        $this->log->debug("Search not available before FF 6.0!");
+        return FF::getInstance('result', array(), 0);
+    }
 
     /**
      * creates the asn object
      *
      * @return FACTFinder_Asn
-    **/
-    abstract protected function createAsn();
+     **/
+    protected function createAsn()
+    {
+        $this->log->debug("After Search Navigation not available before FF 6.0!");
+        return FF::getInstance('asn', array());
+    }
 
     /**
      * creates the sorting object
      *
      * @return array of FACTFinder_Item objects
-    **/
-    abstract protected function createSorting();
+     **/
+    protected function createSorting()
+    {
+        $this->log->debug("Sorting not available before FF 6.0!");
+        return array();
+    }
 
     /**
      * creates the paging object
      *
      * @return FACTFinder_Paging object
-    **/
-    abstract protected function createPaging();
+     **/
+    protected function createPaging()
+    {
+        $this->log->debug("Paging not available before FF 6.0!");
+        return null;
+    }
 
     /**
      * creates the paging object
      *
      * @return FACTFinder_ProductsPerPageOptions object
-    **/
-    abstract protected function createProductsPerPageOptions();
+     **/
+    protected function createProductsPerPageOptions()
+    {
+        $this->log->debug("Paging options not available before FF 6.0!");
+        return array();
+    }
 
     /**
      * create breadcrumbtrail
      *
      * @return array of FACTFinder_BreadCrumbItem objects
      */
-    abstract protected function createBreadCrumbTrail();
+    protected function createBreadCrumbTrail()
+    {
+        $this->log->debug("Breadcrumb trail not available before FF 6.0!");
+        return array();
+    }
 
     /**
      * create campaigns
      *
      * @return FACTFinder_CampaignIterator
      */
-    abstract protected function createCampaigns();
+    protected function createCampaigns()
+    {
+        $this->log->debug("Campaigns not available before FF 6.0!");
+        return FF::getInstance('campaignIterator', array());
+    }
 
     /**
-     * create sindle word search
+     * create single word search
      *
      * @return array of FACTFinder_SuggestQuery objects
      */
-    abstract protected function createSingleWordSearch();
+    protected function createSingleWordSearch()
+    {
+        $this->log->debug("Single word search not available before FF 6.0!");
+        return array();
+    }
 
     /**
      * returns the search params object
      *
      * @return FACTFinder_Parameters result
-    **/
-    abstract protected function createSearchParams();
+     **/
+    protected function createSearchParams()
+    {
+        $this->log->debug("Search parameter not available before FF 6.0!");
+        return null;
+    }
 
     /**
      * returns the search params object
      *
      * @return FACTFinder_Parameters result
-    **/
+     **/
     public function getSearchParams() {
         if ($this->searchParams == null) {
             $this->searchParams = $this->createSearchParams();
@@ -162,7 +214,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns the result object
      *
      * @return FACTFinder_Result result
-    **/
+     **/
     public function getResult() {
         if ($this->result == null) {
             $this->result = $this->createResult();
@@ -174,7 +226,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns the asn object
      *
      * @return FACTFinder_Asn
-    **/
+     **/
     public function getAsn() {
         if ($this->asn == null) {
             $this->asn = $this->createAsn();
@@ -186,7 +238,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns the sorting
      *
      * @return array of FACTFinder_SortItem objects
-    **/
+     **/
     public function getSorting() {
         if ($this->sorting == null) {
             $this->sorting = $this->createSorting();
@@ -198,7 +250,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * returns the paging
      *
      * @return FACTFinder_Paging object
-    **/
+     **/
     public function getPaging() {
         if ($this->paging == null) {
             $this->paging = $this->createPaging();
@@ -247,7 +299,7 @@ abstract class FACTFinder_Abstract_SearchAdapter extends FACTFinder_Abstract_Ada
      * FACTFinder_SuggestQuery objects, for each word a single item. by clicking at a singleWordSearch item, the result
      * will get better
      * please notice, that this feature has to be actived in the FACT-Finder search environment, so this method returns
-	 * an empty array, if there are no singleWordSearch items
+     * an empty array, if there are no singleWordSearch items
      *
      * @return array of FACTFinder_SuggestQuery objects
      */

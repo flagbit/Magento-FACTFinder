@@ -14,7 +14,7 @@
  * @version   $Id: SimilarRecordsAdapter.php 42804 2012-01-20 10:46:43Z mb $
  * @package   FACTFinder\Xml66
  */
-class FACTFinder_Xml66_SimilarRecordsAdapter extends FACTFinder_Abstract_SimilarRecordsAdapter
+class FACTFinder_Xml66_SimilarRecordsAdapter extends FACTFinder_Default_SimilarRecordsAdapter
 {
     /**
      * @return void

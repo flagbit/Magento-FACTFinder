@@ -20,6 +20,8 @@
  */
 class Flagbit_FactFinder_Model_Observer
 {
+    const _asnBlockRegistryKey = 'FACTFINDER__asnBlock';
+    const _campaignRedirectRegistryKey = 'FACTFINDER__campaignRedirectBlock';
 
     /**
      * Observer method.
@@ -47,8 +49,14 @@ class Flagbit_FactFinder_Model_Observer
         }
 
         try {
-            $scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
-            $result = $scic->trackCart($product->getData($idFieldName), md5(Mage::getSingleton('core/session')->getSessionId()), $qty, $product->getFinalPrice($qty), $customerId);
+            $facade = Mage::getModel('factfinder/facade');
+            $facade->getScicAdapter()->setupCartTracking(
+                $product->getData($idFieldName),
+                md5(Mage::getSingleton('core/session')->getSessionId()),
+                $qty,
+                $product->getFinalPrice($qty),
+                $customerId);
+            $facade->applyTracking();
         }
         catch (Exception $e) {
             Mage::helper('factfinder/debug')->log($e->getMessage());
@@ -116,12 +124,20 @@ class Flagbit_FactFinder_Model_Observer
         $scic = null;
         foreach ($collection as $item) {
             try {
+                $facade = Mage::getModel('factfinder/facade');
                 if ($item->getStoreId() != $storeId) {
-                    $scic = Mage::getModel('factfinder/adapter')->setStoreId($item->getStoreId())->getScicAdapter();
+                    $facade->setStoreId($item->getStoreId());
                     $storeId = $item->getStoreId();
                 }
+                $facade->getScicAdapter()->setupCheckoutTracking(
+                    $item->getProductId(),
+                    $item->getSid(),
+                    $item->getCount(),
+                    $item->getPrice(),
+                    $item->getUserid());
 
-                $scic->trackCheckout($item->getProductId(), $item->getSid(), $item->getCount(), $item->getPrice(), $item->getUserid());
+                $facade->applyTracking();
+
                 $item->delete($item);
             }
             catch (Exception $e) {
@@ -169,7 +185,10 @@ class Flagbit_FactFinder_Model_Observer
         $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields']);
         if (!empty($errors)) {
         	$groups['search']['fields']['enabled']['errors'] = $errors;
-        }
+        } else {
+			// If there were no errors, reset the fallback feature
+			Mage::helper('factfinder/search')->resetFailedAttemptCount();
+		}
 
         // if we have an error - unset inherit field so that Backend model processing is activated
         if (!empty($errors) && isset($groups['search']['fields']['enabled']['inherit'])) {
@@ -203,7 +222,7 @@ class Flagbit_FactFinder_Model_Observer
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
         preg_match($pattern, $html, $matches);
         
-        $url = Mage::getSingleton('factfinder/adapter')->getAuthenticationUrl();
+        $url = Mage::getSingleton('factfinder/facade')->getManagementUrl();
         $replace = str_replace($matches[2], $url, $matches[1]) . ' target="_blank"';
         
         $transport->setHtml(str_replace($matches[1], $replace, $html));
@@ -220,6 +239,19 @@ class Flagbit_FactFinder_Model_Observer
             $layout = $observer->getLayout();
             $update = $layout->getUpdate();
             $update->addHandle('factfinder_suggest_enabled');
+
+            if (Mage::getStoreConfig('factfinder/search/ffversion') <= 67)
+            {
+                $layout = $observer->getLayout();
+                $update = $layout->getUpdate();
+                $update->addHandle('factfinder_suggest_version_lt67');
+            }
+            else
+            {
+                $layout = $observer->getLayout();
+                $update = $layout->getUpdate();
+                $update->addHandle('factfinder_suggest_version_gt68');
+            }
         }
         if (Mage::helper('factfinder/search')->getIsEnabled(false, 'advisory')) {
             $layout = $observer->getLayout();
@@ -252,7 +284,6 @@ class Flagbit_FactFinder_Model_Observer
         }
         
         Mage::register('redirectAlreadyChecked', 1);
-        
         if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
             $block = Mage::app()->getLayout()->getBlock('search_result_list');
             
@@ -268,12 +299,13 @@ class Flagbit_FactFinder_Model_Observer
 				$searchHelper = Mage::helper('factfinder/search');
 				
 				try {
-					$scic = Mage::getModel('factfinder/adapter')->getScicAdapter();
-			        $idFieldName = $searchHelper->getIdFieldName();
-					if ($idFieldName == 'entity_id') {
-						$idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
-					}
-					$result = $scic->trackClick(
+                    $idFieldName = $searchHelper->getIdFieldName();
+                    if ($idFieldName == 'entity_id') {
+                        $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
+                    }
+
+                    $facade = Mage::getModel('factfinder/facade');
+					$facade->getScicAdapter()->setupClickTracking(
 						$product->getData($idFieldName),
 						md5(Mage::getSingleton('core/session')->getSessionId()),
 						$searchHelper->getQuery()->getQueryText(),
@@ -284,6 +316,7 @@ class Flagbit_FactFinder_Model_Observer
 						$product->getName(),
 						$searchHelper->getPageLimit(),
 						$searchHelper->getDefaultPerPageValue());
+                    $facade->applyTracking();
 				}
 				catch (Exception $e) {
 					Mage::helper('factfinder/debug')->log($e->getMessage());
@@ -302,4 +335,21 @@ class Flagbit_FactFinder_Model_Observer
         $response->setHeader('Pragma', null, true);
     }
 
+    public function initializeAfterSearchNavigation()
+    {
+        $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
+        if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
+        {
+            $asnBlock->initializeAfterSearchNavigation();
+        }
+    }
+
+    public function handleCampaignRedirect()
+    {
+        $redirectBlock = Mage::registry(self::_campaignRedirectRegistryKey);
+        if($redirectBlock instanceof Flagbit_FactFinder_Block_Layer)
+        {
+            $redirectBlock->handleCampaignRedirect();
+        }
+    }
 }

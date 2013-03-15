@@ -104,7 +104,7 @@ class FACTFinder_Loader
             self::$classNames[$name] = $className;
         }
 
-        // this snippet is from the typo3 class "t3lib_div" writen by Kasper Skaarhoj <kasperYYYY@typo3.com>
+        // this snippet is from the typo3 class "t3lib_div" written by Kasper Skaarhoj <kasperYYYY@typo3.com>
         if (func_num_args() > 1) {
             // getting the constructor arguments by removing this
             // method's first argument (the class name)
@@ -121,7 +121,7 @@ class FACTFinder_Loader
     }
 
     /**
-     * creates an instance of the class once and returns it everytime. uses getInstance
+     * creates an instance of the class once and returns it every time. uses getInstance
      *
      * @param    string class name to instantiate
      * @param    mixed optional as many parameters as the class needs to be created
@@ -162,7 +162,7 @@ class FACTFinder_Loader
 
     /**
      * check whether there is a custom class with the prefix "FACTFinderCustom_" instead of "FACTFinder_"
-     * if non of them exists, it also checks if the name is the classname itselft
+     * if non of them exists, it also checks if the name is the class name itself
      */
     protected static function getClassName($name)
     {
@@ -173,6 +173,11 @@ class FACTFinder_Loader
         $oldCustomClassName  = 'Custom_' . $name;
         $customClassName     = 'FACTFinderCustom_' . $name;
         $factfinderClassName = 'FACTFinder_' . $name;
+        $defaultAdapterName  = '';
+        if(preg_match('/adapter$/i', $name))
+        {
+            $defaultAdapterName = 'FACTFinder_' . preg_replace('~^[^_]*~', 'Default', $name);
+        }
         $defaultClassName    = $name;
 
         if (self::canLoadClass($customClassName)) {
@@ -181,7 +186,9 @@ class FACTFinder_Loader
             $className = $oldCustomClassName;
         } else if (self::canLoadClass($factfinderClassName)) {
             $className = $factfinderClassName;
-        } else if (class_exists($defaultClassName)) { //trigger other autload methods
+        } else if ($defaultAdapterName && self::canLoadClass($defaultAdapterName)) {
+            $className = $defaultAdapterName;
+        } else if (class_exists($defaultClassName)) {
             $className = $defaultClassName;
         } else {
             self::getLogger()->error("Could not load class '$defaultClassName'.");

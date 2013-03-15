@@ -20,6 +20,18 @@
  */
 class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block_Product_List_Crosssell
 {
+    protected $_recommendationsHandler;
+
+    protected function _prepareLayout()
+    {
+        if (Mage::getStoreConfigFlag('factfinder/activation/crosssell')) {
+            $productIds = array(
+                Mage::registry('product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+            );
+            $this->_recommendationsHandler = Mage::getSingleton('factfinder/handler_recommendations', $productIds);
+        }
+        return parent::_prepareLayout();
+    }
     /**
      * Method overwritten. Data is not read from product link collection but from FACT-Finder interface instead.
      */
@@ -40,9 +52,8 @@ class Flagbit_FactFinder_Block_Product_List_Crosssell extends Mage_Catalog_Block
                 ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
                 ->addStoreFilter();
 
-            $recommendationAdapter = Mage::getModel('factfinder/adapter')->getRecommendationAdapter();
-            $recommendationAdapter->setProductId($product->getData($idFieldName));
-            $recommendations = $recommendationAdapter->getRecommendations();
+            $recommendations = $this->_recommendationsHandler->getRecommendations();
+
             $this->_itemCollection->setRecommendations($recommendations);
 
             Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($this->_itemCollection);

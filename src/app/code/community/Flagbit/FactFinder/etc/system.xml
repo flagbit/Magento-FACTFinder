@@ -73,7 +73,7 @@
                         </context>
 						<ffversion translate="label comment">
 							<label>FACT-Finder version</label>
-							<comment>Choose the version of the FACT-Finder application you are using for all its features to work.</comment>
+							<comment>Please select the version of your FACT-Finder application to enable all of its features.</comment>
 							<frontend_type>select</frontend_type>
 							<source_model>factfinder/system_config_source_ffversion</source_model>
 							<sort_order>45</sort_order>
@@ -82,7 +82,7 @@
                             <show_in_store>1</show_in_store>
 						</ffversion>
                         <auth_user translate="label comment">
-                            <label>User Name</label>
+                            <label>User name</label>
                             <comment>User name for authentication</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
@@ -109,7 +109,7 @@
                         </channel>
                         <secondary_channels translate="label">
                             <label>Secondary Channels</label>
-                            <comment>Enter any secondary channels you want to search. Multiple channels can be separated by semicolons.</comment>
+                            <comment>Enter any secondary channels you want to search. Multiple channels should be separated by semicolons. NOTE: Secondary channels will only be considered for Suggest results if the proxy is used (see option in section "FACT-Finder Config Data")!</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>75</sort_order>
                             <show_in_default>1</show_in_default>
@@ -153,6 +153,35 @@
                         </auth_advancedPostfix>
                     </fields>
                 </search>
+				<fallback translate="label">
+                    <label>FACT-Finder Fallback Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>15</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <use_fallback translate="label comment">
+                            <label>Use Fallback</label>
+							<comment>If activated and FACT-Finder cannot be contacted, Magento's built-in search will be used instead.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_fallback>
+						<wait_time translate="label comment">
+                            <label>Minutes before next attempt</label>
+							<comment>After three failed attempts, the module can revert to using Magento for searches. After the specified amount of time has passed, the module will try to contact FACT-Finder again. If you enter 0, the module will first attempt to contact FACT-Finder for every search.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </wait_time>
+                    </fields>
+                </fallback>
                 <export translate="label">
                     <label>FACT-Finder Export Configuration</label>
                     <frontend_type>text</frontend_type>
@@ -170,6 +199,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </urls>
+						<suggest_image_size translate="label comment">
+                            <label>Size of Suggest images</label>
+							<comment>Please enter the desired edge length of the Suggest images in pixels. If you do not want them to be resized, enter 0.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suggest_image_size>
                         <clicktracking translate="label">
                             <label>Track product-clicks</label>
                             <frontend_type>select</frontend_type>
@@ -234,7 +272,7 @@
                             <show_in_store>1</show_in_store>
                         </identifier>
                         <redirectOnSingleResult>
-                            <label>Redirect to product page if single result</label>
+                            <label>Redirect to product details page for single results</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>20</sort_order>
@@ -244,6 +282,7 @@
                         </redirectOnSingleResult>
                         <proxy translate="label">
                             <label>Use Proxy for Suggest</label>
+							<comment>This option must be enabled if secondary channels are to be considered for Suggest results.</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>
@@ -253,7 +292,7 @@
                         </proxy>
                         <internal_ip translate="label">
                             <label>Internal IPs</label>
-                            <comment>Enter your internal IP addresses. Multiple IP addresses can be separated by semicolons.</comment>
+                            <comment>Enter your internal IP addresses. Multiple IP addresses should be separated by semicolons.</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
@@ -316,7 +355,7 @@
                             <show_in_store>1</show_in_store>
                         </navigation>
                         <upsell translate="label">
-                            <label>Use FACT-Finder for Product Upsells</label>
+                            <label>Use FACT-Finder for product upselling</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>60</sort_order>
@@ -325,7 +364,7 @@
                             <show_in_store>1</show_in_store>
                         </upsell>
                         <crosssell translate="label">
-                            <label>Use FACT-Finder for Product Crosssells</label>
+                            <label>Use FACT-Finder for product cross-selling</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>70</sort_order>

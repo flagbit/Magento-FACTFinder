@@ -58,11 +58,36 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
      * Initialize Product Export 
      */
     public function productAction()
-    {        
-        $exportModel = Mage::getModel('factfinder/export_product');
-        $exportModel->doExport(
-            $this->_getStoreId()
-        );
+    {
+		try
+		{
+			$this->lockSemaphore();
+		}
+		catch(RuntimeException $e)
+		{
+			// TODO: use a proper template
+			echo
+				'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+				'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">',
+				'<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>',
+				'<body>',
+				$this->__('Another export is already running. Please wait for it to finish before you start a new export.'), "<br>\n",
+				$this->__('If you receive this message after another export has failed, please delete the file "ffexport.lock" within your Magento directory.'),
+				'</body></html>';
+			flush();
+			return;
+		}
+		
+		try {
+			$exportModel = Mage::getModel('factfinder/export_product');
+			$exportModel->doExport(
+				$this->_getStoreId()
+			);
+			$this->releaseSemaphore(); // finally-workaround
+		} catch(Exception $e) {
+			$this->releaseSemaphore(); // finally-workaround
+			throw $e;
+		}
     }
     
     /**
@@ -85,5 +110,32 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
         $exportModel->doExport(
             $this->_getStoreId()
         );
+    }
+	
+	/**
+	 * Locks the semaphore
+	 * Throws an exception, if semaphore is already locked
+	 **/
+	protected function lockSemaphore()
+	{
+		$mtime = @filemtime($this->_getLockFileName());
+		if($mtime && time() - $mtime < FF::getSingleton('configuration')->getSemaphoreTimeout())
+		{
+			throw new RuntimeException();
+		}
+		@touch($this->_getLockFileName());
+	}
+	
+	/**
+	 * Release the semaphore
+	 **/
+	protected function releaseSemaphore()
+	{
+		@unlink($this->_getLockFileName());
+	}
+
+    protected function _getLockFileName()
+    {
+        return "ffexport_".$this->_getStoreId().".lock";
     }
 }
