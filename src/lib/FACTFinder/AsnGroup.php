@@ -16,6 +16,17 @@
  * @category  Collection
  * @package   FACTFinder\Common
  */
+
+/* enum workaround */
+abstract class FACTFinder_FilterStyle
+{
+    const Regular = 0;
+    const Slider = 1;
+    const Color = 2;
+    const Tree = 3;
+    const MultiSelect = 4;
+}
+ 
 class FACTFinder_AsnGroup extends ArrayIterator
 {
     private $name;
@@ -23,7 +34,7 @@ class FACTFinder_AsnGroup extends ArrayIterator
     private $unit;
     private $hasPreviewImages = false;
     private $hasSelectedItems = false;
-    private $isSliderStyle = false;
+    private $style = FACTFinder_FilterStyle::Regular;
 
     /**
      * constructor
@@ -32,16 +43,40 @@ class FACTFinder_AsnGroup extends ArrayIterator
      * @param string name of the group (default: empty string)
      * @param int number of detail links to show (default: 0)
      * @param string untit character of the group (default: empty string)
-     * @param string style; possible values: DEFAULT|SLIDER|COLOR (default: DEFAULT)
+     * @param string style; possible values: DEFAULT|SLIDER|COLOR|TREE|MULTISELECT (default: DEFAULT)
      */
     public function __construct(array $asnFilters = array(), $name = '', $detailedLinkCount = 0, $unit = '', $style = 'DEFAULT') {
         $this->name = strval($name);
         $this->detailedLinkCount = intval($detailedLinkCount);
         $this->unit = strval($unit);
-        $this->style = $style;
+        switch($style)
+        {
+        case 'SLIDER':
+            $this->style = FACTFinder_FilterStyle::Slider;
+            break;
+        case 'COLOR':
+            $this->style = FACTFinder_FilterStyle::Color;
+            break;
+        case 'TREE':
+            $this->style = FACTFinder_FilterStyle::Tree;
+            break;
+        case 'MULTISELECT':
+            $this->style = FACTFinder_FilterStyle::MultiSelect;
+            break;
+        default:
+            $this->style = FACTFinder_FilterStyle::Regular;
+            break;
+        }
 
         parent::__construct();
         $this->addFilters($asnFilters);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDefaultStyle() {
+        return $this->style === FACTFinder_FilterStyle::Regular;
     }
 
     /**
@@ -50,35 +85,28 @@ class FACTFinder_AsnGroup extends ArrayIterator
      * @return boolean
      */
     public function isSliderStyle() {
-        return $this->style == 'SLIDER';
+        return $this->style === FACTFinder_FilterStyle::Slider;
     }
 
     /**
      * @return boolean
      */
     public function isColorStyle() {
-        return $this->style == 'COLOR';
-    }
-    
-    /**
-     * @return boolean
-     */
-    public function isMultiSelectStyle() {
-        return $this->style == 'MULTISELECT';
-    }
-    
-    /**
-     * @return boolean
-     */
-    public function isTreeStyle() {
-        return $this->style == 'TREE';
+        return $this->style === FACTFinder_FilterStyle::Color;
     }
 
     /**
      * @return boolean
      */
-    public function isDefaultStyle() {
-        return !$this->isSliderStyle() && !$this->isColorStyle();
+    public function isTreeStyle() {
+        return $this->style === FACTFinder_FilterStyle::Tree;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMultiSelectStyle() {
+        return $this->style === FACTFinder_FilterStyle::MultiSelect;
     }
 
     /**

@@ -45,7 +45,7 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
         // Same for handling campaign redirects
         Mage::register(Flagbit_FactFinder_Model_Observer::_campaignRedirectRegistryKey, $this);
 
-        return parent::_prepareLayout();
+        return Mage_Core_Block_Template::_prepareLayout();
     }
 
     public function handleCampaignRedirect()
