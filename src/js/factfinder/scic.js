@@ -18,7 +18,7 @@ var FactfinderSCIC = Class.create({
 	init: function() {
 		$$(this.classname+' a',this.classname+' button').each(function(element) {
 			this.mapping.each(function(pair, index) {
-				if(element.readAttribute('href') && element.readAttribute('href') == pair.key){
+				if(element.readAttribute('href') && element.readAttribute('href').indexOf(pair.key) >= 0){
 					return this.prepareElement(element, pair.value, 'click');
 				}
 				if(element.readAttribute('onclick') && element.readAttribute('onclick').indexOf(pair.key) >= 0){

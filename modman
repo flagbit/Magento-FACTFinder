@@ -1,0 +1,10 @@
+src/app/code/community/Flagbit/FactFinder app/code/community/Flagbit/FactFinder
+src/app/design/adminhtml/default/default/layout/* app/design/adminhtml/default/default/layout
+src/app/design/adminhtml/default/default/template/* app/design/adminhtml/default/default/template
+src/app/design/frontend/base/default/layout/* app/design/frontend/base/default/layout
+src/app/design/frontend/base/default/template/* app/design/frontend/base/default/template
+src/app/locale/de_DE/* app/locale/de_DE
+src/app/etc/modules/* app/etc/modules
+src/js/* js
+src/lib/* lib
+src/skin/frontend/base/default/* skin/frontend/base/default/css
