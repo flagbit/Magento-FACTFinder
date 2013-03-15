@@ -3,25 +3,29 @@
  * FACT-Finder PHP Framework
  *
  * @category  Library
- * @package   FACTFinder\Abstract
+ * @package   FACTFinder\Http
  * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
  */
 
 /**
- * abstract adapter for the shopping cart information collector tracking
+ * http scic adapater
  *
  * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: ScicAdapter.php 25896 2010-06-29 08:34:06Z rb $
- * @package   FACTFinder\Abstract
+ * @version   $Id: ScicAdapter.php 25893 2010-06-29 08:19:43Z rb $
+ * @package   FACTFinder\Http
  */
-abstract class FACTFinder_Abstract_ScicAdapter extends FACTFinder_Abstract_Adapter
+class FACTFinder_Default_ScicAdapter extends FACTFinder_Abstract_Adapter
 {
     /**
      * let the data provider save the tracking params
      *
      * @return boolean $success
      */
-    abstract public function applyTracking();
+    public function applyTracking()
+    {
+        $this->log->debug("Tracking not available before FF 6.0!");
+        return false;
+    }
 
     /**
      * if all needed parameters are available at the request like described in the documentation, just use this method to

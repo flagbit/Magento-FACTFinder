@@ -28,11 +28,12 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
 
     protected function configureFacade()
     {
+		// facade must be loaded prior using the included library class "FF" 
+        $this->_getFacade()->configureStatusHelper();
+		
         FF::getSingleton('configuration', $this->_configArray);
-
         $this->_secondaryChannels = FF::getSingleton('configuration')->getSecondaryChannels();
 
-        $this->_getFacade()->configureStatusHelper();
         foreach($this->_secondaryChannels AS $channel)
             $this->_getFacade()->configureStatusHelper($channel);
 
