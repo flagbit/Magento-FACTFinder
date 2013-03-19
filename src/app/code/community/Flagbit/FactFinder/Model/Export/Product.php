@@ -132,6 +132,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $headerSetup[$code]['attribute'] = $code;
                 $setupUpdate = true;
             }
+            
+            // remove default attributes from setup
+            foreach($headerDefault as $code){
+                if(array_key_exists($code, $headerSetup)){
+                    unset($headerSetup[$code]);
+                    $setupUpdate = true;
+                }
+            }
+            
             if($setupUpdate === true){
                 Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup), 'stores', $storeId);
             }         
