@@ -249,7 +249,16 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return array with string as key and boolean true as value for each of them
      */
     public function getIgnoredServerParams() {
-        return array();
+        return array(
+            'q' => true,
+            'p' => true,
+            'limit' => true,
+            'is_ajax' => true,
+            'type_search' => true,
+            'order' => true,
+            'dir' => true,
+            'mode' => true
+        );
     }
 
     /**

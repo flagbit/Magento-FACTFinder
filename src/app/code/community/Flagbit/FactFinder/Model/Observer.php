@@ -296,32 +296,9 @@ class Flagbit_FactFinder_Model_Observer
             
             if (count($collection) == 1) {
                 $product = $collection->getFirstItem();
-				$searchHelper = Mage::helper('factfinder/search');
-				
-				try {
-                    $idFieldName = $searchHelper->getIdFieldName();
-                    if ($idFieldName == 'entity_id') {
-                        $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
-                    }
 
-                    $facade = Mage::getModel('factfinder/facade');
-					$facade->getScicAdapter()->setupClickTracking(
-						$product->getData($idFieldName),
-						md5(Mage::getSingleton('core/session')->getSessionId()),
-						$searchHelper->getQuery()->getQueryText(),
-						1, //pos
-						1, //origPos
-						1, //page
-						$product->getSimilarity,
-						$product->getName(),
-						$searchHelper->getPageLimit(),
-						$searchHelper->getDefaultPerPageValue());
-                    $facade->applyTracking();
-				}
-				catch (Exception $e) {
-					Mage::helper('factfinder/debug')->log($e->getMessage());
-				}
-				
+                $this->sendClickTrackingForSingleProduct($product);
+
                 $response = Mage::app()->getResponse();
                 $response->setRedirect($product->getProductUrl(false));
                 $response->sendResponse();
@@ -335,6 +312,36 @@ class Flagbit_FactFinder_Model_Observer
         $response->setHeader('Pragma', null, true);
     }
 
+    protected function sendClickTrackingForSingleProduct($product)
+    {
+        $searchHelper = Mage::helper('factfinder/search');
+        
+        if (!$searchHelper->getIsEnabled(false, 'clicktracking')) {
+            return;
+        }
+
+        try {
+            $idFieldName = $searchHelper->getIdFieldName();
+
+            $facade = Mage::getModel('factfinder/facade');
+            $facade->getScicAdapter()->setupClickTracking(
+                $product->getData($idFieldName),
+                md5(Mage::getSingleton('core/session')->getSessionId()),
+                $searchHelper->getQuery()->getQueryText(),
+                1, //pos
+                1, //origPos
+                1, //page
+                $product->getSimilarity,
+                $product->getName(),
+                $searchHelper->getPageLimit(),
+                $searchHelper->getDefaultPerPageValue());
+            $facade->applyTracking();
+        }
+        catch (Exception $e) {
+            Mage::helper('factfinder/debug')->log($e->getMessage());
+        }
+    }
+    
     public function initializeAfterSearchNavigation()
     {
         $asnBlock = Mage::registry(self::_asnBlockRegistryKey);

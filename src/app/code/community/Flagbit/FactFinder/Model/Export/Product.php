@@ -132,6 +132,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $headerSetup[$code]['attribute'] = $code;
                 $setupUpdate = true;
             }
+            
+            // remove default attributes from setup
+            foreach($headerDefault as $code){
+                if(array_key_exists($code, $headerSetup)){
+                    unset($headerSetup[$code]);
+                    $setupUpdate = true;
+                }
+            }
+            
             if($setupUpdate === true){
                 Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup), 'stores', $storeId);
             }         
@@ -254,6 +263,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     }
                 }             
             }
+
+            unset($products);
+            unset($productAttributes);
+            unset($productRelations);
             flush();
         }
     }
@@ -460,10 +473,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     if (!isset($this->_categoryNames[$categoryIds[$i]])) {
                         continue 2;
                     }
-                    $categoryPath .= urlencode($this->_categoryNames[$categoryIds[$i]]).'/';
+                    $categoryPath .= urlencode(trim($this->_categoryNames[$categoryIds[$i]])).'/';
                 }
                 if ($categoryIdsCount > 2) {
-                    $value .= trim(rtrim($categoryPath,'/')).'|';
+                    $value .= rtrim($categoryPath,'/').'|';
                 }
             }
             $value = trim($value, '|');

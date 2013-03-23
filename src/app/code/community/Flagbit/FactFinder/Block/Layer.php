@@ -40,12 +40,12 @@ class Flagbit_FactFinder_Block_Layer extends Flagbit_FactFinder_Block_Layer_Abst
 
         // Make this block globally known so that initializeAfterSearchNavigation can be called on this instance
         // when the controller_action_layout_generate_blocks_after event is fired
-        Mage::register(Flagbit_FactFinder_Model_Observer::_asnBlockRegistryKey, $this);
+        Mage::register(Flagbit_FactFinder_Model_Observer::_asnBlockRegistryKey, $this, true);
 
         // Same for handling campaign redirects
-        Mage::register(Flagbit_FactFinder_Model_Observer::_campaignRedirectRegistryKey, $this);
+        Mage::register(Flagbit_FactFinder_Model_Observer::_campaignRedirectRegistryKey, $this, true);
 
-        return parent::_prepareLayout();
+        return Mage_Core_Block_Template::_prepareLayout();
     }
 
     public function handleCampaignRedirect()
