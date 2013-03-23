@@ -25,16 +25,15 @@
  </stability>
  <license>GPL</license>
  <notes>
-[+TASK] removed documentation from module
-[~TASK] Updated FF PHP framework
-[~TASK] Replaced magic __call method with explicit implementations.
-[+BUGFIX] avoid strict notice, because of static member access in non static way.
-[+BUGFIX] Added default value for ffversion config value.
-[+BUGFIX] Fixed segmentation fault - Assoc array was given to DB select. We need only the keys.
-[+BUGFIX] Fixed TODO: Used constants insteat of hard coded values for visibility
-[+BUGFIX] Removed unused $productIndexes variable
-[+BUGFIX] Fix for &quot;undefined&quot; in suggestions
-[+BUGFIX] make scic also work with urls that have appended parameters
+[+BUGFIX] set $graceful parameter to true. This avoid exceptions on Mage::register if the key already exists. This happens if the layered navigation will be included more than once. i. e. left and content
+[+BUGFIX] issue #34 selected filters are displayed twice
+[+BUGFIX] trim category values before encoding them
+[+BUGFIX] don't send clicktracking if disabled
+[~BUGFIX] don't allow default attributes inside the attribute-setup
+[+TASK] updated FF PHP framework
+[~TASK] improved export memory usage, by unsetting some bigger variables
+[~TASK] remove typical magento parameters from the request to ff
+[~TASK] extracted method sendClickTrackingForSingleProduct
  </notes>
  <contents>
   <dir name="/">
@@ -358,16 +357,15 @@
    <date>2013-03-23</date>
    <license>GPL</license>
    <notes>
-[+TASK] removed documentation from module
-[~TASK] Updated FF PHP framework
-[~TASK] Replaced magic __call method with explicit implementations.
-[+BUGFIX] avoid strict notice, because of static member access in non static way.
-[+BUGFIX] Added default value for ffversion config value.
-[+BUGFIX] Fixed segmentation fault - Assoc array was given to DB select. We need only the keys.
-[+BUGFIX] Fixed TODO: Used constants insteat of hard coded values for visibility
-[+BUGFIX] Removed unused $productIndexes variable
-[+BUGFIX] Fix for &quot;undefined&quot; in suggestions
-[+BUGFIX] make scic also work with urls that have appended parameters
+[+BUGFIX] set $graceful parameter to true. This avoid exceptions on Mage::register if the key already exists. This happens if the layered navigation will be included more than once. i. e. left and content
+[+BUGFIX] issue #34 selected filters are displayed twice
+[+BUGFIX] trim category values before encoding them
+[+BUGFIX] don't send clicktracking if disabled
+[~BUGFIX] don't allow default attributes inside the attribute-setup
+[+TASK] updated FF PHP framework
+[~TASK] improved export memory usage, by unsetting some bigger variables
+[~TASK] remove typical magento parameters from the request to ff
+[~TASK] extracted method sendClickTrackingForSingleProduct
    </notes>
   </release>
  </changelog>
