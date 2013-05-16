@@ -94,10 +94,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List extends Mage_XmlC
                 $categoryFilter->setLayer($layer)->setRequestVar($filterParam)
                     ->apply($this->getRequest(), $categoryFilterBlock);
                 $filters[] = $categoryFilter;
-                Mage::log(get_class($categoryFilter));
-                $attributeModel = $categoryFilter->getData('attribute_model');
-                Mage::log($attributeModel);
-                Mage::log(is_null($attributeModel));
+
                 $this->_collectedFilters = $filters;
             }
 
