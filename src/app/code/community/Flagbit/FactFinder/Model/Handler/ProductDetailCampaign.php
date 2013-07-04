@@ -20,7 +20,7 @@ class Flagbit_FactFinder_Model_Handler_ProductDetailCampaign
     protected function _getProductNumberParam()
     {
         if(is_array($this->_productIds))
-            return $this->_productIds[0];
+            return current($this->_productIds);
         else
             return $this->_productIds;
     }
