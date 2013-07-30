@@ -456,7 +456,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     )
                 )
                 ->where('main.store_id = ?', $storeId)
-                ->where('e.path LIKE \'1/' . Mage::app()->getStore()->getRootCategoryId() .'/%\'')
+                ->where('e.path LIKE \'1/' . Mage::app()->getStore($storeId)->getRootCategoryId() .'/%\'')
                 ->group('main.product_id');
             
             $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);

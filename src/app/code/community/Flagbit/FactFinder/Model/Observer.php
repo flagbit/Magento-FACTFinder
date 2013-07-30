@@ -198,13 +198,13 @@ class Flagbit_FactFinder_Model_Observer
 
         $request->setPost('groups', $groups);
     }
-
-
+    
+    
     /**
      * Replaces the link to the management cockpit functionality in the Magento Backend with the external link that
      * opens in a new browser tab. Pretty dirty solution, but Magento does not offer any possibility to edit link urls
      * in its backend menu model, nor does it allow to add absolute links for external sites.
-     *
+     * 
      * @param Varien_Event_Observer $observer
      */
     public function rewriteBackendMenuHtmlForCockpitRedirect($observer)
@@ -213,10 +213,10 @@ class Flagbit_FactFinder_Model_Observer
         if ($block->getNameInLayout() != 'menu') {
             return;
         }
-
+        
         $transport = $observer->getTransport();
         $html = $transport->getHtml();
-
+        
         $matches = array();
         $label = preg_quote(Mage::helper('factfinder')->__('FACT-Finder Business User Cockpit'));
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
@@ -227,10 +227,10 @@ class Flagbit_FactFinder_Model_Observer
             $transport->setHtml(str_replace($matches[1], $replace, $html));
         }
     }
-
+    
     /**
     * Adds layout handles based on FACT-Finder configuration.
-    *
+    * 
     * @param Varien_Event_Observer $observer
     */
     public function addActivationLayoutHandles($observer)
@@ -269,15 +269,64 @@ class Flagbit_FactFinder_Model_Observer
             $update->addHandle('factfinder_clicktracking_enabled');
         }
     }
+    
+    protected function sendClickTrackingForSingleProduct($product)
+    {
+        $searchHelper = Mage::helper('factfinder/search');
+        
+        if (!$searchHelper->getIsEnabled(false, 'clicktracking')) {
+            return;
+        }
+
+        try {
+            $idFieldName = $searchHelper->getIdFieldName();
+
+            $facade = Mage::getModel('factfinder/facade');
+            $facade->getScicAdapter()->setupClickTracking(
+                $product->getData($idFieldName),
+                md5(Mage::getSingleton('core/session')->getSessionId()),
+                $searchHelper->getQuery()->getQueryText(),
+                1, //pos
+                1, //origPos
+                1, //page
+                $product->getSimilarity,
+                $product->getName(),
+                $searchHelper->getPageLimit(),
+                $searchHelper->getDefaultPerPageValue());
+            $facade->applyTracking();
+        }
+        catch (Exception $e) {
+            Mage::helper('factfinder/debug')->log($e->getMessage());
+        }
+    }
+    
+    public function initializeAfterSearchNavigation()
+    {
+        $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
+        if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
+        {
+            $asnBlock->initializeAfterSearchNavigation();
+        }
+    }
+
+    /**
+     * Handle redirects in this single method to control the execution order.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function handleRedirects(Varien_Event_Observer $observer)
+    {
+        $this->_handleCampaignRedirect();
+        $this->_redirectToProductIfSingleResult();
+    }
 
     /**
      * Checks if the result set's size is one. If so the user is redirected to the product detail page. This is checked
      * right before the first block is rendered so headers can still be sent. The ordinary collection load event is
      * triggered too late.
      *
-     * @param Varien_Event_Observer $observer
      */
-    public function redirectToProductIfSingleResult($observer)
+    protected function _redirectToProductIfSingleResult()
     {
         if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
             return;
@@ -312,46 +361,11 @@ class Flagbit_FactFinder_Model_Observer
         $response->setHeader('Pragma', null, true);
     }
 
-    protected function sendClickTrackingForSingleProduct($product)
-    {
-        $searchHelper = Mage::helper('factfinder/search');
-
-        if (!$searchHelper->getIsEnabled(false, 'clicktracking')) {
-            return;
-        }
-
-        try {
-            $idFieldName = $searchHelper->getIdFieldName();
-
-            $facade = Mage::getModel('factfinder/facade');
-            $facade->getScicAdapter()->setupClickTracking(
-                $product->getData($idFieldName),
-                md5(Mage::getSingleton('core/session')->getSessionId()),
-                $searchHelper->getQuery()->getQueryText(),
-                1, //pos
-                1, //origPos
-                1, //page
-                $product->getSimilarity,
-                $product->getName(),
-                $searchHelper->getPageLimit(),
-                $searchHelper->getDefaultPerPageValue());
-            $facade->applyTracking();
-        }
-        catch (Exception $e) {
-            Mage::helper('factfinder/debug')->log($e->getMessage());
-        }
-    }
-
-    public function initializeAfterSearchNavigation()
-    {
-        $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
-        if($asnBlock instanceof Flagbit_FactFinder_Block_Layer)
-        {
-            $asnBlock->initializeAfterSearchNavigation();
-        }
-    }
-
-    public function handleCampaignRedirect()
+    /**
+     * Handle campaign redirects
+     *
+     */
+    protected function _handleCampaignRedirect()
     {
         $redirectBlock = Mage::registry(self::_campaignRedirectRegistryKey);
         if($redirectBlock instanceof Flagbit_FactFinder_Block_Layer)

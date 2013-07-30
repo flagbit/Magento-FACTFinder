@@ -156,18 +156,14 @@
             </controller_action_layout_load_before>
             <controller_action_layout_generate_blocks_after>
                 <observers>
-                    <handleCampaignRedirect>
-                        <class>factfinder/observer</class>
-                        <method>handleCampaignRedirect</method>
-                    </handleCampaignRedirect>
                     <initializeAfterSearchNavigation>
                         <class>factfinder/observer</class>
                         <method>initializeAfterSearchNavigation</method>
                     </initializeAfterSearchNavigation>
-                    <redirectToProductIfSingleResult>
+                    <handleRedirects>
                         <class>factfinder/observer</class>
-                        <method>redirectToProductIfSingleResult</method>
-                    </redirectToProductIfSingleResult>
+                        <method>handleRedirects</method>
+                    </handleRedirects>
                 </observers>
             </controller_action_layout_generate_blocks_after>
         </events>
@@ -256,24 +252,24 @@
         <factfinder>
             <version>3.4.8</version>
             <revision>$Rev: 25896 $</revision>
-            <debug>true</debug>
+            <debug>false</debug>
     
             <!-- search settings: WARNING: dont change settings here, please use the Magento backoffice ... 
                 if you still have to change something here, dont forget to clear the configuration cache -->
             <search>
-                <address>magento.fact-finder.de</address>
-                <port>8080</port>
+                <address>example.com</address>
+                <port>80</port>
                 <protocol>http</protocol> <!-- possible values: http, https -->
 
-                <ffversion>66</ffversion>
+                <ffversion>68</ffversion>
 
-                <auth_user>client</auth_user>
+                <auth_user></auth_user>
                 <auth_password></auth_password>
                 <auth_type>advanced</auth_type> <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
                 <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
                 <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
 
-                <context>MagentoSearch65</context>
+                <context></context>
                 <channel></channel>
                 <language></language>
             </search>
