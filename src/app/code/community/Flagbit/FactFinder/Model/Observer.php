@@ -270,48 +270,6 @@ class Flagbit_FactFinder_Model_Observer
         }
     }
     
-    /**
-     * Checks if the result set's size is one. If so the user is redirected to the product detail page. This is checked
-     * right before the first block is rendered so headers can still be sent. The ordinary collection load event is 
-     * triggered too late.
-     * 
-     * @param Varien_Event_Observer $observer
-     */
-    public function redirectToProductIfSingleResult($observer)
-    {
-        if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
-            return;
-        }
-        
-        Mage::register('redirectAlreadyChecked', 1);
-        if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
-            $block = Mage::app()->getLayout()->getBlock('search_result_list');
-            
-            if (!$block instanceof Mage_Catalog_Block_Product_List) {
-                return;
-            }
-            
-            $collection = $block->getLoadedProductCollection();
-            $collection->load();
-            
-            if (count($collection) == 1) {
-                $product = $collection->getFirstItem();
-
-                $this->sendClickTrackingForSingleProduct($product);
-
-                $response = Mage::app()->getResponse();
-                $response->setRedirect($product->getProductUrl(false));
-                $response->sendResponse();
-                exit;
-            }
-        }
-        
-        $response = Mage::app()->getResponse();
-        $response->setHeader('Expires', gmdate("D, d M Y H:i:s", time() + 600), true);
-        $response->setHeader('Cache-Control', 'public, max-age=600, must-revalidate', true);
-        $response->setHeader('Pragma', null, true);
-    }
-
     protected function sendClickTrackingForSingleProduct($product)
     {
         $searchHelper = Mage::helper('factfinder/search');
@@ -351,7 +309,63 @@ class Flagbit_FactFinder_Model_Observer
         }
     }
 
-    public function handleCampaignRedirect()
+    /**
+     * Handle redirects in this single method to control the execution order.
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function handleRedirects(Varien_Event_Observer $observer)
+    {
+        $this->_handleCampaignRedirect();
+        $this->_redirectToProductIfSingleResult();
+    }
+
+    /**
+     * Checks if the result set's size is one. If so the user is redirected to the product detail page. This is checked
+     * right before the first block is rendered so headers can still be sent. The ordinary collection load event is
+     * triggered too late.
+     *
+     */
+    protected function _redirectToProductIfSingleResult()
+    {
+        if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
+            return;
+        }
+
+        Mage::register('redirectAlreadyChecked', 1);
+        if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
+            $block = Mage::app()->getLayout()->getBlock('search_result_list');
+
+            if (!$block instanceof Mage_Catalog_Block_Product_List) {
+                return;
+            }
+
+            $collection = $block->getLoadedProductCollection();
+            $collection->load();
+
+            if (count($collection) == 1) {
+                $product = $collection->getFirstItem();
+
+                $this->sendClickTrackingForSingleProduct($product);
+
+                $response = Mage::app()->getResponse();
+                $response->setRedirect($product->getProductUrl(false));
+                $response->sendResponse();
+                exit;
+            }
+        }
+
+        $response = Mage::app()->getResponse();
+        $response->setHeader('Expires', gmdate("D, d M Y H:i:s", time() + 600), true);
+        $response->setHeader('Cache-Control', 'public, max-age=600, must-revalidate', true);
+        $response->setHeader('Pragma', null, true);
+    }
+
+    /**
+     * Handle campaign redirects
+     *
+     */
+    protected function _handleCampaignRedirect()
     {
         $redirectBlock = Mage::registry(self::_campaignRedirectRegistryKey);
         if($redirectBlock instanceof Flagbit_FactFinder_Block_Layer)

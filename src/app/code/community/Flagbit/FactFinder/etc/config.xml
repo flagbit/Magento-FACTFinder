@@ -156,18 +156,14 @@
             </controller_action_layout_load_before>
             <controller_action_layout_generate_blocks_after>
                 <observers>
-                    <handleCampaignRedirect>
-                        <class>factfinder/observer</class>
-                        <method>handleCampaignRedirect</method>
-                    </handleCampaignRedirect>
                     <initializeAfterSearchNavigation>
                         <class>factfinder/observer</class>
                         <method>initializeAfterSearchNavigation</method>
                     </initializeAfterSearchNavigation>
-                    <redirectToProductIfSingleResult>
+                    <handleRedirects>
                         <class>factfinder/observer</class>
-                        <method>redirectToProductIfSingleResult</method>
-                    </redirectToProductIfSingleResult>
+                        <method>handleRedirects</method>
+                    </handleRedirects>
                 </observers>
             </controller_action_layout_generate_blocks_after>
         </events>
