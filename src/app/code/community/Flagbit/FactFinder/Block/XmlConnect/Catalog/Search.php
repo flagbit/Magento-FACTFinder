@@ -72,7 +72,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
         $showFiltersAndOrders = true;
         $reguest = $this->getRequest();
         foreach ($reguest->getParams() as $key => $value) {
-            if (0 === strpos($key, parent::REQUEST_SORT_ORDER_PARAM_PREFIX) ||
+            if (0 === strpos($key, parent::REQUEST_SORT_ORDER_PARAM_REFIX) ||
                 0 === strpos($key, parent::REQUEST_FILTER_PARAM_REFIX)) {
                 $showFiltersAndOrders = false;
                 break;
