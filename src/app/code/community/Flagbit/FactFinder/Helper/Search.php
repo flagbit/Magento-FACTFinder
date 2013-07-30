@@ -112,7 +112,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         $nextRetryTimestamp = intval(time() / 60) + $delay;
         Mage::app()->saveCache($nextRetryTimestamp, $this->_getCacheId('nextRetryTimestamp'), array(self::CACHE_TAG));
     }
-    
+
     protected function _disableFallback()
     {
         self::$_skipFactFinder = false;
@@ -145,7 +145,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 
 		return self::$_skipFactFinder;
 	}
-    
+
     /**
      * resets all fallback counter values.
      *
@@ -170,7 +170,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 
 		$failedAttempts = $this->_loadFailedAttempts();
         $failedAttempts = $this->_removeOldEntries($failedAttempts);
-		$failedAttempts[] = intval(time() / 60);        
+		$failedAttempts[] = intval(time() / 60);
 		$this->_saveFailedAttempts($failedAttempts);
 
 		self::$_failedAttemptRegistered = true;
@@ -279,7 +279,8 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getIsOnSearchPage()
     {
-        return Mage::app()->getRequest()->getModuleName() == 'catalogsearch' || Mage::app()->getRequest()->getModuleName() == 'xmlconnect';
+        return Mage::app()->getRequest()->getModuleName() == 'catalogsearch' ||
+            (Mage::app()->getRequest()->getModuleName() == 'xmlconnect' && strpos(Mage::app()->getRequest()->getActionName(), 'search') !== false);
     }
 
 

@@ -220,12 +220,12 @@ class Flagbit_FactFinder_Model_Observer
         $matches = array();
         $label = preg_quote(Mage::helper('factfinder')->__('FACT-Finder Business User Cockpit'));
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
-        preg_match($pattern, $html, $matches);
-        
-        $url = Mage::getSingleton('factfinder/facade')->getManagementUrl();
-        $replace = str_replace($matches[2], $url, $matches[1]) . ' target="_blank"';
-        
-        $transport->setHtml(str_replace($matches[1], $replace, $html));
+        if (preg_match($pattern, $html, $matches)) {
+            $url = Mage::getSingleton('factfinder/facade')->getManagementUrl();
+            $replace = str_replace($matches[2], $url, $matches[1]) . ' target="_blank"';
+
+            $transport->setHtml(str_replace($matches[1], $replace, $html));
+        }
     }
     
     /**
