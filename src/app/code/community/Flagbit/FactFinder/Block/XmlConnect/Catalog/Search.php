@@ -126,6 +126,9 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
      */
     public function getProductSortFeildsXmlObject()
     {
-        return $this->getProductSortFieldsXmlObject();
+        if(function_exists('getProductSortFieldsXmlObject')) {
+            return $this->getProductSortFieldsXmlObject();
+        }
+        return parent::getProductSortFeildsXmlObject();
     }
 }
