@@ -111,11 +111,10 @@ class FACTFinder_Http_ParallelDataProvider
 		} while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
 		while ($active && $mrc == CURLM_OK) {
-			if (curl_multi_select($multiHandle) != -1) {
-				do {
-					$mrc = curl_multi_exec($multiHandle, $active);
-				} while ($mrc == CURLM_CALL_MULTI_PERFORM);
-			}
+			if (curl_multi_select($multiHandle) != -1) usleep(100); // unsatisfactory workaround for bug https://bugs.php.net/bug.php?id=63842
+            do {
+                $mrc = curl_multi_exec($multiHandle, $active);
+            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 		}
 		
 		// TODO: read data which is already loaded while the other data is still loading (is this possible?)
