@@ -112,22 +112,21 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
          * Sort fields
          */
         if ($showFiltersAndOrders) {
-            $searchXmlObject->appendChild($this->getProductSortFeildsXmlObject());
+            $searchXmlObject->appendChild($this->getProductSortFieldsXmlObject());
         }
 
         return $searchXmlObject->asNiceXml();
     }
 
     /**
-     * Retrieve product sort fields as xml object
+     * Overwrite original fallback, because they forgot to return
      *
-     * @deprecated method renamed
      * @return Mage_XmlConnect_Model_Simplexml_Element
      */
-    public function getProductSortFeildsXmlObject()
+    public function getProductSortFieldsXmlObject()
     {
-        if(function_exists('getProductSortFieldsXmlObject')) {
-            return $this->getProductSortFieldsXmlObject();
+        if(method_exists(get_parent_class($this), 'getProductSortFieldsXmlObject')) {
+            return parent::getProductSortFieldsXmlObject();
         }
         return parent::getProductSortFeildsXmlObject();
     }
