@@ -74,7 +74,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List extends Mage_XmlC
 
                     $filterModel->setLayer($layer)->setAttributeModel($attributeItem);
 
-                    $filterParam = parent::REQUEST_FILTER_PARAM_PREFIX . $attributeCode;
+                    $filterParam = parent::REQUEST_FILTER_PARAM_REFIX . $attributeCode;
                     /**
                      * Set new request var
                      */
@@ -89,7 +89,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Product_List extends Mage_XmlC
                  * Separately apply and save category filter
                  */
                 list($categoryFilter, $categoryFilterBlock) = $this->helper('xmlconnect')->getFilterByKey('category');
-                $filterParam = parent::REQUEST_FILTER_PARAM_PREFIX . $categoryFilter->getRequestVar();
+                $filterParam = parent::REQUEST_FILTER_PARAM_REFIX . $categoryFilter->getRequestVar();
 
                 $categoryFilter->setLayer($layer)->setRequestVar($filterParam)
                     ->apply($this->getRequest(), $categoryFilterBlock);
