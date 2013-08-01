@@ -87,3 +87,4 @@
 "User name for authentication", "Benutzername für Authentifizierung"
 "Yes", "Ja"
 "Your server's clock does not agree with FACT-Finder's. Please make sure your clock is set correctly.", "Ihre Serverzeit stimmt nicht mit der von FACT-Finder überein. Bitte stellen Sie sicher, dass Ihre Serverzeit korrekt eingestellt ist."
+"Search Request Cache","Suchanfragen Cache"

@@ -354,11 +354,6 @@ class Flagbit_FactFinder_Model_Observer
                 exit;
             }
         }
-
-        $response = Mage::app()->getResponse();
-        $response->setHeader('Expires', gmdate("D, d M Y H:i:s", time() + 600), true);
-        $response->setHeader('Cache-Control', 'public, max-age=600, must-revalidate', true);
-        $response->setHeader('Pragma', null, true);
     }
 
     /**

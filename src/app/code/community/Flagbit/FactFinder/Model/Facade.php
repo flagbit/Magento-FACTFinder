@@ -361,10 +361,24 @@ class Flagbit_FactFinder_Model_Facade
 
     protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null, $id = null)
     {
+        $cacheKey = 'FACTFINDER_'.implode('_',func_get_args()).'_' . md5(serialize($this->_getParamsParser()));
+
+        if(Mage::app()->useCache('factfinder_search') && $cache = Mage::app()->loadCache($cacheKey))
+        {
+            return unserialize($cache);
+        }
+
         try {
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
-            return $this->$adapterGetter($channel, $id)->$objectGetter();
+            $data = $this->$adapterGetter($channel, $id)->$objectGetter();
+
+            if(Mage::app()->useCache('factfinder_search'))
+            {
+                Mage::app()->saveCache(serialize($data), $cacheKey, array('FACTFINDER_SEARCH'), 600);
+            }
+
+            return $data;
         } catch (Exception $e) {
             Mage::logException($e);
             return null;

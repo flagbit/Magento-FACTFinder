@@ -111,6 +111,15 @@
                 </observers>
             </controller_action_predispatch_adminhtml_system_config_save>
         </events>
+        <cache>
+            <types>
+                <factfinder_search translate="label,description" module="factfinder">
+                    <label>FACT-Finder</label>
+                    <description>Search Request Cache</description>
+                    <tags>FACTFINDER_SEARCH</tags>
+                </factfinder_search>
+            </types>
+        </cache>
     </global>
     <frontend>
         <layout>
