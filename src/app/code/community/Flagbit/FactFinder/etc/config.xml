@@ -284,6 +284,7 @@
             <export>
                 <urls>0</urls>
 				<suggest_image_size>40</suggest_image_size>
+				<suggest_image_type>image</suggest_image_type>
                 <track_carts>1</track_carts>
                 <track_checkout>1</track_checkout>
             </export>
