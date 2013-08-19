@@ -19,6 +19,7 @@
 class FACTFinder_Result extends ArrayIterator
 {
     private $foundRecordsCount;
+    private $refKey;
 
     /**
      * @param array record (default: empty array)
@@ -37,5 +38,25 @@ class FACTFinder_Result extends ArrayIterator
      */
     public function getFoundRecordsCount(){
         return $this->foundRecordsCount;
+    }
+
+    /**
+     * Set this result's reference Key.
+     *
+     * @version since FF6.9
+     * @param reference Key, used for tracking
+     */
+    public final function setRefKey($refKey) {
+        $this->refKey = $refKey;
+    }
+
+    /**
+     * Get this result's reference Key.
+     *
+     * @version since FF6.9
+     * @return the reference Key used for tracking
+     */
+    public final function getRefKey() {
+        return $this->refKey;
     }
 }

@@ -1,30 +1,24 @@
 <?php
 /**
- * FACT-Finder PHP Framework
- *
- * @category  Library
- * @package   FACTFinder\Http
- * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
- */
-
-/**
- * this data provider loads the data from local static xml files
+ * this data provider loads the data from local static files
  * it is only intended to be used for testing
- *
- * @author    Rudolf Batt <rb@omikron.net>, Martin Buettner <martin.buettner@omikron.net>
- * @version   $Id: DummyProvider.php 44086 2012-02-29 17:19:43Z martin.buettner $
- * @package   FACTFinder\Http
  */
 class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
 {
     protected $data;
 	protected $previousFileName;
-	
-	protected $fileLocation;
+    
+    protected $fileLocation;
+    protected $fileExtension = ".xml";
 	
 	public function setFileLocation($loc)
 	{
 		$this->fileLocation = substr($loc, -1) == DS ? $loc : $loc.DS;
+	}
+	
+	public function setFileExtension($ext)
+	{
+		$this->fileExtension = $ext[0] == "." ? $ext : ".$ext";
 	}
 	
 	/**
@@ -107,7 +101,7 @@ class FACTFinder_Http_DummyProvider extends FACTFinder_Abstract_DataProvider
 
 		ksort($params, SORT_STRING);
 		$fileName .= http_build_query($params, '', '_');
-		$fileName .= ".xml";
+		$fileName .= $this->fileExtension;
 		
 		// The following line removes all []-indices from array parameters, because tomcat doesn't need them
 		$fileName = preg_replace("/%5B[A-Za-z0-9]*%5D/", "", $fileName);

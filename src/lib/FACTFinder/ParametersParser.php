@@ -23,7 +23,7 @@ class FACTFinder_ParametersParser
 
     protected $config;
     protected $encodingHandler;
-
+	
 	protected $log;
 
     /**
@@ -121,7 +121,8 @@ class FACTFinder_ParametersParser
             isset($params['page']) ? $params['page'] : 1,
             $filters,
             $sortings,
-            (isset($params['catalog']) && $params['catalog'] == 'true'),
+            ((isset($params['catalog']) && $params['catalog'] == 'true') ||
+             (isset($params['navigation']) && $params['navigation'] == 'true')),
             isset($params['followSearch']) ? $params['followSearch'] : 10000
         );
     }
@@ -279,7 +280,7 @@ class FACTFinder_ParametersParser
         $returnParams = array();
         foreach($params as $key => $value) {
             // copy each param and do not set to null, because mappings are stored as references in the params array
-            if (!isset($ignoredParams[$key]) && ((is_string($value) && strlen($value) > 0) || (is_array($value) && count($value) > 0))) {
+            if(!isset($ignoredParams[$key]) && ((is_array($value) && count($value) > 0) || strlen($value) > 0 )) {
                 $returnParams[$key] = $value;
             }
         }
@@ -328,6 +329,11 @@ class FACTFinder_ParametersParser
 			}
         }
         return $this->requestTarget;
+    }
+
+    public function setRequestTarget($target)
+    {
+        $this->requestTarget = $target;
     }
 
     /**
