@@ -92,6 +92,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
+
             $params['navigation'] = 'true';
 
         case "catalogsearch":
@@ -354,6 +355,12 @@ class Flagbit_FactFinder_Model_Handler_Search
                     $value .= '~~~'.$selectOptions[$option->getField()];
                 }
             }
+
+            // Workaround if only one option is selected
+            if($value == $option->getField().'|') {
+                $value = '';
+            }
+
             break;
         }
         return $value;
