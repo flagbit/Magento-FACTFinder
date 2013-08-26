@@ -92,6 +92,8 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
+            $params['navigation'] = 'true';
+
         case "catalogsearch":
         default:
             $_query = '*';
