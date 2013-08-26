@@ -33,6 +33,7 @@ class FACTFinder_Xml69_SearchAdapter extends FACTFinder_Xml68_SearchAdapter
     {
         $paging = parent::createPaging();
 
+        $xmlResult = $this->getData();
         if (!empty($xmlResult->paging) && isset($xmlResult->refKey))
                 $paging->setSourceRefKey((string) $xmlResult->refKey);
 

@@ -50,7 +50,7 @@ class FACTFinder_Default_TrackingAdapter extends FACTFinder_Abstract_Adapter
 
         $params = array('sourceRefKey' => $sourceRefKey, 'sid' => $sid);
 
-        $optParams = array('userId', 'cookieId', 'price', 'amount', 'positive', 'message', 'site', 'id', 'mid');
+        $optParams = array('uid', 'cookieId', 'price', 'amount', 'positive', 'message', 'site', 'id', 'mid');
         foreach ($optParams AS $optParam) {
             if (isset($inputParams[$optParam]) && strlen($inputParams[$optParam]) > 0)
                 $params[$optParam] = $inputParams[$optParam];
@@ -61,12 +61,24 @@ class FACTFinder_Default_TrackingAdapter extends FACTFinder_Abstract_Adapter
 
     public function doTrackingFromRequest()
     {
-        $params = $this->getParamsParser()->getServerRequestParams();
-        $this->getDataProvider()->setParams($params);
+        $this->setupTrackingFromRequest();
         return $this->applyTracking();
     }
 
-    public function trackEvent($event, $inputParams) {
+    public function setupTrackingFromRequest()
+    {
+        $params = $this->getParamsParser()->getServerRequestParams();
+        $this->getDataProvider()->setParams($params);
+    }
+
+    public function trackEvent($event, $inputParams)
+    {
+        $this->setupEventTracking($event, $inputParams);
+        return $this->applyTracking();
+    }
+
+    public function setupEventTracking($event, $inputParams)
+    {
         $params = $this->prepareDefaultParams($inputParams, $event);
 
         $events = array(
@@ -87,7 +99,5 @@ class FACTFinder_Default_TrackingAdapter extends FACTFinder_Abstract_Adapter
         $params['event'] = $event;
 
         $this->getDataProvider()->setParams($params);
-
-        return $this->applyTracking();
     }
 }

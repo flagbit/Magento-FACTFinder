@@ -33,6 +33,7 @@ class FACTFinder_Json69_SearchAdapter extends FACTFinder_Json68_SearchAdapter
     {
         $paging = parent::createPaging();
 
+        $jsonData = $this->getData();
         if (!empty($jsonData['searchResult']['paging']) && isset($jsonData['searchResult']['refKey']))
             $paging->setSourceRefKey($jsonData['searchResult']['refKey']);
 
