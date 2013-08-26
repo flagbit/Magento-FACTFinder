@@ -31,7 +31,7 @@ class Flagbit_FactFinder_Model_Handler_Tracking
     {
         if($this->_trackingAdapter === null)
         {
-            if($this->_useOldTracking()) {
+            if(Mage::helper('factfinder')->useOldTracking()) {
                 $this->_trackingAdapter = Mage::getModel('factfinder/handler_tracking_scic');
             }
             // If old tracking was not activated use the new tracking
@@ -51,7 +51,7 @@ class Flagbit_FactFinder_Model_Handler_Tracking
      */
     public function applyTracking()
     {
-        if($this->_useOldTracking()) {
+        if(Mage::helper('factfinder')->useOldTracking()) {
             $result =  $this->_getFacade()->applyScicTracking();
         } else {
             $result = $this->_getFacade()->applyTracking();
@@ -60,15 +60,5 @@ class Flagbit_FactFinder_Model_Handler_Tracking
         Mage::getSingleton('core/session')->setFactFinderRefKey(null);
 
         return $result;
-    }
-
-    /**
-     * Decide which tracking should be used
-     *
-     * @return bool
-     */
-    protected function _useOldTracking()
-    {
-        return (Mage::getStoreConfig('factfinder/search/ffversion') < 69);
     }
 }

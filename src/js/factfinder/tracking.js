@@ -1,4 +1,4 @@
-var FactfinderSCIC = Class.create({
+var FactfinderTracking = Class.create({
 	url:  null,
 	data: null,
 	classname: null,
@@ -51,8 +51,7 @@ var FactfinderSCIC = Class.create({
 	recordRequest: function(id, eventType) {
 
 		var data = this.data.get(id);
-		data.event = eventType;
-		
+
 		this.request = new Ajax.Request(this.url, {
 			asynchronous: this.asynchronous,
 			method: 'post',

@@ -20,19 +20,25 @@
  * @version   $Id$
  */
 class Flagbit_FactFinder_ProxyController extends Mage_Core_Controller_Front_Action {
-	
+
+    /**
+     * tracking Action
+     */
+    public function trackingAction()
+    {
+        $this->getResponse()->setBody(
+            Mage::getModel('factfinder/processor')->handleInAppRequest($this->getFullActionName())
+        );
+    }
+
     /**
      * scic Action
      */
 	public function scicAction()
 	{	
-		$this->getResponse()->setBody(
-			Mage::getModel('factfinder/processor')->handleInAppRequest($this->getFullActionName())
-		);		
+		$this->trackingAction();
 	}
-	
-    	
-	
+
     /**
      * suggest Action
      */	
