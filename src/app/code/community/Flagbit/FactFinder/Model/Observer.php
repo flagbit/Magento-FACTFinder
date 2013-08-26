@@ -87,6 +87,11 @@ class Flagbit_FactFinder_Model_Observer
         try {
             $idFieldName = $searchHelper->getIdFieldName();
 
+            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+            if ($customerId) {
+                $customerId = md5('customer_' . $customerId);
+            }
+
             /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder/handler_tracking');
             $tracking->getTrackingAdapter()->setupEventTracking(
@@ -95,7 +100,7 @@ class Flagbit_FactFinder_Model_Observer
                     'id'            => $product->getData($idFieldName),
                     'sid'           => md5(Mage::getSingleton('core/session')->getSessionId()),
                     'price'         => $product->getFinalPrice(),
-                    'uid'           => Mage::getSingleton('customer/session')->getCustomer()->getId(),
+                    'uid'           => $customerId,
                     'site'          => Mage::app()->getStore()->getCode(),
                     'sourceRefKey'  => Mage::getSingleton('core/session')->getFactFinderRefKey(),
                     'product'       => $product
@@ -183,7 +188,7 @@ class Flagbit_FactFinder_Model_Observer
                         'sid'           => $item->getSid(),
                         'amount'        => $item->getCount(),
                         'price'         => $item->getPrice(),
-                        'uid'           => $item->getUserid(),
+                        'uid'           => md5('customer_' . $item->getUserid()),
                         'site'          => Mage::app()->getStore($storeId)->getCode(),
                         'sourceRefKey'  => ''
                     )
