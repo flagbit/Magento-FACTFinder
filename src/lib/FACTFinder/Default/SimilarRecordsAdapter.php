@@ -70,7 +70,7 @@ class FACTFinder_Default_SimilarRecordsAdapter extends FACTFinder_Abstract_Adapt
     /**
      * returns similar attributes for previously specified id. if no id is set, try to fetch parameter 'id'.
      * if no id is available, there will be a warning raised and returning an empty array
-
+     *
      * @return array $similarAttributes of strings (field names as keys)
      */
     public function getSimilarAttributes() {

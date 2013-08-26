@@ -138,6 +138,11 @@ class Flagbit_FactFinder_Model_Processor
 		        return $this->_getFacade()->applyTracking();
 				break;
 
+            case 'factfinder_proxy_tracking':
+                $this->_getFacade()->getTrackingAdapter()->setupTrackingFromRequest();
+                return $this->_getFacade()->applyTracking();
+                break;
+
 			case 'factfinder_proxy_suggest':
 				$handler = new Flagbit_FactFinder_Model_Handler_Suggest(
                     $this->_getRequestParam('query'),

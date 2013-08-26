@@ -24,9 +24,12 @@ class FACTFinder_Paging implements IteratorAggregate
     protected $params;
     protected $displayPageCount = 9;
 
+    /* New in 6.9. Should be version specific, but Paging is outside of the versioning structure atm. */
+    protected $sourceRefKey = null;
+
     /**
      * class constructor - puts paging data from the SimpleXMLElement object
-     * into usefull structure
+     * into useful structure
      *
      * @param int $currentPage
      * @param int $pageCount
@@ -90,7 +93,10 @@ class FACTFinder_Paging implements IteratorAggregate
         if ($page_number > $this->pageCount || $page_number < 1) {
             return '';
         }
-        return $this->paramsParser->createPageLink($this->params, array('page' => $page_number), $link_target);
+        $additionalParams = array('page' => $page_number);
+        if ($this->sourceRefKey != null)
+            $additionalParams['sourceRefKey'] = $this->sourceRefKey;
+        return $this->paramsParser->createPageLink($this->params, $additionalParams, $link_target);
     }
 
     /**
@@ -173,5 +179,13 @@ class FACTFinder_Paging implements IteratorAggregate
         } else {
             return $first_page_number+$this->displayPageCount;
         }
+    }
+
+    /** Set the sourceRefKey to add to urls.
+     * @param string sourceRefKey to set
+     */
+    public function setSourceRefKey($sourceRefKey)
+    {
+        $this->sourceRefKey = $sourceRefKey;
     }
 }

@@ -21,10 +21,15 @@ class FACTFinder_Xml66_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
      **/
     protected function createResult()
     {
+        $xmlResult = $this->getData();
+
+        return $this->getResultFromRawResult($xmlResult);
+    }
+
+    protected function getResultFromRawResult($xmlResult) {
         //init default values
         $result      = array();
         $resultCount = 0;
-        $xmlResult = $this->getData();
 
         //load result values from the xml element
         if (!empty($xmlResult->results)) {
@@ -82,28 +87,7 @@ class FACTFinder_Xml66_SearchAdapter extends FACTFinder_Xml65_SearchAdapter
 
 	protected function getRecordFromRawRecord(SimpleXmlElement $rawRecord, $position)
 	{
-		// fetch record values
-		$fieldValues = array();
-		foreach($rawRecord->field AS $current_field){
-			$currentFieldname = (string) $current_field->attributes()->name;
-			$fieldValues[$currentFieldname] = (string) $current_field;
-		}
-
-		// get original position
-		if (isset($fieldValues['__ORIG_POSITION__'])) {
-			$origPosition = $fieldValues['__ORIG_POSITION__'];
-			unset($fieldValues['__ORIG_POSITION__']);
-		} else {
-			$origPosition = $position;
-		}
-
-		$record = FF::getInstance('record',
-			$rawRecord->attributes()->id,
-			floatval($rawRecord->attributes()->relevancy),
-			$position,
-			$origPosition,
-			$this->getEncodingHandler()->encodeServerContentForPage($fieldValues)
-		);
+        $record = $this->createRecord($rawRecord, $position);
 
 		if (isset($rawRecord->seoPath)) {
 			$record->setSeoPath(strval($rawRecord->seoPath));
