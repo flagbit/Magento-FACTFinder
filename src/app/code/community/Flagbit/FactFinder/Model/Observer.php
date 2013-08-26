@@ -14,9 +14,10 @@
  *
  * @category  Mage
  * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
- * @author    Michael Türk <tuerk@flagbit.de>
- * @version   $Id: Processor.php 647 2011-03-21 10:32:14Z rudolf_batt $
+ * @copyright Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Michael Türk <michael.tuerk@flagbit.de>
+ * @author    Nicolai Essig <nicolai.essig@flagbit.de>
+ * @version   $Id: Observer.php 26.08.13 15:05 $
  */
 class Flagbit_FactFinder_Model_Observer
 {
@@ -49,20 +50,63 @@ class Flagbit_FactFinder_Model_Observer
         }
 
         try {
-            $facade = Mage::getModel('factfinder/facade');
-            $facade->getScicAdapter()->setupCartTracking(
-                $product->getData($idFieldName),
-                md5(Mage::getSingleton('core/session')->getSessionId()),
-                $qty,
-                $product->getFinalPrice($qty),
-                $customerId);
-            $facade->applyTracking();
+            /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+            $tracking = Mage::getModel('factfinder/handler_tracking');
+            $tracking->getTrackingAdapter()->setupEventTracking(
+                FACTFinder_Default_TrackingAdapter::EVENT_CART,
+                array(
+                    'id'            => $product->getData($idFieldName),
+                    'sid'           => md5(Mage::getSingleton('core/session')->getSessionId()),
+                    'amount'        => $qty,
+                    'price'         => $product->getFinalPrice($qty),
+                    'uid'           => $customerId,
+                    'site'          => Mage::app()->getStore()->getCode(),
+                    'sourceRefKey'  => Mage::getSingleton('core/session')->getFactFinderRefKey()
+                )
+            );
+            $tracking->applyTracking();
         }
         catch (Exception $e) {
             Mage::helper('factfinder/debug')->log($e->getMessage());
         }
     }
 
+    /**
+     * Tracking of single product click
+     *
+     * @param $product
+     */
+    protected function sendClickTrackingForSingleProduct($product)
+    {
+        $searchHelper = Mage::helper('factfinder/search');
+
+        if (!$searchHelper->getIsEnabled(false, 'clicktracking')) {
+            return;
+        }
+
+        try {
+            $idFieldName = $searchHelper->getIdFieldName();
+
+            /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+            $tracking = Mage::getModel('factfinder/handler_tracking');
+            $tracking->getTrackingAdapter()->setupEventTracking(
+                FACTFinder_Default_TrackingAdapter::EVENT_INSPECT,
+                array(
+                    'id'            => $product->getData($idFieldName),
+                    'sid'           => md5(Mage::getSingleton('core/session')->getSessionId()),
+                    'price'         => $product->getFinalPrice(),
+                    'uid'           => Mage::getSingleton('customer/session')->getCustomer()->getId(),
+                    'site'          => Mage::app()->getStore()->getCode(),
+                    'sourceRefKey'  => Mage::getSingleton('core/session')->getFactFinderRefKey(),
+                    'product'       => $product
+                )
+            );
+            $tracking->applyTracking();
+        }
+        catch (Exception $e) {
+            Mage::helper('factfinder/debug')->log($e->getMessage());
+        }
+    }
 
     /**
      * Observer method
@@ -129,14 +173,22 @@ class Flagbit_FactFinder_Model_Observer
                     $facade->setStoreId($item->getStoreId());
                     $storeId = $item->getStoreId();
                 }
-                $facade->getScicAdapter()->setupCheckoutTracking(
-                    $item->getProductId(),
-                    $item->getSid(),
-                    $item->getCount(),
-                    $item->getPrice(),
-                    $item->getUserid());
 
-                $facade->applyTracking();
+                /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+                $tracking = Mage::getModel('factfinder/handler_tracking');
+                $tracking->getTrackingAdapter()->setupEventTracking(
+                    FACTFinder_Default_TrackingAdapter::EVENT_BUY,
+                    array(
+                        'id'            => $item->getProductId(),
+                        'sid'           => $item->getSid(),
+                        'amount'        => $item->getCount(),
+                        'price'         => $item->getPrice(),
+                        'uid'           => $item->getUserid(),
+                        'site'          => Mage::app()->getStore($storeId)->getCode(),
+                        'sourceRefKey'  => ''
+                    )
+                );
+                $tracking->applyTracking();
 
                 $item->delete($item);
             }
@@ -263,36 +315,6 @@ class Flagbit_FactFinder_Model_Observer
             $layout = $observer->getLayout();
             $update = $layout->getUpdate();
             $update->addHandle('factfinder_clicktracking_enabled');
-        }
-    }
-    
-    protected function sendClickTrackingForSingleProduct($product)
-    {
-        $searchHelper = Mage::helper('factfinder/search');
-        
-        if (!$searchHelper->getIsEnabled(false, 'clicktracking')) {
-            return;
-        }
-
-        try {
-            $idFieldName = $searchHelper->getIdFieldName();
-
-            $facade = Mage::getModel('factfinder/facade');
-            $facade->getScicAdapter()->setupClickTracking(
-                $product->getData($idFieldName),
-                md5(Mage::getSingleton('core/session')->getSessionId()),
-                $searchHelper->getQuery()->getQueryText(),
-                1, //pos
-                1, //origPos
-                1, //page
-                $product->getSimilarity,
-                $product->getName(),
-                $searchHelper->getPageLimit(),
-                $searchHelper->getDefaultPerPageValue());
-            $facade->applyTracking();
-        }
-        catch (Exception $e) {
-            Mage::helper('factfinder/debug')->log($e->getMessage());
         }
     }
     

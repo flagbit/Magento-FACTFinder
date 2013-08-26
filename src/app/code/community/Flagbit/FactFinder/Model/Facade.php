@@ -111,6 +111,11 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_getAdapter("similarRecords", $channel);
     }
 
+    public function getTrackingAdapter($channel = null)
+    {
+        return $this->_getAdapter("tracking", $channel);
+    }
+
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
@@ -154,6 +159,11 @@ class Flagbit_FactFinder_Model_Facade
     public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "similarRecords", $channel, $id);
+    }
+
+    public function configureTrackingAdapter($params, $channel = null, $id = null)
+    {
+        $this->_configureAdapter($params, "tracking", $channel, $id);
     }
 
     protected function _configureAdapter($params, $type, $channel = null, $id = null)
@@ -301,6 +311,11 @@ class Flagbit_FactFinder_Model_Facade
 
     public function applyTracking($channel = null, $id = null)
     {
+        return $this->_getFactFinderObject("Tracking", "applyTracking", $channel, $id);
+    }
+
+    public function applyScicTracking($channel = null, $id = null)
+    {
         return $this->_getFactFinderObject("Scic", "applyTracking", $channel, $id);
     }
 
@@ -371,6 +386,11 @@ class Flagbit_FactFinder_Model_Facade
         try {
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
+            if($adapterType == 'Tracking')
+            {
+                Mage::log($objectGetter);
+            }
+
             $data = $this->$adapterGetter($channel, $id)->$objectGetter();
 
             if(Mage::app()->useCache('factfinder_search'))
