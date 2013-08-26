@@ -386,10 +386,6 @@ class Flagbit_FactFinder_Model_Facade
         try {
             $this->_loadAllData();
             $adapterGetter = "get".$adapterType."Adapter";
-            if($adapterType == 'Tracking')
-            {
-                Mage::log($objectGetter);
-            }
 
             $data = $this->$adapterGetter($channel, $id)->$objectGetter();
 
