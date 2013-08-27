@@ -1,0 +1,33 @@
+<?php
+/**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
+
+/**
+ * Add FACT-Finder Tracking
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Joerg Weller <weller@flagbit.de>
+ * @author    Nicolai Essig <nicolai.essig@flagbit.de>
+ * @version   $Id$
+ */
+?>
+<script type="text/javascript">
+var factfinderTracking = new FactfinderTracking(
+    '.col-main',
+    $H(<?php echo $this->getJsonDataObject();?>),
+    $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
+    '<?php echo (Mage::helper('factfinder')->useOldTracking() ? $this->getUrl('factfinder/proxy/scic') : $this->getUrl('factfinder/proxy/tracking')) ?>',
+	false
+);
+
+Event.observe(document, 'dom:loaded', function(event) {
+    factfinderTracking.init();
+});
+</script>

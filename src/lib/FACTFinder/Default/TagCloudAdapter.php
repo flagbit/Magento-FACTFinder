@@ -31,6 +31,19 @@ class FACTFinder_Default_TagCloudAdapter extends FACTFinder_Abstract_Adapter
     }
 
     /**
+     * with this method a different wordcount can be set. default from FF is 30.
+     *
+     * @param int word count
+     */
+    public function setWordCount($wordCount) {
+        // set maximum results for tagcloud
+        if( !empty( $wordCount ) && is_numeric( $wordCount ) )
+        {
+            $this->getDataProvider()->setParam('wordCount', $wordCount);
+        }
+    }
+
+    /**
      * @return array $tagCloud list of FACTFinder_Tag objects
      */
     protected function createTagCloud()

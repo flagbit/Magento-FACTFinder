@@ -1,18 +1,6 @@
 <?php
 /**
- * FACT-Finder PHP Framework
- *
- * @category  Library
- * @package   FACTFinder\Common
- * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
- */
-
-/**
  * represents a query for suggest
- *
- * @author    Rudolf Batt <rb@omikron.net>
- * @version   $Id: SuggestQuery.php 25893 2010-06-29 08:19:43Z rb $
- * @package   FACTFinder\Common
  */
 class FACTFinder_SuggestQuery
 {
@@ -21,7 +9,8 @@ class FACTFinder_SuggestQuery
     private $hitCount;
     private $type;
 	private $imageUrl;
-
+    private $refKey;
+    
     /**
      * @param string $value query
 	 * @param string $url url which uses the suggested query
@@ -74,5 +63,25 @@ class FACTFinder_SuggestQuery
      */
     public function getImageUrl() {
         return $this->imageUrl;
+    }
+
+    /**
+     * Set this suggest query's reference Key.
+     *
+     * @version since FF6.9
+     * @param reference Key, used for tracking
+     */
+    public final function setRefKey($refKey) {
+        $this->refKey = $refKey;
+    }
+
+    /**
+     * Get this suggest query's reference Key.
+     *
+     * @version since FF6.9
+     * @return the reference Key used for tracking
+     */
+    public final function getRefKey() {
+        return $this->refKey;
     }
 }

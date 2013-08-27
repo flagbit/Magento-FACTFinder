@@ -49,8 +49,16 @@
 							return i18n[string];
 					}
 
-                    console.log(data);
-				
+                    // Try to get channel from search request, if no channel was found
+                    for(var i = 0; i < data.length; i++) {
+                        if(typeof(data[i].channel) == 'undefined' || data[i].channel == '') {
+                            var params = data[i].searchParams.toQueryParams();
+                            if(typeof(params.channel) != 'undefined') {
+                                data[i].channel = params.channel;
+                            }
+                        }
+                    }
+
 					var content = '<ul>';
 					content += '<li style="display: none" class="selected selectable-item"></li>';
 					var currentChannel = '';

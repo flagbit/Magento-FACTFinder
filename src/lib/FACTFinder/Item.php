@@ -52,4 +52,12 @@ class FACTFinder_Item
     public function isSelected() {
         return $this->isSelected;
     }
+
+    /**
+     * Allows to override the URL of the item
+     * @param $url string new URL to set
+     */
+    public function setUrl($url) {
+        $this->url = $url;
+    }
 }

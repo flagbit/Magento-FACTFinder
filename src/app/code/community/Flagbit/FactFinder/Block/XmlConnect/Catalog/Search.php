@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Flagbit_FactFinder
  *
@@ -9,9 +9,9 @@
 
 /**
  * Block class
- * 
+ *
  * This class is used provide FAC-Finder filters
- * 
+ *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
@@ -19,8 +19,8 @@
  * @version   $Id$
  */
 class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect_Block_Catalog_Search {
-	
-	
+
+
     /**
      * Search results xml renderer
      * XML also contains filters that can be apply (accorfingly already applyed filters and search query)
@@ -32,8 +32,8 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
     {
         if(!Mage::helper('factfinder/search')->getIsEnabled()){
     		return parent::_toHtml();
-    	}     	
-    	
+    	}
+
         $searchXmlObject  = new Mage_XmlConnect_Model_Simplexml_Element('<search></search>');
         $filtersXmlObject = new Mage_XmlConnect_Model_Simplexml_Element('<filters></filters>');
 
@@ -80,28 +80,27 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
         }
         if ($isLayeredNavigationAllowed && $productListBlock && $showFiltersAndOrders) {
             $filters = $productListBlock->getCollectedFilters();
-  
+
             /**
              * Render filters xml
              */
             foreach ($filters as $filter) {
-                if (!count($filter->getAttributeModel()->getItems())) {
+                if (!$this->_isFilterItemsHasValues($filter)) {
                     continue;
                 }
-                
+
                 $item = $filtersXmlObject->addChild('item');
                 $item->addChild('name', $searchXmlObject->xmlentities($filter->getName()));
                 $item->addChild('code', $filter->getRequestVar());
                 $values = $item->addChild('values');
 
-                foreach ($filter->getAttributeModel()->getItems() as $valueArray) {
-                	$valueItem = new Varien_Object($valueArray);
+                foreach ($filter->getItems() as $valueItem) {
                     $count = (int)$valueItem->getCount();
                     if (!$count) {
                         continue;
                     }
                     $value = $values->addChild('value');
-                    $value->addChild('id', base64_encode($valueItem->getValue()));
+                    $value->addChild('id', $valueItem->getValueString());
                     $value->addChild('label', $searchXmlObject->xmlentities(strip_tags($valueItem->getLabel())));
                     $value->addChild('count', $count);
                 }
@@ -113,11 +112,22 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search extends Mage_XmlConnect
          * Sort fields
          */
         if ($showFiltersAndOrders) {
-            $searchXmlObject->appendChild($this->getProductSortFeildsXmlObject());
+            $searchXmlObject->appendChild($this->getProductSortFieldsXmlObject());
         }
 
         return $searchXmlObject->asNiceXml();
     }
-	
-	
+
+    /**
+     * Overwrite original fallback, because they forgot to return
+     *
+     * @return Mage_XmlConnect_Model_Simplexml_Element
+     */
+    public function getProductSortFieldsXmlObject()
+    {
+        if(method_exists(get_parent_class($this), 'getProductSortFieldsXmlObject')) {
+            return parent::getProductSortFieldsXmlObject();
+        }
+        return parent::getProductSortFeildsXmlObject();
+    }
 }
