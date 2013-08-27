@@ -49,7 +49,7 @@ class Flagbit_FactFinder_Model_Handler_Search
             $params['idsOnly'] = FF::getSingleton('configuration')->getIdsOnly() ? 'true' : 'false';
             $params['query'] = $_query;
 
-            $count = $requestParams['count'];
+            $count = isset($requestParams['count']) ? $requestParams['count'] : 0;
             if ($count > 0) {
                 $params['productsPerPage'] = $count;
                 $params['page'] = ($requestParams['offset'] / $count) + 1;
@@ -91,6 +91,9 @@ class Flagbit_FactFinder_Model_Handler_Search
             if (!isset($requestParams['Category'])) {
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
+
+
+            $params['navigation'] = 'true';
 
         case "catalogsearch":
         default:
@@ -352,6 +355,12 @@ class Flagbit_FactFinder_Model_Handler_Search
                     $value .= '~~~'.$selectOptions[$option->getField()];
                 }
             }
+
+            // Workaround if only one option is selected
+            if($value == $option->getField().'|') {
+                $value = '';
+            }
+
             break;
         }
         return $value;

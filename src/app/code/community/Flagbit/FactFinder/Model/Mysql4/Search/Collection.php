@@ -4,7 +4,7 @@
  *
  * @category  Mage
  * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @copyright Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
 
 /**
@@ -14,8 +14,9 @@
  * 
  * @category  Mage
  * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
- * @author    Joerg Weller <weller@flagbit.de>
+ * @copyright Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author    Joerg Weller <joerg.weller@flagbit.de>
+ * @author    Nicolai Essig <nicolai.essig@flagbit.de>
  * @version   $Id$
  */
 class Flagbit_FactFinder_Model_Mysql4_Search_Collection
@@ -50,6 +51,12 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     {
 		// get product IDs from Fact-Finder
     	$productIds = $this->_getSearchHandler()->getSearchResult();
+
+        Mage::getSingleton('core/session')->setFactFinderRefKey(null);
+        if($refKey = Mage::getSingleton('factfinder/facade')->getSearchResult()->getRefKey())
+        {
+            Mage::getSingleton('core/session')->setFactFinderRefKey($refKey);
+        }
 			
 		if (!empty($productIds)) {
 			$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();

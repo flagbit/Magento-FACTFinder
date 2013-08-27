@@ -58,15 +58,11 @@ abstract class FACTFinder_Abstract_Adapter
     }
 	
     /**
-     * returns the data lazily. if it isn't available yet, it will be requested from the dataprovider.
 	 * decorates the dataprovider::getData method so a inheriting class does not have to use the dataprovider
      */
     protected function getData()
     {
-		if(!isset($this->data)) {
-			$this->data = $this->getDataProvider()->getData();
-		}
-        return $this->data;
+		return $this->getDataProvider()->getData();
     }
 	
 	protected function reloadData()

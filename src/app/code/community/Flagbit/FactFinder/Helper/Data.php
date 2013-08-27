@@ -32,5 +32,15 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
         $model = Mage::getConfig()->getNode("global/models/$code");
         return $module && $module->is('active') || $model;
     }
+
+    /**
+     * Decide which tracking should be used
+     *
+     * @return bool
+     */
+    public function useOldTracking()
+    {
+        return (Mage::getStoreConfig('factfinder/search/ffversion') < 69);
+    }
 	
 }

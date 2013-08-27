@@ -102,6 +102,14 @@ class FACTFinder_AsnSliderFilter
     }
 
     /**
+     * Allows to overwrite the base url.
+     * @param $url string new url
+     */
+    public function setBaseUrl($url) {
+        $this->baseUrl = $url;
+    }
+
+    /**
      * returns true if the selected range is not the same as the absolute range
      *
      * @return boolean true if selected
