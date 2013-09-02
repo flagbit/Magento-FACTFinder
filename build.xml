@@ -68,6 +68,9 @@
         <replaceregexp file="${srcdir}/app/code/community/Flagbit/FactFinder/etc/config.xml"
             match="(&lt;version&gt;).*?(&lt;/version&gt;)"
             replace="\1${package.version}\2" flags="gs" />
+        <replaceregexp file="${basedir}/composer.json"
+            match="(&quot;version&quot;\s*:\s*&quot;)[\d\.]+(&quot;)"
+            replace="\1${package.version}\2" flags="gs" />
     </target>
  
      <target name="phpcs" description="PHP_CodeSniffer">
