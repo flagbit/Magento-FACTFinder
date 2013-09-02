@@ -1,0 +1,21 @@
+{
+    "name": "flagbit/factfinder",
+    "license": "GPL3",
+    "type": "magento-module",
+	"version":"3.4.8",
+    "description": "Flagbit FACTFinder",
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    },
+    "require-dev": {
+    },
+    "authors":[
+        {
+            "name":"Joerg Weller",
+			"email":"weller@flagbit.de",
+			"homepage":"http://www.flagbit.de/",
+            "role": "Developer"
+        }
+    ]
+
+}
