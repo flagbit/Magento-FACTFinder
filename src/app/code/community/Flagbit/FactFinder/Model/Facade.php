@@ -376,7 +376,8 @@ class Flagbit_FactFinder_Model_Facade
 
     protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null, $id = null)
     {
-        $cacheKey = 'FACTFINDER_'.implode('_',func_get_args()).'_' . md5(serialize($this->_getParamsParser()));
+        $args = func_get_args();
+        $cacheKey = 'FACTFINDER_'.implode('_',$args).'_' . md5(serialize($this->_getParamsParser()));
 
         if(Mage::app()->useCache('factfinder_search') && $cache = Mage::app()->loadCache($cacheKey))
         {
