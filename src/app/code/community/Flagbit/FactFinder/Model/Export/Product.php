@@ -161,7 +161,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     {
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
-
+        if ($exportImageAndDeeplink) {            
+            $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
+            $imageSize = (int) Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
+        }
+        
         $header = $this->_getExportAttributes($storeId);
         $this->_addCsvRow($header);
         
@@ -232,8 +236,6 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product->setStoreId($storeId);
                     $product->load($productData['entity_id']);
 
-                    $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
-                    $imageSize = (int) Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
                     $productIndex[] = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
                     $productIndex[] = $product->getProductUrl();
                 }
