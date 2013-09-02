@@ -7,7 +7,7 @@
     "require": {
         "magento-hackathon/magento-composer-installer": "*"
     },
-    "require-dev": {        
+    "require-dev": {
     },
     "authors":[
         {
@@ -17,5 +17,5 @@
             "role": "Developer"
         }
     ]
-	
+
 }
