@@ -13,8 +13,8 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2013-09-02</date>
- <time>07:45:51</time>
+ <date>2013-09-24</date>
+ <time>13:23:21</time>
  <version>
   <release>3.5.2</release>
   <api>3.5.2</api>
@@ -81,7 +81,7 @@
     <file md5sum="0a26a0d655c3f257b74302683a4859ba" name="Util.php" role="magelib" />
    </dir> <!-- /\FACTFinder -->
    <dir name="\FACTFinderCustom">
-    <file md5sum="c58a6f82de677607f50c98de87b96aa9" name="Configuration.php" role="magelib" />
+    <file md5sum="06068d50a15e6e6a865c1727b7af0ded" name="Configuration.php" role="magelib" />
    </dir> <!-- /\FACTFinderCustom -->
    <dir name="\FACTFinder\Abstract">
     <file md5sum="1c3acf21c0e5bb954973e22e52910906" name="Adapter.php" role="magelib" />
@@ -264,10 +264,10 @@
     <file md5sum="87b662c7c7242ef349f4606ad2ab5279" name="Backend.php" role="magecommunity" />
     <file md5sum="91d08be56cfa17025d0dbfcda3691bb1" name="Data.php" role="magecommunity" />
     <file md5sum="24b939b03efb2cd5f7815562f896576f" name="Debug.php" role="magecommunity" />
-    <file md5sum="f51d082432b54ae877bc92136a977e81" name="Search.php" role="magecommunity" />
+    <file md5sum="0ec62f809330706c441c60ad96970880" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="943ad785ea4639d9e9a99f71253ed88b" name="Facade.php" role="magecommunity" />
+    <file md5sum="6ab653ac461b0c29df77c70627db49fe" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="99b06cdb299cd09e4dfafc0f9ab2d541" name="Observer.php" role="magecommunity" />
     <file md5sum="dd87fcca325fc9bfb30e52f5a0c484fb" name="Processor.php" role="magecommunity" />
@@ -279,7 +279,7 @@
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Handler">
     <file md5sum="f5724a1c82becbc4d76a6f46dc591977" name="Abstract.php" role="magecommunity" />
-    <file md5sum="4fc0544564271ec387a907e41fe2c231" name="CheckStatus.php" role="magecommunity" />
+    <file md5sum="73bf9fec9e0e97a3261b8fad292b1f96" name="CheckStatus.php" role="magecommunity" />
     <file md5sum="831d8d3ff2cd29e090cff10c3a9c8844" name="ProductCampaign.php" role="magecommunity" />
     <file md5sum="25175d7b6809c9db30e1400f4f800739" name="ProductDetailCampaign.php" role="magecommunity" />
     <file md5sum="47b12e1f2f1e1d83ecaba77fdb20b63b" name="Recommendations.php" role="magecommunity" />
@@ -349,7 +349,7 @@
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
     <file md5sum="d51345fde3b0cbede02f4d2ac7d43af0" name="form.advancedsuggest.phtml" role="magedesign" />
-    <file md5sum="f1442920be226f640949bfb12ca5fd9e" name="form.advancedsuggest68.phtml" role="magedesign" />
+    <file md5sum="40f1abe8fad017cc52442bd6a4a8ef35" name="form.advancedsuggest68.phtml" role="magedesign" />
     <file md5sum="eb49c2fb57594e2ebeed1ffb01c2606d" name="form.mini.phtml" role="magedesign" />
     <file md5sum="7a40d67bf648e65345f69b2cf9d3c6b6" name="logo.phtml" role="magedesign" />
     <file md5sum="a4cdff409ccedb16d4fe9a038a4dd9e8" name="secondaryresult.phtml" role="magedesign" />
@@ -411,7 +411,7 @@
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2013-09-02</date>
+   <date>2013-09-24</date>
    <license>GPL</license>
    <notes>
 [+BUGFIX] set $graceful parameter to true. This avoid exceptions on Mage::register if the key already exists. This happens if the layered navigation will be included more than once. i. e. left and content
