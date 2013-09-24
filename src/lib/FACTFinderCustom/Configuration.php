@@ -216,7 +216,9 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return array
      */
     public function getPageMappings() {
-        return array();
+        return array(
+            'query' => 'q'
+        );
     }
 
     /**
