@@ -65,7 +65,7 @@
 					if(data.length) {
                         if(data[0].channel == '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>') {
                             content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
-                        } else {
+                        } else if (typeof(data[i].channel) !== 'undefined') {
                             content += '<li class="delimiter">' + translate('Channel: ' + data[0].channel) + '</li>';
                         }
                         currentChannel = data[0].channel;
@@ -73,7 +73,7 @@
 
 					for(var i = 0; i < data.length; i++) {
 						var item = data[i];
-						if(item.channel != currentChannel)
+						if(typeof(item.channel) !== 'undefined' && item.channel != currentChannel)
 						{
 							content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
 							currentChannel = item.channel;

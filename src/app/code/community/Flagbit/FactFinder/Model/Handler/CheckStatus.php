@@ -1,5 +1,15 @@
 <?php
 /**
+ * Flagbit_FactFinder
+ *
+ * @category  Mage
+ * @package   Flagbit_FactFinder
+ * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ */
+
+require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+
+/**
  * Checks whether the configuration is working
  *
  * @category    Mage
@@ -28,12 +38,10 @@ class Flagbit_FactFinder_Model_Handler_CheckStatus
 
     protected function configureFacade()
     {
-		// facade must be loaded prior using the included library class "FF" 
+        FF::getSingleton('configuration', $this->_configArray);
         $this->_getFacade()->configureStatusHelper();
 		
-        FF::getSingleton('configuration', $this->_configArray);
         $this->_secondaryChannels = FF::getSingleton('configuration')->getSecondaryChannels();
-
         foreach($this->_secondaryChannels AS $channel)
             $this->_getFacade()->configureStatusHelper($channel);
 
