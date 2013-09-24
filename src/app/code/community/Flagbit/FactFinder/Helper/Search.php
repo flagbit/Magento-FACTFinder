@@ -340,6 +340,9 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
             $url = $this->_getUrl('factfinder/proxy/suggest', $params);
         } else {
 			$url = Mage::getSingleton('factfinder/facade')->getSuggestUrl();
+            if (Mage::app()->getStore()->isCurrentlySecure()) {
+                $url = preg_replace('/^http:/', 'https:', $url);
+            }
 		}
         return $url;
     }
@@ -347,7 +350,8 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     /**
      * @return bool
      */
-    public function isSuggestProxyActivated() {
+    public function isSuggestProxyActivated()
+    {
         return Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY);
     }
 
