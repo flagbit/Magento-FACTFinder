@@ -14,7 +14,7 @@
   <active>yes</active>
  </lead>
  <date>2013-09-24</date>
- <time>13:23:21</time>
+ <time>13:26:49</time>
  <version>
   <release>3.5.2</release>
   <api>3.5.2</api>
@@ -25,15 +25,10 @@
  </stability>
  <license>GPL</license>
  <notes>
-[+BUGFIX] set $graceful parameter to true. This avoid exceptions on Mage::register if the key already exists. This happens if the layered navigation will be included more than once. i. e. left and content
-[+BUGFIX] issue #34 selected filters are displayed twice
-[+BUGFIX] trim category values before encoding them
-[+BUGFIX] don&apos;t send clicktracking if disabled
-[~BUGFIX] don&apos;t allow default attributes inside the attribute-setup
-[+TASK] updated FF PHP framework
-[~TASK] improved export memory usage, by unsetting some bigger variables
-[~TASK] remove typical magento parameters from the request to ff
-[~TASK] extracted method sendClickTrackingForSingleProduct
+FIX: use https suggestion urls if user is on https page
+FIX: do connection check with correct data, closing issue 49
+FIX: avoid &quot;channel: undefined&quot; inside suggest
+FIX: fixed advisory links
  </notes>
  <contents>
   <dir name="/">
@@ -414,15 +409,10 @@
    <date>2013-09-24</date>
    <license>GPL</license>
    <notes>
-[+BUGFIX] set $graceful parameter to true. This avoid exceptions on Mage::register if the key already exists. This happens if the layered navigation will be included more than once. i. e. left and content
-[+BUGFIX] issue #34 selected filters are displayed twice
-[+BUGFIX] trim category values before encoding them
-[+BUGFIX] don&apos;t send clicktracking if disabled
-[~BUGFIX] don&apos;t allow default attributes inside the attribute-setup
-[+TASK] updated FF PHP framework
-[~TASK] improved export memory usage, by unsetting some bigger variables
-[~TASK] remove typical magento parameters from the request to ff
-[~TASK] extracted method sendClickTrackingForSingleProduct
+FIX: use https suggestion urls if user is on https page
+FIX: do connection check with correct data, closing issue 49
+FIX: avoid &quot;channel: undefined&quot; inside suggest
+FIX: fixed advisory links
    </notes>
   </release>
  </changelog>
