@@ -14,10 +14,10 @@
   <active>yes</active>
  </lead>
  <date>2013-09-24</date>
- <time>13:26:49</time>
+ <time>13:36:28</time>
  <version>
-  <release>3.5.2</release>
-  <api>3.5.2</api>
+  <release>3.5.3</release>
+  <api>3.5.3</api>
  </version>
  <stability>
   <release>stable</release>
@@ -252,7 +252,7 @@ FIX: fixed advisory links
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="71edd3dbbb8e2ee494478face906f02d" name="config.xml" role="magecommunity" />
+    <file md5sum="686dfb4518a20e8f0498ba9279420ce6" name="config.xml" role="magecommunity" />
     <file md5sum="4e232a8d8e9ba653ba658b510470a20d" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
@@ -399,8 +399,8 @@ FIX: fixed advisory links
  <changelog>
   <release>
    <version>
-    <release>3.5.2</release>
-    <api>3.5.2</api>
+    <release>3.5.3</release>
+    <api>3.5.3</api>
    </version>
    <stability>
     <release>stable</release>
