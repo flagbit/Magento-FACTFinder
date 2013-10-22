@@ -53,11 +53,11 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
     	$productIds = $this->_getSearchHandler()->getSearchResult();
 
         Mage::getSingleton('core/session')->setFactFinderRefKey(null);
-        if($refKey = Mage::getSingleton('factfinder/facade')->getSearchResult()->getRefKey())
-        {
-            Mage::getSingleton('core/session')->setFactFinderRefKey($refKey);
+        $searchResult = Mage::getSingleton('factfinder/facade')->getSearchResult();
+        if ($searchResult && $searchResult->getRefKey()) {
+            Mage::getSingleton('core/session')->setFactFinderRefKey($searchResult->getRefKey());
         }
-			
+
 		if (!empty($productIds)) {
 			$idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
