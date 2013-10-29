@@ -193,6 +193,13 @@ class Flagbit_FactFinder_Model_Facade
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $dataProvider      = $this->_getParallelDataProvider();
             $dataProvider->setParam('channel', $channel);
+
+            // new tracking needs session ID and sourceRefKey for every request
+            if(!Mage::helper('factfinder')->useOldTracking()) {
+                $dataProvider->setParam('sourceRefKey', Mage::getSingleton('core/session')->getFactFinderRefKey());
+                $dataProvider->setParam('sid'         , md5(Mage::getSingleton('core/session')->getSessionId()));
+            }
+            
             $this->_adapters[$hashKey][$channel] = FF::getInstance(
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
