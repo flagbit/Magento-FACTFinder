@@ -57,8 +57,6 @@ class Flagbit_FactFinder_Model_Handler_Tracking
             $result = $this->_getFacade()->applyTracking();
         }
 
-        Mage::getSingleton('core/session')->setFactFinderRefKey(null);
-
         return $result;
     }
 }
