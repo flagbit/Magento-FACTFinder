@@ -51,12 +51,17 @@ class Flagbit_FactFinder_Model_Facade
      */
     protected $_urlBuilder = null;
 
+    /**
+     * @var FACTFinder_Http_DataProvider
+     */
+    protected $_dataProvider = null;
+
 	/**
 	 * logger object to log all module internals
 	 * @var FACTFinder_Abstract_Logger
 	 */
 	protected $_logger = null;
-	
+
 	public function __construct($arg = null)
     {
         if ($arg === null || !($arg instanceof FACTFinder_Abstract_Logger)) {
@@ -291,11 +296,10 @@ class Flagbit_FactFinder_Model_Facade
 
     public function getSuggestUrl()
     {
-        $urlBuilder = $this->_getUrlBuilder();
-        $urlBuilder->setAction('Suggest.ff');
-        $urlBuilder->setParams(array());
+        $dataProvider = $this->_getDataProvider();
+        $dataProvider->setType('Suggest.ff');
 
-        return $urlBuilder->getNonAuthenticationUrl();
+        return $dataProvider->getAuthenticationUrl();
     }
 
     protected function _getUrlBuilder()
@@ -307,6 +311,17 @@ class Flagbit_FactFinder_Model_Facade
             $this->_urlBuilder = FF::getInstance('http/urlBuilder', $params, $config, $this->_logger);
         }
         return $this->_urlBuilder;
+    }
+
+    protected function _getDataProvider()
+    {
+        if($this->_dataProvider === null) {
+            $config = $this->_getConfiguration();
+            $params = $this->_getParamsParser()->getServerRequestParams();
+
+            $this->_dataProvider = FF::getInstance('http/dataProvider', $params, $config, $this->_logger);
+        }
+        return $this->_dataProvider;
     }
 
     public function applyTracking($channel = null, $id = null)
