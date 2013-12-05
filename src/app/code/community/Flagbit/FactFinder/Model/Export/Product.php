@@ -243,10 +243,15 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
-				
+
                 if ($productChilds = $productRelations[$productData['entity_id']]) {       
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
+                            /* should be used if sub products should not be exported because of their status
+                            $subProductAttr = $productAttributes[$productChild[ 'entity_id' ]]; 
+                            if (!isset($subProductAttr[$status->getId()]) || !in_array($subProductAttr[$status->getId()], $statusVals)) {
+                                continue;
+                            } */
 
                             $subProductIndex = array(
                                     $productChild['entity_id'],
