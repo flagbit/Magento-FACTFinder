@@ -70,7 +70,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $value = base64_decode($value);
                 if(strpos($value, '|')) {
                     $param = explode('|', $value);
-                    if($key == 'Category') {
+                    if($key == 'Category' || $key == 'category') {
                         $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                         foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                         $filterKey = '';
@@ -88,7 +88,7 @@ class Flagbit_FactFinder_Model_Handler_Search
             break;
 
         case "catalog":
-            if (!isset($requestParams['Category'])) {
+            if (!isset($requestParams['Category']) && !isset($requestParams['category'])) {
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
@@ -134,7 +134,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                         break;
 
                     default:
-                        if($key == 'Category') {
+                        if($key == 'Category' || $key == 'category') {
                             $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                             foreach($categories AS $k => $v) { $categories[$k] = $v; }
                             $filterKey = '';
