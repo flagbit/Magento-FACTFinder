@@ -33,6 +33,8 @@ class FACTFinder_Xml65_ImportAdapter extends FACTFinder_Default_ImportAdapter
      */
     protected function getData()
     {
+        FACTFinder_Http_ParallelDataProvider::loadAllData();
+
         libxml_use_internal_errors(true);
         return new SimpleXMLElement(parent::getData()); //throws exception on error
     }
