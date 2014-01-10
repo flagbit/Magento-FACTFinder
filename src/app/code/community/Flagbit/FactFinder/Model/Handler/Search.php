@@ -213,6 +213,9 @@ class Flagbit_FactFinder_Model_Handler_Search
             switch ($option->getType()){
 
                 case "slider":
+
+                    $queryParams['filter'.$option->getField()] = $this->_getAttributeOptionValue($option);
+
                     $attributeOption[] = array(
                         'type'    => $option->getType(),
                         'label' => 'slider',
