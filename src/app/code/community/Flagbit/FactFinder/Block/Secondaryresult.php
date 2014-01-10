@@ -19,4 +19,13 @@ class Flagbit_FactFinder_Block_Secondaryresult extends Mage_Core_Block_Template
 		
 		return $result;
     }
+
+    protected  function getSecondarySearchAdapter($channel)
+    {
+        $adapter = null;
+        if(Mage::helper('factfinder/search')->getIsEnabled()){
+            $adapter = $this->_searchHandler->getSecondarySearchAdapter($channel);
+        }
+        return $adapter;
+    }
 }
