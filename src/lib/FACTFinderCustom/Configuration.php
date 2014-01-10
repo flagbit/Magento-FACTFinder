@@ -19,7 +19,28 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
 	private $secondaryChannels;
     private $storeId = null;
 	private $semaphoreTimeout = self::DEFAULT_SEMAPHORE_TIMEOUT;
-	
+
+    private $ignoredPageParams = array(
+        'channel' => true,
+        'format' => true,
+        'log' => true,
+        'productsPerPage' => true,
+        'query' => true,
+        'catalog' => true,
+        'navigation' => true
+    );
+
+    private $ignoredServerParams = array(
+        'q' => true,
+        'p' => true,
+        'limit' => true,
+        'is_ajax' => true,
+        'type_search' => true,
+        'order' => true,
+        'dir' => true,
+        'mode' => true
+    );
+
 	// Should the search adapters retrieve only product ids? (otherwise, full records will be requested)
 	private $idsOnly = true;
 
@@ -206,7 +227,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     /**
      * @return string
      */
-    public function getAdvancedAuthPostfix(){
+    public function getAdvancedAuthPostfix() {
 		return $this->getCustomValue('auth_advancedPostfix');
     }
 
@@ -231,18 +252,30 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     }
 
     /**
+     * add parameter that should be ignored for page urls
+     *
+     * @param $parameterName
+     */
+    public function addIgnoredPageParam($parameterName) {
+        $this->ignoredPageParams[$parameterName] = true;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @return array with string as key and boolean true as value for each of them
      */
     public function getIgnoredPageParams() {
-        return array(
-			'channel' => true,
-			'format' => true,
-			'log' => true,
-			'productsPerPage' => true,
-			'query' => true
-		);
+        return $this->ignoredPageParams;
+    }
+
+    /**
+     * add parameter that should be ignored for the server request
+     *
+     * @param $parameterName
+     */
+    public function addIgnoredServerParam($parameterName) {
+        $this->ignoredServerParams[$parameterName] = true;
     }
 
     /**
@@ -251,16 +284,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      * @return array with string as key and boolean true as value for each of them
      */
     public function getIgnoredServerParams() {
-        return array(
-            'q' => true,
-            'p' => true,
-            'limit' => true,
-            'is_ajax' => true,
-            'type_search' => true,
-            'order' => true,
-            'dir' => true,
-            'mode' => true
-        );
+        return $this->ignoredServerParams;
     }
 
     /**
@@ -268,7 +292,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      *
      * @return array string to string map (param-name as array-key; default value as array-value)
      */
-    public function getRequiredPageParams(){
+    public function getRequiredPageParams() {
         return array();
     }
 
@@ -277,7 +301,7 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      *
      * @return array string to string map (param-name as array-key; default value as array-value)
      */
-    function getRequiredServerParams(){
+    function getRequiredServerParams() {
         return array();
     }
 	
