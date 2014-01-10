@@ -71,8 +71,6 @@ class Flagbit_FactFinder_Model_Handler_Search
 
                 if(Mage::getStoreConfig('factfinder/search/ffversion') >= 69) {
                     $params['navigation'] = 'true';
-                    /* @TODO remove after library update */
-                    $params['query'] = '*';
                 } else {
                     $params['catalog'] = 'true';
                 }
@@ -111,28 +109,31 @@ class Flagbit_FactFinder_Model_Handler_Search
 
     protected function _getCurrentFactFinderCategoryPath()
     {
-        if($this->_currentFactFinderCategoryPath == null && Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+        if($this->_currentFactFinderCategoryPath == null)
+        {
             $this->_currentFactFinderCategoryPath = array();
-            /* @var $category Mage_Catalog_Model_Category */
-            $category = Mage::registry('current_category');
 
-            $pathInStore = $category->getPathInStore();
-            $pathIds = array_reverse(explode(',', $pathInStore));
+            if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
 
-            $categories = $category->getParentCategories();
-            $mainCategoriesString = '';
-            foreach ($pathIds as $categoryId) {
-                if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
-                    if(empty($mainCategoriesString)){
-                        $this->_currentFactFinderCategoryPath['filtercategoryROOT'] = $categories[$categoryId]->getName();
-                    }else{
-                        $this->_currentFactFinderCategoryPath['filtercategoryROOT'.$mainCategoriesString] = $categories[$categoryId]->getName();
+                /* @var $category Mage_Catalog_Model_Category */
+                $category = Mage::registry('current_category');
+
+                $pathInStore = $category->getPathInStore();
+                $pathIds = array_reverse(explode(',', $pathInStore));
+
+                $categories = $category->getParentCategories();
+                $mainCategoriesString = '';
+                foreach ($pathIds as $categoryId) {
+                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
+                        if(empty($mainCategoriesString)){
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'] = $categories[$categoryId]->getName();
+                        }else{
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'.$mainCategoriesString] = $categories[$categoryId]->getName();
+                        }
+                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                     }
-                    $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        } else {
-            $this->_currentFactFinderCategoryPath = array();
         }
 
         return $this->_currentFactFinderCategoryPath;
@@ -204,16 +205,30 @@ class Flagbit_FactFinder_Model_Handler_Search
                 parse_str($parseUrl['query'], $queryParams);
             }
 
+            // Remove current categories from query params
+            if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && !$helper->getIsOnSearchPage())
+            {
+                foreach($_currentCategoryPath as $filterParam => $filterValue)
+                {
+                    if(isset($queryParams[$filterParam])) {
+                        unset($queryParams[$filterParam]);
+                    }
+                }
+
+                if(isset($queryParams['q']) && Mage::app()->getRequest()->getModuleName() == 'catalog') {
+                    unset($queryParams['q']);
+                }
+            }
+
             $seoPath = '';
             if(isset($queryParams['seoPath'])) {
                 $seoPath = $queryParams['seoPath'];
                 unset($queryParams['seoPath']);
             }
 
-            switch ($option->getType()){
-
+            switch ($option->getType())
+            {
                 case "slider":
-
                     $queryParams['filter'.$option->getField()] = $this->_getAttributeOptionValue($option);
 
                     $attributeOption[] = array(
@@ -237,8 +252,10 @@ class Flagbit_FactFinder_Model_Handler_Search
                     }
                     // remove Categories from top Level Navigation
                     $_filterValue = $this->_getAttributeOptionValue($option);
+
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && !$helper->getIsOnSearchPage()
+                        && strpos($option->getField(),'categoryROOT') !== FALSE
                         && (
                             empty($_filterValue) === true
                             || in_array($_filterValue, $_currentCategoryPath)
