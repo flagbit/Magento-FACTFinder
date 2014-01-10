@@ -98,7 +98,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
     {
         $this->urlBuilder->setArrayParam($name, $values);
     }
-			
+
     /**
      * this implementation of the data provider uses the type as request path in addition to the request context path.
      * please ensure that this is the full action name, i.e. "Search.ff"
@@ -174,7 +174,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
         }
         return $this->data;
     }
-	
+
 	/**
 	 * sets the URL that was used for the most recent request
 	 **/
@@ -182,7 +182,7 @@ class FACTFinder_Http_DataProvider extends FACTFinder_Abstract_DataProvider
 	{
 		$this->previousUrl = $url;
 	}
-	
+
 	/**
 	 * checks whether the URL (and thus the parameters) have changed since last loading the data
 	 **/
