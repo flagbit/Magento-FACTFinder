@@ -157,7 +157,8 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'items' => $this->_getAttributeOptions($row->getArrayCopy(), $row->getUnit()),
                         'count' => $row->count(),
                         'type'    => $this->_getFilterType($row->getArrayCopy()),
-                        'store_label' => $row->getName()
+                        'store_label' => $row->getName(),
+                        'link_count' => $row->getDetailedLinkCount()
                     );
                 }
             }
