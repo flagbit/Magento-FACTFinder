@@ -44,7 +44,7 @@
             <block type="factfinder/campaign_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaign/feedback.phtml">
                 <action method="setTextNumber"><number>1</number></action>
             </block>
-            <block type="factfinder/campaign_advisory" after="factfinder.campaign.feedback" template="factfinder/campaign/advisory.phtml" />
+            <block type="factfinder/campaign_advisory" after="factfinder.campaign.feedback" name="factfinder.campaign.advisory" template="factfinder/campaign/advisory.phtml" />
             <block type="core/template" name="factfinder.logo" template="factfinder/logo.phtml"/>
 			<block type="factfinder/secondaryresult" after="search.result" name="factfinder.secondaryresult" template="factfinder/secondaryresult.phtml" />
         </reference>
@@ -52,8 +52,8 @@
     
     <catalog_product_view>
     	<reference name="content">
-            <block type="factfinder/campaign_product_advisory" before="product.info" template="factfinder/campaign/product/advisory.phtml" />
-            <block type="factfinder/campaign_product_feedback" before="product.info" template="factfinder/campaign/product/feedback.phtml" />
+            <block type="factfinder/campaign_product_advisory" before="product.info" name="factfinder.campaign.advisory" template="factfinder/campaign/product/advisory.phtml" />
+            <block type="factfinder/campaign_product_feedback" before="product.info" name="factfinder.campaign.feedback" template="factfinder/campaign/product/feedback.phtml" />
     	</reference>
         <reference name="product.info.upsell">
             <action method="setItemLimit"><type>upsell</type><limit>20</limit></action>
@@ -62,8 +62,8 @@
 
     <checkout_cart_index>
     	<reference name="checkout.cart.form.before">
-            <block type="factfinder/campaign_cart_advisory" before="-" template="factfinder/campaign/cart/advisory.phtml" />
-            <block type="factfinder/campaign_cart_feedback" before="-" template="factfinder/campaign/cart/feedback.phtml" />
+            <block type="factfinder/campaign_cart_advisory" before="-" name="factfinder.campaign.advisory" template="factfinder/campaign/cart/advisory.phtml" />
+            <block type="factfinder/campaign_cart_feedback" before="-" name="factfinder.campaign.feedback" template="factfinder/campaign/cart/feedback.phtml" />
     	</reference>
     </checkout_cart_index>
     
