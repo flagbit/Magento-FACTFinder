@@ -267,10 +267,7 @@ class FACTFinder_Xml65_SearchAdapter extends FACTFinder_Default_SearchAdapter
         $filterLink = $this->createLink($xmlFilter);
 
         if ($group->isSliderStyle()) {
-            // get last (empty) parameter from the search params property
-            $params = $this->getParamsParser()->parseParamsFromResultString(trim($xmlFilter->searchParams));
-            end($params);
-            $filterLink .= '&' . key($params) . '=';
+            $filterLink .= '&filter' . strval($xmlFilter->attributes()->field) . '=';
 
             $filter = FF::getInstance('asnSliderFilter',
                 $filterLink,
