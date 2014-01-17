@@ -51,11 +51,11 @@ class Flagbit_FactFinder_Model_Facade
      */
     protected $_urlBuilder = null;
 
-	/**
-	 * logger object to log all module internals
-	 * @var FACTFinder_Abstract_Logger
-	 */
-	protected $_logger = null;
+    /**
+     * logger object to log all module internals
+     * @var FACTFinder_Abstract_Logger
+     */
+    protected $_logger = null;
 
     /**
      * map between known adapters and its state based on its parameters
@@ -63,7 +63,12 @@ class Flagbit_FactFinder_Model_Facade
      */
     protected $_paramHashes = array();
 
-	public function __construct($arg = null)
+    /**
+     * @var boolean is set to true, if caching is enabled and can be used
+     */
+    private $_useCaching = null;
+
+    public function __construct($arg = null)
     {
         if ($arg === null || !($arg instanceof FACTFinder_Abstract_Logger)) {
             $arg = Mage::helper('factfinder/debug');
@@ -244,12 +249,12 @@ class Flagbit_FactFinder_Model_Facade
             $dataProvider      = $this->_getParallelDataProvider();
             $dataProvider->setParam('channel', $channel);
 
-            // new tracking needs session ID and sourceRefKey for every request
+            /*/ new tracking needs session ID and sourceRefKey for every request
             if(!Mage::helper('factfinder')->useOldTracking()) {
                 $dataProvider->setParam('sourceRefKey', Mage::getSingleton('core/session')->getFactFinderRefKey());
                 $dataProvider->setParam('sid'         , md5(Mage::getSingleton('core/session')->getSessionId()));
-            }
-            
+            }*/
+
             $this->_adapters[$hashKey][$channel] = FF::getInstance(
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
@@ -433,30 +438,36 @@ class Flagbit_FactFinder_Model_Facade
 
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
     {
-        $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
-        $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
+        $cacheKey = '';
+        $data = null;
 
-        if(Mage::app()->useCache('factfinder_search') && $cache = Mage::app()->loadCache($cacheKey))
+        if ($this->_useSearchCaching())
         {
-            return unserialize($cache);
-        }
-
-        try {
-            $this->_loadAllData();
-
-            $adapter = $this->_getAdapter($type, $channel, $id);
-            $data = $adapter->$objectGetter();
-
-            if(Mage::app()->useCache('factfinder_search'))
+            $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
+            $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
+            if($cache = Mage::app()->loadCache($cacheKey))
             {
-                Mage::app()->saveCache(serialize($data), $cacheKey, array('FACTFINDER_SEARCH'), 600);
+                $data = unserialize($cache);
             }
-
-            return $data;
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
         }
+
+        if ($data == null) {
+            try {
+                $this->_loadAllData();
+
+                $adapter = $this->_getAdapter($type, $channel, $id);
+                $data = $adapter->$objectGetter();
+
+                if($this->_useSearchCaching())
+                {
+                    Mage::app()->saveCache(serialize($data), $cacheKey, array('FACTFINDER_SEARCH'), 600);
+                }
+
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+        return $data;
     }
 
     public function getActualFactFinderVersion()
@@ -469,6 +480,18 @@ class Flagbit_FactFinder_Model_Facade
             Mage::logException($e);
             return null;
         }
+    }
+
+    private function _useSearchCaching()
+    {
+        if ($this->_useCaching == null)
+        {
+            // caching only works from version 5.3 because of php bug 45706 (http://bugs.php.net/45706):
+            // because of it, the asn objects can't be serialized and cached
+            // this bug was fixed with 5.3.0 (http://www.php.net/ChangeLog-5.php)
+            $this->_useCaching = (version_compare(PHP_VERSION, '5.3.0') >= 0 && Mage::app()->useCache('factfinder_search'));
+        }
+        return $this->_useCaching;
     }
 
     public function getActualFactFinderVersionString()
