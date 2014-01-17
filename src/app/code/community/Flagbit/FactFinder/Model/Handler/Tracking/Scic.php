@@ -24,7 +24,11 @@ class Flagbit_FactFinder_Model_Handler_Tracking_Scic
     public function setupEventTracking($event, $inputParams)
     {
         /* @var $scicAdapter FACTFinder_Default_ScicAdapter */
-        $scicAdapter = $this->_getFacade()->getScicAdapter();
+        if (Mage::helper('factfinder')->useLegacyTracking()) {
+            $scicAdapter = $this->_getFacade()->getLegacyTrackingAdapter();
+        } else {
+            $scicAdapter = $this->_getFacade()->getScicAdapter();
+        }
 
         switch ($event) {
             case FACTFinder_Default_TrackingAdapter::EVENT_INSPECT:

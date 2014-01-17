@@ -127,6 +127,11 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_getAdapter("tracking", $channel);
     }
 
+    public function getLegacyTrackingAdapter($channel = null)
+    {
+        return $this->_getAdapter("legacyTracking", $channel);
+    }
+
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
@@ -249,7 +254,10 @@ class Flagbit_FactFinder_Model_Facade
             $dataProvider      = $this->_getParallelDataProvider();
             $dataProvider->setParam('channel', $channel);
 
-            /*/ new tracking needs session ID and sourceRefKey for every request
+            /*
+            // new tracking needs session ID and sourceRefKey for every request
+            // helper must not be used inside this class, as it is also used without the app context
+            // TODO: do it in a different way
             if(!Mage::helper('factfinder')->useOldTracking()) {
                 $dataProvider->setParam('sourceRefKey', Mage::getSingleton('core/session')->getFactFinderRefKey());
                 $dataProvider->setParam('sid'         , md5(Mage::getSingleton('core/session')->getSessionId()));
@@ -269,7 +277,7 @@ class Flagbit_FactFinder_Model_Facade
     protected function _getFormat($type)
     {
         $format = 'http';
-        if ($type != 'scic' && $type != 'suggest') {
+        if (!in_array($type, array('scic', 'suggest', 'legacyTracking'))) {
             $version = $this->_getConfiguration()->getFactFinderVersion();
             $format = 'xml' . $version;
             return $format;
