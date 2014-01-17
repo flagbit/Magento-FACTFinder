@@ -115,7 +115,7 @@
             <types>
                 <factfinder_search translate="label,description" module="factfinder">
                     <label>FACT-Finder</label>
-                    <description>Search Request Cache</description>
+                    <description>Search Request Cache (won't work with PHP 5.2 or less)</description>
                     <tags>FACTFINDER_SEARCH</tags>
                 </factfinder_search>
             </types>

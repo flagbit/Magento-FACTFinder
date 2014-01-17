@@ -213,12 +213,12 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
                 }
-                $protductAttr = $productAttributes[$productData['entity_id']];
+                $productAttr = $productAttributes[$productData['entity_id']];
                 
-                if (!isset($protductAttr[$visibility->getId()]) || !in_array($protductAttr[$visibility->getId()], $visibilityVals)) {
+                if (!isset($productAttr[$visibility->getId()]) || !in_array($productAttr[$visibility->getId()], $visibilityVals)) {
                     continue;
                 }
-                if (!isset($protductAttr[$status->getId()]) || !in_array($protductAttr[$status->getId()], $statusVals)) {
+                if (!isset($productAttr[$status->getId()]) || !in_array($productAttr[$status->getId()], $statusVals)) {
                     continue;
                 }
                 
@@ -227,8 +227,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                         $productData[$idFieldName], 
                         $productData['sku'], 
                         $this->_getCategoryPath($productData['entity_id'], $storeId),
-                        $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $protductAttr, $storeId),
-                        $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $protductAttr, $storeId)
+                        $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttr, $storeId),
+                        $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId)
                     );
 
                 if ($exportImageAndDeeplink) {
@@ -240,13 +240,18 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $productIndex[] = $product->getProductUrl();
                 }
                 
-                $this->_getAttributesRowArray($productIndex, $protductAttr, $storeId);
+                $this->_getAttributesRowArray($productIndex, $productAttr, $storeId);
                                
                 $this->_addCsvRow($productIndex);
-				
+
                 if ($productChilds = $productRelations[$productData['entity_id']]) {       
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
+                            /* should be used if sub products should not be exported because of their status
+                            $subProductAttr = $productAttributes[$productChild[ 'entity_id' ]]; 
+                            if (!isset($subProductAttr[$status->getId()]) || !in_array($subProductAttr[$status->getId()], $statusVals)) {
+                                continue;
+                            } */
 
                             $subProductIndex = array(
                                     $productChild['entity_id'],

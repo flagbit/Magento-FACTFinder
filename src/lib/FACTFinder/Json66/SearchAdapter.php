@@ -257,10 +257,7 @@ class FACTFinder_Json66_SearchAdapter extends FACTFinder_Default_SearchAdapter
         $filterLink = $this->createLink($elementData);
 
         if ($group->isSliderStyle()) {
-            // get last (empty) parameter from the search params property
-            $params = $this->getParamsParser()->parseParamsFromResultString(trim($elementData['searchParams']));
-            end($params);
-            $filterLink .= '&' . key($params) . '=';
+            $filterLink .= '&filter' . $elementData['associatedFieldName'] . '=';
 
             $filter = FF::getInstance('asnSliderFilter',
                 $filterLink,
