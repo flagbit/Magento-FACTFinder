@@ -39,11 +39,13 @@
                 <rewrite>
                     <term>Flagbit_FactFinder_Block_TagCloud</term>
                     <layer>Flagbit_FactFinder_Block_Layer</layer>
+                    <layer_state>Flagbit_FactFinder_Block_Layer_State</layer_state>
                 </rewrite>
             </catalogsearch>
             <catalog>
                 <rewrite>
                     <layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
+                    <layer_state>Flagbit_FactFinder_Block_Layer_State</layer_state>
                     <product_list_upsell>Flagbit_FactFinder_Block_Product_List_Upsell</product_list_upsell>
                     <product_list_crosssell>Flagbit_FactFinder_Block_Product_List_Crosssell</product_list_crosssell>
                 </rewrite>
@@ -57,6 +59,7 @@
                 <rewrite>
                     <catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
                     <catalog_layer_view>Flagbit_FactFinder_Block_Layer</catalog_layer_view>
+                    <catalog_layer_state>Flagbit_FactFinder_Block_Layer_State</catalog_layer_state>
                 </rewrite>
             </enterprise_search>
             <xmlconnect>
