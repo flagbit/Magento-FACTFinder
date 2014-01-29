@@ -22,6 +22,30 @@ class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
     }
 
     /**
+     * Get url for remove whole filter
+     *
+     * @return string
+     */
+    public function getRemoveFilterUrl()
+    {
+        $params['_use_rewrite'] = true;
+        $params['_query']       = $this->getQueryParams();
+        $params['_escape']      = true;
+
+        if(isset($params['_query'][$this->getRequestVar()])) {
+            unset($params['_query'][$this->getRequestVar()]);
+        }
+
+        if($this->getSeoPath())
+        {
+            $query['q'] = null;
+            $params['_direct'] = 's' . $this->getSeoPath();
+        }
+
+        return Mage::getUrl('*/*/*', $params);
+    }
+
+    /**
      * Get filter item url
      *
      * @return string
