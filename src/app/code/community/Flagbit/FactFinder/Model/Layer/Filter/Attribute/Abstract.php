@@ -50,7 +50,17 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
             && is_array($this->_selectedFilterItems[$_attributeCode])) {
 
             foreach($this->_selectedFilterItems[$_attributeCode] as $option){
-                $this->getLayer()->getState()->addFilter($this->_createItem($option['label'], $option['value']));
+                $this->getLayer()->getState()->addFilter(
+                    $this->_createItem(
+                        $option['label'],
+                        $option['value'],
+                        $option['count'],
+                        $option['selected'],
+                        isset($option['seoPath']) ? $option['seoPath'] : '',
+                        $option['requestVar'],
+                        $option['queryParams']
+                    )
+                );
             }
         }
         return $this;
