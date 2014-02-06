@@ -418,4 +418,20 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     {
         return Mage::helper('catalogsearch')->getQueryText();
     }
+
+    public function areFiltersSelected()
+    {
+        if(Mage::helper('factfinder/search')->getIsEnabled())
+        {
+            $asn = Mage::getSingleton('factfinder/handler_search')->getAfterSearchNavigation();
+            foreach($asn as $filter) {
+                foreach($filter['items'] as $option) {
+                    if(isset($option['selected']) && $option['selected'] == true) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
