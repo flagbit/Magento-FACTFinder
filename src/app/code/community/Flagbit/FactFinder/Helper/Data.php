@@ -68,6 +68,6 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
             // if old tracking is legacy tracking, don't use the scic url
             $urlPath = 'factfinder/proxy/scic';
         }
-        return $urlPathh;
+        return $urlPath;
     }
 }
