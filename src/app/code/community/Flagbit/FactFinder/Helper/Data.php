@@ -70,4 +70,15 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
         }
         return $urlPath;
     }
+
+    function getQueryParams($url)
+    {
+        $queryParams = array();
+        $parseUrl = parse_url($url);
+        if(isset($parseUrl['query'])) {
+            parse_str($parseUrl['query'], $queryParams);
+        }
+
+        return $queryParams;
+    }
 }

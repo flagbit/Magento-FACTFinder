@@ -198,13 +198,11 @@ class Flagbit_FactFinder_Model_Handler_Search
         if (!empty($unit)) $unit = ' ' . $unit;
         $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath();
         $helper = Mage::helper('factfinder/search');
-        foreach($options as $option){
+        foreach($options as $option)
+        {
+            $queryParams = Mage::helper('factfinder')->getQueryParams($option->getUrl());
 
-            $queryParams = array();
-            $parseUrl = parse_url($option->getUrl());
-            if(isset($parseUrl['query'])) {
-                parse_str($parseUrl['query'], $queryParams);
-            }
+            $_filterValue = $this->_getAttributeOptionValue($option);
 
             // Remove current categories from query params
             if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && !$helper->getIsOnSearchPage())
@@ -224,13 +222,15 @@ class Flagbit_FactFinder_Model_Handler_Search
             $seoPath = '';
             if(isset($queryParams['seoPath'])) {
                 $seoPath = $queryParams['seoPath'];
+            }
+            if((!empty($_filterValue) && !$helper->getIsOnSearchPage()) || $helper->getIsOnSearchPage()) {
                 unset($queryParams['seoPath']);
             }
 
             switch ($option->getType())
             {
                 case "slider":
-                    $queryParams['filter'.$option->getField()] = $this->_getAttributeOptionValue($option);
+                    $queryParams['filter'.$option->getField()] = $_filterValue;
 
                     $attributeOption[] = array(
                         'type'    => $option->getType(),
@@ -251,17 +251,13 @@ class Flagbit_FactFinder_Model_Handler_Search
                     if (!Mage::helper('core/string')->strlen($option->getValue())) {
                         continue;
                     }
-                    // remove Categories from top Level Navigation
-                    $_filterValue = $this->_getAttributeOptionValue($option);
 
+                    // remove Categories from top Level Navigation
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && !$helper->getIsOnSearchPage()
                         && strpos($option->getField(),'categoryROOT') !== FALSE
-                        && (
-                            empty($_filterValue) === true
-                            || in_array($_filterValue, $_currentCategoryPath)
-                            && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_filterValue
-                        )){
+                        && in_array($option->getValue(), $_currentCategoryPath)
+                    ){
                         continue;
                     }
 
@@ -275,10 +271,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'requestVar' => 'filter'.$option->getField(),
                     );
 
-                    if(Mage::app()->getRequest()->getModuleName() == 'catalogsearch') {
-                        $attributeOptionData['seoPath'] = $seoPath;
-                    }
-
+                    $attributeOptionData['seoPath'] = $seoPath;
                     $attributeOptionData['queryParams'] = $queryParams;
 
                     $attributeOption[] = $attributeOptionData;
@@ -306,11 +299,7 @@ class Flagbit_FactFinder_Model_Handler_Search
             // handle default Attributes
             default:
 
-                $queryParams = array();
-                $parseUrl = parse_url($option->getUrl());
-                if(isset($parseUrl['query'])) {
-                    parse_str($parseUrl['query'], $queryParams);
-                }
+                $queryParams = Mage::helper('factfinder')->getQueryParams($option->getUrl());
 
                 if(isset($queryParams['filter'.$option->getField()])) {
                     $value = $queryParams['filter'.$option->getField()];

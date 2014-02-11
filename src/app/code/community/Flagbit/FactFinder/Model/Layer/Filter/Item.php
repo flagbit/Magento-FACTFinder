@@ -12,7 +12,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
         $params['_query']       = $this->getQueryParams();
         $params['_escape']      = true;
 
-        if($this->getSeoPath())
+        if($this->getSeoPath() && Mage::helper('factfinder/search')->getIsOnSearchPage())
         {
             $query['q'] = null;
             $params['_direct'] = 's' . $this->getSeoPath();
@@ -36,7 +36,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
             unset($params['_query'][$this->getRequestVar()]);
         }
 
-        if($this->getSeoPath())
+        if($this->getSeoPath() && Mage::helper('factfinder/search')->getIsOnSearchPage())
         {
             $query['q'] = null;
             $params['_direct'] = 's' . $this->getSeoPath();
@@ -61,7 +61,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
             $this->getQueryParams()
         );
 
-        if($this->getSeoPath())
+        if($this->getSeoPath() && Mage::helper('factfinder/search')->getIsOnSearchPage())
         {
             $query['q'] = null;
             return Mage::getUrl('*/*/*', array('_query'=>$query, '_direct' => 's' . $this->getSeoPath()));
