@@ -321,16 +321,17 @@
         </factfinder>
     </default>    
     <crontab>
+        <!--jobs>
+
+        </jobs-->
         <jobs>
             <factfinder_scic_queue_processing>
                 <schedule><cron_expr>* * * * *</cron_expr></schedule>
                 <run><model>factfinder/observer::processScicOrderQueue</model></run>
             </factfinder_scic_queue_processing>
-            <factfinder_generate_all>
-                <run>
-                    <model>factfinder/export_product::saveAll</model>
-                </run>
-            </factfinder_generate_all>
+            <factfinder_generate>
+                <run><model>factfinder/export_product::saveAll</model></run>
+            </factfinder_generate>
         </jobs>
     </crontab>
 </config>

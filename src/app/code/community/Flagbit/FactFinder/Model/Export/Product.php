@@ -153,7 +153,6 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         return $this->_exportAttributeCodes;
     }
     public function saveAll(){
-        //$exportModel = Mage::getModel('factfinder/export_product');
         $stores = Mage::app()->getStores();
         foreach ($stores as $id => $store ){
             $this->saveExport($id);
@@ -165,7 +164,6 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         $file = new Varien_Io_File();
         $file->mkdir($dir);
         $file->open(array('path' => $dir));
-        //$file->streamOpen('customers.txt', 'w');
         $lines = $this->doExport($storeId);
         $file->write('store_' . $storeId . '.csv' ,implode($lines),'w');
 

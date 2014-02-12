@@ -34,8 +34,8 @@
  */
 class Flagbit_FactFinder_Model_Cron extends Mage_Core_Model_Config_Data
 {
-    const CRON_STRING_PATH  = 'crontab/jobs/factfinder_generate_all/schedule/cron_expr';
-    const CRON_MODEL_PATH   = 'crontab/jobs/factfinder_generate_all/run/model';
+    const CRON_STRING_PATH  = 'crontab/jobs/factfinder_generate/schedule/cron_expr';
+    const CRON_MODEL_PATH   = 'crontab/jobs/factfinder_generate/run/model';
 
     /**
      * Cron settings after save
@@ -47,7 +47,7 @@ class Flagbit_FactFinder_Model_Cron extends Mage_Core_Model_Config_Data
         $enabled    = $this->getData('groups/cron/fields/enabled/value');
         $time       = $this->getData('groups/cron/fields/time/value');
         $frequncy   = $this->getData('groups/cron/fields/frequency/value');
-        var_dump();
+
         $frequencyDaily     = Mage_Adminhtml_Model_System_Config_Source_Cron_Frequency::CRON_DAILY;
         $frequencyWeekly    = Mage_Adminhtml_Model_System_Config_Source_Cron_Frequency::CRON_WEEKLY;
         $frequencyMonthly   = Mage_Adminhtml_Model_System_Config_Source_Cron_Frequency::CRON_MONTHLY;
@@ -66,7 +66,7 @@ class Flagbit_FactFinder_Model_Cron extends Mage_Core_Model_Config_Data
         else {
             $cronExprString = '';
         }
-
+        //echo $cronExprString;var_dump($frequncy);die();
         try {
             Mage::getModel('core/config_data')
                 ->load(self::CRON_STRING_PATH, 'path')
