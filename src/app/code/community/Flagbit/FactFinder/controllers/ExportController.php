@@ -58,7 +58,7 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
      * Initialize Product Export 
      */
     public function productAction()
-    {
+    {echo 2;
 		try
 		{
 			$this->lockSemaphore();
@@ -80,14 +80,26 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 		
 		try {
 			$exportModel = Mage::getModel('factfinder/export_product');
-			$exportModel->doExport(
+            $lines = $exportModel->doExport(
 				$this->_getStoreId()
 			);
+            foreach ($lines as $line){
+                echo $line;
+            }
 			$this->releaseSemaphore(); // finally-workaround
 		} catch(Exception $e) {
 			$this->releaseSemaphore(); // finally-workaround
 			throw $e;
 		}
+    }
+    public function storesAction(){
+
+        $exportModel = Mage::getModel('factfinder/export_product');
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $id => $store ){
+            $exportModel->saveExport($id);
+        }
+
     }
     
     /**

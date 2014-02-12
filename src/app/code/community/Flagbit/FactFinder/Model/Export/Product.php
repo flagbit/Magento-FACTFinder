@@ -62,13 +62,16 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * 
      * @param array $data
      */
+
+    protected $_lines = array();
+
     protected function _addCsvRow($data)
     {           
         foreach ($data as &$item) {
             $item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), trim( strip_tags($item), ';') );
         }
 
-        echo '"'.implode('";"', $data).'"'."\n";
+        $this->_lines[] =  '"'.implode('";"', $data).'"'."\n";
     }    
     
     /**
@@ -149,7 +152,24 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         }
         return $this->_exportAttributeCodes;
     }
-    
+    public function saveAll(){
+        //$exportModel = Mage::getModel('factfinder/export_product');
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $id => $store ){
+            $this->saveExport($id);
+        }
+    }
+
+    public function saveExport($storeId = null){
+        $dir = Mage::getBaseDir() . DS .'media'. DS .'fact_finder';
+        $file = new Varien_Io_File();
+        $file->mkdir($dir);
+        $file->open(array('path' => $dir));
+        //$file->streamOpen('customers.txt', 'w');
+        $lines = $this->doExport($storeId);
+        $file->write('store_' . $storeId . '.csv' ,implode($lines),'w');
+
+    }
     
     /**
      * export Product Data with Attributes
@@ -277,7 +297,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             unset($products);
             unset($productAttributes);
             unset($productRelations);
-            flush();
+            return $this->_lines;
         }
     }
     
