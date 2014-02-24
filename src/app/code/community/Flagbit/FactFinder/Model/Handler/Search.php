@@ -150,6 +150,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                 && count($result)) {
 
                 foreach ($result as $row) {
+
                     $this->_afterSearchNavigation[] = array(
                         'attribute_code' => $row->getName(),
                         'name' => $row->getName(),
@@ -158,7 +159,8 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'count' => $row->count(),
                         'type'    => $this->_getFilterType($row->getArrayCopy()),
                         'store_label' => $row->getName(),
-                        'link_count' => $row->getDetailedLinkCount()
+                        'link_count' => $row->getDetailedLinkCount(),
+                        'is_multiselect' => $row->isMultiSelectStyle()
                     );
                 }
             }
