@@ -51,7 +51,7 @@ class Flagbit_FactFinder_Controller_Router extends Mage_Core_Controller_Varien_R
             ->setParam('seoPath', substr($request->getPathInfo(), 2));
 
         if(isset($query)) {
-            $request->setParam('q', $query);
+            $request->setParam('q', urldecode($query));
         }
 
         $request->setAlias(
