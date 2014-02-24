@@ -426,7 +426,11 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
             $asn = Mage::getSingleton('factfinder/handler_search')->getAfterSearchNavigation();
             foreach($asn as $filter) {
                 foreach($filter['items'] as $option) {
-                    if(isset($option['selected']) && $option['selected'] == true) {
+                    if(
+                        (isset($option['selected']) && $option['selected'] == true)
+                        || (isset($option['type']) && $option['type'] == 'slider' &&
+                            (($option['absolute_min'] != $option['selected_min']) || ($option['absolute_max'] != $option['selected_max'])))
+                    ) {
                         return true;
                     }
                 }
