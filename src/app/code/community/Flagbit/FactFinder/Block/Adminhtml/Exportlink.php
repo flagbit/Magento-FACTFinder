@@ -56,9 +56,23 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
 		
 		if ($store) $storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
 		else 		$storeParam = '';
-		$linktext = Mage::helper('factfinder')->__('Download export');
-		
-		$html = '<a href="'.$shopdomain.$activeStore.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$linktext.'</a>';
+
+        // Realtime export link
+		$realtimeLinktext = Mage::helper('factfinder')->__('Trigger Realtime Export');
+		$html = '<a href="'.$shopdomain.$activeStore.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$realtimeLinktext.'</a><br />';
+
+        // Download link for latest pre-generated product export
+        $fileName = 'store_' . (int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id') . '_product.csv';
+        $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
+
+        if(file_exists($filePath.$fileName)) {
+            $preDownloadLinktext = Mage::helper('factfinder')->__('Download Last Pre-Generated Export');
+            $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/download?key='.md5($password).$storeParam.'" target="_blank">'.$preDownloadLinktext.'</a><br />';
+        }
+
+        // Link to schedule cron export
+        $scheduleLinktext = Mage::helper('factfinder')->__('Schedule Cron Export (in 1 minute)');
+        $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/scheduleExport?key='.md5($password).$storeParam.'">'.$scheduleLinktext.'</a>';
         return $html;
     }
 }
