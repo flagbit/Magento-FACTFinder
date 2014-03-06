@@ -58,7 +58,7 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
      * Initialize Product Export 
      */
     public function productAction()
-    {echo 2;
+    {
 		try
 		{
 			$this->lockSemaphore();
@@ -83,9 +83,9 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
             $lines = $exportModel->doExport(
 				$this->_getStoreId()
 			);
-            foreach ($lines as $line){
-                echo $line;
-            }
+
+            echo implode('', $lines);
+
 			$this->releaseSemaphore(); // finally-workaround
 		} catch(Exception $e) {
 			$this->releaseSemaphore(); // finally-workaround

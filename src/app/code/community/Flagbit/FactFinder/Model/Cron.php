@@ -66,7 +66,7 @@ class Flagbit_FactFinder_Model_Cron extends Mage_Core_Model_Config_Data
         else {
             $cronExprString = '';
         }
-        //echo $cronExprString;var_dump($frequncy);die();
+
         try {
             Mage::getModel('core/config_data')
                 ->load(self::CRON_STRING_PATH, 'path')

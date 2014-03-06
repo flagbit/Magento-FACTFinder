@@ -152,21 +152,25 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         }
         return $this->_exportAttributeCodes;
     }
-    public function saveAll(){
+
+    public function saveAll()
+    {
         $stores = Mage::app()->getStores();
-        foreach ($stores as $id => $store ){
+        foreach ($stores as $id => $store){
             $this->saveExport($id);
         }
     }
 
-    public function saveExport($storeId = null){
-        $dir = Mage::getBaseDir() . DS .'media'. DS .'fact_finder';
+    public function saveExport($storeId = null)
+    {
+        $dir = Mage::getBaseDir() . DS .'var'. DS .'factfinder'. DS .'fact_finder';
+
         $file = new Varien_Io_File();
         $file->mkdir($dir);
         $file->open(array('path' => $dir));
-        $lines = $this->doExport($storeId);
-        $file->write('store_' . $storeId . '.csv' ,implode($lines),'w');
 
+        $lines = $this->doExport($storeId);
+        $file->write('store_' . $storeId . '_product.csv' , implode('', $lines),'w');
     }
     
     /**
