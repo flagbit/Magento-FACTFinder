@@ -153,6 +153,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         return $this->_exportAttributeCodes;
     }
 
+    /**
+     * Pre-Generate all product exports for all stores
+     *
+     * @return array
+     */
     public function saveAll()
     {
         $paths = array();
@@ -169,6 +174,12 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         return $paths;
     }
 
+    /**
+     * Generate product export for specific store
+     *
+     * @param int $storeId
+     * @return string
+     */
     public function saveExport($storeId = 0)
     {
         $dir = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder';
