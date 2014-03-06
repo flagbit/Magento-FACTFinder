@@ -155,22 +155,39 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
     public function saveAll()
     {
+        $paths = array();
         $stores = Mage::app()->getStores();
-        foreach ($stores as $id => $store){
-            $this->saveExport($id);
+        foreach ($stores as $id => $store)
+        {
+            try {
+                $paths[] = $this->saveExport($id);
+            } catch(Exception $e) {
+                Mage::logException($e);
+            }
         }
+
+        return $paths;
     }
 
-    public function saveExport($storeId = null)
+    public function saveExport($storeId = 0)
     {
-        $dir = Mage::getBaseDir() . DS .'var'. DS .'factfinder'. DS .'fact_finder';
+        $dir = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder';
 
-        $file = new Varien_Io_File();
-        $file->mkdir($dir);
-        $file->open(array('path' => $dir));
+        try {
+            $fileName = 'store_' . $storeId . '_product.csv';
 
-        $lines = $this->doExport($storeId);
-        $file->write('store_' . $storeId . '_product.csv' , implode('', $lines),'w');
+            $file = new Varien_Io_File();
+            $file->mkdir($dir);
+            $file->open(array('path' => $dir));
+
+            $lines = $this->doExport($storeId);
+
+            $file->write($fileName , implode('', $lines), 'w');
+        } catch(Exception $e) {
+            Mage::throwException($e);
+        }
+
+        return $dir . DS .$fileName;
     }
     
     /**
