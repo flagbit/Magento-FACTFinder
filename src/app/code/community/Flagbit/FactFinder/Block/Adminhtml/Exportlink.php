@@ -36,7 +36,6 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $this->setElement($element);
-		$shopdomain = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 		$activeStore = '';
 		$store = $this->getRequest()->getParam('store');
 		if(Mage::getStoreConfig('web/url/use_store'))
@@ -56,6 +55,8 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
 		
 		if ($store) $storeParam = '&store='.(int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
 		else 		$storeParam = '';
+
+        $shopdomain = Mage::app()->getStore((int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id'))->getBaseUrl();
 
         // Realtime export link
 		$realtimeLinktext = Mage::helper('factfinder')->__('Trigger Realtime Export');
