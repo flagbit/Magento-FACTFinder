@@ -327,8 +327,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             unset($products);
             unset($productAttributes);
             unset($productRelations);
-            return $this->_lines;
         }
+        
+        return $this->_lines;
     }
     
     protected function _formatSearchableAttributes($attributes, $values, $storeId=null)
