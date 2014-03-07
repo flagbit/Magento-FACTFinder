@@ -71,8 +71,11 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
         }
 
         // Link to schedule cron export
-        $scheduleLinktext = Mage::helper('factfinder')->__('Schedule Cron Export (in 1 minute)');
-        $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/scheduleExport?key='.md5($password).$storeParam.'">'.$scheduleLinktext.'</a>';
+        if(Mage::getStoreConfig('factfinder/cron/enabled')) {
+            $scheduleLinktext = Mage::helper('factfinder')->__('Schedule Cron Export (in 1 minute)');
+            $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/scheduleExport?key='.md5($password).$storeParam.'">'.$scheduleLinktext.'</a>';
+        }
+
         return $html;
     }
 }
