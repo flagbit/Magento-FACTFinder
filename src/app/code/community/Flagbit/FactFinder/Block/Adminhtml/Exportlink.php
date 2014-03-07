@@ -61,6 +61,12 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
 		$realtimeLinktext = Mage::helper('factfinder')->__('Trigger Realtime Export');
 		$html = '<a href="'.$shopdomain.$activeStore.'factfinder/export/product?key='.md5($password).$storeParam.'" target="_blank">'.$realtimeLinktext.'</a><br />';
 
+        // Link to schedule cron export
+        if(Mage::getStoreConfig('factfinder/cron/enabled')) {
+            $scheduleLinktext = Mage::helper('factfinder')->__('Schedule Cron Export (in 1 minute)');
+            $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/scheduleExport?key='.md5($password).$storeParam.'">'.$scheduleLinktext.'</a>';
+        }
+
         // Download link for latest pre-generated product export
         $fileName = 'store_' . (int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id') . '_product.csv';
         $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
@@ -68,12 +74,10 @@ class Flagbit_FactFinder_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block
         if(file_exists($filePath.$fileName)) {
             $preDownloadLinktext = Mage::helper('factfinder')->__('Download Last Pre-Generated Export');
             $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/download?key='.md5($password).$storeParam.'" target="_blank">'.$preDownloadLinktext.'</a><br />';
-        }
 
-        // Link to schedule cron export
-        if(Mage::getStoreConfig('factfinder/cron/enabled')) {
-            $scheduleLinktext = Mage::helper('factfinder')->__('Schedule Cron Export (in 1 minute)');
-            $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/scheduleExport?key='.md5($password).$storeParam.'">'.$scheduleLinktext.'</a>';
+            // Link for FF Backend
+            $ffExportLinktext = Mage::helper('factfinder')->__('Export Link for FACT-Finder Wizard');
+            $html .= '<a href="'.$shopdomain.$activeStore.'factfinder/export/get?key='.md5($password).$storeParam.'" target="_blank">'.$ffExportLinktext.'</a><br />';
         }
 
         return $html;
