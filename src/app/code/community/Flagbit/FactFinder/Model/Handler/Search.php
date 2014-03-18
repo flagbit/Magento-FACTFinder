@@ -271,6 +271,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'selected' => $option->isSelected(),
                         'clusterLevel' => $option->getClusterLevel(),
                         'requestVar' => 'filter'.$option->getField(),
+                        'previewImage' => $option->getPreviewImage()
                     );
 
                     $attributeOptionData['seoPath'] = $seoPath;

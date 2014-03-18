@@ -58,7 +58,8 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
                         $option['selected'],
                         isset($option['seoPath']) ? $option['seoPath'] : '',
                         $option['requestVar'],
-                        $option['queryParams']
+                        $option['queryParams'],
+                        $option['previewImage']
                     )
                 );
             }
@@ -78,7 +79,7 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
      * @param   array $queryParams
      * @return  Mage_Catalog_Model_Layer_Filter_Item
      */
-    protected function _createItem($label, $value, $count=0, $selected=false, $seoPath='', $requestVar='', $queryParams=array())
+    protected function _createItem($label, $value, $count=0, $selected=false, $seoPath='', $requestVar='', $queryParams=array(), $previewImage='')
     {
         if (!Mage::helper('factfinder/search')->getIsEnabled(false, 'asn')) {
             return parent::_createItem($label, $value, $count);
@@ -92,7 +93,8 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
             ->setSelected($selected)
             ->setSeoPath($seoPath)
             ->setRequestVar($requestVar)
-            ->setQueryParams($queryParams);
+            ->setQueryParams($queryParams)
+            ->setPreviewImage($previewImage);
     }
     
     
@@ -145,7 +147,8 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
                 $itemData['selected'],
                 isset($itemData['seoPath']) ? $itemData['seoPath'] : '',
                 $itemData['requestVar'],
-                $itemData['queryParams']
+                $itemData['queryParams'],
+                $itemData['previewImage']
             );
         }
         $this->_items = $items;
