@@ -449,7 +449,8 @@ class Flagbit_FactFinder_Model_Facade
         $cacheKey = '';
         $data = null;
 
-        if ($this->_useSearchCaching())
+        // Temporary disable of the cache due to wrong/no search results
+        if (false && $this->_useSearchCaching())
         {
             $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
             $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
