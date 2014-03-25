@@ -124,13 +124,16 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $categories = $category->getParentCategories();
                 $mainCategoriesString = '';
                 foreach ($pathIds as $categoryId) {
-                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
-                        if(empty($mainCategoriesString)){
-                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'] = $categories[$categoryId]->getName();
-                        }else{
-                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'.$mainCategoriesString] = $categories[$categoryId]->getName();
+                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName())
+                    {
+                        $categoryName = html_entity_decode($categories[$categoryId]->getName());
+
+                        if(empty($mainCategoriesString)) {
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'] = $categoryName;
+                        } else {
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'.$mainCategoriesString] = $categoryName;
                         }
-                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
+                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categoryName);
                     }
                 }
             }
