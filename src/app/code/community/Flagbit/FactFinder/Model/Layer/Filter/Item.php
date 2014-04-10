@@ -63,7 +63,9 @@ class Flagbit_FactFinder_Model_Layer_Filter_Item extends Mage_Catalog_Model_Laye
 
         if($this->getSeoPath() && Mage::helper('factfinder/search')->getIsOnSearchPage())
         {
-            $query['q'] = null;
+            if($query['q'] != '*') {
+                $query['q'] = null;
+            }
             return Mage::getUrl('*/*/*', array('_query'=>$query, '_direct' => 's' . $this->getSeoPath()));
         }
         return Mage::getUrl('*/*/*', array('_current'=>true, '_use_rewrite'=>true, '_query'=>$query));
