@@ -23,7 +23,7 @@ var factfinderTracking = new FactfinderTracking(
     '.col-main',
     $H(<?php echo $this->getJsonDataObject();?>),
     $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
-    '<?php echo (Mage::helper('factfinder')->useOldTracking() ? $this->getUrl('factfinder/proxy/scic') : $this->getUrl('factfinder/proxy/tracking')) ?>',
+    '<?php echo $this->getUrl(Mage::helper('factfinder')->getTrackingUrlPath()) ?>',
 	false
 );
 

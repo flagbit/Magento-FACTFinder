@@ -70,7 +70,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $value = base64_decode($value);
                 if(strpos($value, '|')) {
                     $param = explode('|', $value);
-                    if($key == 'Category') {
+                    if($key == 'Category' || $key == 'category') {
                         $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                         foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
                         $filterKey = '';
@@ -88,7 +88,7 @@ class Flagbit_FactFinder_Model_Handler_Search
             break;
 
         case "catalog":
-            if (!isset($requestParams['Category'])) {
+            if (!isset($requestParams['Category']) && !isset($requestParams['category'])) {
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
@@ -134,7 +134,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                         break;
 
                     default:
-                        if($key == 'Category') {
+                        if($key == 'Category' || $key == 'category') {
                             $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
                             foreach($categories AS $k => $v) { $categories[$k] = $v; }
                             $filterKey = '';
@@ -160,29 +160,30 @@ class Flagbit_FactFinder_Model_Handler_Search
 
     protected function _getCurrentFactFinderCategoryPath($all = false)
     {
-        $returnValue = '';
-        if($this->_currentFactFinderCategoryPath == null && Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+        $returnValue = array();
+        if($this->_currentFactFinderCategoryPath == null){
             $this->_currentFactFinderCategoryPath = array();
-            /* @var $category Mage_Catalog_Model_Category */
-            $category = Mage::registry('current_category');
+            if (Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+                $this->_currentFactFinderCategoryPath = array();
+                /* @var $category Mage_Catalog_Model_Category */
+                $category = Mage::registry('current_category');
 
-            $pathInStore = $category->getPathInStore();
-            $pathIds = array_reverse(explode(',', $pathInStore));
+                $pathInStore = $category->getPathInStore();
+                $pathIds = array_reverse(explode(',', $pathInStore));
 
-            $categories = $category->getParentCategories();
-            $mainCategoriesString = '';
-            foreach ($pathIds as $categoryId) {
-                if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
-                    if(empty($mainCategoriesString)){
-                        $this->_currentFactFinderCategoryPath[] = 'categoryROOT|'.$categories[$categoryId]->getName();
-                    }else{
-                        $this->_currentFactFinderCategoryPath[] = 'categoryROOT'.$mainCategoriesString.'|'.$categories[$categoryId]->getName();
+                $categories = $category->getParentCategories();
+                $mainCategoriesString = '';
+                foreach ($pathIds as $categoryId) {
+                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
+                        if(empty($mainCategoriesString)){
+                            $this->_currentFactFinderCategoryPath[] = 'categoryROOT|'.$categories[$categoryId]->getName();
+                        }else{
+                            $this->_currentFactFinderCategoryPath[] = 'categoryROOT'.$mainCategoriesString.'|'.$categories[$categoryId]->getName();
+                        }
+                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                     }
-                    $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
                 }
             }
-        } else {
-            $this->_currentFactFinderCategoryPath = array();
         }
 
         if($all === false){
@@ -283,10 +284,11 @@ class Flagbit_FactFinder_Model_Handler_Search
                     $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && !$helper->getIsOnSearchPage()
+                        && strpos($option->getField(), 'categoryROOT') !== FALSE
                         && (
                             empty($_value) === true
-                                || in_array($_value, $_currentCategoryPath)
-                                && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
+                            || in_array($_value, $_currentCategoryPath)
+                            && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
                         )){
                         continue;
                     }

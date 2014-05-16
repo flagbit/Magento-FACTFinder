@@ -80,7 +80,11 @@
               --standard=zend ${srcdir}"/>			
 	   	</exec>
     </target>
- 
+ <!--
+ necessary pear dependencies to make this package process work:
+ http://faett-pear.googlecode.com/svn/trunk
+ https://github.com/rudibatt/Magento-PackageXML
+ -->
     <target name="package" depends="prepare" description="Creates a PEAR package">
         <copy file="${basedir}/package.xml" tofile="${srcdir}/package.xml"/>
 	   	<exec dir='${srcdir}/' executable="${pear}">

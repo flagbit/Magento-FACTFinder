@@ -51,13 +51,24 @@ class Flagbit_FactFinder_Model_Facade
      */
     protected $_urlBuilder = null;
 
-	/**
-	 * logger object to log all module internals
-	 * @var FACTFinder_Abstract_Logger
-	 */
-	protected $_logger = null;
-	
-	public function __construct($arg = null)
+    /**
+     * logger object to log all module internals
+     * @var FACTFinder_Abstract_Logger
+     */
+    protected $_logger = null;
+
+    /**
+     * map between known adapters and its state based on its parameters
+     * @var array
+     */
+    protected $_paramHashes = array();
+
+    /**
+     * @var boolean is set to true, if caching is enabled and can be used
+     */
+    private $_useCaching = null;
+
+    public function __construct($arg = null)
     {
         if ($arg === null || !($arg instanceof FACTFinder_Abstract_Logger)) {
             $arg = Mage::helper('factfinder/debug');
@@ -116,6 +127,11 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_getAdapter("tracking", $channel);
     }
 
+    public function getLegacyTrackingAdapter($channel = null)
+    {
+        return $this->_getAdapter("legacyTracking", $channel);
+    }
+
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
@@ -169,9 +185,54 @@ class Flagbit_FactFinder_Model_Facade
     protected function _configureAdapter($params, $type, $channel = null, $id = null)
     {
         $adapter = $this->_getAdapter($type, $channel, $id);
+        $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
+        $this->_paramHashes[$adapterId] = $this->_createParametersHash($params);
 
         foreach($params as $key => $value)
             $adapter->setParam($key, $value);
+    }
+
+    /**
+     * returns the hash that identifies a certain combination of parameters.
+     * It represents the current parameter state of the adapter specified by $type, $channel and $id
+     *
+     * @param $type (any adapter type)
+     * @param $channel (default: null => default channel)
+     * @param $id (default: null => no special id)
+     * @return string
+     */
+    protected function _getParametersHash($type, $channel = null, $id = null)
+    {
+        $returnValue = '';
+        $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
+        if (array_key_exists($adapterId, $this->_paramHashes))
+        {
+            $returnValue = $this->_paramHashes[$adapterId];
+        }
+        return $returnValue;
+    }
+
+    private function _createParametersHash($params)
+    {
+        $returnValue = '';
+        if($params) {
+            ksort($params);
+            $returnValue = md5(http_build_query($params));
+        }
+        return $returnValue;
+    }
+
+    /**
+     * get identifying hash for each adapter based on type, channel and id
+     * @param $type
+     * @param $channel (default: null)
+     * @param $id (default: null)
+     * @return string hash
+     */
+    protected function _getAdapterIdentifier($type, $channel = null, $id = null)
+    {
+        $args = func_get_args();
+        return implode('_', $args);
     }
 
     /**
@@ -180,19 +241,28 @@ class Flagbit_FactFinder_Model_Facade
     protected function _getAdapter($type, $channel = null, $id = null)
     {
         $format = $this->_getFormat($type);
+        $hashKey = $this->_getAdapterIdentifier($type, $channel, $id);
 
-        if(!$id)
-            $id = '';
+        // get the channel after calculating the adapter identifier
         if(!$channel)
             $channel = $this->_getConfiguration()->getChannel();
 
-        $hashKey = $type.$id;
         if(!isset($this->_adapters[$hashKey][$channel]))
         {
             $config            = $this->_getConfiguration();
             $encodingHandler   = FF::getSingleton('encodingHandler', $config);
             $dataProvider      = $this->_getParallelDataProvider();
             $dataProvider->setParam('channel', $channel);
+
+            /*
+            // new tracking needs session ID and sourceRefKey for every request
+            // helper must not be used inside this class, as it is also used without the app context
+            // TODO: do it in a different way
+            if(!Mage::helper('factfinder')->useOldTracking()) {
+                $dataProvider->setParam('sourceRefKey', Mage::getSingleton('core/session')->getFactFinderRefKey());
+                $dataProvider->setParam('sid'         , md5(Mage::getSingleton('core/session')->getSessionId()));
+            }*/
+
             $this->_adapters[$hashKey][$channel] = FF::getInstance(
                 $format.'/'.$type.'Adapter',
                 $dataProvider,
@@ -207,7 +277,7 @@ class Flagbit_FactFinder_Model_Facade
     protected function _getFormat($type)
     {
         $format = 'http';
-        if ($type != 'scic' && $type != 'suggest') {
+        if (!in_array($type, array('scic', 'suggest', 'legacyTracking'))) {
             $version = $this->_getConfiguration()->getFactFinderVersion();
             $format = 'xml' . $version;
             return $format;
@@ -311,95 +381,101 @@ class Flagbit_FactFinder_Model_Facade
 
     public function applyTracking($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Tracking", "applyTracking", $channel, $id);
+        return $this->_getFactFinderObject("tracking", "applyTracking", $channel, $id);
     }
 
     public function applyScicTracking($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Scic", "applyTracking", $channel, $id);
+        return $this->_getFactFinderObject("scic", "applyTracking", $channel, $id);
     }
 
     public function getAfterSearchNavigation($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getAsn", $channel, $id);
+        return $this->_getFactFinderObject("search", "getAsn", $channel, $id);
     }
 
     public function getCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getCampaigns", $channel, $id);
+        return $this->_getFactFinderObject("search", "getCampaigns", $channel, $id);
     }
 
     public function getProductCampaigns($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("ProductCampaign", "getCampaigns", $channel, $id);
+        return $this->_getFactFinderObject("productCampaign", "getCampaigns", $channel, $id);
     }
 
     public function getRecommendations($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Recommendation", "getRecommendations", $channel, $id);
+        return $this->_getFactFinderObject("recommendation", "getRecommendations", $channel, $id);
     }
 
     public function getSearchError($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getError", $channel, $id);
+        return $this->_getFactFinderObject("search", "getError", $channel, $id);
     }
 
     public function getSearchParams($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getSearchParams", $channel, $id);
+        return $this->_getFactFinderObject("search", "getSearchParams", $channel, $id);
     }
 
     public function getSearchResult($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getResult", $channel, $id);
+        return $this->_getFactFinderObject("search", "getResult", $channel, $id);
     }
 
     public function getSearchStackTrace($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStackTrace", $channel, $id);
+        return $this->_getFactFinderObject("search", "getStackTrace", $channel, $id);
     }
 
     public function getSearchStatus($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Search", "getStatus", $channel, $id);
+        return $this->_getFactFinderObject("search", "getStatus", $channel, $id);
     }
 
     public function getSuggestions($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("Suggest", "getSuggestions", $channel, $id);
+        return $this->_getFactFinderObject("suggest", "getSuggestions", $channel, $id);
     }
 
     public function getTagCloud($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("TagCloud", "getTagCloud", $channel, $id);
+        return $this->_getFactFinderObject("tagCloud", "getTagCloud", $channel, $id);
     }
 
-    protected function _getFactFinderObject($adapterType, $objectGetter, $channel = null, $id = null)
+    protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
     {
-        $args = func_get_args();
-        $cacheKey = 'FACTFINDER_'.implode('_',$args).'_' . md5(serialize($this->_getParamsParser()));
+        $cacheKey = '';
+        $data = null;
 
-        if(Mage::app()->useCache('factfinder_search') && $cache = Mage::app()->loadCache($cacheKey))
+        if ($this->_useSearchCaching())
         {
-            return unserialize($cache);
-        }
-
-        try {
-            $this->_loadAllData();
-            $adapterGetter = "get".$adapterType."Adapter";
-
-            $data = $this->$adapterGetter($channel, $id)->$objectGetter();
-
-            if(Mage::app()->useCache('factfinder_search'))
+            $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
+            $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
+            if($cache = Mage::app()->loadCache($cacheKey))
             {
-                Mage::app()->saveCache(serialize($data), $cacheKey, array('FACTFINDER_SEARCH'), 600);
+                $data = unserialize($cache);
             }
-
-            return $data;
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
         }
+
+        if ($data == null) {
+            try {
+                $this->_loadAllData();
+
+                $adapter = $this->_getAdapter($type, $channel, $id);
+                $data = $adapter->$objectGetter();
+
+                if($this->_useSearchCaching())
+                {
+                    Mage::app()->saveCache(serialize($data), $cacheKey, array('FACTFINDER_SEARCH'), 600);
+                }
+
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+        return $data;
     }
 
     public function getActualFactFinderVersion()
@@ -412,6 +488,18 @@ class Flagbit_FactFinder_Model_Facade
             Mage::logException($e);
             return null;
         }
+    }
+
+    private function _useSearchCaching()
+    {
+        if ($this->_useCaching == null)
+        {
+            // caching only works from version 5.3 because of php bug 45706 (http://bugs.php.net/45706):
+            // because of it, the asn objects can't be serialized and cached
+            // this bug was fixed with 5.3.0 (http://www.php.net/ChangeLog-5.php)
+            $this->_useCaching = (version_compare(PHP_VERSION, '5.3.0') >= 0 && Mage::app()->useCache('factfinder_search'));
+        }
+        return $this->_useCaching;
     }
 
     public function getActualFactFinderVersionString()

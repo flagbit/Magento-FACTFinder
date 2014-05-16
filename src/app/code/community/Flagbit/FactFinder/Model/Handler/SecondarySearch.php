@@ -28,11 +28,16 @@ class Flagbit_FactFinder_Model_Handler_SecondarySearch
         }
     }
 
+    /**
+     * returns the FACTFinder_Result object of the given channel.
+     *
+     * @param $channel
+     * @return FACTFinder_Result
+     */
     public function getSecondarySearchResult($channel)
     {
-        if(!in_array($channel, $this->_secondaryChannels))
+        if(!$this->isSecondaryChannel($channel))
         {
-            Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
             return array();
         }
 
@@ -42,5 +47,48 @@ class Flagbit_FactFinder_Model_Handler_SecondarySearch
         }
 
         return $this->_secondarySearchResults[$channel];
+    }
+
+    /**
+     * returns the search adapter of the FACT-Finder library the module is based on. This adapter gives access to all
+     * search result relevant objects of the channel's result.
+     *
+     * if there is no adapter for that channel, an error is logged an null is returned.
+     *
+     * @param $channel
+     * @return FACTFinder_Default_SearchAdapter (or one of the version specific implementations)
+     */
+    public function getSecondarySearchAdapter($channel)
+    {
+        echo "$channel <br>";
+        print_r($this->isSecondaryChannel($channel));
+        if(!$this->isSecondaryChannel($channel))
+        {
+            return null;
+        }
+
+        if(!isset($this->_secondarySearchAdapters[$channel]))
+        {
+            $this->_secondarySearchAdapters[$channel] = $this->_getFacade()->getSearchAdapter($channel);
+        }
+
+        return $this->_secondarySearchAdapters[$channel];
+    }
+
+    /**
+     * returns true if the set channel is a secondary channel. if it is not, it also logs an error
+     *
+     * @param $channel
+     * @return bool
+     */
+    private function isSecondaryChannel($channel)
+    {
+        if(!in_array($channel, $this->_secondaryChannels))
+        {
+            Mage::logException(new Exception("Tried to query a channel that was not configured as a secondary channel."));
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -13,11 +13,11 @@
   <email>magento@flagbit.de</email>
   <active>yes</active>
  </lead>
- <date>2013-09-24</date>
- <time>13:36:28</time>
+ <date>2014-01-17</date>
+ <time>19:20:51</time>
  <version>
-  <release>3.5.3</release>
-  <api>3.5.3</api>
+  <release>3.5.4</release>
+  <api>3.5.4</api>
  </version>
  <stability>
   <release>stable</release>
@@ -25,10 +25,17 @@
  </stability>
  <license>GPL</license>
  <notes>
-FIX: use https suggestion urls if user is on https page
-FIX: do connection check with correct data, closing issue 49
-FIX: avoid &quot;channel: undefined&quot; inside suggest
-FIX: fixed advisory links
+ADD: necessary information into the build.xml to make the package process work
+ADD: it is possible to get the complete search adapter of the secondary search result.
+CHG: made it possible to add ignore parameters from the module
+CHG: renamed misspelled variable
+CHG: as the &quot;Category&quot; name convention is not always complied, accept both notations
+CHG: updated ff library to current version
+CHG: implemented the legacy tracking for 6.9
+FIX: selected filters are now viewed on navigation pages, except of current magento-selected categories closing #62
+FIX: Prevent fatal errors in factfinder/search_collection closing #54
+FIX: added names to the campaign blocks at the layout xml file
+FIX: get caching working; however it won&apos;t work with php 5.2 or less!
  </notes>
  <contents>
   <dir name="/">
@@ -76,7 +83,7 @@ FIX: fixed advisory links
     <file md5sum="0a26a0d655c3f257b74302683a4859ba" name="Util.php" role="magelib" />
    </dir> <!-- /\FACTFinder -->
    <dir name="\FACTFinderCustom">
-    <file md5sum="06068d50a15e6e6a865c1727b7af0ded" name="Configuration.php" role="magelib" />
+    <file md5sum="8afbd5bb2669f4f34a7d577437d0e69c" name="Configuration.php" role="magelib" />
    </dir> <!-- /\FACTFinderCustom -->
    <dir name="\FACTFinder\Abstract">
     <file md5sum="1c3acf21c0e5bb954973e22e52910906" name="Adapter.php" role="magelib" />
@@ -90,15 +97,16 @@ FIX: fixed advisory links
     <file md5sum="049bfd0c3831114a2cd632af96aa0aaf" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="1858f0553c6deb21fb561cb454974a4e" name="RecommendationAdapter.php" role="magelib" />
     <file md5sum="8fd1c9e60cdb039ce4369af63d72a459" name="ScicAdapter.php" role="magelib" />
-    <file md5sum="ea278ff85e02d484039f3ecea58a7d65" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="b0b1c7f8527e0e286b55028e305b7c86" name="SearchAdapter.php" role="magelib" />
     <file md5sum="b498d3df0fc663c40fc362fd20134b43" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="f74d7d5578131355f8e44e8b6e0734c7" name="SuggestAdapter.php" role="magelib" />
     <file md5sum="c2ecc0d869d232ce4b8f09eb497e2b64" name="TagCloudAdapter.php" role="magelib" />
-    <file md5sum="7816352fa227529a00e223ade35be597" name="TrackingAdapter.php" role="magelib" />
+    <file md5sum="9229b7d36802d1fb9584c7d6fa9ccd1e" name="TrackingAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Default -->
    <dir name="\FACTFinder\Http">
-    <file md5sum="d994803f248f2a7419531f13ef03fcd2" name="DataProvider.php" role="magelib" />
+    <file md5sum="e0eb9dfa37502f71d6c76acf28d1a8c7" name="DataProvider.php" role="magelib" />
     <file md5sum="fcf82a2349f5b403912b1cb62907439c" name="DummyProvider.php" role="magelib" />
+    <file md5sum="5af8090c44db0d7a2f630b3afe21da3d" name="LegacyTrackingAdapter.php" role="magelib" />
     <file md5sum="71f895680f881d06793507f7ac8e7ef3" name="ParallelDataProvider.php" role="magelib" />
     <file md5sum="c283d851d23e531a1c26fee3d8c49ea8" name="ScicAdapter.php" role="magelib" />
     <file md5sum="e4760fadae33a5574f9445bbc73c1283" name="StatusHelper.php" role="magelib" />
@@ -110,7 +118,8 @@ FIX: fixed advisory links
     <file md5sum="3034c100a97d222704b1462db0b97811" name="CompareAdapter.php" role="magelib" />
     <file md5sum="63b19c72cfcf52d9832a81080678232c" name="ImportAdapter.php" role="magelib" />
     <file md5sum="9f4fed83d6d6c10b471ef8f4810eefa5" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="28111822684b93e72d40436acd3f21e0" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="f484fd9b7ed416f122bb71e75e544049" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="90f60bedc69a748e6e18d49c3243bc3d" name="SearchAdapter.php" role="magelib" />
     <file md5sum="6f3565723be247381f561b60ed49d8da" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="e06a19df2260abcd6ce46a8744ca58b0" name="SuggestAdapter.php" role="magelib" />
     <file md5sum="0ef622889613de3660591ef41c08c65d" name="TagCloudAdapter.php" role="magelib" />
@@ -120,6 +129,7 @@ FIX: fixed advisory links
     <file md5sum="295fa619d1a020f87e3d6772e428f4b3" name="ImportAdapter.php" role="magelib" />
     <file md5sum="c43222b1d277e2965e1209ff6375500c" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="db72e4179a831b331f53505a2ba9d01f" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="f76d589d684a68707b3ed86632d7742f" name="ScicAdapter.php" role="magelib" />
     <file md5sum="c69ac5f6fcfe47351ed3b601d03e18ad" name="SearchAdapter.php" role="magelib" />
     <file md5sum="55f5553511f5fb965fa9b6abf5e9ba01" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="ae47090fab5d202a22c8dbf9e604e2d1" name="SuggestAdapter.php" role="magelib" />
@@ -130,6 +140,7 @@ FIX: fixed advisory links
     <file md5sum="c7ec5f12e1f7f17084de9d71c4d4051d" name="ImportAdapter.php" role="magelib" />
     <file md5sum="1ffc9f568d7ee73722765f16fdf45b07" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="b5082f0db80730bb866ac332d143f4a8" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="33da9351e28946900e620b011f1891bb" name="ScicAdapter.php" role="magelib" />
     <file md5sum="5814eb254324b96b10a35411bea6bc6c" name="SearchAdapter.php" role="magelib" />
     <file md5sum="51412237e3233ccc3bfc124e3e9abee6" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="9bfbd6a282aba70e3b1f2e1f632c113f" name="SuggestAdapter.php" role="magelib" />
@@ -140,6 +151,7 @@ FIX: fixed advisory links
     <file md5sum="e969905c5ef9a2577eb80df12f5350c5" name="ImportAdapter.php" role="magelib" />
     <file md5sum="1ab5cb62aafe5f67c1f77461b89fe24d" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="0036cea44c296a3f9c8ac5c7458afb83" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="3e37ab5db7240aad6a7f2c3a971014c4" name="ScicAdapter.php" role="magelib" />
     <file md5sum="bc5b9f9404017d003fb27d21b2837609" name="SearchAdapter.php" role="magelib" />
     <file md5sum="aee8d4212c9e3f1b62035be5307c73f1" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="fce98d2451db47e4608e6f252f3759ff" name="SuggestAdapter.php" role="magelib" />
@@ -149,9 +161,10 @@ FIX: fixed advisory links
     <file md5sum="58a49882c741216cf278c4556ea7d224" name="SearchAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml64 -->
    <dir name="\FACTFinder\Xml65">
-    <file md5sum="489d0aadda12a41111635a2b738936c1" name="ImportAdapter.php" role="magelib" />
+    <file md5sum="3e24dbe7875252ebc0ddb3e932da3d4a" name="ImportAdapter.php" role="magelib" />
     <file md5sum="dda97f6db1ae97c5a217632067d7c101" name="RecommendationAdapter.php" role="magelib" />
-    <file md5sum="240370edf600728b472ae96078f3ed35" name="SearchAdapter.php" role="magelib" />
+    <file md5sum="23b169cdb295245a52b96234e10627fa" name="ScicAdapter.php" role="magelib" />
+    <file md5sum="0afda4c378e041c882739a0035382125" name="SearchAdapter.php" role="magelib" />
     <file md5sum="e5381502b74dd62be1a7aa833cbb03e2" name="SuggestAdapter.php" role="magelib" />
     <file md5sum="3bca14558fbd758207e97566dafb1ca2" name="TagCloudAdapter.php" role="magelib" />
    </dir> <!-- /\FACTFinder\Xml65 -->
@@ -159,6 +172,7 @@ FIX: fixed advisory links
     <file md5sum="a1e323dec8fbee2930d531765adef0cc" name="CompareAdapter.php" role="magelib" />
     <file md5sum="5ea0d06cc2ddc7a1b7c880203c38fe40" name="ImportAdapter.php" role="magelib" />
     <file md5sum="9490ea2b17fded94d087046065596b1b" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="3d1fbfeb016b5cbca426835da7abe472" name="ScicAdapter.php" role="magelib" />
     <file md5sum="aba7b0e052a28c93bad70786706e2475" name="SearchAdapter.php" role="magelib" />
     <file md5sum="f6c70898407d65c5b315a9ec5ebba166" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="813bfb64ac9d2dc45443cc7c33e854a7" name="SuggestAdapter.php" role="magelib" />
@@ -169,6 +183,7 @@ FIX: fixed advisory links
     <file md5sum="dc0d334439aa59f3e0a4226bbf1456d2" name="ImportAdapter.php" role="magelib" />
     <file md5sum="794020c94d6d62c3d835f167c484f674" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="b991b5e2570c28530164b3cacfffa6e1" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="62b5573da44cae7fc7db15c5a4eaebb5" name="ScicAdapter.php" role="magelib" />
     <file md5sum="1458660092403f1c1f3c088c40b54550" name="SearchAdapter.php" role="magelib" />
     <file md5sum="b60a974a22d3e473538524dc57d1e91d" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="7290503daae4ae9e595cc5b1480ce8a1" name="SuggestAdapter.php" role="magelib" />
@@ -179,6 +194,7 @@ FIX: fixed advisory links
     <file md5sum="bf483742e13d647da407f7da85828b98" name="ImportAdapter.php" role="magelib" />
     <file md5sum="db981749b20f69eca65d5ac1e622bafe" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="69e031adc81be7a88a0cffbe1b96c317" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="820e46185da76067d6fd28824aca47e1" name="ScicAdapter.php" role="magelib" />
     <file md5sum="5f33b2af574a27ce54da2fd200e54bf8" name="SearchAdapter.php" role="magelib" />
     <file md5sum="b9c70b5c7d6d803bb1c7f1255be55285" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="5cf5b95340983823c9e7a3fd0dc20a0b" name="SuggestAdapter.php" role="magelib" />
@@ -189,6 +205,7 @@ FIX: fixed advisory links
     <file md5sum="38ca51ae3571aa19df0552592c3ca7a1" name="ImportAdapter.php" role="magelib" />
     <file md5sum="b8387c660a11be69d4a549226fe398a9" name="ProductCampaignAdapter.php" role="magelib" />
     <file md5sum="2dcb3dd6cf309a5f0c2ae43fb203b26b" name="RecommendationAdapter.php" role="magelib" />
+    <file md5sum="6c20f0e9fbfaf3429723dd664cb465ef" name="ScicAdapter.php" role="magelib" />
     <file md5sum="d40a1e847d228fa5018c47b43eb26d57" name="SearchAdapter.php" role="magelib" />
     <file md5sum="ba87aaa6a786094720941117c976899d" name="SimilarRecordsAdapter.php" role="magelib" />
     <file md5sum="b0c54b42c01101adda15e3634b896e56" name="SuggestAdapter.php" role="magelib" />
@@ -197,7 +214,7 @@ FIX: fixed advisory links
    </dir> <!-- /\FACTFinder\Xml69 -->
    <dir name="\Flagbit\FactFinder\Block">
     <file md5sum="8cc0245865ee5760fbfe7442cf859ade" name="Layer.php" role="magecommunity" />
-    <file md5sum="cb1ca2347767ebed5671ad6a91dc881e" name="Secondaryresult.php" role="magecommunity" />
+    <file md5sum="41ee25e0adeb033ca6e5eef2d50c0f90" name="Secondaryresult.php" role="magecommunity" />
     <file md5sum="6e3769771ef5a1b50fc1d9a963e90aad" name="TagCloud.php" role="magecommunity" />
     <file md5sum="7ce879afb562e5a0e96132fa31ebe98d" name="Tracking.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Block -->
@@ -252,24 +269,24 @@ FIX: fixed advisory links
    </dir> <!-- /\Flagbit\FactFinder\controllers\Adminhtml\Factfinder -->
    <dir name="\Flagbit\FactFinder\etc">
     <file md5sum="1165a0fecfaa31f2aa4a882d1d8bc033" name="adminhtml.xml" role="magecommunity" />
-    <file md5sum="686dfb4518a20e8f0498ba9279420ce6" name="config.xml" role="magecommunity" />
+    <file md5sum="b34ed09ca9e8817fd01beba3d0e4d9c7" name="config.xml" role="magecommunity" />
     <file md5sum="4e232a8d8e9ba653ba658b510470a20d" name="system.xml" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\etc -->
    <dir name="\Flagbit\FactFinder\Helper">
     <file md5sum="87b662c7c7242ef349f4606ad2ab5279" name="Backend.php" role="magecommunity" />
-    <file md5sum="91d08be56cfa17025d0dbfcda3691bb1" name="Data.php" role="magecommunity" />
+    <file md5sum="d567225cfe69304e975c18b25123a58f" name="Data.php" role="magecommunity" />
     <file md5sum="24b939b03efb2cd5f7815562f896576f" name="Debug.php" role="magecommunity" />
     <file md5sum="0ec62f809330706c441c60ad96970880" name="Search.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Helper -->
    <dir name="\Flagbit\FactFinder\Model">
-    <file md5sum="6ab653ac461b0c29df77c70627db49fe" name="Facade.php" role="magecommunity" />
+    <file md5sum="cfd1c9a0d8660457aa9455c42367f75c" name="Facade.php" role="magecommunity" />
     <file md5sum="9da16c44259b4a31d73f63d87787ff11" name="Layer.php" role="magecommunity" />
     <file md5sum="99b06cdb299cd09e4dfafc0f9ab2d541" name="Observer.php" role="magecommunity" />
     <file md5sum="dd87fcca325fc9bfb30e52f5a0c484fb" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
-    <file md5sum="9edb405e971054454be2bc434420595a" name="Product.php" role="magecommunity" />
+    <file md5sum="929ffca44ce0cba1b9ab8a2c3027a665" name="Product.php" role="magecommunity" />
     <file md5sum="28e819f8f317957a70a7d4d318e04791" name="Stock.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Export -->
    <dir name="\Flagbit\FactFinder\Model\Handler">
@@ -278,15 +295,15 @@ FIX: fixed advisory links
     <file md5sum="831d8d3ff2cd29e090cff10c3a9c8844" name="ProductCampaign.php" role="magecommunity" />
     <file md5sum="25175d7b6809c9db30e1400f4f800739" name="ProductDetailCampaign.php" role="magecommunity" />
     <file md5sum="47b12e1f2f1e1d83ecaba77fdb20b63b" name="Recommendations.php" role="magecommunity" />
-    <file md5sum="31a7e04564ca9c7973b99d389ba6e00b" name="Search.php" role="magecommunity" />
-    <file md5sum="de4ced818f7865a491438a4d103b431a" name="SecondarySearch.php" role="magecommunity" />
+    <file md5sum="cb749d336fd6e2a1dea373ff1a286d94" name="Search.php" role="magecommunity" />
+    <file md5sum="68395df0f8f61c0776a36b5079ebd720" name="SecondarySearch.php" role="magecommunity" />
     <file md5sum="202fc9ab4018247dfb8e8bcefd417465" name="ShoppingCartCampaign.php" role="magecommunity" />
     <file md5sum="3b286cbda3cad188b10f7fac06e0ca32" name="Suggest.php" role="magecommunity" />
     <file md5sum="e60bd2a5d314cfe3bad445ba88740878" name="TagCloud.php" role="magecommunity" />
-    <file md5sum="0df6a928578b8376a36eaa9e47079a91" name="Tracking.php" role="magecommunity" />
+    <file md5sum="5aefdfa31865227c1a953c0f1447ab0b" name="Tracking.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Handler -->
    <dir name="\Flagbit\FactFinder\Model\Handler\Tracking">
-    <file md5sum="6342c6f0077fb242a8955b1160abec89" name="Scic.php" role="magecommunity" />
+    <file md5sum="2e34f18eac2125c2017970fcfca22730" name="Scic.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Handler\Tracking -->
    <dir name="\Flagbit\FactFinder\Model\Layer">
     <file md5sum="0a0505e719ca55320da35c7510b82d3a" name="Abstract.php" role="magecommunity" />
@@ -315,7 +332,7 @@ FIX: fixed advisory links
     <file md5sum="5f6b0b6a50838929065ebd941cedce42" name="Collection.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Scic\Queue -->
    <dir name="\Flagbit\FactFinder\Model\Mysql4\Search">
-    <file md5sum="f4aba32bda99ba511686768342664774" name="Collection.php" role="magecommunity" />
+    <file md5sum="efe031e2f8701d1fa4f0059238144aad" name="Collection.php" role="magecommunity" />
     <file md5sum="88a56eb3b4587d87bb1152476b64036e" name="Engine.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Mysql4\Search -->
    <dir name="\Flagbit\FactFinder\Model\Scic">
@@ -340,7 +357,7 @@ FIX: fixed advisory links
     <file md5sum="16766d07b20544e11184ee21f95b2692" name="factfinder.css" role="mageskin" />
    </dir> <!-- /\frontend\base\default\css -->
    <dir name="\frontend\base\default\layout">
-    <file md5sum="0ef84cf79848e6e3a8d254a3a33f440d" name="factfinder.xml" role="magedesign" />
+    <file md5sum="205773215ef818caa64d7450c02ea1e8" name="factfinder.xml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\layout -->
    <dir name="\frontend\base\default\template\factfinder">
     <file md5sum="d51345fde3b0cbede02f4d2ac7d43af0" name="form.advancedsuggest.phtml" role="magedesign" />
@@ -348,7 +365,7 @@ FIX: fixed advisory links
     <file md5sum="eb49c2fb57594e2ebeed1ffb01c2606d" name="form.mini.phtml" role="magedesign" />
     <file md5sum="7a40d67bf648e65345f69b2cf9d3c6b6" name="logo.phtml" role="magedesign" />
     <file md5sum="a4cdff409ccedb16d4fe9a038a4dd9e8" name="secondaryresult.phtml" role="magedesign" />
-    <file md5sum="e42ced8505b97260b83b4b55b6139b1d" name="tracking.phtml" role="magedesign" />
+    <file md5sum="c7b2320cc4e8e4937d9df731397bdc60" name="tracking.phtml" role="magedesign" />
    </dir> <!-- /\frontend\base\default\template\factfinder -->
    <dir name="\frontend\base\default\template\factfinder\campaign">
     <file md5sum="d0ef29b97aa4c3bdfa2b94596beb5b21" name="advisory.phtml" role="magedesign" />
@@ -399,20 +416,27 @@ FIX: fixed advisory links
  <changelog>
   <release>
    <version>
-    <release>3.5.3</release>
-    <api>3.5.3</api>
+    <release>3.5.4</release>
+    <api>3.5.4</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2013-09-24</date>
+   <date>2014-01-17</date>
    <license>GPL</license>
    <notes>
-FIX: use https suggestion urls if user is on https page
-FIX: do connection check with correct data, closing issue 49
-FIX: avoid &quot;channel: undefined&quot; inside suggest
-FIX: fixed advisory links
+ADD: necessary information into the build.xml to make the package process work
+ADD: it is possible to get the complete search adapter of the secondary search result.
+CHG: made it possible to add ignore parameters from the module
+CHG: renamed misspelled variable
+CHG: as the &quot;Category&quot; name convention is not always complied, accept both notations
+CHG: updated ff library to current version
+CHG: implemented the legacy tracking for 6.9
+FIX: selected filters are now viewed on navigation pages, except of current magento-selected categories closing #62
+FIX: Prevent fatal errors in factfinder/search_collection closing #54
+FIX: added names to the campaign blocks at the layout xml file
+FIX: get caching working; however it won&apos;t work with php 5.2 or less!
    </notes>
   </release>
  </changelog>

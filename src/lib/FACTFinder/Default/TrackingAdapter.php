@@ -34,9 +34,6 @@ class FACTFinder_Default_TrackingAdapter extends FACTFinder_Abstract_Adapter
 
     public function prepareDefaultParams($inputParams, $event) {
         $eventsNoSourceRefKeyRequired = array(
-            self::EVENT_INSPECT,
-            self::EVENT_CART,
-            self::EVENT_BUY,
             self::EVENT_SESSION_START
         );
 
