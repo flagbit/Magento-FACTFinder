@@ -149,6 +149,13 @@
                     <frontName>factfinder</frontName>
                 </args>
             </factfinder>
+            <catalogsearch>
+                <args>
+                    <modules>
+                        <Flagbit_FactFinder before="Mage_CatalogSearch">Flagbit_FactFinder_CatalogSearch</Flagbit_FactFinder>
+                    </modules>
+                </args>
+            </catalogsearch>
         </routers>
         <events>
             <checkout_cart_product_add_after>
