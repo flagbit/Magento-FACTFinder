@@ -295,7 +295,12 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         if($mainBlock instanceof Mage_CatalogSearch_Block_Result){
             $toolbarBlock = $mainBlock->getListBlock()->getToolbarBlock();
         }else{
-            $toolbarBlock = Mage::app()->getLayout()->createBlock('catalog/product_list_toolbar');
+            $mainBlock = Mage::app()->getLayout()->getBlock('product_list');
+            if($mainBlock instanceof Mage_Catalog_Block_Product_List) {
+                $toolbarBlock = $mainBlock->getToolbarBlock();
+            } else {
+                $toolbarBlock = Mage::app()->getLayout()->createBlock('catalog/product_list_toolbar');
+            }
         }
 
         return $toolbarBlock;
