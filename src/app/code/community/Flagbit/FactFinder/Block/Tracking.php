@@ -59,7 +59,7 @@ class Flagbit_FactFinder_Block_Tracking extends Mage_Core_Block_Template
             $customerId = md5('customer_' . $customerId);
         }
 
-        if(Mage::helper('factfinder')->useOldTracking())
+        if(Mage::helper('factfinder')->useOldTracking() || Mage::helper('factfinder')->useLegacyTracking())
         {
             $dataTemplate = array(
                 'query'         => $searchHelper->getQuery()->getQueryText(),

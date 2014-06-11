@@ -34,26 +34,25 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
     /**
-     * Decide whether old tracking should be used
+     * Decide whether old tracking should be used (for every FF version up to 6.7)
      *
      * @return bool
      */
     public function useOldTracking()
     {
         $ffVersion = Mage::getStoreConfig('factfinder/search/ffversion');
-        // to use the new tracking, change the comparison to '$ffVersion < 69'
-        return ($ffVersion <= 69);
+        return ($ffVersion <= 67);
     }
 
     /**
-     * Decide whether legacy tracking should be used (old tracking for the versions for 6.8 and 6.9)
+     * Decide whether legacy tracking should be used (for the FF versions 6.8 and 6.9)
      *
      * @return bool
      */
     public function useLegacyTracking()
     {
         $ffVersion = Mage::getStoreConfig('factfinder/search/ffversion');
-        return ($ffVersion >= 68 && $ffVersion <= 69);
+        return ($ffVersion == 68 && $ffVersion == 69);
     }
 
     /**
