@@ -19,59 +19,11 @@ class Flagbit_FactFinder_Model_Handler_Tracking_Scic
      *
      * @param $event
      * @param $inputParams
+     * @deprecated this class is not necessary anymore and completely replaced by handler/tracking
      * @return FACTFinder_Default_ScicAdapter
      */
     public function setupEventTracking($event, $inputParams)
     {
-        /* @var $scicAdapter FACTFinder_Default_ScicAdapter */
-        if (Mage::helper('factfinder')->useLegacyTracking()) {
-            $scicAdapter = $this->_getFacade()->getLegacyTrackingAdapter();
-        } else {
-            $scicAdapter = $this->_getFacade()->getScicAdapter();
-        }
-
-        switch ($event) {
-            case FACTFinder_Default_TrackingAdapter::EVENT_INSPECT:
-                $searchHelper = $searchHelper = Mage::helper('factfinder/search');
-                $scicAdapter->setupClickTracking(
-                    $inputParams['id'],
-                    $inputParams['sid'],
-                    $searchHelper->getQuery()->getQueryText(),
-                    1, //pos
-                    1, //origPos
-                    1, //page
-                    $inputParams['product']->getSimilarity(),
-                    $inputParams['product']->getName(),
-                    $searchHelper->getPageLimit(),
-                    $searchHelper->getDefaultPerPageValue());
-                break;
-            case FACTFinder_Default_TrackingAdapter::EVENT_CART:
-                $scicAdapter->setupCartTracking(
-                    $inputParams['id'],
-                    $inputParams['sid'],
-                    $inputParams['amount'],
-                    $inputParams['price'],
-                    $inputParams['uid']
-                );
-                break;
-            case FACTFinder_Default_TrackingAdapter::EVENT_BUY:
-                $scicAdapter->setupCheckoutTracking(
-                    $inputParams['id'],
-                    $inputParams['sid'],
-                    $inputParams['amount'],
-                    $inputParams['price'],
-                    $inputParams['uid']
-                );
-                break;
-            case FACTFinder_Default_TrackingAdapter::EVENT_DISPLAY:
-            case FACTFinder_Default_TrackingAdapter::EVENT_FEEDBACK:
-            case FACTFinder_Default_TrackingAdapter::EVENT_AVAILABILITY_CHECK:
-            case FACTFinder_Default_TrackingAdapter::EVENT_CACHE_HIT:
-            case FACTFinder_Default_TrackingAdapter::EVENT_SESSION_START:
-                // Not implemented yet
-                break;
-        }
-
-        return $scicAdapter;
+        Mage::getModel('factfinder/handler_tracking')->setupTracking($event, $inputParams);
     }
 }

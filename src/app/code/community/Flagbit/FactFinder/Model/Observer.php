@@ -53,7 +53,7 @@ class Flagbit_FactFinder_Model_Observer
         try {
             /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder/handler_tracking');
-            $tracking->getTrackingAdapter()->setupEventTracking(
+            $tracking->setupTracking(
                 FACTFinder_Default_TrackingAdapter::EVENT_CART,
                 array(
                     'id'            => $product->getData($idFieldName),
@@ -95,7 +95,7 @@ class Flagbit_FactFinder_Model_Observer
 
             /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder/handler_tracking');
-            $tracking->getTrackingAdapter()->setupEventTracking(
+            $tracking->setupTracking(
                 FACTFinder_Default_TrackingAdapter::EVENT_INSPECT,
                 array(
                     'id'            => $product->getData($idFieldName),
@@ -171,7 +171,6 @@ class Flagbit_FactFinder_Model_Observer
         $collection = $queue->getCollection()->addOrder('store_id', 'ASC');
 
         $storeId = null;
-        $scic = null;
         foreach ($collection as $item) {
             try {
                 $facade = Mage::getModel('factfinder/facade');
@@ -182,7 +181,7 @@ class Flagbit_FactFinder_Model_Observer
 
                 /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
                 $tracking = Mage::getModel('factfinder/handler_tracking');
-                $tracking->getTrackingAdapter()->setupEventTracking(
+                $tracking->setupTracking(
                     FACTFinder_Default_TrackingAdapter::EVENT_BUY,
                     array(
                         'id'            => $item->getProductId(),

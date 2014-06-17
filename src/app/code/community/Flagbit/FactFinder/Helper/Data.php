@@ -36,23 +36,23 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
     /**
      * Decide whether old tracking should be used (for every FF version up to 6.7)
      *
+     * @deprecated use Flagbit_FactFinder_Model_Handler_Tracking::useOldTracking() instead
      * @return bool
      */
     public function useOldTracking()
     {
-        $ffVersion = Mage::getStoreConfig('factfinder/search/ffversion');
-        return ($ffVersion <= 67);
+        return Mage::getModel('factfinder/handler_tracking')->useOldTracking();
     }
 
     /**
      * Decide whether legacy tracking should be used (for the FF versions 6.8 and 6.9)
      *
+     * @deprecated use Flagbit_FactFinder_Model_Handler_Tracking::useLegacyTracking() instead
      * @return bool
      */
     public function useLegacyTracking()
     {
-        $ffVersion = Mage::getStoreConfig('factfinder/search/ffversion');
-        return ($ffVersion == 68 && $ffVersion == 69);
+        return Mage::getModel('factfinder/handler_tracking')->useLegacyTracking();
     }
 
     /**
@@ -62,8 +62,9 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
      */
     public function getTrackingUrlPath()
     {
+        $trackingHandler = Mage::getModel('factfinder/handler_tracking');
         $urlPath = 'factfinder/proxy/tracking';
-        if ($this->useOldTracking() && !$this->useLegacyTracking()) {
+        if ($trackingHandler->useOldTracking() && !$trackingHandler->useLegacyTracking()) {
             // if old tracking is legacy tracking, don't use the scic url
             $urlPath = 'factfinder/proxy/scic';
         }

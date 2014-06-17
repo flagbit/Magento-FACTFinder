@@ -59,7 +59,8 @@ class Flagbit_FactFinder_Block_Tracking extends Mage_Core_Block_Template
             $customerId = md5('customer_' . $customerId);
         }
 
-        if(Mage::helper('factfinder')->useOldTracking() || Mage::helper('factfinder')->useLegacyTracking())
+        $trackingHandler = Mage::getModel('factfinder/handler_tracking');
+        if($trackingHandler->useOldTracking() || $trackingHandler->useLegacyTracking())
         {
             $dataTemplate = array(
                 'query'         => $searchHelper->getQuery()->getQueryText(),
@@ -89,7 +90,7 @@ class Flagbit_FactFinder_Block_Tracking extends Mage_Core_Block_Template
                 'id' => $product->getData($idFieldName),
             );
 
-            if(Mage::helper('factfinder')->useOldTracking())
+            if($trackingHandler->useOldTracking() || $trackingHandler->useLegacyTracking())
             {
                 $data[$key] += array(
                     'pos'		=> $product->getPosition(),

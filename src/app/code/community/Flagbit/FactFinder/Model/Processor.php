@@ -35,6 +35,11 @@ class Flagbit_FactFinder_Model_Processor
     protected $_facade;
 
     /**
+     * @var Flagbit_FactFinder_Model_Handler_Tracking
+     */
+    protected $_trackingHandler;
+
+    /**
      * Class constructor
      */
     public function __construct()
@@ -52,15 +57,31 @@ class Flagbit_FactFinder_Model_Processor
      *
      * @return Flagbit_FactFinder_Model_Facade
      */
-    protected function _getFacade()
+    protected function _getFacade($isAppContext = true)
     {
     	if($this->_facade === null){
-			$logger = new Flagbit_FactFinder_Helper_Debug();
-    		$this->_facade = new Flagbit_FactFinder_Model_Facade($logger);
-    	}
+            if ($isAppContext) {
+                $this->_facade = Mage::getSingleton('factfinder/facade');
+            } else {
+                $logger = new Flagbit_FactFinder_Helper_Debug();
+                $this->_facade = new Flagbit_FactFinder_Model_Facade($logger);
+            }
+        }
     	return $this->_facade;
     }
 
+    /**
+     *
+     *
+     * @return Flagbit_FactFinder_Model_Facade
+     */
+    protected function _getTrackingHandler()
+    {
+        if($this->_trackingHandler === null){
+            $this->_trackingHandler = new Flagbit_FactFinder_Model_Handler_Tracking();
+        }
+        return $this->_trackingHandler;
+    }
 
     /**
      * Get page content from cache storage
@@ -103,7 +124,7 @@ class Flagbit_FactFinder_Model_Processor
     }
 
     /**
-     * hanlde without App Requests
+     * handle without App Requests
      *
      * @param string $request
      * @return string
@@ -120,7 +141,10 @@ class Flagbit_FactFinder_Model_Processor
     	if(!is_array($config) || empty($config)){
     		return;
     	}
-    	$this->_getFacade()->setConfiguration($config);
+
+    	$this->_getFacade(false)->setConfiguration($config);
+        $this->_trackingHandler = new Flagbit_FactFinder_Model_Handler_Tracking($this->_getFacade(), $config);
+
     	return $this->_handleRequest($request);
     }
 
@@ -134,13 +158,9 @@ class Flagbit_FactFinder_Model_Processor
     {
 		switch ($request) {
 			case 'factfinder_proxy_scic':
-		        $this->_getFacade()->getScicAdapter()->setupTrackingFromRequest();
-		        return $this->_getFacade()->applyTracking();
-				break;
-
             case 'factfinder_proxy_tracking':
-                $this->_getFacade()->getTrackingAdapter()->setupTrackingFromRequest();
-                return $this->_getFacade()->applyTracking();
+                $this->_trackingHandler->setupTrackingFromRequest();
+                return $this->_trackingHandler->applyTracking();
                 break;
 
 			case 'factfinder_proxy_suggest':
