@@ -11,7 +11,7 @@
  * Controller class
  * 
  * This class the Proxy Controller
- * It provides a scic and a suggest Action
+ * It provides a tracking and a suggest Action
  * 
  * @category  Mage
  * @package   Flagbit_FactFinder

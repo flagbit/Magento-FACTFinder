@@ -26,7 +26,8 @@ class Flagbit_FactFinder_Model_Observer
 
     /**
      * Observer method.
-     * Sends information to FACT-Finder if item was added to cart.
+     * Sends information to FACT-Finder if item was added to cart. (Still named SCIC because of legacy reasons, but is
+     * also used for the new tracking)
      *
      * @param Varien_Event_Observer $observer
      */
