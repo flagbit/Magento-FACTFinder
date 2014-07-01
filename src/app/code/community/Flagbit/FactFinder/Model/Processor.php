@@ -159,8 +159,9 @@ class Flagbit_FactFinder_Model_Processor
 		switch ($request) {
 			case 'factfinder_proxy_scic':
             case 'factfinder_proxy_tracking':
-                $this->_trackingHandler->setupTrackingFromRequest();
-                return $this->_trackingHandler->applyTracking();
+                $trackingHandler = $this->_getTrackingHandler();
+                $trackingHandler->setupTrackingFromRequest();
+                return $trackingHandler->applyTracking();
                 break;
 
 			case 'factfinder_proxy_suggest':

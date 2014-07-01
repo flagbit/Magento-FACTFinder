@@ -18,6 +18,11 @@ class Flagbit_FactFinder_Model_Handler_Tracking
     protected $_trackingAdapter;
 
     /**
+     * @var FACTFinderCustom_Configuration
+     */
+    protected $_config;
+
+    /**
      * setting the facade object MUST only be done if there is no app context that can be used to create the necessary
      * objects. In such case this handler will also care about not using the Mage::* methods that require the app.
      *
@@ -25,9 +30,10 @@ class Flagbit_FactFinder_Model_Handler_Tracking
      * @param FACTFinderCustom_Configuration $config
      * @throws Exception if the config is null but the facade is not
      */
-    public function __construct(Flagbit_FactFinder_Model_Facade $facade = null, FACTFinderCustom_Configuration $config)
+    public function __construct($facade = null, FACTFinderCustom_Configuration $config = null)
     {
-        if ($facade != null) {
+        // using type hint does not work here, as magento may pass an array
+        if ($facade != null && $facade instanceof Flagbit_FactFinder_Model_Facade) {
             if ($config == null) {
                 throw new Exception("implementation error: config can not be null if facade is not null");
             }
@@ -50,12 +56,11 @@ class Flagbit_FactFinder_Model_Handler_Tracking
         } else {
             $this->_trackingAdapter = $this->_getFacade()->getTrackingAdapter();
         }
-
     }
 
     protected function _getFactFinderVersion()
     {
-        if ($this->_config == null) {
+        if (!isset($this->_config)) {
             $ffVersion = Mage::getStoreConfig('factfinder/search/ffversion');
         } else {
             $ffVersion = $this->_config->getFactFinderVersion();
@@ -82,15 +87,15 @@ class Flagbit_FactFinder_Model_Handler_Tracking
     public function useLegacyTracking()
     {
         $ffVersion = $this->_getFactFinderVersion();
-        return ($ffVersion == 68 && $ffVersion == 69);
+        return ($ffVersion == 68 || $ffVersion == 69);
     }
 
     /**
-     * method to setup a single event tracking directly from code. This should only be used if an app-context exists.
+     * method to setup a single event tracking directly from code. This should only be used if an app-context exists.<br>
      *
      * @param $event string should be one of the FACTFinder_Default_TrackingAdapter::EVENT* constants
      * @param $trackingParams array key-value array of the tracking parameters in the new format. If the old format is
-     * necessary it will be mapped automatically
+     *        necessary it will be mapped automatically
      */
     public function setupTracking($event, $trackingParams)
     {
@@ -136,6 +141,9 @@ class Flagbit_FactFinder_Model_Handler_Tracking
         }
     }
 
+    /**
+     * calls the correct adapter to fetch the params from the request.
+     */
     public function setupTrackingFromRequest()
     {
         $this->_trackingAdapter->setupTrackingFromRequest();
@@ -150,6 +158,8 @@ class Flagbit_FactFinder_Model_Handler_Tracking
     {
         if ($this->useOldTracking()) {
             return $this->_getFacade()->applyScicTracking();
+        } else if ($this->useLegacyTracking()){
+            return $this->_getFacade()->applyLegacyTracking();
         } else {
             return $this->_getFacade()->applyTracking();
         }

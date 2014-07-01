@@ -378,6 +378,11 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_getFactFinderObject("tracking", "applyTracking", $channel, $id);
     }
 
+    public function applyLegacyTracking($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject("legacyTracking", "applyTracking", $channel, $id);
+    }
+
     public function applyScicTracking($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("scic", "applyTracking", $channel, $id);
