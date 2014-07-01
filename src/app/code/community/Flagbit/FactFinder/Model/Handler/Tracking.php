@@ -18,6 +18,11 @@ class Flagbit_FactFinder_Model_Handler_Tracking
     protected $_trackingAdapter;
 
     /**
+     * @var FACTFinderCustom_Configuration
+     */
+    protected $_config;
+
+    /**
      * setting the facade object MUST only be done if there is no app context that can be used to create the necessary
      * objects. In such case this handler will also care about not using the Mage::* methods that require the app.
      *
@@ -51,7 +56,6 @@ class Flagbit_FactFinder_Model_Handler_Tracking
         } else {
             $this->_trackingAdapter = $this->_getFacade()->getTrackingAdapter();
         }
-
     }
 
     protected function _getFactFinderVersion()
