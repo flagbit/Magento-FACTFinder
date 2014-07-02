@@ -49,12 +49,38 @@ class Flagbit_FactFinder_Model_Handler_Tracking
      */
     protected function configureFacade()
     {
+        $this->_trackingAdapter = $this->_getTrackingAdapter();
+    }
+
+    protected function _getTrackingAdapter()
+    {
+        $trackingAdapter = null;
         if ($this->useOldTracking()) {
-            $this->_trackingAdapter = $this->_getFacade()->getScicAdapter();
+            $trackingAdapter = $this->_getFacade()->getScicAdapter();
         } else if ($this->useLegacyTracking()) {
-            $this->_trackingAdapter = $this->_getFacade()->getLegacyTrackingAdapter();
+            $trackingAdapter = $this->_getFacade()->getLegacyTrackingAdapter();
         } else {
-            $this->_trackingAdapter = $this->_getFacade()->getTrackingAdapter();
+            $trackingAdapter = $this->_getFacade()->getTrackingAdapter();
+        }
+        return $trackingAdapter;
+    }
+
+    /**
+     * Get tracking adapter
+     *
+     * @deprecated use this handler only to do the tracking and don't work on the adapter directly
+     * @return tracking adapter object
+     */
+    public function getTrackingAdapter()
+    {
+        // old behaviour with the new architecture
+        if(Mage::helper('factfinder')->useOldTracking()) {
+            return Mage::getModel('factfinder/handler_tracking_scic');
+        } else if ($this->_trackingAdapter === null){
+            // this only happens if the configureFacade Method was overwritten
+            return $this->_getTrackingAdapter();
+        } else {
+            return $this->_trackingAdapter;
         }
     }
 
@@ -96,6 +122,7 @@ class Flagbit_FactFinder_Model_Handler_Tracking
      * @param $event string should be one of the FACTFinder_Default_TrackingAdapter::EVENT* constants
      * @param $trackingParams array key-value array of the tracking parameters in the new format. If the old format is
      *        necessary it will be mapped automatically
+     * @return $this tracking handler
      */
     public function setupTracking($event, $trackingParams)
     {
@@ -139,18 +166,22 @@ class Flagbit_FactFinder_Model_Handler_Tracking
         } else {
             $this->_trackingAdapter->setupEventTracking($event, $trackingParams);
         }
+        return $this;
     }
 
     /**
      * calls the correct adapter to fetch the params from the request.
+     *
+     * @return $this tracking handler
      */
     public function setupTrackingFromRequest()
     {
         $this->_trackingAdapter->setupTrackingFromRequest();
+        return $this;
     }
 
     /**
-     * Fire tracking request. Depending on which tracking is used, it returns the status.
+     * Fire tracking request. Depending on which tracking is used, it returns the status (may be "true" or some message).
      *
      * @return mixed|null
      */

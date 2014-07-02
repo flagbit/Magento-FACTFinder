@@ -73,7 +73,7 @@ class Flagbit_FactFinder_Model_Processor
     /**
      *
      *
-     * @return Flagbit_FactFinder_Model_Facade
+     * @return Flagbit_FactFinder_Model_Handler_Tracking
      */
     protected function _getTrackingHandler()
     {
@@ -159,9 +159,9 @@ class Flagbit_FactFinder_Model_Processor
 		switch ($request) {
 			case 'factfinder_proxy_scic':
             case 'factfinder_proxy_tracking':
-                $trackingHandler = $this->_getTrackingHandler();
-                $trackingHandler->setupTrackingFromRequest();
-                return $trackingHandler->applyTracking();
+                return $this->_getTrackingHandler()
+                            ->setupTrackingFromRequest()
+                            ->applyTracking();
                 break;
 
 			case 'factfinder_proxy_suggest':
