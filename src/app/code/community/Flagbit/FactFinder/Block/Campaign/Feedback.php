@@ -16,7 +16,7 @@
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id: Scic.php 645 2011-03-17 14:54:20Z weller $
+ * @version   $Id: CampaignFeedback.php 645 2011-03-17 14:54:20Z weller $
  */
 class Flagbit_FactFinder_Block_Campaign_Feedback extends Mage_Core_Block_Template
 {
