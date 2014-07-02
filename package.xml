@@ -14,7 +14,7 @@
   <active>yes</active>
  </lead>
  <date>2014-07-02</date>
- <time>08:00:48</time>
+ <time>08:32:12</time>
  <version>
   <release>3.5.5</release>
   <api>3.5.5</api>
@@ -272,7 +272,7 @@ CHG: refactored the tracking to make it more clear (capsuled the usage of the ad
     <file md5sum="777eb3062a53c59f4d7b5186a368bd1e" name="Facade.php" role="magecommunity" />
     <file md5sum="6f75e0556165d168a26be36c8082a1ff" name="Layer.php" role="magecommunity" />
     <file md5sum="5f34a124efafdc16640b4773be208353" name="Observer.php" role="magecommunity" />
-    <file md5sum="103020bc1a40a894d2a830766b6919e3" name="Processor.php" role="magecommunity" />
+    <file md5sum="2eda31e1c679c31d97bdd3bf8ca540fe" name="Processor.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model -->
    <dir name="\Flagbit\FactFinder\Model\Export">
     <file md5sum="5561605bf639385c211f339f0c752a0f" name="Price.php" role="magecommunity" />
@@ -290,7 +290,7 @@ CHG: refactored the tracking to make it more clear (capsuled the usage of the ad
     <file md5sum="202fc9ab4018247dfb8e8bcefd417465" name="ShoppingCartCampaign.php" role="magecommunity" />
     <file md5sum="3b286cbda3cad188b10f7fac06e0ca32" name="Suggest.php" role="magecommunity" />
     <file md5sum="e60bd2a5d314cfe3bad445ba88740878" name="TagCloud.php" role="magecommunity" />
-    <file md5sum="2a6c83adf5fd70e37a07cbc1f3c847f9" name="Tracking.php" role="magecommunity" />
+    <file md5sum="e44c39ca0dc1e33e737056a5eb33d07f" name="Tracking.php" role="magecommunity" />
    </dir> <!-- /\Flagbit\FactFinder\Model\Handler -->
    <dir name="\Flagbit\FactFinder\Model\Handler\Tracking">
     <file md5sum="ac127f448c05aa81569dca0d86313630" name="Scic.php" role="magecommunity" />
