@@ -141,6 +141,6 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 
     protected function _getLockFileName()
     {
-        return "ffexport_".$this->_getStoreId().".lock";
+        return  Mage::getBasedir('var')."ffexport_".$this->_getStoreId().".lock";
     }
 }
