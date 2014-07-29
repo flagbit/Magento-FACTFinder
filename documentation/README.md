@@ -1,0 +1,1 @@
+You find all existing documentation at the [wiki](https://github.com/Flagbit/Magento-FACTFinder/wiki) of this project.
