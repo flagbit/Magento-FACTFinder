@@ -119,6 +119,11 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 	protected function lockSemaphore()
 	{
 		$mtime = @filemtime($this->_getLockFileName());
+        
+        if (!class_exists('FF')) {
+            require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+        }
+        
 		if($mtime && time() - $mtime < FF::getSingleton('configuration')->getSemaphoreTimeout())
 		{
 			throw new RuntimeException();
