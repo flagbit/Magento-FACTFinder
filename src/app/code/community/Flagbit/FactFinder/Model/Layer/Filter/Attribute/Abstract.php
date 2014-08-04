@@ -141,14 +141,14 @@ class Flagbit_FactFinder_Model_Layer_Filter_Attribute_Abstract extends Mage_Cata
         $items=array();
         foreach ($data as $itemData) {
             $items[] = $this->_createItem(
-                $itemData['label'],
-                $itemData['value'],
-                $itemData['count'],
-                $itemData['selected'],
+                isset($itemData['label']) ? $itemData['label'] : '',
+                isset($itemData['value']) ? $itemData['value'] : '',
+                isset($itemData['count']) ? $itemData['count'] : '',
+                isset($itemData['selected']) ? $itemData['selected'] : '',
                 isset($itemData['seoPath']) ? $itemData['seoPath'] : '',
-                $itemData['requestVar'],
-                $itemData['queryParams'],
-                $itemData['previewImage']
+                isset($itemData['requestVar']) ? $itemData['requestVar'] : '',
+                isset($itemData['queryParams']) ? $itemData['queryParams'] : '',
+                isset($itemData['previewImage']) ? $itemData['previewImage'] : ''
             );
         }
         $this->_items = $items;
