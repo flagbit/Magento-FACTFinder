@@ -105,9 +105,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param int $storeId
      * @return array
      */
-    protected function _getExportAttributes($storeId = null) 
+    protected function _getExportAttributes($storeId = 0)
     {
-        if($this->_exportAttributeCodes === null){
+        if(!isset($this->_exportAttributeCodes[$storeId])){
             $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
             $headerDynamic = array();
             
@@ -123,34 +123,27 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     continue;
                 }            
                 $headerDynamic[] = $attribute->getAttributeCode();
-            }    
+            }
             
             // compare dynamic with setup attributes
             $headerSetup = Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId));
-            $setupUpdate = false;
             foreach($headerDynamic as $code){
                 if(in_array($code, $headerSetup)){
                     continue;
                 }
                 $headerSetup[$code]['attribute'] = $code;
-                $setupUpdate = true;
             }
             
             // remove default attributes from setup
             foreach($headerDefault as $code){
                 if(array_key_exists($code, $headerSetup)){
                     unset($headerSetup[$code]);
-                    $setupUpdate = true;
-                }
+                 }
             }
-            
-            if($setupUpdate === true){
-                Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup), 'stores', $storeId);
-            }         
-            
-            $this->_exportAttributeCodes = array_merge($headerDefault, array_keys($headerSetup));
+
+            $this->_exportAttributeCodes[$storeId] = array_merge($headerDefault, array_keys($headerSetup));
         }
-        return $this->_exportAttributeCodes;
+        return $this->_exportAttributeCodes[$storeId];
     }
 
     /**
