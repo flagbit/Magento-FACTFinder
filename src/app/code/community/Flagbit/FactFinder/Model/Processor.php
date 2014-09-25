@@ -35,6 +35,11 @@ class Flagbit_FactFinder_Model_Processor
     protected $_facade;
 
     /**
+     * @var array with loaded config values
+     */
+    protected $_config;
+
+    /**
      * Class constructor
      */
     public function __construct()
@@ -97,7 +102,8 @@ class Flagbit_FactFinder_Model_Processor
         Mage::app()->saveCache($request, $requestCacheId, $this->getRequestTags());
 
         $configCacheId = $this->prepareCacheId($this->getRequestId().'config');
-        Mage::app()->saveCache(serialize(Mage::getStoreConfig('factfinder/search')), $configCacheId, $this->getRequestTags());
+        $this->_config = Mage::getStoreConfig('factfinder/search');
+        Mage::app()->saveCache(serialize($this->_config), $configCacheId, $this->getRequestTags());
 
     	return $this->_handleRequest($request);
     }
@@ -113,14 +119,14 @@ class Flagbit_FactFinder_Model_Processor
     	$configCacheId = $this->prepareCacheId($this->getRequestId().'config');
     	$config = null;
     	try{
-    		$config = unserialize(Mage::app()->loadCache($configCacheId));
+    		$this->_config = unserialize(Mage::app()->loadCache($configCacheId));
     	} catch (Exception $e){
     		return;
     	}
-    	if(!is_array($config) || empty($config)){
+    	if(!is_array($this->_config) || empty($this->_config)){
     		return;
     	}
-    	$this->_getFacade()->setConfiguration($config);
+    	$this->_getFacade()->setConfiguration($this->_config);
     	return $this->_handleRequest($request);
     }
 
@@ -135,12 +141,17 @@ class Flagbit_FactFinder_Model_Processor
 		switch ($request) {
 			case 'factfinder_proxy_scic':
 		        $this->_getFacade()->getScicAdapter()->setupTrackingFromRequest();
-		        return $this->_getFacade()->applyTracking();
+		        return $this->_getFacade()->applyScicTracking();
 				break;
 
             case 'factfinder_proxy_tracking':
-                $this->_getFacade()->getTrackingAdapter()->setupTrackingFromRequest();
-                return $this->_getFacade()->applyTracking();
+                if ($this->_config['ffversion'] <= 69) {
+                    $this->_getFacade()->getLegacyTrackingAdapter()->setupTrackingFromRequest();
+                    return $this->_getFacade()->applyLegacyTracking();
+                } else {
+                    $this->_getFacade()->getTrackingAdapter()->setupTrackingFromRequest();
+                    return $this->_getFacade()->applyTracking();
+                }
                 break;
 
 			case 'factfinder_proxy_suggest':
