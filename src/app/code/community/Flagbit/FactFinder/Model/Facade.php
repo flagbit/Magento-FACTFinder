@@ -389,6 +389,11 @@ class Flagbit_FactFinder_Model_Facade
         return $this->_getFactFinderObject("scic", "applyTracking", $channel, $id);
     }
 
+    public function applyLegacyTracking($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject("legacyTracking", "applyTracking", $channel, $id);
+    }
+
     public function getAfterSearchNavigation($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getAsn", $channel, $id);
@@ -449,7 +454,7 @@ class Flagbit_FactFinder_Model_Facade
         $cacheKey = '';
         $data = null;
 
-        if ($this->_useSearchCaching())
+        if ($this->_useSearchCaching() && stripos($type, 'tracking') === false)
         {
             $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
             $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
@@ -463,6 +468,11 @@ class Flagbit_FactFinder_Model_Facade
             try {
                 $this->_loadAllData();
 
+                // BUG Potential:
+                // if you read this because you got the error message, that you must call
+                //  > 'loadAllData' before trying to get data! <
+                // this might have happened because you initialized another adapter and not the one
+                // that is called here
                 $adapter = $this->_getAdapter($type, $channel, $id);
                 $data = $adapter->$objectGetter();
 
