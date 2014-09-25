@@ -454,7 +454,7 @@ class Flagbit_FactFinder_Model_Facade
         $cacheKey = '';
         $data = null;
 
-        if ($this->_useSearchCaching())
+        if ($this->_useSearchCaching() && stripos($type, 'tracking') === false)
         {
             $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
             $cacheKey = 'FACTFINDER_'.$adapterId . '_' . $objectGetter .'_'. $this->_getParametersHash($type, $channel, $id);
