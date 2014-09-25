@@ -51,7 +51,9 @@ class Flagbit_FactFinder_Model_Handler_Tracking
      */
     public function applyTracking()
     {
-        if(Mage::helper('factfinder')->useOldTracking()) {
+        if (Mage::helper('factfinder')->useLegacyTracking()) {
+            $result =  $this->_getFacade()->applyLegacyTracking();
+        } else if(Mage::helper('factfinder')->useOldTracking()) {
             $result =  $this->_getFacade()->applyScicTracking();
         } else {
             $result = $this->_getFacade()->applyTracking();

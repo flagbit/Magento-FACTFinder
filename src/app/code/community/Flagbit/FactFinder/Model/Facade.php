@@ -463,6 +463,11 @@ class Flagbit_FactFinder_Model_Facade
             try {
                 $this->_loadAllData();
 
+                // BUG Potential:
+                // if you read this because you got the error message, that you must call
+                //  > 'loadAllData' before trying to get data! <
+                // this might have happened because you initialized another adapter and not the one
+                // that is called here
                 $adapter = $this->_getAdapter($type, $channel, $id);
                 $data = $adapter->$objectGetter();
 
