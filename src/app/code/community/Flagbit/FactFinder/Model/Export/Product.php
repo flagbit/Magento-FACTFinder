@@ -202,6 +202,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     public function doExport($storeId = null)
     {
+        $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+        if (!is_null($storeId)) {
+            $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+        }
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
         if ($exportImageAndDeeplink) {            
@@ -279,7 +283,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product->setStoreId($storeId);
                     $product->load($productData['entity_id']);
 
-                    $productIndex[] = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
+                    $image = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
+                    if (!is_null($storeId)) {
+                        $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
+                    }
+                    $productIndex[] = $image;
                     $productIndex[] = $product->getProductUrl();
                     $product->clearInstance();
                 }
