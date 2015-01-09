@@ -202,6 +202,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     public function doExport($storeId = null)
     {
+        // reset lines
+        $this->_lines = array();
+
         $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         if (!is_null($storeId)) {
             $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
