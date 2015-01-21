@@ -286,7 +286,13 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product->setStoreId($storeId);
                     $product->load($productData['entity_id']);
 
-                    $image = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
+
+                    $image = $this->_imageHelper->init($product, $imageType);
+                    if (isset($imageSize) && $imageSize > 0) {
+                        $image->resize($imageSize);
+                    }
+                    $image = (string) $image;
+
                     if (!is_null($storeId)) {
                         $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
                     }
