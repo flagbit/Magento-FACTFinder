@@ -108,7 +108,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     protected function _getExportAttributes($storeId = 0)
     {
         if(!isset($this->_exportAttributeCodes[$storeId])){
-            $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
+            $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes', 'stock_id');
             $headerDynamic = array();
             
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
@@ -278,7 +278,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                         $productData['sku'], 
                         $this->_getCategoryPath($productData['entity_id'], $storeId),
                         $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttr, $storeId),
-                        $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId)
+                        $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId),
+                        $productData['stock_id'],
                     );
 
                 if ($exportImageAndDeeplink) {
@@ -298,6 +299,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     }
                     $productIndex[] = $image;
                     $productIndex[] = $product->getProductUrl();
+                    $productIndex[] = $productData['stock_id'];
                     $product->clearInstance();
                 }
                 
@@ -320,7 +322,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                                     $productChild['sku'],
                                     $this->_getCategoryPath($productData['entity_id'], $storeId),
                                     $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
-                                    $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId)                                    
+                                    $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId),
+                                    $productData['stock_id'],
                                 );
                             if ($exportImageAndDeeplink) {
                                 //dont need to add image and deeplink to child product, just add empty values
@@ -520,6 +523,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                        null
                 )
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
+                ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
                 ->where(
                     'main.visibility IN(?)',
                     array(
@@ -674,5 +678,61 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $dataArray[$pos] = null;
             }
 		}
+    }
+
+
+    /**
+     * Retrieve searchable products per store
+     *
+     * Copy from core Magento since we need to retrieve also the stock_id field for the case of
+     * stores with multiple stock configuration.
+     *
+     * @param int $storeId
+     * @param array $staticFields
+     * @param array|int $productIds
+     * @param int $lastProductId
+     * @param int $limit
+     * @return array
+     */
+    protected function _getSearchableProducts($storeId, array $staticFields, $productIds = null, $lastProductId = 0,
+                                              $limit = 100)
+    {
+        $websiteId      = Mage::app()->getStore($storeId)->getWebsiteId();
+        $writeAdapter   = $this->_getWriteAdapter();
+
+        $select = $writeAdapter->select()
+            ->useStraightJoin(true)
+            ->from(
+                array('e' => $this->getTable('catalog/product')),
+                array_merge(array('entity_id', 'type_id'), $staticFields)
+            )
+            ->join(
+                array('website' => $this->getTable('catalog/product_website')),
+                $writeAdapter->quoteInto(
+                    'website.product_id=e.entity_id AND website.website_id=?',
+                    $websiteId
+                ),
+                array()
+            )
+            ->join(
+                array('stock_status' => $this->getTable('cataloginventory/stock_status')),
+                $writeAdapter->quoteInto(
+                    'stock_status.product_id=e.entity_id AND stock_status.website_id=?',
+                    $websiteId
+                ),
+                array('in_stock' => 'stock_status', 'stock_id' => 'stock_id')
+            );
+
+        if (!is_null($productIds)) {
+            $select->where('e.entity_id IN(?)', $productIds);
+        }
+
+        $select->where('e.entity_id>?', $lastProductId)
+            ->limit($limit)
+            ->order('e.entity_id');
+
+        $result = $writeAdapter->fetchAll($select);
+
+        return $result;
     }
 }

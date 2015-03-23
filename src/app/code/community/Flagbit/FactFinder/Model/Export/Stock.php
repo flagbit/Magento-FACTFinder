@@ -24,7 +24,7 @@ class Flagbit_FactFinder_Model_Export_Stock extends Mage_Core_Model_Mysql4_Abstr
 	 * defines Export Columns
 	 * @var array
 	 */
-	protected $_exportColumns = array('product_id', 'qty', 'stock_status');
+	protected $_exportColumns = array('product_id', 'qty', 'stock_status', 'stock_id');
 	
     /**
      * Resource initialization
