@@ -1,0 +1,5 @@
+<?php
+class FACTFinder_Core_Model_Resource_Search_Engine extends Mage_CatalogSearch_Model_Resource_Fulltext_Engine
+{
+
+}
