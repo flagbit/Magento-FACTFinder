@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FACTFinder_Core>
+            <active>true</active>
+            <codePool>community</codePool>
+        </FACTFinder_Core>
+    </modules>
+</config>

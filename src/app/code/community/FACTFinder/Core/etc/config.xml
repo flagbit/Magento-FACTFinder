@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FACTFinder_Core>
+            <version>0.1.0</version>
+        </FACTFinder_Core>
+    </modules>
+    <global>
+        <models>
+            <factfinder_core>
+                <class>FACTFinder_Core_Model</class>
+                <resourceModel>factfinder_core_resource</resourceModel>
+            </factfinder_core>
+            <factfinder_core_resource>
+                <class>FACTFinder_Core_Model_Resource</class>
+            </factfinder_core_resource>
+        </models>
+        <blocks>
+            <factfinder_core>
+                <class>FACTFinder_Core_Block</class>
+            </factfinder_core>
+        </blocks>
+        <helpers>
+            <factfinder_core>
+                <class>FACTFinder_Core_Helper</class>
+            </factfinder_core>
+        </helpers>
+        <resources>
+            <factfinder_core_setup>
+                <setup>
+                    <module>FACTFinder_Core</module>
+                </setup>
+            </factfinder_core_setup>
+        </resources>
+    </global>
+</config>
