@@ -1,7 +1,7 @@
 <?php
 class FACTFinder_Core_Model_Observer
 {
-    const SEARCH_ENGINE         = 'factfinder_core/search_engine';
+    const SEARCH_ENGINE         = 'factfinder/search_engine';
     const DEFAULT_SEARCH_ENGINE = 'catalogsearch/fulltext_engine';
 
 
@@ -27,5 +27,36 @@ class FACTFinder_Core_Model_Observer
         // todo check if it can be enabled
 
         Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
+    }
+
+
+    /**
+     * Reset current search layer for further use in the block
+     *
+     * @param $observer
+     */
+    public function resetCurrentSearchLayer($observer)
+    {
+        if (Mage::helper('factfinder')->isEnabled()) {
+            Mage::register('current_layer', Mage::getSingleton('factfinder/catalogSearch_layer'));
+        }
+    }
+
+
+    /**
+     * Remove all layered navigation filters on search page
+     *
+     * @param $observer
+     */
+    public function removeLayerFilters($observer)
+    {
+        $block = $observer->getBlock();
+
+        if (!$block instanceof Mage_CatalogSearch_Block_Layer) {
+            return;
+        }
+
+        $block->unsetChildren();
+        $block->setData('_filterable_attributes', array());
     }
 }

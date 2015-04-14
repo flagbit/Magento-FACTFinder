@@ -7,42 +7,89 @@
     </modules>
     <global>
         <models>
-            <factfinder_core>
+            <factfinder>
                 <class>FACTFinder_Core_Model</class>
                 <resourceModel>factfinder_core_resource</resourceModel>
-            </factfinder_core>
+            </factfinder>
             <factfinder_core_resource>
                 <class>FACTFinder_Core_Model_Resource</class>
             </factfinder_core_resource>
         </models>
         <blocks>
-            <factfinder_core>
+            <factfinder>
                 <class>FACTFinder_Core_Block</class>
-            </factfinder_core>
+            </factfinder>
         </blocks>
         <helpers>
-            <factfinder_core>
+            <factfinder>
                 <class>FACTFinder_Core_Helper</class>
-            </factfinder_core>
+            </factfinder>
         </helpers>
-        <resources>
-            <factfinder_core_setup>
-                <setup>
-                    <module>FACTFinder_Core</module>
-                </setup>
-            </factfinder_core_setup>
-        </resources>
     </global>
     <adminhtml>
         <events>
             <controller_action_predispatch_adminhtml_system_config_save>
                 <observers>
                     <factfinder_core_set_search_engine>
-                        <class>factfinder_core/observer</class>
+                        <class>factfinder/observer</class>
                         <method>setSearchEngine</method>
                     </factfinder_core_set_search_engine>
                 </observers>
             </controller_action_predispatch_adminhtml_system_config_save>
         </events>
     </adminhtml>
+    <frontend>
+        <events>
+            <controller_action_predispatch_catalogsearch_result_index>
+                <observers>
+                    <factfinder_core_reset_search_layer>
+                        <class>factfinder/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </factfinder_core_reset_search_layer>
+                </observers>
+            </controller_action_predispatch_catalogsearch_result_index>
+            <controller_action_predispatch_catalogsearch_advanced_result>
+                <observers>
+                    <factfinder_core_reset_search_layer>
+                        <class>factfinder/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </factfinder_core_reset_search_layer>
+                </observers>
+            </controller_action_predispatch_catalogsearch_advanced_result>
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <factfinder_core_remove_layer_filters>
+                        <class>factfinder/observer</class>
+                        <method>removeLayerFilters</method>
+                    </factfinder_core_remove_layer_filters>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
+        </events>
+    </frontend>
+    <default>
+        <factfinder>
+            <config>
+                <debug>1</debug>
+                <identifier>entity_id</identifier>
+            </config>
+            <search>
+                <address>example.com</address>
+                <port>80</port>
+                <protocol>http</protocol> <!-- possible values: http, https -->
+
+                <!--<ffversion>68</ffversion>-->
+
+                <auth_type>advanced</auth_type> <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
+                <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
+                <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
+
+                <!-- encoding settings -->
+                <encoding>
+                    <pageContent>UTF-8</pageContent>
+                    <serverURI>UTF-8</serverURI>
+                    <pageURI>UTF-8</pageURI>
+                </encoding>
+            </search>
+        </factfinder>
+    </default>
 </config>
