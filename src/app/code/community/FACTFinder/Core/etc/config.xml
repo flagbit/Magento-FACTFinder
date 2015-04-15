@@ -101,11 +101,13 @@
             <search>
                 <address>example.com</address>
                 <port>80</port>
-                <protocol>http</protocol> <!-- possible values: http, https -->
+                <protocol>http</protocol>
+                <!-- possible values: http, https -->
 
                 <!--<ffversion>68</ffversion>-->
 
-                <auth_type>advanced</auth_type> <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
+                <auth_type>advanced</auth_type>
+                <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
                 <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
                 <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
 
@@ -118,4 +120,13 @@
             </search>
         </factfinder>
     </default>
+    <crontab>
+        <jobs>
+            <factfinder_generate>
+                <run>
+                    <model>factfinder/export_product::saveAll</model>
+                </run>
+            </factfinder_generate>
+        </jobs>
+    </crontab>
 </config>
