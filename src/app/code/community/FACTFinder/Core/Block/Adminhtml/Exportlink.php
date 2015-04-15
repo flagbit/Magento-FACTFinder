@@ -32,7 +32,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
         // Realtime export link
         $html = $this->_createLink(
             $store,
-            'factfinder/export/product',
+            'factfinder/export/export',
             'Trigger Realtime Export',
             $urlParams
         );

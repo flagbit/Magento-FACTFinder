@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<layout>
+
+    <factfinder_export_default>
+        <reference name="root">
+            <action method="setTemplate"><template>page/empty.phtml</template></action>
+            <block type="core/template" name="content"/>
+        </reference>
+    </factfinder_export_default>
+
+    <factfinder_export_export>
+        <update handle="factfinder_export_default" />
+        <reference name="content">
+            <action method="setTemplate"><template>factfinder/core/export/locked.phtml</template></action>
+        </reference>
+    </factfinder_export_export>
+
+    <factfinder_export_get>
+        <update handle="factfinder_export_default" />
+        <reference name="content">
+            <action method="setTemplate"><template>factfinder/core/export/locked.phtml</template></action>
+        </reference>
+    </factfinder_export_get>
+
+    <factfinder_export_download>
+        <update handle="factfinder_export_default" />
+        <reference name="content">
+            <action method="setTemplate"><template>factfinder/core/export/nofile.phtml</template></action>
+        </reference>
+    </factfinder_export_download>
+
+
+</layout>

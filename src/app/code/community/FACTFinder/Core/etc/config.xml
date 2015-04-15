@@ -75,6 +75,22 @@
                 </observers>
             </core_block_abstract_prepare_layout_after>
         </events>
+        <routers>
+            <factfinder>
+                <use>standard</use>
+                <args>
+                    <module>FACTFinder_Core</module>
+                    <frontName>factfinder</frontName>
+                </args>
+            </factfinder>
+        </routers>
+        <layout>
+            <updates>
+                <factfinder_core>
+                    <file>factfinder/core.xml</file>
+                </factfinder_core>
+            </updates>
+        </layout>
     </frontend>
     <default>
         <factfinder>
