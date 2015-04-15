@@ -25,6 +25,16 @@
                 <class>FACTFinder_Core_Helper</class>
             </factfinder>
         </helpers>
+        <events>
+            <controller_front_init_before>
+                <observers>
+                    <factfinder>
+                        <class>factfinder/autoloader</class>
+                        <method>addAutoloader</method>
+                    </factfinder>
+                </observers>
+            </controller_front_init_before>
+        </events>
     </global>
     <adminhtml>
         <events>
