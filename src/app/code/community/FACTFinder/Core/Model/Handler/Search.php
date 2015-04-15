@@ -46,7 +46,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                     if (substr($key, 0, 6) == 'order_') {
                         $key = substr($key, 6);
                         if (!in_array($key, array('position', 'relevance'))) {
-                            $params['sort'.$key] = $value;
+                            $params['sort' . $key] = $value;
                         }
                     }
                 }
@@ -55,12 +55,12 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
             case "catalog":
                 $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
 
-                if(Mage::getStoreConfig('factfinder/search/ffversion') >= 69) {
+                if (Mage::getStoreConfig('factfinder/search/ffversion') >= 69) {
                     $params['navigation'] = 'true';
                 } else {
                     $params['catalog'] = 'true';
                 }
-                // no break
+            // no break
             case "catalogsearch":
             default:
                 // add Default Params
@@ -77,14 +77,14 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                 }
 
                 // add Sorting Param, but only if it was set explicitly via url
-                foreach($searchParams->getSortings() as $key => $value) {
+                foreach ($searchParams->getSortings() as $key => $value) {
                     if ($key == 'order'
                         && $helper->getCurrentOrder()
                         && $helper->getCurrentDirection()
                         && $helper->getCurrentOrder() != 'position'
                         && $helper->getCurrentOrder() != 'relevance'
                     ) {
-                        $params['sort'.$helper->getCurrentOrder()] = $helper->getCurrentDirection();
+                        $params['sort' . $helper->getCurrentOrder()] = $helper->getCurrentDirection();
                     }
                 }
         }

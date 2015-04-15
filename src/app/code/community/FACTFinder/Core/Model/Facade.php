@@ -1,6 +1,6 @@
 <?php
 
-require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+require_once BP . DS . 'lib' . DS . 'FACTFinder' . DS . 'Loader.php';
 
 use FACTFinder\Loader as FF;
 
@@ -65,19 +65,19 @@ class FACTFinder_Core_Model_Facade
 
         $dic = FF::getInstance('Util\Pimple');
 
-        $dic['loggerClass'] = function($c) use ($arg) {
+        $dic['loggerClass'] = function ($c) use ($arg) {
             return $arg;
         };
 
-        $dic['configuration'] = function($c) use ($config) {
+        $dic['configuration'] = function ($c) use ($config) {
             return new FACTFinderCustom_Configuration($config);
         };
 
-        $dic['request'] = $dic->factory(function($c) {
+        $dic['request'] = $dic->factory(function ($c) {
             return $c['requestFactory']->getRequest();
         });
 
-        $dic['requestFactory'] = function($c) {
+        $dic['requestFactory'] = function ($c) {
             return FF::getInstance(
                 'Core\Server\MultiCurlRequestFactory',
                 $c['loggerClass'],
@@ -86,7 +86,7 @@ class FACTFinder_Core_Model_Facade
             );
         };
 
-        $dic['clientUrlBuilder'] = function($c) {
+        $dic['clientUrlBuilder'] = function ($c) {
             return FF::getInstance(
                 'Core\Client\UrlBuilder',
                 $c['loggerClass'],
@@ -96,7 +96,7 @@ class FACTFinder_Core_Model_Facade
             );
         };
 
-        $dic['serverUrlBuilder'] = function($c) {
+        $dic['serverUrlBuilder'] = function ($c) {
             return FF::getInstance(
                 'Core\Server\UrlBuilder',
                 $c['loggerClass'],
@@ -104,7 +104,7 @@ class FACTFinder_Core_Model_Facade
             );
         };
 
-        $dic['requestParser'] = function($c) {
+        $dic['requestParser'] = function ($c) {
             return FF::getInstance(
                 'Core\Client\RequestParser',
                 $c['loggerClass'],
@@ -113,11 +113,12 @@ class FACTFinder_Core_Model_Facade
             );
         };
 
-        $dic['encodingConverter'] = function($c) {
+        $dic['encodingConverter'] = function ($c) {
             if (extension_loaded('iconv'))
                 $type = 'Core\IConvEncodingConverter';
             else if (function_exists('utf8_encode')
-                && function_exists('utf8_decode'))
+                && function_exists('utf8_decode')
+            )
                 $type = 'Core\Utf8EncodingConverter';
             else
                 throw new \Exception('No encoding conversion available.');
@@ -245,7 +246,7 @@ class FACTFinder_Core_Model_Facade
         $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
         $this->_paramHashes[$adapterId] = $this->_createParametersHash($params);
 
-        foreach($params as $key => $value) {
+        foreach ($params as $key => $value) {
             $this->_dic['requestParser']->getClientRequestParameters()->set($key, $value);
             $this->_dic['requestParser']->getRequestParameters()->set($key, $value);
         }
@@ -264,8 +265,7 @@ class FACTFinder_Core_Model_Facade
     {
         $returnValue = '';
         $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
-        if (array_key_exists($adapterId, $this->_paramHashes))
-        {
+        if (array_key_exists($adapterId, $this->_paramHashes)) {
             $returnValue = $this->_paramHashes[$adapterId];
         }
         return $returnValue;
@@ -274,7 +274,7 @@ class FACTFinder_Core_Model_Facade
     private function _createParametersHash($params)
     {
         $returnValue = '';
-        if($params) {
+        if ($params) {
             ksort($params);
             $returnValue = md5(http_build_query($params));
         }
@@ -302,13 +302,12 @@ class FACTFinder_Core_Model_Facade
         $hashKey = $this->_getAdapterIdentifier($type, $channel, $id);
 
         // get the channel after calculating the adapter identifier
-        if(!$channel)
+        if (!$channel)
             $channel = $this->getConfiguration()->getChannel();
 
-        if(!isset($this->_adapters[$hashKey][$channel]))
-        {
+        if (!isset($this->_adapters[$hashKey][$channel])) {
             $this->_adapters[$hashKey][$channel] = FF::getInstance(
-                'Adapter\\'.ucfirst($type),
+                'Adapter\\' . ucfirst($type),
                 $this->_dic['loggerClass'],
                 $this->_dic['configuration'],
                 $this->_dic['request'],
@@ -338,7 +337,8 @@ class FACTFinder_Core_Model_Facade
      * @param int $storeId
      * @return \Flagbit_FactFinder_Model_Facade
      */
-    public function setStoreId($storeId) {
+    public function setStoreId($storeId)
+    {
         $this->getConfiguration()->setStoreId($storeId);
 
         return $this;
@@ -358,7 +358,7 @@ class FACTFinder_Core_Model_Facade
 
     protected function _getUrlBuilder()
     {
-        if($this->_urlBuilder === null) {
+        if ($this->_urlBuilder === null) {
             $this->_urlBuilder = $this->_dic['serverUrlBuilder'];
         }
         return $this->_urlBuilder;
@@ -404,6 +404,12 @@ class FACTFinder_Core_Model_Facade
         return $this->_getFactFinderObject("search", "getError", $channel, $id);
     }
 
+
+    /**
+     * Retrieve search parameters from request
+     *
+     * @return FACTFinder_ParametersParser|object
+     */
     public function getSearchParams()
     {
         if ($this->_paramsParser == null) {
@@ -467,8 +473,7 @@ class FACTFinder_Core_Model_Facade
 
     private function _useSearchCaching()
     {
-        if ($this->_useCaching == null)
-        {
+        if ($this->_useCaching == null) {
             // caching only works from version 5.3 because of php bug 45706 (http://bugs.php.net/45706):
             // because of it, the asn objects can't be serialized and cached
             // this bug was fixed with 5.3.0 (http://www.php.net/ChangeLog-5.php)
@@ -477,6 +482,12 @@ class FACTFinder_Core_Model_Facade
         return $this->_useCaching;
     }
 
+
+    /**
+     * Get actual version of FF
+     *
+     * @return null|string
+     */
     public function getActualFactFinderVersionString()
     {
         try {
@@ -488,10 +499,18 @@ class FACTFinder_Core_Model_Facade
         }
     }
 
+
+    /**
+     * Get current status of FF
+     *
+     * @param $channel
+     *
+     * @return null
+     */
     public function getFactFinderStatus($channel = null)
     {
         try {
-            if(!$channel)
+            if (!$channel)
                 $channel = $this->getConfiguration()->getChannel();
             return $this->_statusHelpers[$channel]->getStatusCode();
         } catch (Exception $e) {
@@ -500,7 +519,8 @@ class FACTFinder_Core_Model_Facade
         }
     }
 
-    public function getDic() {
+    public function getDic()
+    {
         return $this->_dic;
     }
 

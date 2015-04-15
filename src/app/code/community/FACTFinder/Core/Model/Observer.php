@@ -1,7 +1,8 @@
 <?php
+
 class FACTFinder_Core_Model_Observer
 {
-    const SEARCH_ENGINE         = 'factfinder/search_engine';
+    const SEARCH_ENGINE = 'factfinder/search_engine';
     const DEFAULT_SEARCH_ENGINE = 'catalogsearch/fulltext_engine';
 
 

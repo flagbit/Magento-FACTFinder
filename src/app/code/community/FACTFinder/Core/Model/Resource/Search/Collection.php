@@ -1,4 +1,5 @@
 <?php
+
 class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
     /**
@@ -44,7 +45,7 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
      *
      * @return FACTFinder_Core_Model_Resource_Search_Collection
      */
-    public function setOrder($attribute, $dir='desc')
+    public function setOrder($attribute, $dir = 'desc')
     {
         return $this;
     }
@@ -78,7 +79,7 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
             // add Filter to Query
             $this->addFieldToFilter(
                 $idFieldName,
-                array('in'=>array_keys($productIds))
+                array('in' => array_keys($productIds))
             );
 
             $this->_pageSize = null;
@@ -87,7 +88,7 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
             $this->getSelect()->reset(Zend_Db_Select::LIMIT_OFFSET);
 
             $this->printLogQuery($printQuery, $logQuery);
-            Mage::helper('factfinder/debug')->log('Search SQL Query: '.$this->getSelect()->__toString());
+            Mage::helper('factfinder/debug')->log('Search SQL Query: ' . $this->getSelect()->__toString());
 
             try {
                 $rows = $this->_fetchAll($this->getSelect());
@@ -104,7 +105,7 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
 
             foreach ($productIds as $productId => $additionalData) {
 
-                if(empty($items[$productId])) {
+                if (empty($items[$productId])) {
                     continue;
                 }
                 $v = array_merge($items[$productId], $additionalData->toArray());

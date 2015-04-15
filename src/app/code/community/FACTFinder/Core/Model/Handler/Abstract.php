@@ -1,4 +1,5 @@
 <?php
+
 abstract class FACTFinder_Core_Model_Handler_Abstract
 {
     /**

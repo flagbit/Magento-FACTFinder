@@ -1,4 +1,5 @@
 <?php
+
 class FACTFinder_Core_Model_CatalogSearch_Layer extends Mage_CatalogSearch_Model_Layer
 {
 
@@ -9,7 +10,7 @@ class FACTFinder_Core_Model_CatalogSearch_Layer extends Mage_CatalogSearch_Model
      */
     public function getProductCollection()
     {
-        if(!Mage::helper('factfinder')->isEnabled()){
+        if (!Mage::helper('factfinder')->isEnabled()) {
             return parent::getProductCollection();
         }
 
