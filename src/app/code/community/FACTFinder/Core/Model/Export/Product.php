@@ -1,5 +1,5 @@
 <?php
-
+//TODO this class needs a sufficient refactoring !!!
 /**
  * Model class
  *
@@ -62,6 +62,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $this->_lines[] = '"' . implode('";"', $data) . '"' . "\n";
     }
 
+
     /**
      * get Option Text by Option ID
      *
@@ -75,7 +76,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $value = '';
         if (intval($optionId)) {
             if ($this->_optionIdToValue === null) {
-                /*@var $optionCollection Mage_Eav_Model_Mysql4_Entity_Attribute_Option_Collection */
+                /** @var Mage_Eav_Model_Resource_Entity_Attribute_Option_Collection $optionCollection */
                 $optionCollection = Mage::getResourceModel('eav/entity_attribute_option_collection');
                 $optionCollection->setStoreFilter($storeId);
                 $this->_optionIdToValue = array();
@@ -85,13 +86,16 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
             $value = isset($this->_optionIdToValue[$optionId]) ? $this->_optionIdToValue[$optionId] : '';
         }
+
         return $value;
     }
 
+
     /**
-     * get CSV Header Array
+     * Get CSV Header Array
      *
      * @param int $storeId
+     *
      * @return array
      */
     protected function _getExportAttributes($storeId = 0)
@@ -133,8 +137,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
             $this->_exportAttributeCodes[$storeId] = array_merge($headerDefault, array_keys($headerSetup));
         }
+
         return $this->_exportAttributeCodes[$storeId];
     }
+
 
     /**
      * Pre-Generate all product exports for all stores
@@ -156,10 +162,12 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $paths;
     }
 
+
     /**
      * Generate product export for specific store
      *
      * @param int $storeId
+     *
      * @return string
      */
     public function saveExport($storeId = 0)
@@ -184,8 +192,9 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $dir . DS . $fileName;
     }
 
+
     /**
-     * export Product Data with Attributes
+     * Export Product Data with Attributes
      * direct Output as CSV
      *
      * @param int $storeId Store View Id
@@ -198,9 +207,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $this->_lines = array();
 
         $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-        if (!is_null($storeId)) {
+        if ($storeId !== null) {
             $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         }
+
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
         if ($exportImageAndDeeplink) {
@@ -295,7 +305,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
                 $this->_addCsvRow($productIndex);
 
-                if ($productChilds = $productRelations[$productData['entity_id']]) {
+                $productChilds = $productRelations[$productData['entity_id']];
+                if ($productChilds) {
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
                             /* should be used if sub products should not be exported because of their status
@@ -324,10 +335,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     }
                 }
             }
-
-            unset($products);
-            unset($productAttributes);
-            unset($productRelations);
         }
 
         return $this->_lines;
@@ -427,7 +434,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 }
 
                 switch ($type) {
-
                     case "system":
                         if ($attribute->getIsUserDefined()
                             && !$attribute->getUsedForSortBy()
@@ -435,13 +441,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                             continue 2;
                         }
                         break;
-
                     case "sortable":
                         if (!$attribute->getUsedForSortBy()) {
                             continue 2;
                         }
                         break;
-
                     case "filterable":
                         if (!$attribute->getIsFilterableInSearch()
                             || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
@@ -449,7 +453,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                             continue 2;
                         }
                         break;
-
                     case "searchable":
                         if (!$attribute->getIsUserDefined()
                             || !$attribute->getIsSearchable()
@@ -458,6 +461,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                             continue 2;
                         }
                         break;
+                    default:
+                        ;
                 }
 
                 $attributes[$attribute->getId()] = $attribute;
@@ -467,11 +472,13 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $this->_searchableAttributes;
     }
 
+
     /**
      * Get Category Path by Product ID
      *
      * @param   int $productId
      * @param    int $storeId
+     *
      * @return  string
      */
     protected function _getCategoryPath($productId, $storeId = null)
