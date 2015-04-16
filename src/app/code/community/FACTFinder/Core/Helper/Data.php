@@ -26,4 +26,18 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         return strpos($internalIp, $currentIp) !== false;
     }
+
+
+    /**
+     * Check is the specified module was enabled in config
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function isModuleActivated($name)
+    {
+        return (bool) Mage::getStoreConfig('factfinder/modules/' . $name);
+    }
+
 }

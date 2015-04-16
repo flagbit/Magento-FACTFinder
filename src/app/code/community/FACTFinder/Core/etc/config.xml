@@ -32,6 +32,10 @@
                         <class>factfinder/autoloader</class>
                         <method>addAutoloader</method>
                     </factfinder>
+                    <factfinder_manage_modules>
+                        <class>factfinder/observer</class>
+                        <method>manageModules</method>
+                    </factfinder_manage_modules>
                 </observers>
             </controller_front_init_before>
         </events>
@@ -118,6 +122,9 @@
                     <pageURI>UTF-8</pageURI>
                 </encoding>
             </search>
+            <modules>
+                <asn>1</asn>
+            </modules>
         </factfinder>
     </default>
     <crontab>

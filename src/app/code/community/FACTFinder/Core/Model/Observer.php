@@ -60,4 +60,27 @@ class FACTFinder_Core_Model_Observer
         $block->unsetChildren();
         $block->setData('_filterable_attributes', array());
     }
+
+
+    /**
+     * Manage modules availability
+     * Enable them only if they were enable in core configuration
+     *
+     * @param $observer
+     */
+    public function manageModules($observer)
+    {
+        $config = Mage::getConfig();
+        $modules = $config->getNode('modules');
+
+        foreach ($modules->children() as $module => $data) {
+            if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
+                $configName = strtolower(str_replace('FACTFinder_', '', $module));
+                $isActivated = Mage::helper('factfinder')->isModuleActivated($configName);
+                $config->setNode("modules/{$module}/active", $isActivated);
+            }
+        }
+    }
+
+
 }
