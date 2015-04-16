@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FACTFinder_Asn>
+            <version>0.1.0</version>
+        </FACTFinder_Asn>
+    </modules>
+    <global>
+        <models>
+            <factfinder_asn>
+                <class>FACTFinder_Asn_Model</class>
+                <resourceModel>factfinder_asn_resource</resourceModel>
+            </factfinder_asn>
+            <factfinder_asn_resource>
+                <class>FACTFinder_Asn_Model_Resource</class>
+            </factfinder_asn_resource>
+        </models>
+        <blocks>
+            <factfinder_asn>
+                <class>FACTFinder_Asn_Block</class>
+            </factfinder_asn>
+        </blocks>
+        <helpers>
+            <factfinder_asn>
+                <class>FACTFinder_Asn_Helper</class>
+            </factfinder_asn>
+        </helpers>
+    </global>
+</config>
