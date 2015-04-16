@@ -4,9 +4,9 @@
         <FACTFinder_Asn>
             <active>true</active>
             <codePool>community</codePool>
-                        <depends>
+            <depends>
                 <FACTFinder_Core/>
-
-            </depends>        </FACTFinder_Asn>
+            </depends>
+        </FACTFinder_Asn>
     </modules>
 </config>
