@@ -34,4 +34,16 @@ class FACTFinder_Asn_Model_Observer
 
         $block->setData('_filterable_attributes', $filterableAttributes);
     }
+
+    /**
+     * Reset current search layer for further use in the block
+     *
+     * @param $observer
+     */
+    public function resetCurrentCatalogLayer($observer)
+    {
+        if (Mage::helper('factfinder')->isEnabled()) {
+            Mage::register('current_layer', Mage::getSingleton('factfinder_asn/catalog_layer'));
+        }
+    }
 }

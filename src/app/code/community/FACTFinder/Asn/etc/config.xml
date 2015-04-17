@@ -34,8 +34,20 @@
                         <class>factfinder_asn/observer</class>
                         <method>addLayerFiltersToSearch</method>
                     </factfinder_asn_add_layer_filters>
+                    <factfinder_asn_add_layer_filters_catalog>
+                        <class>factfinder_asn/observer</class>
+                        <method>addLayerFiltersToCatalog</method>
+                    </factfinder_asn_add_layer_filters_catalog>
                 </observers>
             </core_block_abstract_prepare_layout_after>
+            <controller_action_predispatch_catalog_category_view>
+                <observers>
+                    <factfinder_asn_reset_catalog_layer>
+                        <class>factfinder_asn/observer</class>
+                        <method>resetCurrentCatalogLayer</method>
+                    </factfinder_asn_reset_catalog_layer>
+                </observers>
+            </controller_action_predispatch_catalog_category_view>
         </events>
         <layout>
             <updates>

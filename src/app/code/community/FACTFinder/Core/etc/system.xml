@@ -212,6 +212,18 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </asn>
+                        <catalog_navigation>
+                            <label>Replace Catalog Navigation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <asn>1</asn>
+                            </depends>
+                        </catalog_navigation>
                     </fields>
                 </modules>
             </groups>
