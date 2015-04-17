@@ -106,8 +106,8 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     protected function _isTopLevelNavigation(FACTFinder\Data\Filter $option, $categoryPath)
     {
         if (!$this->_isOnSearchPage()
-            && strpos($option->getField(), 'categoryROOT') !== false
-            && in_array($option->getValue(), $categoryPath)
+            && strpos($option->getFieldName(), 'categoryROOT') !== false
+            && in_array($option->getLabel(), $categoryPath)
         ) {
             return true;
         }
