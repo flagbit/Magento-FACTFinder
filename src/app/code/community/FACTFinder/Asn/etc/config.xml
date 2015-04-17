@@ -37,5 +37,12 @@
                 </observers>
             </core_block_abstract_prepare_layout_after>
         </events>
+        <layout>
+            <updates>
+                <factfinder_asn>
+                    <file>factfinder/asn.xml</file>
+                </factfinder_asn>
+            </updates>
+        </layout>
     </frontend>
 </config>

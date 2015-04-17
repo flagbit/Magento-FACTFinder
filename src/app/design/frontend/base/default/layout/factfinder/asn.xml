@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<layout>
+    <catalogsearch_result_index>
+        <reference name="head">
+            <block type="core/template" name="ff_slider_script">
+                <action method="setTemplate"><template>factfinder/asn/layer/slider.phtml</template></action>
+            </block>
+        </reference>
+    </catalogsearch_result_index>
+</layout>
