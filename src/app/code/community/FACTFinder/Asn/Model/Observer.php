@@ -3,15 +3,15 @@
 class FACTFinder_Asn_Model_Observer
 {
 
-
-    public function addLayerFiltersToCatalog($observer)
+    /**
+     * Add layerd navigation filters on current layer block
+     *
+     * @param $block
+     *
+     * @return $this
+     */
+    protected function _addLayeredNavigation($block)
     {
-        $block = $observer->getBlock();
-
-        if (!$block instanceof Mage_Catalog_Block_Layer_View) {
-            return;
-        }
-
         $stateBlock = $block->getLayout()->createBlock('catalog/layer_state')
             ->setLayer($block->getLayer());
 
@@ -29,11 +29,30 @@ class FACTFinder_Asn_Model_Observer
         }
 
         $block->setData('_filterable_attributes', $filterableAttributes);
+
+        return $this;
     }
 
 
     /**
-     * Add factfinder filter block type
+     * Add factfinder navigation on catalog
+     *
+     * @param $observer
+     */
+    public function addLayerFiltersToCatalog($observer)
+    {
+        $block = $observer->getBlock();
+
+        if (!$block instanceof Mage_Catalog_Block_Layer_View) {
+            return;
+        }
+
+        $this->_addLayeredNavigation($block);
+    }
+
+
+    /**
+     * Add factfinder navigation on search page
      *
      * @param $observer
      */
@@ -45,23 +64,7 @@ class FACTFinder_Asn_Model_Observer
             return;
         }
 
-        $stateBlock = $block->getLayout()->createBlock('catalog/layer_state')
-            ->setLayer($block->getLayer());
-
-        $block->setChild('layer_state', $stateBlock);
-
-        $filterableAttributes = Mage::getResourceModel('factfinder_asn/product_attribute_collection');
-        foreach ($filterableAttributes as $attribute) {
-            $filter = $block->getLayout()
-                ->createBlock('factfinder_asn/catalog_layer_factfinder')
-                ->setAttributeModel($attribute)
-                ->setLayer($block->getLayer())
-                ->init();
-
-            $block->setChild($attribute->getAttributeCode() . '_filter', $filter);
-        }
-
-        $block->setData('_filterable_attributes', $filterableAttributes);
+        $this->_addLayeredNavigation($block);
     }
 
     /**
