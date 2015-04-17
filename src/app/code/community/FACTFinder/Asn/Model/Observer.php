@@ -43,7 +43,9 @@ class FACTFinder_Asn_Model_Observer
     {
         $block = $observer->getBlock();
 
-        if (!$block instanceof Mage_Catalog_Block_Layer_View) {
+        if (!$block instanceof Mage_Catalog_Block_Layer_View
+            || $block instanceof Mage_CatalogSearch_Block_Layer
+        ) {
             return;
         }
 
