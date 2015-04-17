@@ -26,4 +26,16 @@
             </factfinder_asn>
         </helpers>
     </global>
+    <frontend>
+        <events>
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <factfinder_asn_add_layer_filters>
+                        <class>factfinder_asn/observer</class>
+                        <method>addLayerFiltersToSearch</method>
+                    </factfinder_asn_add_layer_filters>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
+        </events>
+    </frontend>
 </config>
