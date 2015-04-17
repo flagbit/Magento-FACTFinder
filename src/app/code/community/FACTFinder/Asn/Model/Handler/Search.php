@@ -300,4 +300,16 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
         return $type;
     }
 
+    protected function _collectParams()
+    {
+        $params = parent::_collectParams();
+
+        if (Mage::app()->getRequest()->getModuleName() == 'catalog') {
+            $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
+            $params['navigation'] = 'true';
+        }
+
+        return $params;
+    }
+
 }

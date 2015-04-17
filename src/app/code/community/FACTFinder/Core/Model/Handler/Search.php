@@ -52,15 +52,6 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                 }
 
                 break;
-            case "catalog":
-                $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
-
-                if (Mage::getStoreConfig('factfinder/search/ffversion') >= 69) {
-                    $params['navigation'] = 'true';
-                } else {
-                    $params['catalog'] = 'true';
-                }
-            // no break
             case "catalogsearch":
             default:
                 // add Default Params
@@ -151,4 +142,5 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 
         return $this->_searchResult;
     }
+
 }
