@@ -152,4 +152,75 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
         return $value;
     }
 
+
+    /**
+     * Check configuration data by contacting FACT-Finder servers.
+     *
+     * @param array $configData
+     *
+     * @return array
+     */
+    public function checkConfigData($configData)
+    {
+        $dataArray = $this->_getCompleteFieldsetData($configData);
+        $data = new Varien_Object($dataArray);
+        $errors = array();
+
+        if (stripos($data->getAddress(), 'http://') === 0 || strpos($data->getAddress(), '/') !== false) {
+            $errors[] = Mage::helper('factfinder')
+                ->__('The server name should contain only the IP address or the domain - no "http://" or any slashes!');
+        } elseif (!is_numeric($data->getPort())) {
+            $errors[] = Mage::helper('factfinder')->__('The value for "port" must be an integer!');
+        } elseif (intval($data->getPort()) < 80) { //is there any http port lower 80?
+            $errors[] = Mage::helper('factfinder')->__('The value for "port" must be an integer greater or equals 80!');
+        }
+
+        if ($data->getAuthPassword() != '' && $data->getAuthUser() == '') {
+            $errors[] = Mage::helper('factfinder')->__('A user name must be provided if a password is to be used.');
+        }
+
+        if (count($errors) == 0) {
+            $checkStatusHandler = Mage::getSingleton('factfinder/handler_status', $dataArray);
+            if (!$checkStatusHandler->checkStatus()) {
+                $errors = $checkStatusHandler->getErrorMessages();
+            }
+        }
+
+        return $errors;
+    }
+
+
+    /**
+     * Read data from array given, or if no value given, try to read data from website or global configuration
+     *
+     * @param array $configData
+     *
+     * @return array
+     */
+    protected function _getCompleteFieldsetData($configData)
+    {
+        $data = array();
+        $websiteCode = Mage::app()->getRequest()->getParam('website');
+        $storeCode = Mage::app()->getRequest()->getParam('store');
+
+        foreach ($configData as $key => $keyData) {
+            if (!isset($keyData['value'])) {
+
+                $path = 'factfinder/search/' . $key;
+
+                if ($storeCode) {
+                    $value = Mage::app()->getWebsite($websiteCode)->getConfig($path);
+                } else {
+                    $value = (string)Mage::getConfig()->getNode('default/' . $path);
+                }
+            } else {
+                $value = $keyData['value'];
+            }
+
+            $data[$key] = $value;
+        }
+
+        return $data;
+    }
+
 }

@@ -25,8 +25,6 @@ class FACTFinder_Core_Model_Observer
             return;
         }
 
-        // todo check if it can be enabled
-
         Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
     }
 
