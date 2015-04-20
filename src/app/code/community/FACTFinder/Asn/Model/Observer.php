@@ -18,7 +18,7 @@ class FACTFinder_Asn_Model_Observer
         $block->setChild('layer_state', $stateBlock);
 
         $filterableAttributes = Mage::getResourceModel('factfinder_asn/product_attribute_collection');
-        foreach ($filterableAttributes as $attribute) {
+        foreach ($filterableAttributes as $index => $attribute) {
             $filter = $block->getLayout()
                 ->createBlock('factfinder_asn/catalog_layer_factfinder')
                 ->setAttributeModel($attribute)
@@ -26,6 +26,11 @@ class FACTFinder_Asn_Model_Observer
                 ->init();
 
             $block->setChild($attribute->getAttributeCode() . '_filter', $filter);
+
+            // remove category filter - it's enough to add it as a child
+            if ($attribute->getAttributeCode() == 'category') {
+                $filterableAttributes->removeItemByKey($index);
+            }
         }
 
         $block->setData('_filterable_attributes', $filterableAttributes);
