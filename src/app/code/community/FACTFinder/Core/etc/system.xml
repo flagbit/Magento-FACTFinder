@@ -266,9 +266,6 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <depends>
-                                <asn>1</asn>
-                            </depends>
                         </catalog_navigation>
                     </fields>
                 </modules>

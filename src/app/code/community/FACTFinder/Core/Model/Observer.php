@@ -36,9 +36,11 @@ class FACTFinder_Core_Model_Observer
      */
     public function resetCurrentSearchLayer($observer)
     {
-        if (Mage::helper('factfinder')->isEnabled()) {
-            Mage::register('current_layer', Mage::getSingleton('factfinder/catalogSearch_layer'));
+        if (!Mage::helper('factfinder')->isEnabled()) {
+            return;
         }
+
+        Mage::register('current_layer', Mage::getSingleton('factfinder/catalogSearch_layer'));
     }
 
 
@@ -49,6 +51,10 @@ class FACTFinder_Core_Model_Observer
      */
     public function removeLayerFilters($observer)
     {
+        if (!Mage::helper('factfinder')->isEnabled()) {
+            return;
+        }
+
         $block = $observer->getBlock();
 
         if (!$block instanceof Mage_CatalogSearch_Block_Layer) {
@@ -74,7 +80,7 @@ class FACTFinder_Core_Model_Observer
         foreach ($modules->children() as $module => $data) {
             if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
                 $configName = strtolower(str_replace('FACTFinder_', '', $module));
-                $isActivated = Mage::helper('factfinder')->isModuleActivated($configName);
+                $isActivated = Mage::helper('factfinder')->isEnabled($configName);
                 $config->setNode("modules/{$module}/active", $isActivated);
             }
         }

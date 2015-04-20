@@ -6,11 +6,18 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check if the module is enabled
      *
+     * @param string|null $module
+     *
      * @return bool
      */
-    public function isEnabled()
+    public function isEnabled($module = null)
     {
-        return (bool) Mage::app()->getStore()->getConfig('factfinder/search/enabled');
+        $result = (bool)Mage::app()->getStore()->getConfig('factfinder/search/enabled');
+        if ($module !== null) {
+            $result &= (bool)Mage::app()->getStore()->getConfig('factfinder/modules/' . $module);
+        }
+
+        return $result;
     }
 
 
@@ -25,19 +32,6 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
         $currentIp = Mage::helper('core/http')->getRemoteAddr();
 
         return strpos($internalIp, $currentIp) !== false;
-    }
-
-
-    /**
-     * Check is the specified module was enabled in config
-     *
-     * @param $name
-     *
-     * @return bool
-     */
-    public function isModuleActivated($name)
-    {
-        return (bool) Mage::getStoreConfig('factfinder/modules/' . $name);
     }
 
 }
