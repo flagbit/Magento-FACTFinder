@@ -1,0 +1,92 @@
+<?php
+/**
+ * Advanced Template to replace Javascript Suggest
+ * NOTICE: This template will only work if suggests are requested from the proxy (see option in section "FACT-Finder Config Data" in Magento's backend)!
+ */
+?>
+
+<form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
+    <div class="form-search">
+        <label for="search"><?php echo $this->__('Search:') ?></label>
+        <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>"
+               value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>"
+               class="input-text ff-basic-autocomplete"/>
+        <button type="submit" title="<?php echo $this->__('Search') ?>" class="button">
+            <span><span><?php echo $this->__('Search') ?></span></span></button>
+        <div id="search_autocomplete" class="search-autocomplete advanced-suggest"></div>
+        <script type="text/javascript">
+            //<![CDATA[
+            <?php if (Mage::helper('factfinder')->isEnabled('suggest')):?>
+
+            var loadDataCallback = function (data) {
+                data = data.suggestions;
+                // Internationalization lookup:
+                // Add a new anonymous object for every string you want to internationalize (with the property being the string).
+                // These objects consist of one string for each locale, where the property is the locale code.
+                var translate = function (string) {
+                    var i18n = <?php echo $this->getChannelsAsJson(); ?>;
+                    if (i18n[string] === undefined) {
+                        return string;
+                    } else {
+                        return i18n[string];
+                    }
+                };
+
+                // Try to get channel from search request, if no channel was found
+                for (var i = 0; i < data.length; i++) {
+                    if (typeof(data[i].channel) == 'undefined' || data[i].channel == '') {
+                        var params = data[i].searchParams.toQueryParams();
+                        if (typeof(params.channel) != 'undefined') {
+                            data[i].channel = params.channel;
+                        }
+                    }
+                }
+
+                var content = '<ul>';
+                content += '<li style="display: none" class="selected selectable-item"></li>';
+                var currentChannel = '';
+                if (data.length) {
+                    if (data[0].channel == '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>') {
+                        content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
+                    } else if (typeof(data[0].channel) !== 'undefined') {
+                        content += '<li class="delimiter">' + translate('Channel: ' + data[0].channel) + '</li>';
+                    }
+                    currentChannel = data[0].channel;
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    if (typeof(item.channel) !== 'undefined' && item.channel != currentChannel) {
+                        content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
+                        currentChannel = item.channel;
+                    }
+                    var temp = '';
+                    temp += '<li title="' + item.label + '" class="selectable-item ' + item.type + '"';
+                    if (item.attributes.deeplink != undefined && item.attributes.deeplink != '') {
+                        temp += ' rel="' + item.attributes.deeplink + '"';
+                    }
+                    temp += '>';
+
+                    temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
+                    if (item.image) {
+                        temp += '<img src="' + item.image + '" title="' + item.label + '" class="thumbnail"/>';
+                    }
+                    temp += item.label;
+                    temp += '</li>';
+                    content += temp;
+                }
+                content += '</ul>';
+
+                return content;
+            };
+
+            var searchForm = new FactFinderSuggest('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>', loadDataCallback);
+            searchForm.initAutocomplete('<?php echo $this->helper('factfinder_suggest')->getSuggestUrl() ?>', 'search_autocomplete');
+            <?php else:?>
+                var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire shop here...') ?>');
+                searchForm.initAutocomplete('<?php echo $this->helper('factfinder_suggest')->getSuggestUrl() ?>', 'search_autocomplete');
+            <?php endif;?>
+            //]]>
+        </script>
+    </div>
+</form>

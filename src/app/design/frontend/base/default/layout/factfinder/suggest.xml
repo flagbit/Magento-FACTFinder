@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout>
+
+    <factfinder_suggest_enabled>
+        <reference name="head">
+            <action method="addJs"><script>factfinder/jXHR.js</script></action>
+            <action method="addJs"><script>factfinder/suggest.js</script></action>
+            <action method="addCss"><stylesheet>css/factfinder.css</stylesheet></action>
+        </reference>
+        <reference name="header">
+            <block type="factfinder_suggest/topSearch" name="top.search" as="topSearch" template="factfinder/suggest/advancedsuggest.phtml"/>
+        </reference>
+    </factfinder_suggest_enabled>
+
+</layout>
