@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding="utf-8" ?>
+<config>
+    <global>
+        <cache>
+            <request_processors>
+                <factfinder>FACTFinder_Suggest_Model_Processor</factfinder>
+            </request_processors>
+        </cache>
+    </global>
+</config>
