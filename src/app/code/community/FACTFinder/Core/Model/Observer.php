@@ -26,6 +26,13 @@ class FACTFinder_Core_Model_Observer
         }
 
         Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
+
+        // this also helps with module managing
+        Mage::app()->cleanCache();
+        if (class_exists('Enterprise_PageCache_Model_Cache')) {
+            Enterprise_PageCache_Model_Cache::getCacheInstance()
+                ->clean(Enterprise_PageCache_Model_Processor::CACHE_TAG);
+        }
     }
 
 
@@ -77,14 +84,24 @@ class FACTFinder_Core_Model_Observer
         $config = Mage::getConfig();
         $modules = $config->getNode('modules');
 
+        $mustCleanCache = false;
         foreach ($modules->children() as $module => $data) {
             if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
                 $configName = strtolower(str_replace('FACTFinder_', '', $module));
                 $isActivated = Mage::helper('factfinder')->isEnabled($configName);
-                $config->setNode("modules/{$module}/active", $isActivated);
+
+                if ($config->getNode("modules/{$module}/active") == $isActivated) {
+                    continue;
+                }
+
+                Mage::helper('factfinder')->updateModuleState($module, $isActivated);
+                $mustCleanCache = true;
             }
         }
-    }
 
+        if ($mustCleanCache) {
+            Mage::app()->cleanCache();
+        }
+    }
 
 }

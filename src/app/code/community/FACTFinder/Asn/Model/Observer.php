@@ -69,10 +69,6 @@ class FACTFinder_Asn_Model_Observer
      */
     public function addLayerFiltersToSearch($observer)
     {
-        if (!Mage::helper('factfinder')->isEnabled('asn')) {
-            return;
-        }
-
         $block = $observer->getBlock();
 
         if (!$block instanceof Mage_CatalogSearch_Block_Layer) {
@@ -89,10 +85,6 @@ class FACTFinder_Asn_Model_Observer
      */
     public function resetCurrentCatalogLayer($observer)
     {
-        if (!Mage::helper('factfinder')->isEnabled('asn')) {
-            return;
-        }
-
         Mage::register('current_layer', Mage::getSingleton('factfinder_asn/catalog_layer'));
     }
 }
