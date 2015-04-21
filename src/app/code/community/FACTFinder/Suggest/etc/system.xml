@@ -1,8 +1,21 @@
 <?xml version="1.0"?>
 <config>
-   <sections>
+    <sections>
         <factfinder>
             <groups>
+                <search>
+                    <fields>
+                        <secondary_channels translate="label">
+                            <label>Secondary Channels</label>
+                            <comment>Enter any secondary channels you want to search. Multiple channels should be separated by semicolons. NOTE: Secondary channels will only be considered for Suggest results if the proxy is used (see option in section "FACT-Finder Config Data")!</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </secondary_channels>
+                    </fields>
+                </search>
                 <export>
                     <fields>
                         <urls translate="label">
