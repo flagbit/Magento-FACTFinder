@@ -19,7 +19,12 @@ class FACTFinder_Asn_Model_Layer_Filter_Item extends Mage_Catalog_Model_Layer_Fi
             $params['_direct'] = 's' . $this->getSeoPath();
         }
 
-        return Mage::getUrl('*/*/*', $params);
+        $url = Mage::getUrl('*/*/*', $params);
+
+        // fix by PHP_QUERY_RFC1738 encoded spaces
+        $url = str_replace('+', '%20', $url);
+
+        return $url;
     }
 
 
@@ -66,10 +71,16 @@ class FACTFinder_Asn_Model_Layer_Filter_Item extends Mage_Catalog_Model_Layer_Fi
                 $query['q'] = null;
             }
 
-            return Mage::getUrl('*/*/*', array('_query' => $query, '_direct' => 's' . $this->getSeoPath()));
+            $url = Mage::getUrl('*/*/*', array('_query' => $query, '_direct' => 's' . $this->getSeoPath()));
+        } else {
+
+            $url = Mage::getUrl('*/*/*', array('_current' => true, '_use_rewrite' => true, '_query' => $query));
         }
 
-        return Mage::getUrl('*/*/*', array('_current' => true, '_use_rewrite' => true, '_query' => $query));
+        // fix PHP_QUERY_RFC1738 encoded spaces
+        $url = str_replace('+', '%20', $url);
+
+        return $url;
     }
 
 
