@@ -16,7 +16,7 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
     protected function _getFacade()
     {
         if ($this->_facade === null) {
-            $this->_facade = Mage::getSingleton('factfinder_tagcloug/facade');
+            $this->_facade = Mage::getSingleton('factfinder_tagcloud/facade');
         }
 
         return $this->_facade;
