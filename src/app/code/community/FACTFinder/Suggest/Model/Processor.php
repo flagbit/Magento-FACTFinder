@@ -1,6 +1,6 @@
 <?php
 
-require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
+require_once BP . DS . 'lib' . DS . 'FACTFinder' . DS . 'Loader.php';
 
 /**
  * Model class
@@ -11,16 +11,18 @@ require_once BP.DS.'lib'.DS.'FACTFinder'.DS.'Loader.php';
 class FACTFinder_Suggest_Model_Processor
 {
 
-    const CACHE_TAG  = 'FACTFINDER';  // Cache Tag
+    const CACHE_TAG = 'FACTFINDER';  // Cache Tag
     const REQUEST_ID_PREFIX = 'FACTFINDER_';
     const XML_CONFIG_PATH = 'factfinder/search/';
 
 
     /**
      * FactFinder Facade
+     *
      * @var FACTFinder_Core_Model_Facade
      */
     protected $_facade;
+
 
     /**
      * Class constructor
@@ -31,11 +33,15 @@ class FACTFinder_Suggest_Model_Processor
 
         $this->_initFFAutoloader();
 
-        $this->_requestId       = $uri;
-        $this->_requestCacheId  = $this->prepareCacheId($this->_requestId);
-        $this->_requestTags     = array(self::CACHE_TAG);
+        $this->_requestId = $uri;
+        $this->_requestCacheId = $this->prepareCacheId($this->_requestId);
+        $this->_requestTags = array(self::CACHE_TAG);
     }
 
+
+    /**
+     * Init fact-finder lib autoloader
+     */
     protected function _initFFAutoloader()
     {
         $autoloaderClass = new FACTFinder_Core_Model_Autoloader();
@@ -50,10 +56,11 @@ class FACTFinder_Suggest_Model_Processor
      */
     protected function _getFacade($config = null)
     {
-        if($this->_facade === null){
+        if ($this->_facade === null) {
             $logger = new FACTFinder_Core_Helper_Debug();
             $this->_facade = new FACTFinder_Core_Model_Facade($logger, $config);
         }
+
         return $this->_facade;
     }
 
@@ -67,20 +74,23 @@ class FACTFinder_Suggest_Model_Processor
      */
     public function extractContent($content)
     {
-        // handle in App Request if "factfinder" in Request path
+        // handle in App Request if "ff_suggest" in Request path
         if (!$content
-            && strpos($this->_requestId, 'factfinder')
-            && $this->isAllowed()) {
+            && strpos($this->_requestId, 'ff_suggest')
+            && $this->isAllowed()
+        ) {
 
-            $requestCacheId = $this->prepareCacheId($this->getRequestId().'request');
+            $requestCacheId = $this->prepareCacheId($this->getRequestId() . 'request');
             $request = Mage::app()->loadCache($requestCacheId);
             if ($request) {
                 $content = $this->handleWithoutAppRequest();
             }
 
         }
+
         return $content;
     }
+
 
     /**
      * handle in App Requests
@@ -91,14 +101,18 @@ class FACTFinder_Suggest_Model_Processor
      */
     public function handleInAppRequest($request)
     {
-        $requestCacheId = $this->prepareCacheId($this->getRequestId().'request');
+        $requestCacheId = $this->prepareCacheId($this->getRequestId() . 'request');
         Mage::app()->saveCache($request, $requestCacheId, $this->getRequestTags());
 
-        $configCacheId = $this->prepareCacheId($this->getRequestId().'config');
-        Mage::app()->saveCache(serialize(Mage::getStoreConfig('factfinder/search')), $configCacheId, $this->getRequestTags());
+        $configCacheId = $this->prepareCacheId($this->getRequestId() . 'config');
+        Mage::app()->saveCache(
+            serialize(Mage::getStoreConfig('factfinder/search')),
+            $configCacheId, $this->getRequestTags()
+        );
 
         return $this->_handleRequest();
     }
+
 
     /**
      * hanlde without App Requests
@@ -107,16 +121,16 @@ class FACTFinder_Suggest_Model_Processor
      */
     public function handleWithoutAppRequest()
     {
-        $configCacheId = $this->prepareCacheId($this->getRequestId().'config');
+        $configCacheId = $this->prepareCacheId($this->getRequestId() . 'config');
         $config = null;
 
-        try{
+        try {
             $config = unserialize(Mage::app()->loadCache($configCacheId));
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return '';
         }
 
-        if(!is_array($config) || empty($config)){
+        if (!is_array($config) || empty($config)) {
             return '';
         }
 
@@ -141,6 +155,7 @@ class FACTFinder_Suggest_Model_Processor
         return $handler->getSuggestions();
     }
 
+
     /**
      * get Request Param by Key
      *
@@ -151,11 +166,12 @@ class FACTFinder_Suggest_Model_Processor
     protected function _getRequestParam($key)
     {
         $value = null;
-        if(isset($_REQUEST[$key])){
+        if (isset($_REQUEST[$key])) {
             $value = $_REQUEST[$key];
         }
         return $value;
     }
+
 
     /**
      * Return current page base url
@@ -179,13 +195,13 @@ class FACTFinder_Suggest_Model_Processor
          */
         if ($uri) {
             if (isset($_SERVER['REQUEST_URI'])) {
-                $uri.= $_SERVER['REQUEST_URI'];
+                $uri .= $_SERVER['REQUEST_URI'];
             } elseif (!empty($_SERVER['IIS_WasUrlRewritten']) && !empty($_SERVER['UNENCODED_URL'])) {
-                $uri.= $_SERVER['UNENCODED_URL'];
+                $uri .= $_SERVER['UNENCODED_URL'];
             } elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
-                $uri.= $_SERVER['ORIG_PATH_INFO'];
+                $uri .= $_SERVER['ORIG_PATH_INFO'];
                 if (!empty($_SERVER['QUERY_STRING'])) {
-                    $uri.= $_SERVER['QUERY_STRING'];
+                    $uri .= $_SERVER['QUERY_STRING'];
                 }
             }
         }
@@ -195,6 +211,7 @@ class FACTFinder_Suggest_Model_Processor
 
         return $uri;
     }
+
 
     /**
      * Prepare page identifier
@@ -208,6 +225,7 @@ class FACTFinder_Suggest_Model_Processor
         return self::REQUEST_ID_PREFIX . md5($id);
     }
 
+
     /**
      * Get HTTP request identifier
      *
@@ -218,14 +236,17 @@ class FACTFinder_Suggest_Model_Processor
         return $this->_requestId . (isset($_COOKIE['store']) ? $_COOKIE['store'] : '');
     }
 
+
     /**
      * Get page identifier for loading page from cache
+     *
      * @return string
      */
     public function getRequestCacheId()
     {
         return $this->_requestCacheId;
     }
+
 
     /**
      * Check if processor is allowed for current HTTP request.
@@ -248,8 +269,10 @@ class FACTFinder_Suggest_Model_Processor
         return true;
     }
 
+
     /**
      * Get cache request associated tags
+     *
      * @return array
      */
     public function getRequestTags()
