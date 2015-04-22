@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <FACTFinder_Tagcloud>
+            <version>0.1.0</version>
+        </FACTFinder_Tagcloud>
+    </modules>
+    <global>
+        <models>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Model</class>
+            </factfinder_tagcloud>
+        </models>
+        <blocks>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Block</class>
+            </factfinder_tagcloud>
+            <catalogsearch>
+                <rewrite>
+                    <term>FACTFinder_Tagcloud_Block_TagCloud</term>
+                </rewrite>
+            </catalogsearch>
+        </blocks>
+        <helpers>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Helper</class>
+            </factfinder_tagcloud>
+        </helpers>
+    </global>
+</config>

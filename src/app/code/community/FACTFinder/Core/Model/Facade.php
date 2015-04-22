@@ -156,11 +156,6 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("recommendation", $channel);
     }
 
-    public function getTagCloudAdapter($channel = null)
-    {
-        return $this->_getAdapter("tagCloud", $channel);
-    }
-
     public function getCompareAdapter($channel = null)
     {
         return $this->_getAdapter("compare", $channel);
@@ -209,11 +204,6 @@ class FACTFinder_Core_Model_Facade
     public function configureRecommendationAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "recommendation", $channel, $id);
-    }
-
-    public function configureTagCloudAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "tagCloud", $channel, $id);
     }
 
     public function configureCompareAdapter($params, $channel = null, $id = null)
@@ -439,11 +429,6 @@ class FACTFinder_Core_Model_Facade
     public function getSuggestions($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("suggest", "getSuggestions", $channel, $id);
-    }
-
-    public function getTagCloud($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("tagCloud", "getTagCloud", $channel, $id);
     }
 
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
