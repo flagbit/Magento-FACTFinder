@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <layout>
+
     <catalogsearch_result_index>
         <reference name="head">
             <block type="core/template" name="ff_slider_script">
@@ -7,4 +8,13 @@
             </block>
         </reference>
     </catalogsearch_result_index>
+
+    <catalog_category_layered>
+        <reference name="head">
+            <block type="core/template" name="ff_slider_script">
+                <action method="setTemplate"><template>factfinder/asn/layer/slider.phtml</template></action>
+            </block>
+        </reference>
+    </catalog_category_layered>
+
 </layout>
