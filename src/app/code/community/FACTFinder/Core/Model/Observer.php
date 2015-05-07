@@ -29,7 +29,7 @@ class FACTFinder_Core_Model_Observer
 
         // this also helps with module managing
         Mage::app()->cleanCache();
-        if (class_exists('Enterprise_PageCache_Model_Cache')) {
+        if (Mage::helper('core')->isModuleEnabled('Enterprise_PageCache')) {
             Enterprise_PageCache_Model_Cache::getCacheInstance()
                 ->clean(Enterprise_PageCache_Model_Processor::CACHE_TAG);
         }
