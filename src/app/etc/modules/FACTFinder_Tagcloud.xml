@@ -2,7 +2,7 @@
 <config>
     <modules>
         <FACTFinder_Tagcloud>
-            <active>true</active>
+            <active>1</active>
             <codePool>community</codePool>
             <depends>
                 <FACTFinder_Core/>
