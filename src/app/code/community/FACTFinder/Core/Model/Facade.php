@@ -141,11 +141,6 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("search", $channel);
     }
 
-    public function getScicAdapter($channel = null)
-    {
-        return $this->_getAdapter("scic", $channel);
-    }
-
     public function getSuggestAdapter($channel = null)
     {
         return $this->_getAdapter("suggest", $channel);
@@ -176,25 +171,11 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("similarRecords", $channel);
     }
 
-    public function getTrackingAdapter($channel = null)
-    {
-        return $this->_getAdapter("tracking", $channel);
-    }
-
-    public function getLegacyTrackingAdapter($channel = null)
-    {
-        return $this->_getAdapter("legacyTracking", $channel);
-    }
-
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
     }
 
-    public function configureScicAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "scic", $channel, $id);
-    }
 
     public function configureSuggestAdapter($params, $channel = null, $id = null)
     {
@@ -224,11 +205,6 @@ class FACTFinder_Core_Model_Facade
     public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "similarRecords", $channel, $id);
-    }
-
-    public function configureTrackingAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "tracking", $channel, $id);
     }
 
     protected function _configureAdapter($params, $type, $channel = null, $id = null)
@@ -352,21 +328,6 @@ class FACTFinder_Core_Model_Facade
             $this->_urlBuilder = $this->_dic['serverUrlBuilder'];
         }
         return $this->_urlBuilder;
-    }
-
-    public function applyTracking($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("tracking", "applyTracking", $channel, $id);
-    }
-
-    public function applyScicTracking($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("scic", "applyTracking", $channel, $id);
-    }
-
-    public function applyLegacyTracking($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("legacyTracking", "applyTracking", $channel, $id);
     }
 
     public function getAfterSearchNavigation($channel = null, $id = null)

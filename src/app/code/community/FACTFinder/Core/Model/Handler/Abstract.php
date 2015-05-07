@@ -2,6 +2,14 @@
 
 abstract class FACTFinder_Core_Model_Handler_Abstract
 {
+
+    /**
+     * Facade model name
+     *
+     * @var string
+     */
+    protected $_facadeModel = 'factfinder/facade';
+
     /**
      * @var FACTFinder_Core_Model_Facade
      **/
@@ -33,7 +41,7 @@ abstract class FACTFinder_Core_Model_Handler_Abstract
     protected function _getFacade()
     {
         if ($this->_facade === null) {
-            $this->_facade = Mage::getSingleton('factfinder/facade');
+            $this->_facade = Mage::getSingleton($this->_facadeModel);
         }
 
         return $this->_facade;
