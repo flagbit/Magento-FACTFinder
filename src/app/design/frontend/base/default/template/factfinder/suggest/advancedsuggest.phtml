@@ -24,7 +24,7 @@
                 // Add a new anonymous object for every string you want to internationalize (with the property being the string).
                 // These objects consist of one string for each locale, where the property is the locale code.
                 var translate = function (string) {
-                    var i18n = <?php echo $this->getChannelsAsJson(); ?>;
+                    var i18n = <?php echo $this->getTranslationsAsJson(); ?>;
                     if (i18n[string] === undefined) {
                         return string;
                     } else {
@@ -45,10 +45,9 @@
                 var content = '<ul>';
                 content += '<li style="display: none" class="selected selectable-item"></li>';
                 var currentChannel = '';
+                var currentType = '';
                 if (data.length) {
-                    if (data[0].channel == '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>') {
-                        content += '<li class="delimiter"><?php echo $this->__('Products'); ?></li>';
-                    } else if (typeof(data[0].channel) !== 'undefined') {
+                    if (data[0].channel != '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>') {
                         content += '<li class="delimiter">' + translate('Channel: ' + data[0].channel) + '</li>';
                     }
                     currentChannel = data[0].channel;
@@ -60,8 +59,14 @@
                         content += '<li class="delimiter">' + translate('Channel: ' + item.channel) + '</li>';
                         currentChannel = item.channel;
                     }
+
+                    if (typeof(item.type) !== 'undefined' && item.type != currentType) {
+                        content += '<li class="delimiter">' + translate(item.type) + '</li>';
+                        currentType = item.type;
+                    }
+
                     var temp = '';
-                    temp += '<li title="' + item.label + '" class="selectable-item ' + item.type + '"';
+                    temp += '<li title="' + item.name + '" class="selectable-item ' + item.type + '"';
                     if (item.attributes.deeplink != undefined && item.attributes.deeplink != '') {
                         temp += ' rel="' + item.attributes.deeplink + '"';
                     }
@@ -69,9 +74,9 @@
 
                     temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
                     if (item.image) {
-                        temp += '<img src="' + item.image + '" title="' + item.label + '" class="thumbnail"/>';
+                        temp += '<img src="' + item.image + '" title="' + item.name + '" class="thumbnail"/>';
                     }
-                    temp += item.label;
+                    temp += item.name;
                     temp += '</li>';
                     content += temp;
                 }

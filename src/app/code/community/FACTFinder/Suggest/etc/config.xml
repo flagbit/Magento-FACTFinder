@@ -54,5 +54,14 @@
                 </factfinder_suggest>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <FACTFinder_Suggest>
+                    <files>
+                        <default>FACTFinder_Suggest.csv</default>
+                    </files>
+                </FACTFinder_Suggest>
+            </modules>
+        </translate>
     </frontend>
 </config>

@@ -39,9 +39,6 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         $this->_secondaryChannels = $this->_getFacade()->getConfiguration()->getSecondaryChannels();
 
         $this->_getFacade()->configureSuggestAdapter($params);
-        foreach ($this->_secondaryChannels AS $channel) {
-            $this->_getFacade()->configureSuggestAdapter($params, $channel);
-        }
     }
 
     public function getSuggestions()
@@ -70,6 +67,9 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         $suggestResult = $this->_getAndSanitizeSuggestions();
 
         foreach ($this->_secondaryChannels AS $channel) {
+            $params = array('channel' => $channel);
+            $this->_getFacade()->configureSuggestAdapter($params, $channel);
+
             $result = $this->_getAndSanitizeSuggestions($channel);
             $suggestResult = array_merge($suggestResult, $result);
         }
@@ -83,7 +83,8 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
                 'image'        => $resultQuery->getImageUrl(),
                 'searchParams' => $resultQuery->getUrl(),
                 'type'         => $resultQuery->getType(),
-                'label'         => $resultQuery->getLabel(),
+                'name'         => $resultQuery->getLabel(),
+                'channel'      => $resultQuery->channel
             );
         }
 
@@ -101,6 +102,12 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         $result = $this->_getFacade()->getSuggestions($channel);
         if ($result === null) {
             $result = '';
+        }
+
+        if(is_array($result)) {
+            foreach($result as $item) {
+                $item->channel = $channel ? $channel : $this->_primaryChannel;
+            }
         }
 
         return $result;
