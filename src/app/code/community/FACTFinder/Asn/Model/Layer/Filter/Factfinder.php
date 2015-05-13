@@ -50,7 +50,7 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
      *
      * @return  Mage_Catalog_Model_Layer_Filter_Item
      */
-    protected function _createItem($data)
+    protected function _createItem($data, $value = '', $count = 0)
     {
         $item = Mage::getModel('factfinder_asn/layer_filter_item')
             ->setFilter($this);
