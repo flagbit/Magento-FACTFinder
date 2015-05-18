@@ -31,13 +31,13 @@ if ( array_search(FF_LIB_DIR, $includePaths, true) === false )
 {
 	set_include_path( get_include_path() . PATH_SEPARATOR . FF_LIB_DIR);
 }
-spl_autoload_register(array('FACTFinder\Loader', 'autoload'),true,true);
+spl_autoload_register(array('FACTFinder\Loader', 'autoload'));
 
 // don't know, whether I should do that
 if (function_exists('__autoload')
     && array_search('__autoload', spl_autoload_functions()) === false)
 {
-    spl_autoload_register('__autoload',true,true);
+    spl_autoload_register('__autoload');
 }
 
 /**

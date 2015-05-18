@@ -26,6 +26,11 @@ class Request
     private $connectionData;
 
     /**
+     * @var ConnectionData
+     */
+    protected $blLoaded;
+
+    /**
      * @var AbstractDataProvider
      */
     private $dataProvider;
@@ -41,6 +46,7 @@ class Request
 
         $this->connectionData = $connectionData;
         $this->dataProvider = $dataProvider;
+        $this->blLoaded = false;
     }
 
     public function __destruct()
@@ -101,7 +107,10 @@ class Request
      */
     public function getResponse()
     {
-        $this->dataProvider->loadResponse($this->id);
+        if(!$this->blLoaded) {
+            $this->dataProvider->loadResponse($this->id);
+            $this->blLoaded = true;
+        }
         return $this->connectionData->getResponse();
     }
 }

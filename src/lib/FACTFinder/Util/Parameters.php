@@ -62,10 +62,9 @@ class Parameters implements \ArrayAccess, \Countable
             if (count($pair) == 1)
                 $pair[1] = '';
 
-            // Use rawurldecode(), because encoding spaces as '+' is only for
-            // legacy compatibility.
-            $k = rawurldecode($pair[0]);
-            $v = rawurldecode($pair[1]);
+            // Use urldecode() because in the QUERY_STRING space is replaced by '+' (http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.1)
+            $k = urldecode($pair[0]);
+            $v = urldecode($pair[1]);
 
             // TODO: This does not currently pay attention to potential array
             //       keys in the parameter name and simply appends the value

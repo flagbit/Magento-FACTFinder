@@ -195,7 +195,7 @@ class ProductCampaign extends AbstractAdapter
      * @param mixed[] $campaignData An associative array corresponding to the
      *        JSON for that campaign.
      */
-    private function fillCampaignWithFeedback(
+    protected function fillCampaignWithFeedback(
         \FACTFinder\Data\Campaign $campaign,
         array $campaignData
     ) {
@@ -206,13 +206,20 @@ class ProductCampaign extends AbstractAdapter
             foreach ($campaignData['feedbackTexts'] as $feedbackData)
             {
                 // If present, add the feedback to both the label and the ID.
+                $html = $feedbackData['html'];
+                $text = $feedbackData['text'];
+                if (!$html)
+                {
+                    $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+                }
+
                 $label = $feedbackData['label'];
                 if ($label !== '')
-                    $feedback[$label] = $feedbackData['text'];
+                    $feedback[$label] = $text;
 
                 $id = $feedbackData['id'];
                 if ($id !== null)
-                    $feedback[$id] = $feedbackData['text'];
+                    $feedback[$id] = $text;
             }
 
             $campaign->addFeedback($feedback);
@@ -244,5 +251,29 @@ class ProductCampaign extends AbstractAdapter
 
             $campaign->addPushedProducts($pushedProducts);
         }
+    }
+
+    /**
+     * Get the product campaigns from FACT-Finder as the string returned by the
+     * server.
+     *
+     * @param string $format Optional. Either 'json' or 'jsonp'. Use to
+     *                       overwrite the 'format' parameter.
+     * @param string $callback Optional name to overwrite the 'callback'
+     *                         parameter, which determines the name of the
+     *                         callback the response is wrapped in.
+     *
+     * @return string
+     */
+    public function getRawProductCampaigns($format = null, $callback = null)
+    {
+        $this->usePassthroughResponseContentProcessor();
+
+        if (!is_null($format))
+            $this->parameters['format'] = $format;
+        if (!is_null($callback))
+            $this->parameters['callback'] = $callback;
+
+        return $this->getResponseContent();
     }
 }
