@@ -22,6 +22,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         // search Helper
         $helper = Mage::helper('factfinder/search');
         $_request = Mage::app()->getRequest();
+        $requestParams = $this->_getFacade()->getClientRequestParams();
         $searchParams = $this->_getFacade()->getSearchParams();
         $params = array();
 
@@ -41,6 +42,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                     $params['page'] = $searchParams->getCurrentPage();
                 }
 
+                // todo: make this work
                 // add Sorting Param
                 foreach ($searchParams->getSortings() as $key => $value) {
                     if (substr($key, 0, 6) == 'order_') {
@@ -68,15 +70,13 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                 }
 
                 // add Sorting Param, but only if it was set explicitly via url
-                foreach ($searchParams->getSortings() as $key => $value) {
-                    if ($key == 'order'
-                        && $helper->getCurrentOrder()
-                        && $helper->getCurrentDirection()
-                        && $helper->getCurrentOrder() != 'position'
-                        && $helper->getCurrentOrder() != 'relevance'
-                    ) {
-                        $params['sort' . $helper->getCurrentOrder()] = $helper->getCurrentDirection();
-                    }
+                if (isset($requestParams['order'])
+                    && $helper->getCurrentOrder()
+                    && $helper->getCurrentDirection()
+                    && $helper->getCurrentOrder() != 'position'
+                    && $helper->getCurrentOrder() != 'relevance'
+                ) {
+                    $params['sort' . $helper->getCurrentOrder()] = $helper->getCurrentDirection();
                 }
         }
 

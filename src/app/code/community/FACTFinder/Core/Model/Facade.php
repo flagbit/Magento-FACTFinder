@@ -372,6 +372,18 @@ class FACTFinder_Core_Model_Facade
         return $this->_paramsParser;
     }
 
+
+    /**
+     * Get raw client parameters
+     *
+     * @return FACTFinder\Util\Parameters
+     */
+    public function getClientRequestParams()
+    {
+        return $this->_dic['requestParser']->getClientRequestParameters();
+    }
+
+
     public function getSearchResult($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getResult", $channel, $id);
