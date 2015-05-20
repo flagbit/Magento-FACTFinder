@@ -3,7 +3,8 @@
     <global>
         <cache>
             <request_processors>
-                <factfinder>FACTFinder_Suggest_Model_Processor</factfinder>
+                <ff_suggest>FACTFinder_Suggest_Model_Processor</ff_suggest>
+                <ff_tracking>FACTFinder_Tracking_Model_Processor</ff_tracking>
             </request_processors>
         </cache>
     </global>

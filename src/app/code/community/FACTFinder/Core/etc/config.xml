@@ -78,6 +78,14 @@
                     </factfinder_core_remove_layer_filters>
                 </observers>
             </core_block_abstract_prepare_layout_after>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <factfinder_core_redirect_on_single_product>
+                        <class>factfinder/observer</class>
+                        <method>redirectToProductOnSingleResult</method>
+                    </factfinder_core_redirect_on_single_product>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
         </events>
         <routers>
             <factfinder>
