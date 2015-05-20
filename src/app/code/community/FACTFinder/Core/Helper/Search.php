@@ -326,5 +326,20 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return Mage::helper('catalogsearch')->getQuery();
     }
 
+    /**
+     * Get Module Status depending on Module
+     *
+     * @return boolean
+     */
+    public function getIsOnSearchPage()
+    {
+        $moduleName = Mage::app()->getRequest()->getModuleName();
+        if ($moduleName == 'catalogsearch'
+            || ($moduleName == 'xmlconnect' && strpos(Mage::app()->getRequest()->getActionName(), 'search') !== false)
+        ) {
+            return true;
+        }
 
+        return false;
+    }
 }

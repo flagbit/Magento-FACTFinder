@@ -91,7 +91,7 @@ class FACTFinder_Asn_Model_Layer_Filter_Item extends Mage_Catalog_Model_Layer_Fi
      */
     protected function _isOnSearchPage()
     {
-        return Mage::helper('factfinder_asn')->getIsOnSearchPage();
+        return Mage::helper('factfinder/search')->getIsOnSearchPage();
     }
 
 }

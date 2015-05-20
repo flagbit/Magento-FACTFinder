@@ -35,23 +35,6 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    /**
-     * Get Module Status depending on Module
-     *
-     * @return boolean
-     */
-    public function getIsOnSearchPage()
-    {
-        $moduleName = Mage::app()->getRequest()->getModuleName();
-        if ($moduleName == 'catalogsearch'
-            || ($moduleName == 'xmlconnect' && strpos(Mage::app()->getRequest()->getActionName(), 'search') !== false)
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function isCatalogNavigation()
     {
         return Mage::app()->getStore()->getConfig('factfinder/modules/catalog_navigation');

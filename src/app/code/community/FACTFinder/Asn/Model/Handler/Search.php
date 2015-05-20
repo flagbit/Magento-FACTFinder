@@ -209,7 +209,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      */
     protected function _isOnSearchPage()
     {
-        return Mage::helper('factfinder_asn')->getIsOnSearchPage();
+        return Mage::helper('factfinder/search')->getIsOnSearchPage();
     }
 
 
