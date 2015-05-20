@@ -4,7 +4,7 @@ class FACTFinder_Core_Model_Observer
 {
     const SEARCH_ENGINE = 'factfinder/search_engine';
     const DEFAULT_SEARCH_ENGINE = 'catalogsearch/fulltext_engine';
-
+    const REDIRECT_ALREADY_CHECKED_FLAG = 'redirect_already_checked_flag';
 
     /**
      * Replace the config entry with search engine when enabling the module
@@ -102,6 +102,38 @@ class FACTFinder_Core_Model_Observer
 
         if ($mustCleanCache) {
             Mage::app()->cleanCache();
+        }
+    }
+
+
+    /**
+     * Redirect to product page on single result
+     *
+     * @param $observer
+     */
+    public function handleSingleProductRedirect($observer)
+    {
+        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG)) {
+            return;
+        }
+
+        Mage::register(self::REDIRECT_ALREADY_CHECKED_FLAG, true, true);
+
+        $helper = Mage::helper('factfinder');
+        if ($helper->isRedirectForSingleResult()) {
+
+            $block = Mage::app()->getLayout()->getBlock('search_result_list');
+
+            if (!$block instanceof Mage_Catalog_Block_Product_List) {
+                return;
+            }
+
+            $collection = $block->getLoadedProductCollection();
+            $collection->load();
+
+            if (count($collection) === 1) {
+                $helper->redirectToProductPage($collection->getFirstItem());
+            }
         }
     }
 
