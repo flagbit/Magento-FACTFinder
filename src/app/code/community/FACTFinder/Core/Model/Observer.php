@@ -106,22 +106,21 @@ class FACTFinder_Core_Model_Observer
     }
 
     /**
-     * Checks if the result set's size is one. If so the user is redirected to the product detail page. This is checked
-     * right before the first block is rendered so headers can still be sent. The ordinary collection load event is
-     * triggered too late.
+     * Redirect to product page on single result
      *
+     * @param $observer
      */
-    public function redirectToProductOnSingleResult()
+    public function handleSingleProductRedirect($observer)
     {
-        if (!Mage::helper('factfinder')->isEnabled()
-            || !Mage::helper('factfinder/search')->getIsOnSearchPage()
-            || Mage::registry('redirectAlreadyChecked')
-            || Mage::app()->getRequest()->getParam('p', 0) > 1) {
+        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG)) {
             return;
         }
 
-        Mage::register('redirectAlreadyChecked', 1);
-        if (Mage::getStoreConfig('factfinder/config/redirectOnSingleResult')) {
+        Mage::register(self::REDIRECT_ALREADY_CHECKED_FLAG, true, true);
+
+        $helper = Mage::helper('factfinder');
+        if ($helper->isRedirectForSingleResult()) {
+
             $block = Mage::app()->getLayout()->getBlock('search_result_list');
 
             if (!$block instanceof Mage_Catalog_Block_Product_List) {
@@ -131,15 +130,8 @@ class FACTFinder_Core_Model_Observer
             $collection = $block->getLoadedProductCollection();
             $collection->load();
 
-            if (count($collection) == 1) {
-                $product = $collection->getFirstItem();
-
-                Mage::dispatchEvent('factfinder_redirect_on_single_result_before', array('product' => $product));
-
-                $response = Mage::app()->getResponse();
-                $response->setRedirect($product->getProductUrl(false));
-                $response->sendResponse();
-                exit;
+            if (count($collection) === 1) {
+                $helper->redirectToProductPage($collection->getFirstItem());
             }
         }
     }
