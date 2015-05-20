@@ -1,0 +1,13 @@
+<script type="text/javascript">
+var factfinderTracking = new FactfinderTracking(
+    '.col-main',
+    $H(<?php echo $this->getJsonDataObject();?>),
+    $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
+    '<?php echo $this->getUrl(Mage::helper('factfinder_tracking')->getTrackingUrlPath()) ?>',
+	false
+);
+
+Event.observe(document, 'dom:loaded', function(event) {
+    factfinderTracking.init();
+});
+</script>

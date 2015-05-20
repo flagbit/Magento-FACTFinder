@@ -2,19 +2,10 @@
 <config>
     <modules>
         <FACTFinder_Tracking>
-            <version>0.1.0</version>
+            <version>1.0.0</version>
         </FACTFinder_Tracking>
     </modules>
     <global>
-        <models>
-            <factfinder_tracking>
-                <class>FACTFinder_Tracking_Model</class>
-                <resourceModel>factfinder_tracking_resource</resourceModel>
-            </factfinder_tracking>
-            <factfinder_tracking_resource>
-                <class>FACTFinder_Tracking_Model_Resource</class>
-            </factfinder_tracking_resource>
-        </models>
         <blocks>
             <factfinder_tracking>
                 <class>FACTFinder_Tracking_Block</class>
@@ -25,17 +16,93 @@
                 <class>FACTFinder_Tracking_Helper</class>
             </factfinder_tracking>
         </helpers>
+        <models>
+            <factfinder_tracking>
+                <class>FACTFinder_Tracking_Model</class>
+                <resourceModel>factfinder_tracking_resource</resourceModel>
+            </factfinder_tracking>
+            <factfinder_tracking_resource>
+                <class>FACTFinder_Tracking_Model_Resource</class>
+                <entities>
+                    <queue>
+                        <table>factfinder_tracking_queue</table>
+                    </queue>
+                </entities>
+            </factfinder_tracking_resource>
+        </models>
+        <resources>
+            <factfinder_tracking_setup>
+                <setup>
+                    <module>FACTFinder_Tracking</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </factfinder_tracking_setup>
+        </resources>
     </global>
     <frontend>
+        <routers>
+            <factfinder_tracking>
+                <use>standard</use>
+                <args>
+                    <module>FACTFinder_Tracking</module>
+                    <frontName>ff_tracking</frontName>
+                </args>
+            </factfinder_tracking>
+        </routers>
+        <layout>
+            <updates>
+                <factfinder_tracking>
+                    <file>factfinder/tracking.xml</file>
+                </factfinder_tracking>
+            </updates>
+        </layout>
         <events>
+            <controller_action_layout_load_before>
+                <observers>
+                    <factfinder_tracking_addActivationLayoutHandles>
+                        <class>factfinder_tracking/observer</class>
+                        <method>addTrackingHandles</method>
+                    </factfinder_tracking_addActivationLayoutHandles>
+                </observers>
+            </controller_action_layout_load_before>
             <checkout_cart_product_add_after>
                 <observers>
-                    <factfinder_add_to_cart_send_scic>
+                    <factfinder_tracking_cartProductAddAfter>
                         <class>factfinder_tracking/observer</class>
-                        <method>addToCartSendSCIC</method>
-                    </factfinder_add_to_cart_send_scic>
+                        <method>addToCartTracking</method>
+                    </factfinder_tracking_cartProductAddAfter>
                 </observers>
             </checkout_cart_product_add_after>
+            <sales_model_service_quote_submit_after>
+                <observers>
+                    <factfinder_tracking_salesModelServiceQuoteSubmitAfter>
+                        <class>factfinder_tracking/observer</class>
+                        <method>addOrderDetailsToQueue</method>
+                    </factfinder_tracking_salesModelServiceQuoteSubmitAfter>
+                </observers>
+            </sales_model_service_quote_submit_after>
+            <factfinder_redirect_on_single_result_before>
+                <observers>
+                    <factfinder_tracking_on_single_result_redirect>
+                        <class>factfinder_tracking/observer</class>
+                        <method>sendClickTrackingForRedirectOnSingleResult</method>
+                    </factfinder_tracking_on_single_result_redirect>
+                </observers>
+            </factfinder_redirect_on_single_result_before>
         </events>
     </frontend>
+    <crontab>
+        <jobs>
+            <factfinder_tracking_queue_processing>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>factfinder_tracking/observer::processOrderQueue</model>
+                </run>
+            </factfinder_tracking_queue_processing>
+        </jobs>
+    </crontab>
 </config>
