@@ -58,7 +58,7 @@ class FACTFinder_Suggest_Model_Processor
     {
         if ($this->_facade === null) {
             $logger = new FACTFinder_Core_Helper_Debug();
-            $this->_facade = new FACTFinder_Core_Model_Facade($logger, $config);
+            $this->_facade = new FACTFinder_Suggest_Model_Facade($logger, $config);
         }
 
         return $this->_facade;

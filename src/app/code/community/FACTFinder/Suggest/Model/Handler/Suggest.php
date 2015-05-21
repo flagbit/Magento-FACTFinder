@@ -14,6 +14,8 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
     protected $_primaryChannel;
     protected $_secondaryChannels;
 
+    protected $_facadeModel = 'factfinder_suggest/facade';
+
     /**
      * We might need to supply the facade manually, because we might not have a full Magento
      * context and we cannot call Mage::getSingleton().

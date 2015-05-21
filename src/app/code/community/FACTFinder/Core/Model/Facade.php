@@ -141,11 +141,6 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("search", $channel);
     }
 
-    public function getSuggestAdapter($channel = null)
-    {
-        return $this->_getAdapter("suggest", $channel);
-    }
-
     public function getCompareAdapter($channel = null)
     {
         return $this->_getAdapter("compare", $channel);
@@ -169,11 +164,6 @@ class FACTFinder_Core_Model_Facade
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
-    }
-
-    public function configureSuggestAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "suggest", $channel, $id);
     }
 
     public function configureCompareAdapter($params, $channel = null, $id = null)
@@ -305,12 +295,6 @@ class FACTFinder_Core_Model_Facade
             ->getNonAuthenticationUrl('Management.ff', $this->_dic['requestParser']->getRequestParameters());
     }
 
-    public function getSuggestUrl()
-    {
-        return $this->_getUrlBuilder()
-            ->getNonAuthenticationUrl('Suggest.ff', $this->_dic['requestParser']->getRequestParameters());
-    }
-
     protected function _getUrlBuilder()
     {
         if ($this->_urlBuilder === null) {
@@ -380,11 +364,6 @@ class FACTFinder_Core_Model_Facade
     public function getSearchStatus($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getStatus", $channel, $id);
-    }
-
-    public function getSuggestions($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("suggest", "getSuggestions", $channel, $id);
     }
 
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)

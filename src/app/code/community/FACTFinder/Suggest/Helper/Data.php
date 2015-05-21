@@ -23,7 +23,7 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
             }
             $url = $this->_getUrl('factfinder_suggest/proxy/suggest', $params);
         } else {
-            $url = Mage::getSingleton('factfinder/facade')->getSuggestUrl();
+            $url = Mage::getSingleton('factfinder_suggest/facade')->getSuggestUrl();
             if (Mage::app()->getStore()->isCurrentlySecure()) {
                 $url = preg_replace('/^http:/', 'https:', $url);
             }
