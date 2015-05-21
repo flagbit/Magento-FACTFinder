@@ -7,7 +7,7 @@ class FACTFinder_Recommendation_Model_Observer
      *
      * @param $observer
      */
-    public function loadLoadRecommendedItemsItems($observer)
+    public function loadRecommendedItemsItems($observer)
     {
         $collection = $observer->getCollection();
         if (!$collection instanceof Mage_Catalog_Model_Resource_Product_Link_Product_Collection
@@ -20,7 +20,7 @@ class FACTFinder_Recommendation_Model_Observer
 
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
-        $ids = $this->_getProductIds($idFieldName);
+        $ids = $this->_getProductIds($collection, $idFieldName);
         $this->_processCollection($collection, $ids, $idFieldName);
 
     }
@@ -84,13 +84,26 @@ class FACTFinder_Recommendation_Model_Observer
      *
      * @return array
      */
-    protected function _getProductIds($idFieldName)
+    protected function _getProductIds($collection, $idFieldName)
     {
+        if($collection->getProduct() && $collection->getProduct()->getId()) {
+            return array($collection->getProduct()->getData($idFieldName));
+        }
+
         $ids = array();
 
         $product = Mage::registry('product');
         if ($product instanceof Mage_Catalog_Model_Product) {
             $ids[] = $product->getData($idFieldName);
+        }
+
+        if($collection->getLinkModel()->getLinkTypeId() == Mage_Catalog_Model_Product_Link::LINK_TYPE_CROSSSELL) {
+            $quote = Mage::getSingleton('checkout/session')->getQuote();
+            foreach ($quote->getAllItems() as $item) {
+                if ($product = $item->getProduct()) {
+                    $ids[] = $product->getData($idFieldName);
+                }
+            }
         }
 
         return $ids;

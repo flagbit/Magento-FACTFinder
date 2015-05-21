@@ -34,7 +34,6 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
     protected function _configureFacade()
     {
         $params = array();
-        $params['idsOnly'] = 'true';
         $params['id'] = $this->_getIdParam();
         $this->_getFacade()->configureRecommendationAdapter($params);
     }

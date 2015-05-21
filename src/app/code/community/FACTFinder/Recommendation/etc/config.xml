@@ -28,7 +28,7 @@
                 <observers>
                     <factfinder_recommendation_load_upsell>
                         <class>factfinder_recommendation/observer</class>
-                        <method>loadLoadRecommendedItemsItems</method>
+                        <method>loadRecommendedItemsItems</method>
                     </factfinder_recommendation_load_upsell>
                 </observers>
             </catalog_product_collection_load_before>
