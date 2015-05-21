@@ -146,11 +146,6 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("suggest", $channel);
     }
 
-    public function getRecommendationAdapter($channel = null)
-    {
-        return $this->_getAdapter("recommendation", $channel);
-    }
-
     public function getCompareAdapter($channel = null)
     {
         return $this->_getAdapter("compare", $channel);
@@ -176,15 +171,9 @@ class FACTFinder_Core_Model_Facade
         $this->_configureAdapter($params, "search", $channel, $id);
     }
 
-
     public function configureSuggestAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "suggest", $channel, $id);
-    }
-
-    public function configureRecommendationAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "recommendation", $channel, $id);
     }
 
     public function configureCompareAdapter($params, $channel = null, $id = null)
@@ -345,16 +334,10 @@ class FACTFinder_Core_Model_Facade
         return $this->_getFactFinderObject("productCampaign", "getCampaigns", $channel, $id);
     }
 
-    public function getRecommendations($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("recommendation", "getRecommendations", $channel, $id);
-    }
-
     public function getSearchError($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getError", $channel, $id);
     }
-
 
     /**
      * Retrieve search parameters from request

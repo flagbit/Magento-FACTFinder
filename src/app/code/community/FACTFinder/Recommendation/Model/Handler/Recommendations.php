@@ -19,6 +19,7 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
      */
     protected $_recommendations;
 
+    protected $_facadeModel = 'factfinder_recommendation/facade';
 
     /**
      * Class constructor
