@@ -4,6 +4,7 @@ class FACTFinder_Core_Model_Observer
 {
     const SEARCH_ENGINE = 'factfinder/search_engine';
     const DEFAULT_SEARCH_ENGINE = 'catalogsearch/fulltext_engine';
+    const REDIRECT_ALREADY_CHECKED_FLAG = 'factifinder_single_result_redirect_flag';
 
 
     /**
@@ -112,7 +113,9 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
-        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG) || Mage::app()->getRequest()->getParam('p', 0) > 1) {
+        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG)
+            || Mage::app()->getRequest()->getParam('p', 0) > 1
+        ) {
             return;
         }
 
@@ -131,7 +134,9 @@ class FACTFinder_Core_Model_Observer
             $collection->load();
 
             if (count($collection) === 1) {
-                Mage::dispatchEvent('factfinder_redirect_on_single_result_before', array('product' => $collection->getFirstItem()));
+                Mage::dispatchEvent('factfinder_redirect_on_single_result_before',
+                    array('product' => $collection->getFirstItem())
+                );
                 $helper->redirectToProductPage($collection->getFirstItem());
             }
         }
