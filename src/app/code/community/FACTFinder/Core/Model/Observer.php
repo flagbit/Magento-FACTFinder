@@ -112,7 +112,7 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
-        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG)) {
+        if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG) || Mage::app()->getRequest()->getParam('p', 0) > 1) {
             return;
         }
 
@@ -131,6 +131,7 @@ class FACTFinder_Core_Model_Observer
             $collection->load();
 
             if (count($collection) === 1) {
+                Mage::dispatchEvent('factfinder_redirect_on_single_result_before', array('product' => $collection->getFirstItem()));
                 $helper->redirectToProductPage($collection->getFirstItem());
             }
         }
