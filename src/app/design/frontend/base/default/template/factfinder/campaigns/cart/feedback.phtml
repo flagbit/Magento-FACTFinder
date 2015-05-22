@@ -1,0 +1,20 @@
+<?php if ($feedback = $this->getActiveFeedback()): ?>
+    <?php $feedbackIds = array(0,1); ?>
+    <?php foreach ($feedbackIds as $feedbackId): ?>
+    <p class="factfinder-feedbackCampaign"><?php echo $feedback->getFeedback($feedbackId) ?></p>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<?php
+// this is an example, how to use the pushed products
+// note, that to have any of the products attributes in this collection, you must first join them
+// using method addAttributeToSelect();
+$pushedProducts = $this->getPushedProductsCollection();
+$pushedProducts->addAttributeToSelect('name');
+?>
+<?php if (count($pushedProducts)): ?>
+    <?php //customize here the pushed products output ?>
+    <?php foreach ($pushedProducts as $product): ?>
+        <?php echo $product->getName(); ?>
+    <?php endforeach;  ?>
+<?php endif; ?>

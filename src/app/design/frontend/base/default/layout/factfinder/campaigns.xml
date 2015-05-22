@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<layout>
+
+    <catalogsearch_result_index>
+        <reference name="content">
+            <block type="factfinder_campaigns/search_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaigns/search/feedback.phtml">
+                <action method="setTextNumber">
+                    <number>1</number>
+                </action>
+            </block>
+            <block type="factfinder_campaigns/search_advisory" after="factfinder.campaign.feedback" name="factfinder.campaign.advisory" template="factfinder/campaigns/search/advisory.phtml"/>
+        </reference>
+    </catalogsearch_result_index>
+
+    <catalog_product_view>
+        <reference name="content">
+            <block type="factfinder_campaigns/product_feedback" before="product.info" name="factfinder.campaign.feedback" template="factfinder/campaigns/product/feedback.phtml"/>
+        </reference>
+    </catalog_product_view>
+
+    <checkout_cart_index>
+        <reference name="checkout.cart.form.before">
+            <block type="factfinder_campaigns/cart_feedback" before="-" name="factfinder.campaign.feedback" template="factfinder/campaigns/cart/feedback.phtml"/>
+        </reference>
+    </checkout_cart_index>
+
+</layout>
