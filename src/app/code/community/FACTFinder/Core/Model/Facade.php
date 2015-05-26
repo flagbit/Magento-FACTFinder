@@ -346,6 +346,11 @@ class FACTFinder_Core_Model_Facade
         return $this->_getFactFinderObject("search", "getStatus", $channel, $id);
     }
 
+    public function getSearchCampaigns($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject("search", "getCampaigns", $channel, $id);
+    }
+
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
     {
         $data = null;

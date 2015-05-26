@@ -11,11 +11,6 @@ class FACTFinder_Campaigns_Model_Facade extends FACTFinder_Core_Model_Facade
         $this->_configureAdapter($params, "productCampaign", $channel, $id);
     }
 
-    public function getCampaigns($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("search", "getCampaigns", $channel, $id);
-    }
-
     public function getProductCampaigns($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("productCampaign", "getCampaigns", $channel, $id);
