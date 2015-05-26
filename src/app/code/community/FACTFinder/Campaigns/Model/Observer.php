@@ -3,7 +3,9 @@ class FACTFinder_Campaigns_Model_Observer
 {
     public function handleCampaignsRedirect($observer)
     {
-        if (!Mage::registry('current_layer') && !Mage::registry('current_product')) {
+        if (((!Mage::registry('current_layer') || !Mage::helper('factfinder')->isEnabled('catalog_navigation'))
+            && !Mage::registry('current_product'))
+        ) {
             return;
         }
 

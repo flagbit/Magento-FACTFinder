@@ -7,10 +7,6 @@ class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Ha
 
     public function getRedirect()
     {
-        if (!Mage::helper('factfinder')->isEnabled('catalog_navigation')) {
-            return '';
-        }
-
         $url = null;
         $campaigns = $this->getCampaigns();
 
