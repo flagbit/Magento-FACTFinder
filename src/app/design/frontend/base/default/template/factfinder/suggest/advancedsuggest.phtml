@@ -4,15 +4,15 @@
  * NOTICE: This template will only work if suggests are requested from the proxy (see option in section "FACT-Finder Config Data" in Magento's backend)!
  */
 ?>
-
+<?php $catalogSearchHelper = $this->helper('catalogsearch'); ?>
 <form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
     <div class="form-search">
-        <label for="search"><?php echo $this->__('Search:') ?></label>
-        <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>"
-               value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>"
-               class="input-text ff-basic-autocomplete"/>
-        <button type="submit" title="<?php echo $this->__('Search') ?>" class="button">
-            <span><span><?php echo $this->__('Search') ?></span></span></button>
+        <div class="input-box">
+            <label for="search"><?php echo $this->__('Search:') ?></label>
+            <input id="search" type="search" name="<?php echo $catalogSearchHelper->getQueryParamName() ?>" value="<?php echo $catalogSearchHelper->getEscapedQueryText() ?>" class="input-text required-entry" maxlength="<?php echo $catalogSearchHelper->getMaxQueryLength();?>" placeholder="<?php echo $this->__('Search entire store here...') ?>" />
+            <button type="submit" title="<?php echo $this->__('Search') ?>" class="button search-button"><span><span><?php echo $this->__('Search') ?></span></span></button>
+        </div>
+
         <div id="search_autocomplete" class="search-autocomplete advanced-suggest"></div>
         <script type="text/javascript">
             //<![CDATA[
