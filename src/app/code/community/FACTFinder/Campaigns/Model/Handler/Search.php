@@ -2,8 +2,6 @@
 
 class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Handler_Search
 {
-    protected $_facadeModel = 'factfinder_campaigns/facade';
-
     protected $_campaigns;
 
 
@@ -22,7 +20,7 @@ class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Ha
     public function getCampaigns()
     {
         if ($this->_campaigns === null) {
-            $this->_campaigns = $this->_getFacade()->getCampaigns();
+            $this->_campaigns = $this->_getFacade()->getSearchCampaigns();
         }
 
         return $this->_campaigns;
