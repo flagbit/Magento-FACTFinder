@@ -6,5 +6,6 @@ src/app/design/frontend/base/default/layout/*   app/design/frontend/base/default
 src/app/design/frontend/base/default/template/* app/design/frontend/base/default/template
 src/app/etc/factfinder.xml                      app/etc/factfinder.xml
 src/lib/*                                       lib
+src/shell/*                                     shell
 src/js/factfinder                               js/factfinder
 src/skin/frontend/base/default/css/*            skin/frontend/base/default/css
