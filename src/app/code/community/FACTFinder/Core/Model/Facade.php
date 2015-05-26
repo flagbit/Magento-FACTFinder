@@ -151,11 +151,6 @@ class FACTFinder_Core_Model_Facade
         return $this->_getAdapter("import", $channel);
     }
 
-    public function getProductCampaignAdapter($channel = null)
-    {
-        return $this->_getAdapter("productCampaign", $channel);
-    }
-
     public function getSimilarRecordsAdapter($channel = null)
     {
         return $this->_getAdapter("similarRecords", $channel);
@@ -174,11 +169,6 @@ class FACTFinder_Core_Model_Facade
     public function configureImportAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "import", $channel, $id);
-    }
-
-    public function configureProductCampaignAdapter($params, $channel = null, $id = null)
-    {
-        $this->_configureAdapter($params, "productCampaign", $channel, $id);
     }
 
     public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
@@ -306,16 +296,6 @@ class FACTFinder_Core_Model_Facade
     public function getAfterSearchNavigation($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getAfterSearchNavigation", $channel, $id);
-    }
-
-    public function getCampaigns($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("search", "getCampaigns", $channel, $id);
-    }
-
-    public function getProductCampaigns($channel = null, $id = null)
-    {
-        return $this->_getFactFinderObject("productCampaign", "getCampaigns", $channel, $id);
     }
 
     public function getSearchError($channel = null, $id = null)
