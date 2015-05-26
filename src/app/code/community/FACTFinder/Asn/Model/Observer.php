@@ -85,6 +85,10 @@ class FACTFinder_Asn_Model_Observer
      */
     public function resetCurrentCatalogLayer($observer)
     {
+        if (!Mage::helper('factfinder')->isEnabled('catalog_navigation')) {
+            return;
+        }
+
         Mage::register('current_layer', Mage::getSingleton('factfinder_asn/catalog_layer'));
     }
 }
