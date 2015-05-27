@@ -4,50 +4,59 @@ require_once BP . DS . 'lib' . DS . 'FACTFinder' . DS . 'Loader.php';
 
 use FACTFinder\Loader as FF;
 
+/**
+ * Class FACTFinder_Core_Model_Facade
+ *
+ * Implements a facade for accessing the FF library
+ */
 class FACTFinder_Core_Model_Facade
 {
     /**
      * Two-dimensional array of FACT-Finder adapters
      * First-dimension key corresponds to type
      * Second-dimension key corresponds to channel
-     * @var array of FACTFinder_Abstract_Adapter
+     *
+     * @var array of FACTFinder\Adapter\AbstractAdapter
      */
     protected $_adapters = array();
 
     /**
      * Key corresponds to channel
+     *
      * @var array of FACTFinder_Http_StatusHelper
      */
     protected $_statusHelpers = array();
 
     /**
-     * @var FACTFinder_Abstract_Configuration
+     * @var FACTFinderCustom_Configuration
      */
     protected $_config = null;
 
     /**
-     * @var FACTFinder_Abstract_Configuration
+     * @var \FACTFinder\Core\ConfigurationInterface
      */
     protected $_dic = null;
 
     /**
-     * @var FACTFinder_ParametersParser
+     * @var \FACTFinder\Data\SearchParameters
      */
     protected $_paramsParser = null;
 
     /**
-     * @var FACTFinder_Http_UrlBuilder
+     * @var \FACTFinder\Core\Server\UrlBuilder
      */
     protected $_urlBuilder = null;
 
     /**
      * logger object to log all module internals
-     * @var FACTFinder_Abstract_Logger
+     *
+     * @var \FACTFinder\Util\LoggerInterface
      */
     protected $_logger = null;
 
     /**
      * map between known adapters and its state based on its parameters
+     *
      * @var array
      */
     protected $_paramHashes = array();
@@ -57,6 +66,13 @@ class FACTFinder_Core_Model_Facade
      */
     private $_useCaching = null;
 
+
+    /**
+     * Class constructor
+     *
+     * @param mixed $arg
+     * @param mixed $config
+     */
     public function __construct($arg = null, $config = null)
     {
         if ($arg === null || !($arg instanceof FACTFinder\Util\LoggerInterface)) {
@@ -136,46 +152,120 @@ class FACTFinder_Core_Model_Facade
         $this->_logger = $arg;
     }
 
+
+    /**
+     * Retrieve an instance of search adapter
+     *
+     * @param string $channel
+     *
+     * @return \FACTFinder\Adapter\Search
+     */
     public function getSearchAdapter($channel = null)
     {
         return $this->_getAdapter("search", $channel);
     }
 
+
+    /**
+     *
+     * Get an instance of compare adapter
+     *
+     * @param string $channel
+     *
+     * @return \FACTFinder\Adapter\Compare
+     */
     public function getCompareAdapter($channel = null)
     {
         return $this->_getAdapter("compare", $channel);
     }
 
+
+    /**
+     * Get an instance of import adapter
+     *
+     * @param string $channel
+     *
+     * @return \FACTFinder\Adapter\Import
+     */
     public function getImportAdapter($channel = null)
     {
         return $this->_getAdapter("import", $channel);
     }
 
+
+    /**
+     * Get an instance of similar records adapter
+     *
+     * @param string $channel
+     *
+     * @return \FACTFinder\Adapter\SimilarRecords
+     */
     public function getSimilarRecordsAdapter($channel = null)
     {
         return $this->_getAdapter("similarRecords", $channel);
     }
 
+
+    /**
+     * Configure search adapter
+     *
+     * @param array  $params
+     * @param string $channel
+     * @param int    $id
+     */
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "search", $channel, $id);
     }
 
+
+    /**
+     * Configure compare adapter
+     *
+     * @param array  $params
+     * @param string $channel
+     * @param int    $id
+     */
     public function configureCompareAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "compare", $channel, $id);
     }
 
+
+    /**
+     * Configure import adapter
+     *
+     * @param array  $params
+     * @param string $channel
+     * @param int    $id
+     */
     public function configureImportAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "import", $channel, $id);
     }
 
+
+    /**
+     * Configure similar records adapter
+     *
+     * @param array  $params
+     * @param string $channel
+     * @param int    $id
+     */
     public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
     {
         $this->_configureAdapter($params, "similarRecords", $channel, $id);
     }
 
+
+    /**
+     * Configure adapter
+     *
+     * @param array  $params
+     * @param string $type
+     * @param string $channel
+     * @param int    $id
+     */
     protected function _configureAdapter($params, $type, $channel = null, $id = null)
     {
         $adapterId = $this->_getAdapterIdentifier($type, $channel, $id);
@@ -187,13 +277,15 @@ class FACTFinder_Core_Model_Facade
         }
     }
 
+
     /**
-     * returns the hash that identifies a certain combination of parameters.
+     * Returns the hash that identifies a certain combination of parameters.
      * It represents the current parameter state of the adapter specified by $type, $channel and $id
      *
-     * @param $type (any adapter type)
-     * @param $channel (default: null => default channel)
-     * @param $id (default: null => no special id)
+     * @param string $type    (any adapter type)
+     * @param string $channel (default: null => default channel)
+     * @param int    $id      (default: null => no special id)
+     *
      * @return string
      */
     protected function _getParametersHash($type, $channel = null, $id = null)
@@ -203,9 +295,18 @@ class FACTFinder_Core_Model_Facade
         if (array_key_exists($adapterId, $this->_paramHashes)) {
             $returnValue = $this->_paramHashes[$adapterId];
         }
+
         return $returnValue;
     }
 
+
+    /**
+     * Create hash for an array of params
+     *
+     * @param array $params
+     *
+     * @return string
+     */
     private function _createParametersHash($params)
     {
         $returnValue = '';
@@ -213,24 +314,36 @@ class FACTFinder_Core_Model_Facade
             ksort($params);
             $returnValue = md5(http_build_query($params));
         }
+
         return $returnValue;
     }
 
+
     /**
-     * get identifying hash for each adapter based on type, channel and id
-     * @param $type
-     * @param $channel (default: null)
-     * @param $id (default: null)
-     * @return string hash
+     * Get identifying hash for each adapter based on type, channel and id
+     *
+     * @param string $type
+     * @param string $channel (default: null)
+     * @param int    $id (default: null)
+     *
+     * @return string
      */
     protected function _getAdapterIdentifier($type, $channel = null, $id = null)
     {
         $args = func_get_args();
+
         return implode('_', $args);
     }
 
+
     /**
-     * @return FACTFinder_Abstract_Adapter
+     * Get an instance of adapter
+     *
+     * @param string $type
+     * @param string $channel (default: null)
+     * @param int    $id (default: null)
+     *
+     * @return \FACTFinder\Adapter\AbstractAdapter
      */
     protected function _getAdapter($type, $channel = null, $id = null)
     {
@@ -252,25 +365,39 @@ class FACTFinder_Core_Model_Facade
         return $this->_adapters[$hashKey][$channel];
     }
 
+
     /**
-     * @return FACTFinderCustom_Configuration config
+     * Get current facade configuration
+     *
+     * @return FACTFinderCustom_Configuration
      */
-    public function getConfiguration($configArray = null)
+    public function getConfiguration()
     {
         if ($this->_config == null) {
             $this->_config = $this->_dic['configuration'];
         }
+
         return $this->_config;
     }
 
+
+    /**
+     * Set facade configuration
+     *
+     * @param array $configArray
+     */
     public function setConfiguration($configArray)
     {
         $this->_config = new FACTFinderCustom_Configuration($configArray);
     }
 
+
     /**
+     * Set store id
+     *
      * @param int $storeId
-     * @return \Flagbit_FactFinder_Model_Facade
+     *
+     * @return FACTFinder_Core_Model_Facade
      */
     public function setStoreId($storeId)
     {
@@ -279,12 +406,24 @@ class FACTFinder_Core_Model_Facade
         return $this;
     }
 
+
+    /**
+     * Get url for accessing web-interface
+     *
+     * @return string
+     */
     public function getManagementUrl()
     {
         return $this->_getUrlBuilder()
             ->getNonAuthenticationUrl('Management.ff', $this->_dic['requestParser']->getRequestParameters());
     }
 
+
+    /**
+     * Get url builder object
+     *
+     * @return \FACTFinder\Core\Server\UrlBuilder
+     */
     protected function _getUrlBuilder()
     {
         if ($this->_urlBuilder === null) {
@@ -293,20 +432,39 @@ class FACTFinder_Core_Model_Facade
         return $this->_urlBuilder;
     }
 
+
+    /**
+     * Get after search navigation object
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return \FACTFinder\Data\AfterSearchNavigation
+     */
     public function getAfterSearchNavigation($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getAfterSearchNavigation", $channel, $id);
     }
 
+
+    /**
+     * Get search error message
+     *
+     * @param string|null $channel
+     * @param int|null    $id
+     *
+     * @return string|null
+     */
     public function getSearchError($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getError", $channel, $id);
     }
 
+
     /**
      * Retrieve search parameters from request
      *
-     * @return FACTFinder_ParametersParser|object
+     * @return \FACTFinder\Data\SearchParameters
      */
     public function getSearchParams()
     {
@@ -323,7 +481,7 @@ class FACTFinder_Core_Model_Facade
     /**
      * Get raw client parameters
      *
-     * @return FACTFinder\Util\Parameters
+     * @return \FACTFinder\Util\Parameters
      */
     public function getClientRequestParams()
     {
@@ -331,26 +489,72 @@ class FACTFinder_Core_Model_Facade
     }
 
 
+    /**
+     * Get search result object
+     *
+     * @param string|null $channel
+     * @param int|null    $id
+     *
+     * @return \FACTFinder\Data\Result
+     */
     public function getSearchResult($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getResult", $channel, $id);
     }
 
+
+    /**
+     * Get search stacktrace string
+     *
+     * @param string|null $channel
+     * @param int|null    $id
+     *
+     * @return string
+     */
     public function getSearchStackTrace($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getStackTrace", $channel, $id);
     }
 
+
+    /**
+     * Get search status string
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return string
+     */
     public function getSearchStatus($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getStatus", $channel, $id);
     }
 
+
+    /**
+     * Get search campaigns
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return \FACTFinder\Data\CampaignIterator
+     */
     public function getSearchCampaigns($channel = null, $id = null)
     {
         return $this->_getFactFinderObject("search", "getCampaigns", $channel, $id);
     }
 
+
+    /**
+     * Get an object of a specified type
+     *
+     * @param string $type
+     * @param string $objectGetter
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return Object|null
+     */
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
     {
         $data = null;
@@ -365,6 +569,12 @@ class FACTFinder_Core_Model_Facade
         return $data;
     }
 
+
+    /**
+     * Get current ff version
+     *
+     * @return array|null
+     */
     public function getActualFactFinderVersion()
     {
         try {
@@ -376,20 +586,9 @@ class FACTFinder_Core_Model_Facade
         }
     }
 
-    private function _useSearchCaching()
-    {
-        if ($this->_useCaching == null) {
-            // caching only works from version 5.3 because of php bug 45706 (http://bugs.php.net/45706):
-            // because of it, the asn objects can't be serialized and cached
-            // this bug was fixed with 5.3.0 (http://www.php.net/ChangeLog-5.php)
-            $this->_useCaching = (version_compare(PHP_VERSION, '5.3.0') >= 0 && Mage::app()->useCache('factfinder_search'));
-        }
-        return $this->_useCaching;
-    }
-
 
     /**
-     * Get actual version of FF
+     * Get actual version of FF as string
      *
      * @return null|string
      */
@@ -410,7 +609,7 @@ class FACTFinder_Core_Model_Facade
      *
      * @param $channel
      *
-     * @return null
+     * @return null|string
      */
     public function getFactFinderStatus($channel = null)
     {
@@ -424,11 +623,25 @@ class FACTFinder_Core_Model_Facade
         }
     }
 
+
+    /**
+     * @return \FACTFinder\Core\ConfigurationInterface|object
+     */
     public function getDic()
     {
         return $this->_dic;
     }
 
+
+    /**
+     * Create a new results object
+     *
+     * @param array  $records
+     * @param string $refKey
+     * @param int    $foundRecordsCount
+     *
+     * @return \FACTFinder\Data\Result
+     */
     public function getNewResultObject($records, $refKey, $foundRecordsCount)
     {
         return FF::getInstance(
@@ -438,4 +651,6 @@ class FACTFinder_Core_Model_Facade
             $foundRecordsCount
         );
     }
+
+
 }
