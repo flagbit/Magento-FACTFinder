@@ -35,8 +35,16 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
+
+    /**
+     * Check is catalog navigation replacement is enabled
+     *
+     * @return bool
+     */
     public function isCatalogNavigation()
     {
-        return Mage::app()->getStore()->getConfig('factfinder/modules/catalog_navigation');
+        return (bool) Mage::app()->getStore()->getConfig('factfinder/modules/catalog_navigation');
     }
+
+
 }

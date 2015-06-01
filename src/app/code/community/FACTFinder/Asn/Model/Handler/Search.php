@@ -300,6 +300,10 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
         return $type;
     }
 
+
+    /**
+     * Prepare all request parameters for the search adapter
+     */
     protected function _collectParams()
     {
         $params = parent::_collectParams();
@@ -311,5 +315,6 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
 
         return $params;
     }
+
 
 }

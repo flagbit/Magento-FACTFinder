@@ -15,7 +15,6 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 
     /**
      * Prepare all request parameters for the primary search adapter
-     *
      */
     protected function _collectParams()
     {

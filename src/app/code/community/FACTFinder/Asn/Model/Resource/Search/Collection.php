@@ -13,4 +13,5 @@ class FACTFinder_Asn_Model_Resource_Search_Collection extends FACTFinder_Core_Mo
         return Mage::getSingleton('factfinder_asn/handler_search');
     }
 
+
 }

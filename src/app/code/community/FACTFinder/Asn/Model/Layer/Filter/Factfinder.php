@@ -32,13 +32,13 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
         if (isset($this->_selectedFilterItems[$_attributeCode])
             && is_array($this->_selectedFilterItems[$_attributeCode])
         ) {
-
             foreach ($this->_selectedFilterItems[$_attributeCode] as $optionData) {
                 $this->getLayer()->getState()->addFilter(
                     $this->_createItem($optionData)
                 );
             }
         }
+
         return $this;
     }
 
@@ -109,4 +109,6 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
 
         return $this;
     }
+
+
 }

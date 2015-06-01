@@ -78,6 +78,7 @@ class FACTFinder_Asn_Model_Observer
         $this->_addLayeredNavigation($block);
     }
 
+
     /**
      * Reset current search layer for further use in the block
      *
@@ -91,4 +92,6 @@ class FACTFinder_Asn_Model_Observer
 
         Mage::register('current_layer', Mage::getSingleton('factfinder_asn/catalog_layer'));
     }
+
+
 }

@@ -4,12 +4,22 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
 {
     const TYPE_SLIDER = 'slider';
 
+
+    /**
+     * Class constructor
+     */
     public function __construct()
     {
         parent::__construct();
         $this->_filterModelName = 'factfinder_asn/layer_filter_factfinder';
     }
 
+
+    /**
+     * Initialize filter model object
+     *
+     * @return FACTFinder_Asn_Block_Catalog_Layer_Factfinder
+     */
     public function init()
     {
         parent::init();
@@ -23,4 +33,6 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
 
         return $this;
     }
+
+
 }

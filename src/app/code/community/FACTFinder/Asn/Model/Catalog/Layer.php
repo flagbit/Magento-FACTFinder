@@ -21,4 +21,5 @@ class FACTFinder_Asn_Model_Catalog_Layer extends Mage_Catalog_Model_Layer
         return $collection;
     }
 
+
 }
