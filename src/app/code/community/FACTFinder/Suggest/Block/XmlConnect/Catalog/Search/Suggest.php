@@ -10,6 +10,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_Xm
 {
     const SUGGEST_ITEM_SEPARATOR = '::sep::';
 
+
     /**
      * Search suggestions xml renderer
      *
@@ -42,5 +43,6 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_Xm
 
         return $suggestXmlObj->asNiceXml();
     }
+
 
 }

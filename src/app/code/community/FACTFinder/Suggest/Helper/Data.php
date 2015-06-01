@@ -3,14 +3,11 @@
 class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
-    /**
-     * @var string
-     */
     const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';
 
 
     /**
-     * get FACT-Finder Suggest URL
+     * Get FACT-Finder Suggest URL
      *
      * @return string
      */
@@ -28,14 +25,20 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
                 $url = preg_replace('/^http:/', 'https:', $url);
             }
         }
+
         return $url;
     }
 
+
     /**
+     * Check config is proxy is activated
+     *
      * @return bool
      */
     public function isSuggestProxyActivated()
     {
         return Mage::getStoreConfig(self::XML_CONFIG_PATH_USE_PROXY);
     }
+
+
 }

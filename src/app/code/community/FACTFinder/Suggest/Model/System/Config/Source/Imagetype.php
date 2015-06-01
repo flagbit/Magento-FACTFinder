@@ -4,6 +4,8 @@
  */
 class FACTFinder_Suggest_Model_System_Config_Source_Imagetype
 {
+
+
     /**
      * Get available image types
      *
@@ -21,4 +23,7 @@ class FACTFinder_Suggest_Model_System_Config_Source_Imagetype
 
         return $options;
     }
+
+
 }
+

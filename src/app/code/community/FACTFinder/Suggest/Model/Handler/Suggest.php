@@ -14,7 +14,13 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
     protected $_primaryChannel;
     protected $_secondaryChannels;
 
+    /**
+     * Facade model to use
+     *
+     * @var string
+     */
     protected $_facadeModel = 'factfinder_suggest/facade';
+
 
     /**
      * We might need to supply the facade manually, because we might not have a full Magento
@@ -28,8 +34,9 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         parent::__construct();
     }
 
+
     /**
-     * {@inheritdoc}
+     * Set config params to the adapter
      */
     protected function _configureFacade()
     {
@@ -43,6 +50,12 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         $this->_getFacade()->configureSuggestAdapter($params);
     }
 
+
+    /**
+     * Get suggestions as string
+     *
+     * @return string
+     */
     public function getSuggestions()
     {
         if ($this->_suggestResult === null) {
@@ -52,6 +65,12 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         return $this->_suggestResult;
     }
 
+
+    /**
+     * Retrieve suggestions array
+     *
+     * @return array
+     */
     public function getSuggestionsAsArray()
     {
         if ($this->_suggestResultAsArray === null) {
@@ -61,6 +80,12 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         return $this->_suggestResultAsArray;
     }
 
+
+    /**
+     * Encode suggest result to json
+     *
+     * @return string
+     */
     protected function _assembleSuggestResult()
     {
         // Retrieve and merge all suggestions
@@ -93,12 +118,28 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         return $this->_jqueryCallback . '(' . Zend_Json_Encoder::encode($resultArray) . ');';
     }
 
+
+    /**
+     * Decode suggest result from json to array
+     *
+     * @return mixed
+     *
+     * @throws \Zend_Json_Exception
+     */
     protected function _assembleSuggestResultAsArray()
     {
         // TODO: Multiple channels
         return Zend_Json_Decoder::decode($this->_getAndSanitizeSuggestions());
     }
 
+
+    /**
+     * Get sanitazed string of suggestions
+     *
+     * @param string $channel
+     *
+     * @return string
+     */
     protected function _getAndSanitizeSuggestions($channel = null)
     {
         $result = $this->_getFacade()->getSuggestions($channel);
@@ -106,12 +147,14 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
             $result = '';
         }
 
-        if(is_array($result)) {
-            foreach($result as $item) {
+        if (is_array($result)) {
+            foreach ($result as $item) {
                 $item->channel = $channel ? $channel : $this->_primaryChannel;
             }
         }
 
         return $result;
     }
+
+
 }

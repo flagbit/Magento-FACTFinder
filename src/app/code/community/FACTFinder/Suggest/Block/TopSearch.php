@@ -1,6 +1,13 @@
 <?php
 class FACTFinder_Suggest_Block_TopSearch extends Mage_Core_Block_Template
 {
+
+
+    /**
+     * Get suggect translatyion in json encoded format
+     *
+     * @return string
+     */
     public function getTranslationsAsJson()
     {
         $channels = explode(';', Mage::getStoreConfig('factfinder/search/secondary_channels'));
@@ -16,4 +23,6 @@ class FACTFinder_Suggest_Block_TopSearch extends Mage_Core_Block_Template
 
         return json_encode($result);
     }
+
+
 }

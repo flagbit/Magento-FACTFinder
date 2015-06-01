@@ -3,6 +3,7 @@
 class FACTFinder_Suggest_Model_Observer
 {
 
+
     /**
      * Add suggest handle to the layout
      *
@@ -18,5 +19,6 @@ class FACTFinder_Suggest_Model_Observer
         $update = $layout->getUpdate();
         $update->addHandle('factfinder_suggest_enabled');
     }
+
 
 }

@@ -48,8 +48,9 @@ class FACTFinder_Suggest_Model_Processor
         $autoloaderClass->addAutoloader(new Varien_Event_Observer());
     }
 
+
     /**
-     * get Fact-Finder Facade
+     * Get Fact-Finder Facade
      * we do it manually, because we do not have the full magento context
      *
      * @return FACTFinder_Core_Model_Facade
@@ -70,7 +71,7 @@ class FACTFinder_Suggest_Model_Processor
      *
      * @param string $content
      *
-     * @return string | false
+     * @return string|false
      */
     public function extractContent($content)
     {
@@ -115,7 +116,7 @@ class FACTFinder_Suggest_Model_Processor
 
 
     /**
-     * hanlde without App Requests
+     * Hanlde without App Requests
      *
      * @return string
      */
@@ -139,8 +140,9 @@ class FACTFinder_Suggest_Model_Processor
         return $this->_handleRequest();
     }
 
+
     /**
-     * handle Requests
+     * Handle Requests
      *
      * @return string
      */
@@ -157,7 +159,7 @@ class FACTFinder_Suggest_Model_Processor
 
 
     /**
-     * get Request Param by Key
+     * Get Request Param by Key
      *
      * @param string $key
      *
@@ -169,6 +171,7 @@ class FACTFinder_Suggest_Model_Processor
         if (isset($_REQUEST[$key])) {
             $value = $_REQUEST[$key];
         }
+
         return $value;
     }
 
@@ -256,13 +259,10 @@ class FACTFinder_Suggest_Model_Processor
      */
     public function isAllowed()
     {
-        if (!$this->_requestId) {
-            return false;
-        }
-        if (isset($_COOKIE['NO_CACHE'])) {
-            return false;
-        }
-        if (isset($_GET['no_cache'])) {
+        if (!$this->_requestId
+            || isset($_COOKIE['NO_CACHE'])
+            || isset($_GET['no_cache'])
+        ) {
             return false;
         }
 
@@ -279,5 +279,6 @@ class FACTFinder_Suggest_Model_Processor
     {
         return $this->_requestTags;
     }
+
 
 }

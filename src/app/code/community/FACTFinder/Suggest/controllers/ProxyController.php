@@ -1,8 +1,10 @@
 <?php
 class FACTFinder_Suggest_ProxyController extends Mage_Core_Controller_Front_Action
 {
+
+
     /**
-     * suggest Action
+     * Suggest Action
      */
     public function suggestAction()
     {
@@ -11,5 +13,6 @@ class FACTFinder_Suggest_ProxyController extends Mage_Core_Controller_Front_Acti
             Mage::getModel('factfinder_suggest/processor')->handleInAppRequest($this->getFullActionName())
         );
     }
+
 
 }
