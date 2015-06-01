@@ -6,10 +6,18 @@ class FACTFinder_Campaigns_Block_Product_Advisory extends Mage_Core_Block_Templa
 {
 
     /**
+     * Handler used to access product campaigns data
+     *
      * @var FACTFinder_Campaigns_Model_Handler_Product
      */
     protected $_productCampaignHandler;
 
+
+    /**
+     * Preparing global layout
+     *
+     * @return FACTFinder_Campaigns_Block_Product_Advisory
+     */
     protected function _prepareLayout()
     {
         $productIds = array(
@@ -21,10 +29,11 @@ class FACTFinder_Campaigns_Block_Product_Advisory extends Mage_Core_Block_Templa
         return parent::_prepareLayout();
     }
 
+
     /**
-    * get campaign questions and answers
+    * Get campaign questions and answers
     *
-    * @return array $questions
+    * @return array
     */
     public function getActiveQuestions()
     {
@@ -37,8 +46,16 @@ class FACTFinder_Campaigns_Block_Product_Advisory extends Mage_Core_Block_Templa
         return $questions;
     }
 
+
+    /**
+     * Check if campaign can be displayed
+     *
+     * @return bool
+     */
     protected function canCampaignBeDisplay()
     {
         return (bool) Mage::registry('current_product');
     }
+
+
 }

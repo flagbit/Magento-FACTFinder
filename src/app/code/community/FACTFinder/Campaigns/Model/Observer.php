@@ -1,6 +1,14 @@
 <?php
 class FACTFinder_Campaigns_Model_Observer
 {
+
+
+    /**
+     * Handles campaign redirects on
+     * controller_action_layout_generate_blocks_after
+     *
+     * @param Varien_Object $observer
+     */
     public function handleCampaignsRedirect($observer)
     {
         if (((!Mage::registry('current_layer') || !Mage::helper('factfinder')->isEnabled('catalog_navigation'))
@@ -31,5 +39,6 @@ class FACTFinder_Campaigns_Model_Observer
             exit;
         }
     }
+
 
 }

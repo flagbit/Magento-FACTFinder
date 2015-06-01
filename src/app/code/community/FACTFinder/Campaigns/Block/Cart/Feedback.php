@@ -13,19 +13,33 @@
 class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
 {
 
+    /**
+     * Collection of "pushed" products
+     *
+     * @var FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
+     */
     protected $_pushedProductsCollection;
 
     /**
+     * Current product
+     *
      * @var Mage_Catalog_Model_Product
      */
     protected $_product;
 
     /**
+     * Handler used to get data from ff
+     *
      * @var FACTFinder_Campaigns_Model_Handler_Cart
      */
     protected $_handler;
 
 
+    /**
+     * Preparing global layout
+     *
+     * @return FACTFinder_Campaigns_Block_Cart_Feedback
+     */
     protected function _prepareLayout()
     {
         $productId = Mage::getSingleton('checkout/session')->getLastAddedProductId();
@@ -49,7 +63,7 @@ class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
     /**
      * Get campaign questions and answers
      *
-     * @return array $feedback
+     * @return array
      */
     public function getActiveFeedback()
     {
@@ -74,6 +88,7 @@ class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
 
         return $feedback;
     }
+
 
     /**
      * Pushed Products Collection

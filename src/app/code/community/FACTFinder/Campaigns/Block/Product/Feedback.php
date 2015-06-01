@@ -7,16 +7,25 @@ class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Templa
 {
 
     /**
+     * Collection of "pushed" products
+     *
      * @var FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
     protected $_pushedProductsCollection;
 
-
     /**
+     * Handler used to access campaign data
+     *
      * @var FACTFinder_Campaigns_Model_Handler_Product
      */
     protected $_productCampaignHandler;
 
+
+    /**
+     * Preparing global layout
+     *
+     * @return FACTFinder_Campaigns_Block_Product_Feedback
+     */
     protected function _prepareLayout()
     {
         $productIds = array(
@@ -28,10 +37,11 @@ class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Templa
         return parent::_prepareLayout();
     }
 
+
     /**
-     * get campaign feedback
+     * Get campaign feedback
      *
-     * @return array $feedback
+     * @return array
      */
     public function getActiveFeedback()
     {
@@ -50,7 +60,7 @@ class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Templa
 
 
     /**
-     * Pushed Products Collection
+     * Get pushed products collection
      *
      * @return FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
@@ -63,4 +73,6 @@ class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Templa
 
         return $this->_pushedProductsCollection;
     }
+
+
 }

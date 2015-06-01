@@ -11,6 +11,10 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
     protected $_handler;
 
+
+    /**
+     * Initialization of the handler
+     */
     protected function _construct()
     {
         $this->_handler = Mage::getSingleton('factfinder_campaigns/handler_search');
@@ -24,7 +28,7 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      *
      * @param $handler
      *
-     * @return $this
+     * @return FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
     public function setHandler($handler)
     {
@@ -64,7 +68,7 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      *
      * @throws Exception
      *
-     * @return Mage_Eav_Model_Entity_Collection_Abstract
+     * @return FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
@@ -156,7 +160,7 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      * @param string $attribute
      * @param string $dir
      *
-     * @return Mage_CatalogSearch_Model_Resource_Fulltext_Collection
+     * @return FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
      */
     public function setOrder($attribute, $dir = 'desc')
     {

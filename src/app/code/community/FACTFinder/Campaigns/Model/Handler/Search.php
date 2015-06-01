@@ -2,9 +2,20 @@
 
 class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Handler_Search
 {
+
+    /**
+     * Array of ff campaigns
+     *
+     * @var array
+     */
     protected $_campaigns;
 
 
+    /**
+     * Retrieve redirect url from campaign
+     *
+     * @return string
+     */
     public function getRedirect()
     {
         $url = null;
@@ -17,6 +28,12 @@ class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Ha
         return $url;
     }
 
+
+    /**
+     * Get array of campaigns available
+     *
+     * @return array
+     */
     public function getCampaigns()
     {
         if ($this->_campaigns === null) {
@@ -25,4 +42,6 @@ class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Ha
 
         return $this->_campaigns;
     }
+
+
 }

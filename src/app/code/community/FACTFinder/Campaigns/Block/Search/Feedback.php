@@ -11,10 +11,18 @@ class FACTFinder_Campaigns_Block_Search_Feedback extends Mage_Core_Block_Templat
 
 
     /**
+     * Search handler. Used on search and category pages
+     *
      * @var FACTFinder_Campaigns_Model_Handler_Search
      */
     protected $_searchHandler;
 
+
+    /**
+     * Preparing global layout. Here we initialize the handler
+     *
+     * @return FACTFinder_Campaigns_Block_Search_Feedback
+     */
     protected function _prepareLayout()
     {
         $this->_searchHandler = Mage::getSingleton('factfinder_campaigns/handler_search');
