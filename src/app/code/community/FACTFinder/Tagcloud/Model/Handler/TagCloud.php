@@ -24,7 +24,7 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
 
 
     /**
-     * {@inheritdoc}
+     * Configure adapter
      */
     protected function _configureFacade()
     {
@@ -32,7 +32,10 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
         $this->_getFacade()->configureTagCloudAdapter(array());
     }
 
+
     /**
+     * Get terms array
+     *
      * @return array
      */
     public function getTerms()
@@ -47,10 +50,13 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
         return $terms;
     }
 
+
     /**
-     * @param   FACTFinder_TagQuery $item
+     * Convert ff item to array
      *
-     * @return  array
+     * @param $item
+     *
+     * @return array
      */
     protected function assembleTermArray($item)
     {
@@ -63,17 +69,24 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
         return $termArray;
     }
 
+
     /**
-     * @return array of FACTFinder_TagQuery
+     * Retrieve tag cloud array
+     *
+     * @return array
      */
     protected function _getTagCloud()
     {
         if ($this->_tagCloud === null) {
             $this->_tagCloud = $this->_getFacade()->getTagCloud();
-            if ($this->_tagCloud === null)
+            if ($this->_tagCloud === null) {
                 $this->_tagCloud = array();
+            }
         }
 
         return $this->_tagCloud;
     }
+
+
 }
+

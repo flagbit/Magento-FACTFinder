@@ -10,8 +10,9 @@ class FACTFinder_Tagcloud_Block_TagCloud extends Mage_CatalogSearch_Block_Term
         if (empty($this->_terms)) {
             $this->_terms = $handler->getTerms();
 
-            if (count($this->_terms) == 0)
+            if (count($this->_terms) == 0) {
                 return $this;
+            }
 
             $this->determineMinMaxPopularity();
         }
@@ -28,11 +29,13 @@ class FACTFinder_Tagcloud_Block_TagCloud extends Mage_CatalogSearch_Block_Term
         $this->_minPopularity = 1;
 
         foreach ($this->_terms as $term) {
-            if ($term->getPopularity() > $this->_maxPopularity)
+            if ($term->getPopularity() > $this->_maxPopularity) {
                 $this->_maxPopularity = $term->getPopularity();
+            }
 
-            if ($term->getPopularity() < $this->_minPopularity)
+            if ($term->getPopularity() < $this->_minPopularity) {
                 $this->_minPopularity = $term->getPopularity();
+            }
         }
     }
 }
