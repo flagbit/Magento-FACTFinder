@@ -86,7 +86,7 @@ class FACTFinder_Recommendation_Model_Observer
      */
     protected function _getProductIds($collection, $idFieldName)
     {
-        if($collection->getProduct() && $collection->getProduct()->getId()) {
+        if ($collection->getProduct() && $collection->getProduct()->getId()) {
             return array($collection->getProduct()->getData($idFieldName));
         }
 
@@ -97,7 +97,7 @@ class FACTFinder_Recommendation_Model_Observer
             $ids[] = $product->getData($idFieldName);
         }
 
-        if($collection->getLinkModel()->getLinkTypeId() == Mage_Catalog_Model_Product_Link::LINK_TYPE_CROSSSELL) {
+        if ($collection->getLinkModel()->getLinkTypeId() == Mage_Catalog_Model_Product_Link::LINK_TYPE_CROSSSELL) {
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             foreach ($quote->getAllItems() as $item) {
                 if ($product = $item->getProduct()) {

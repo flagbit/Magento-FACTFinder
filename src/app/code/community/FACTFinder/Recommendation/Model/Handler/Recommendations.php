@@ -19,12 +19,18 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
      */
     protected $_recommendations;
 
+    /**
+     * Facade model to be used
+     *
+     * @var string
+     */
     protected $_facadeModel = 'factfinder_recommendation/facade';
+
 
     /**
      * Class constructor
      *
-     * @param $productIds
+     * @param array $productIds
      */
     public function __construct($productIds)
     {
@@ -32,6 +38,10 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
         parent::__construct();
     }
 
+
+    /**
+     * Set config values and configure adapter
+     */
     protected function _configureFacade()
     {
         $params = array();
