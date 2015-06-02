@@ -10,7 +10,7 @@
 /**
  * Provides feedback text to the cart page
  */
-class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
+class FACTFinder_Campaigns_Block_Cart_Feedback extends FACTFinder_Campaigns_Block_Abstract
 {
 
     /**
@@ -42,6 +42,10 @@ class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
      */
     protected function _prepareLayout()
     {
+        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
+            return parent::_prepareLayout();
+        }
+
         $productId = Mage::getSingleton('checkout/session')->getLastAddedProductId();
 
         if ($productId) {
@@ -104,6 +108,5 @@ class FACTFinder_Campaigns_Block_Cart_Feedback extends Mage_Core_Block_Template
 
         return $this->_pushedProductsCollection;
     }
-
 
 }

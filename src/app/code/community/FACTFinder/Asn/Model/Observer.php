@@ -71,7 +71,9 @@ class FACTFinder_Asn_Model_Observer
     {
         $block = $observer->getBlock();
 
-        if (!$block instanceof Mage_CatalogSearch_Block_Layer) {
+        if (!$block instanceof Mage_CatalogSearch_Block_Layer
+            || !Mage::helper('factfinder')->isEnabled('asn')
+        ) {
             return;
         }
 

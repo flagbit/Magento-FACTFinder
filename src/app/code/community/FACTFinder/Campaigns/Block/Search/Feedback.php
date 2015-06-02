@@ -1,6 +1,6 @@
 <?php
 
-class FACTFinder_Campaigns_Block_Search_Feedback extends Mage_Core_Block_Template
+class FACTFinder_Campaigns_Block_Search_Feedback extends FACTFinder_Campaigns_Block_Abstract
 {
     /**
      * Pushed Products Collection
@@ -25,6 +25,10 @@ class FACTFinder_Campaigns_Block_Search_Feedback extends Mage_Core_Block_Templat
      */
     protected function _prepareLayout()
     {
+        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
+            return parent::_prepareLayout();
+        }
+
         $this->_searchHandler = Mage::getSingleton('factfinder_campaigns/handler_search');
 
         return parent::_prepareLayout();

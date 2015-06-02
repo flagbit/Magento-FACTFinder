@@ -134,6 +134,16 @@
                 <asn>1</asn>
             </modules>
         </factfinder>
+        <advanced>
+            <ff_modules>
+                <asn>1</asn>
+                <suggest>1</suggest>
+                <campaigns>1</campaigns>
+                <tracking>1</tracking>
+                <recommendation>1</recommendation>
+                <tagcloud>1</tagcloud>
+            </ff_modules>
+        </advanced>
     </default>
     <crontab>
         <jobs>

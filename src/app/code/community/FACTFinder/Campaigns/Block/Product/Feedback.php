@@ -3,7 +3,7 @@
 /**
  * Provides advisory hints to the product view page
  */
-class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Template
+class FACTFinder_Campaigns_Block_Product_Feedback extends FACTFinder_Campaigns_Block_Abstract
 {
 
     /**
@@ -28,6 +28,10 @@ class FACTFinder_Campaigns_Block_Product_Feedback extends Mage_Core_Block_Templa
      */
     protected function _prepareLayout()
     {
+        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
+            return parent::_prepareLayout();
+        }
+
         $productIds = array(
             Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
         );

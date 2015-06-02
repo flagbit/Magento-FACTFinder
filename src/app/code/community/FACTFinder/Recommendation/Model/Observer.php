@@ -9,6 +9,10 @@ class FACTFinder_Recommendation_Model_Observer
      */
     public function loadRecommendedItemsItems($observer)
     {
+        if (!Mage::helper('factfinder')->isEnabled('recommendation')) {
+            return;
+        }
+
         $collection = $observer->getCollection();
         if (!$collection instanceof Mage_Catalog_Model_Resource_Product_Link_Product_Collection
             || ($collection->getLinkModel()->getLinkTypeId() !== Mage_Catalog_Model_Product_Link::LINK_TYPE_UPSELL

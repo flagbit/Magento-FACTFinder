@@ -89,7 +89,7 @@ class FACTFinder_Core_Model_Observer
         foreach ($modules->children() as $module => $data) {
             if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
                 $configName = strtolower(str_replace('FACTFinder_', '', $module));
-                $isActivated = Mage::helper('factfinder')->isEnabled($configName);
+                $isActivated = Mage::helper('factfinder')->isModuleActivated($configName);
 
                 $currentState = (string) $config->getNode("modules/{$module}/active");
                 if ((bool) $currentState === (bool) $isActivated) {

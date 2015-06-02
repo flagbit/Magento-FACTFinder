@@ -12,7 +12,9 @@ class FACTFinder_Tracking_Model_Observer
     public function addTrackingHandles($observer)
     {
         if (!Mage::getStoreConfig('factfinder/export/clicktracking')
-            || !Mage::helper('factfinder/search')->getIsOnSearchPage()) {
+            || !Mage::helper('factfinder/search')->getIsOnSearchPage()
+            || !Mage::helper('factfinder')->isEnabled('tracking')
+        ) {
             return;
         }
 
@@ -30,7 +32,9 @@ class FACTFinder_Tracking_Model_Observer
      */
     public function addToCartTracking($observer)
     {
-        if (!Mage::getStoreConfigFlag('factfinder/export/track_carts')) {
+        if (!Mage::getStoreConfigFlag('factfinder/export/track_carts')
+            || !Mage::helper('factfinder')->isEnabled('tracking')
+        ) {
             return;
         }
 
@@ -78,7 +82,9 @@ class FACTFinder_Tracking_Model_Observer
         $product = $observer->getProduct();
         $searchHelper = Mage::helper('factfinder/search');
 
-        if (!Mage::getStoreConfig('factfinder/export/clicktracking')) {
+        if (!Mage::getStoreConfig('factfinder/export/clicktracking')
+            || !Mage::helper('factfinder')->isEnabled('tracking')
+        ) {
             return;
         }
 
@@ -122,7 +128,9 @@ class FACTFinder_Tracking_Model_Observer
      */
     public function addOrderDetailsToQueue($observer)
     {
-        if (!Mage::getStoreConfigFlag('factfinder/export/track_checkout')) {
+        if (!Mage::getStoreConfigFlag('factfinder/export/track_checkout')
+            || !Mage::helper('factfinder')->isEnabled('tracking')
+        ) {
             return;
         }
 
@@ -166,6 +174,10 @@ class FACTFinder_Tracking_Model_Observer
      */
     public function processOrderQueue()
     {
+        if (!Mage::helper('factfinder')->isEnabled('tracking')) {
+            return;
+        }
+
         $queue = Mage::getModel('factfinder_tracking/queue');
 
         try {
@@ -187,12 +199,11 @@ class FACTFinder_Tracking_Model_Observer
                 $item->delete($item);
             }
 
-            if($queue->getCollection()->count()) {
+            if ($queue->getCollection()->count()) {
                 // We use the last adapter instance to start the parallel request
                 $tracking->applyTracking($item->getProductId());
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             Mage::logException($e);
         }
     }

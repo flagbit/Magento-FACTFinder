@@ -6,6 +6,10 @@ class FACTFinder_Tagcloud_Block_TagCloud extends Mage_CatalogSearch_Block_Term
      */
     protected function _loadTerms()
     {
+        if (!Mage::helper('factfinder')->isEnabled('tagcloud')) {
+            return parent::_loadTerms();
+        }
+
         $handler = Mage::getModel('factfinder_tagcloud/handler_tagCloud');
         if (empty($this->_terms)) {
             $this->_terms = $handler->getTerms();
