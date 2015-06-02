@@ -106,6 +106,7 @@ class FACTFinder_Core_Model_Observer
         }
     }
 
+
     /**
      * Redirect to product page on single result
      *

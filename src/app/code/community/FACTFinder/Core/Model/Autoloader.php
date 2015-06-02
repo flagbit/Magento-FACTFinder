@@ -7,8 +7,18 @@
  */
 class FACTFinder_Core_Model_Autoloader
 {
+
+    /**
+     * @var bool
+     */
     protected static $registered = false;
 
+
+    /**
+     * Add autoloader class
+     *
+     * @param \Varien_Event_Observer $observer
+     */
     public function addAutoloader(Varien_Event_Observer $observer)
     {
         if (self::$registered) {
@@ -18,6 +28,12 @@ class FACTFinder_Core_Model_Autoloader
         self::$registered = true;
     }
 
+
+    /**
+     * Autoload method
+     *
+     * @param $class
+     */
     public function autoload($class)
     {
         $classFile = str_replace('\\', '/', $class) . '.php';
@@ -26,4 +42,5 @@ class FACTFinder_Core_Model_Autoloader
             include $classFile;
         }
     }
+
 }

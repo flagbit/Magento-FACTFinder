@@ -58,4 +58,7 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attributes
             'selected="selected"'
         );
     }
+
+
 }
+

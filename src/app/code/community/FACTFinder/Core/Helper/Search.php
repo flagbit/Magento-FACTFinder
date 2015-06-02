@@ -29,6 +29,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return Mage::helper('catalogsearch')->getQueryText();
     }
 
+
     /**
      * get Page Limit
      *
@@ -42,6 +43,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         }
         return $limit;
     }
+
 
     /**
      * get Toolbar Block
@@ -60,6 +62,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return $toolbarBlock;
     }
 
+
     /**
      * get current Page Number
      *
@@ -69,6 +72,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     {
         return $this->_getToolbarBlock()->getCurrentPage();
     }
+
 
     /**
      * get Entity ID Field Name by Configuration or via Entity
@@ -88,7 +92,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     /**
      * Determines whether the fallback should be used
      *
-     * @return    bool
+     * @return bool
      **/
     protected function _isFallbackFeatureActive()
     {
@@ -100,6 +104,11 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Enable fallback feature
+     *
+     * @param int $delay
+     */
     protected function _enableFallback($delay)
     {
         self::$_skipFactFinder = true;
@@ -108,6 +117,9 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Disable fallback feature
+     */
     protected function _disableFallback()
     {
         self::$_skipFactFinder = false;
@@ -184,14 +196,17 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
 
     /**
-     *
+     * Assemble and output warning message
      */
     protected function _outputWarningMessage()
     {
         $delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
 
         $title = 'FACT-Finder unreachable! Falling back to Magento\'s search for ' . $delay . ' minutes.';
-        $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for ' . $delay . ' minutes before trying to reach FACT-Finder again. If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.';
+        $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for '
+            . $delay . ' minutes before trying to reach FACT-Finder again. '
+            . 'If the problem persists, please check your FACT-Finder server and the settings'
+            . ' in Magento\'s FACT-Finder configuration.';
 
         $adminNotificationInbox = Mage::getModel('adminnotification/inbox');
 
@@ -326,10 +341,11 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return Mage::helper('catalogsearch')->getQuery();
     }
 
+
     /**
      * Get Module Status depending on Module
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsOnSearchPage()
     {
@@ -342,4 +358,6 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
         return false;
     }
+
+
 }

@@ -55,6 +55,7 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Blo
                 $this->addOption($id, addslashes($label));
             }
         }
+
         return parent::_toHtml();
     }
 }

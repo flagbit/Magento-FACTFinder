@@ -10,6 +10,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
     const XML_AUTH_PASSWORD_PATH = 'factfinder/search/auth_password';
 
+
     /**
      * Handle Export Authentification
      *
@@ -27,6 +28,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         return parent::preDispatch();
     }
 
+
     /**
      * Get current Store ID
      *
@@ -40,6 +42,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
         return Mage::app()->getStore()->getId();
     }
+
 
     /**
      * Initialize Product Export
@@ -69,6 +72,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         $this->_forward('get');
     }
 
+
     /**
      * Output pre-generated export files for a specific resource and store (for ff import process)
      */
@@ -87,6 +91,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
         echo file_get_contents($filePath . $fileName);
     }
+
 
     /**
      * Download pre-generated export files for a specific resource and store
@@ -113,6 +118,10 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         );
     }
 
+
+    /**
+     * Add export action to cronjob table
+     */
     public function scheduleExportAction()
     {
         $schedule = Mage::getModel('cron/schedule');
@@ -140,16 +149,25 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         @touch($this->_getLockFileName());
     }
 
+
     /**
      * Release the semaphore
-     **/
+     */
     protected function releaseSemaphore()
     {
         @unlink($this->_getLockFileName());
     }
 
+
+    /**
+     * Retrieve the name of lockfile
+     *
+     * @return string
+     */
     protected function _getLockFileName()
     {
         return Mage::getBaseDir('var') . DS . 'locks' . DS . 'ffexport_' . $this->_getStoreId() . '.lock';
     }
+
+
 }

@@ -2,6 +2,8 @@
 
 class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
+
+
     /**
      * Get collection size
      *
@@ -104,10 +106,10 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
             }
 
             foreach ($productIds as $productId => $additionalData) {
-
                 if (empty($items[$productId])) {
                     continue;
                 }
+
                 $v = array_merge($items[$productId], $additionalData->toArray());
                 $object = $this->getNewEmptyItem()
                     ->setData($v);
@@ -124,5 +126,6 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
 
         return $this;
     }
+
 
 }

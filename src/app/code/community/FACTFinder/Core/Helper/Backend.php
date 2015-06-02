@@ -8,6 +8,7 @@
 class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
 {
 
+
     /**
      * Generate a storable representation of a value
      *
@@ -17,21 +18,23 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
      */
     protected function _serializeValue($value)
     {
-        if (is_array($value)) {
-            $data = array();
-            foreach ($value as $rule => $setup) {
-                if ($rule == '__empty') {
-                    continue;
-                }
-                if (!array_key_exists($rule, $data)) {
-                    $data[$rule] = $setup;
-                }
-            }
-            return serialize($data);
-        } else {
+        if (!is_array($value)) {
             return '';
         }
+
+        $data = array();
+        foreach ($value as $rule => $setup) {
+            if ($rule == '__empty') {
+                continue;
+            }
+            if (!array_key_exists($rule, $data)) {
+                $data[$rule] = $setup;
+            }
+        }
+
+        return serialize($data);
     }
+
 
     /**
      * Create a value from a storable representation

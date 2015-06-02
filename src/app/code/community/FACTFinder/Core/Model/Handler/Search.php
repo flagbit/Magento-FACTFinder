@@ -6,12 +6,17 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     protected $_searchResult;
     protected $_searchResultCount;
 
+
+    /**
+     * Set configuration params to the search adapter
+     */
     protected function _configureFacade()
     {
         $params = $this->_collectParams();
 
         $this->_getFacade()->configureSearchAdapter($params);
     }
+
 
     /**
      * Prepare all request parameters for the primary search adapter
@@ -141,5 +146,6 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 
         return $this->_searchResult;
     }
+
 
 }

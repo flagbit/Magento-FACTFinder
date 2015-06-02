@@ -1,6 +1,7 @@
 <?php
 class FACTFinder_Core_Model_System_Config_Source_Identifier
 {
+
     /**
      * Get possible identifiers as Option Array
      *
@@ -19,4 +20,5 @@ class FACTFinder_Core_Model_System_Config_Source_Identifier
             )
         );
     }
+
 }

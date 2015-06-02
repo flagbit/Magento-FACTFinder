@@ -22,12 +22,26 @@ define('FFE_SERVER_TIME_MISMATCH', 16183003); // server time is not consistent w
  */
 class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler_Search
 {
+    /**
+     * Array of error messages
+     *
+     * @var array
+     */
     protected $_errorMessages = array();
 
+    /**
+     * Helper instance
+     *
+     * @var FACTFinder_Core_Helper_Data
+     */
     protected $_helper;
 
+    /**
+     * Secondary channels array
+     *
+     * @var array
+     */
     protected $_secondaryChannels;
-
 
     /**
      * Mapping of error codes and messages
@@ -97,7 +111,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
      * Retrieve full error message
      *
      * @param $statusCode
-     * @param null $channel
+     * @param string $channel
      *
      * @return string
      */
@@ -158,6 +172,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     public function getVersionNumber()
     {
         $resultCount = $this->_getFacade()->getSearchAdapter()->getResult()->getFoundRecordsCount();
+
         return intval(substr($resultCount, 0, 2));
     }
 
@@ -170,6 +185,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     public function getVersionString()
     {
         $versionNumber = '' . $this->getVersionNumber();
+
         return $versionNumber[0] . '.' . $versionNumber[1];
     }
 

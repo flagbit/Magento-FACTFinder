@@ -6,6 +6,8 @@
  */
 class FACTFinder_Core_Model_System_Config_Backend_Attributes extends Mage_Core_Model_Config_Data
 {
+
+
     /**
      * Process data after load
      */
@@ -16,6 +18,7 @@ class FACTFinder_Core_Model_System_Config_Backend_Attributes extends Mage_Core_M
         $this->setValue($value);
     }
 
+
     /**
      * Prepare data before save
      */
@@ -25,4 +28,6 @@ class FACTFinder_Core_Model_System_Config_Backend_Attributes extends Mage_Core_M
         $value = Mage::helper('factfinder/backend')->serializeFieldValue($value);
         $this->setValue($value);
     }
+
+
 }

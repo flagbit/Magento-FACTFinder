@@ -39,6 +39,8 @@ class FACTFinder_Core_Model_System_Config_Backend_Enabled extends Mage_Core_Mode
 
 
     /**
+     * Check if the configuration if valid
+     *
      * @return FACTFinder_Core_Model_System_Config_Backend_Enabled
      */
     protected function _checkConfiguration()

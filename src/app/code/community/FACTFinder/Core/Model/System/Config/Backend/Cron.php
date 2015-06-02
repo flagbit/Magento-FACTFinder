@@ -7,6 +7,7 @@ class FACTFinder_Core_Model_System_Config_Backend_Cron extends Mage_Core_Model_C
     const CRON_STRING_PATH  = 'crontab/jobs/factfinder_generate/schedule/cron_expr';
     const CRON_MODEL_PATH   = 'crontab/jobs/factfinder_generate/run/model';
 
+
     /**
      * Cron settings after save
      *
@@ -51,4 +52,5 @@ class FACTFinder_Core_Model_System_Config_Backend_Cron extends Mage_Core_Model_C
             Mage::throwException(Mage::helper('adminhtml')->__('Unable to save the cron expression.'));
         }
     }
+
 }

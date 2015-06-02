@@ -2,6 +2,7 @@
 class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     implements FACTFinder\Util\LoggerInterface
 {
+
     /**
      * Module Configuration File
      *
@@ -23,16 +24,23 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      */
     const XML_CONFIG_PATH_DEBUG_MODE = 'factfinder/config/debug';
 
+
+    /**
+     * @var Log4PhpLogger
+     */
     protected static $_loggerInstance = null;
+
 
     /**
      * Returns a new logger with the given name.
+     *
      * @param string $name Name of the logger. This should be the fully
      *                     qualified name of the class using this instance,
      *                     so that different sub-namespaces can be configured
      *                     differently. Note that in the configuration file, the
      *                     loggers need to be qualified with periods instead of
      *                     backslashes.
+     *
      * @return Log4PhpLogger
      */
     public static function getLogger($name)
@@ -43,6 +51,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
 
         return self::$_loggerInstance;
     }
+
 
     /**
      * Debug Log to file var/log/factfinder.log
@@ -68,31 +77,79 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
         return $this;
     }
 
+
+    /**
+     * Log message with prefix TRACE
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function trace($message)
     {
         return $this->log('TRACE: ' . $message);
     }
 
+
+    /**
+     * Log message with prefix TRACE
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function debug($message)
     {
         return $this->log('DEBUG: ' . $message);
     }
 
+
+    /**
+     * Log message with prefix INFO
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function info($message)
     {
         return $this->log('INFO: ' . $message);
     }
 
+
+    /**
+     * Log message with prefix WARNING
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function warn($message)
     {
         return $this->log('WARNING: ' . $message);
     }
 
+
+    /**
+     * Log message with prefix ERROR
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function error($message)
     {
         return $this->log('ERROR: ' . $message);
     }
 
+
+    /**
+     * Log message with prefix FATAL ERROR
+     *
+     * @param $message
+     *
+     * @return \FACTFinder_Core_Helper_Debug
+     */
     public function fatal($message)
     {
         return $this->log('FATAL ERROR: ' . $message);

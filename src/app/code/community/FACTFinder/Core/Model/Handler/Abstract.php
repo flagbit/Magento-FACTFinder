@@ -17,7 +17,7 @@ abstract class FACTFinder_Core_Model_Handler_Abstract
 
 
     /**
-     *
+     * Class constructor
      */
     public function __construct()
     {
@@ -46,4 +46,6 @@ abstract class FACTFinder_Core_Model_Handler_Abstract
 
         return $this->_facade;
     }
+
+
 }

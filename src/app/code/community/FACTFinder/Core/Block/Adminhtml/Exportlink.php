@@ -5,6 +5,17 @@
 class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
 
+
+    /**
+     * Get rendered link element html
+     *
+     * @param \Varien_Data_Form_Element_Abstract $element
+     *
+     * @return string
+     *
+     * @throws \Exception
+     * @throws \Mage_Core_Exception
+     */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $this->setElement($element);
@@ -89,4 +100,6 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
 
         return "<a href=\"{$href}\" target=\"_blank\">{$text}</a><br />";
     }
+
+
 }

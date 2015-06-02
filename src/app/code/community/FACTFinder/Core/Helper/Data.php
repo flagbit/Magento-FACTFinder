@@ -16,6 +16,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
         exit;
     }
 
+
     /**
      * Check if redirect to product page for single result
      *

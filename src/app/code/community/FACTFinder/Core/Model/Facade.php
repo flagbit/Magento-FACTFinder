@@ -11,6 +11,7 @@ use FACTFinder\Loader as FF;
  */
 class FACTFinder_Core_Model_Facade
 {
+
     /**
      * Two-dimensional array of FACT-Finder adapters
      * First-dimension key corresponds to type
