@@ -1,18 +1,21 @@
 <?php
 class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
 {
+
+
     /**
-     * get Product Result Collection
+     * Get Product Result Collection
      *
-     * @return Flagbit_FactFinder_Model_Mysql4_Search_Collection
+     * @return FACTFinder_Core_Model_Resource_Search_Collection
      */
     protected function _getProductResultCollection()
     {
         return Mage::getSingleton('factfinder/catalogSearch_layer')->getProductCollection();
     }
 
+
     /**
-     * get Product URL to ID Mapping JSON Object
+     * Get Product URL to ID Mapping JSON Object
      *
      * @return string
      */
@@ -25,8 +28,9 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
         return Mage::helper('core')->jsonEncode($data);
     }
 
+
     /**
-     * get Product and Search Details by ID as JSON Object
+     * Get Product and Search Details by ID as JSON Object
      *
      * @return string
      */
@@ -58,10 +62,10 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
             $data[$key] = array(
                 'id' => $product->getData($idFieldName),
                 'masterid' => $product->getData($idFieldName),
-                'pos'		=> $product->getPosition(),
-                'origPos'	=> $product->getOriginalPosition() ? $product->getOriginalPosition() : $product->getPosition(),
-                'title'		=> $product->getName(),
-                'simi'		=> $product->getSimilarity()
+                'pos'      => $product->getPosition(),
+                'origPos'  => $product->getOriginalPosition() ? $product->getOriginalPosition() : $product->getPosition(),
+                'title'    => $product->getName(),
+                'simi'     => $product->getSimilarity()
             );
 
             $data[$key] += $dataTemplate;
@@ -69,4 +73,6 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
 
         return Mage::helper('core')->jsonEncode($data);
     }
+
+
 }

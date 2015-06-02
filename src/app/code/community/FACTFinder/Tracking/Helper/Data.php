@@ -2,6 +2,8 @@
 
 class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
 {
+
+
     /**
      * Decide whether old tracking should be used
      *
@@ -14,8 +16,9 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
         return ($ffVersion <= 69);
     }
 
+
     /**
-     * returns the correct path where the tracking should be sent
+     * Get the correct path where the tracking should be sent
      *
      * @return string
      */
@@ -25,6 +28,9 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
         if ($this->useOldTracking()) {
             $urlPath = 'ff_tracking/proxy/scic';
         }
+
         return $urlPath;
     }
+
+
 }

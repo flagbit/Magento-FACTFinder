@@ -3,6 +3,7 @@ class FACTFinder_Tracking_Model_Observer
 {
     protected $_facadeModel = 'factfinder_tracking/facade';
 
+
     /**
      * Add tracking handle to the layout
      *
@@ -19,6 +20,7 @@ class FACTFinder_Tracking_Model_Observer
         $update = $layout->getUpdate();
         $update->addHandle('factfinder_clicktracking_enabled');
     }
+
 
     /**
      * Observer method.
@@ -64,10 +66,12 @@ class FACTFinder_Tracking_Model_Observer
         }
     }
 
+
     /**
      * Tracking of single product click
      *
-     * @param $product
+     * @param \Varien_Event_Observer $observer
+     * @internal param $product
      */
     public function sendClickTrackingForRedirectOnSingleResult(Varien_Event_Observer $observer)
     {
@@ -108,6 +112,7 @@ class FACTFinder_Tracking_Model_Observer
             Mage::helper('factfinder/debug')->log($e->getMessage());
         }
     }
+
 
     /**
      * Observer method
@@ -191,5 +196,6 @@ class FACTFinder_Tracking_Model_Observer
             Mage::logException($e);
         }
     }
+
 
 }

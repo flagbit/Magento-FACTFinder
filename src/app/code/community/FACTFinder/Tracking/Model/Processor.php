@@ -48,8 +48,9 @@ class FACTFinder_Tracking_Model_Processor
         $autoloaderClass->addAutoloader(new Varien_Event_Observer());
     }
 
+
     /**
-     * get Fact-Finder Facade
+     * Get Fact-Finder Facade
      * we do it manually, because we do not have the full magento context
      *
      * @return FACTFinder_Core_Model_Facade
@@ -138,6 +139,7 @@ class FACTFinder_Tracking_Model_Processor
 
         return $this->_handleRequest($request);
     }
+
 
     /**
      * handle Requests
@@ -258,13 +260,10 @@ class FACTFinder_Tracking_Model_Processor
      */
     public function isAllowed()
     {
-        if (!$this->_requestId) {
-            return false;
-        }
-        if (isset($_COOKIE['NO_CACHE'])) {
-            return false;
-        }
-        if (isset($_GET['no_cache'])) {
+        if (!$this->_requestId
+            || isset($_COOKIE['NO_CACHE'])
+            || isset($_GET['no_cache'])
+        ) {
             return false;
         }
 
@@ -281,5 +280,6 @@ class FACTFinder_Tracking_Model_Processor
     {
         return $this->_requestTags;
     }
+
 
 }

@@ -1,6 +1,8 @@
 <?php
 class FACTFinder_Tracking_ProxyController extends Mage_Core_Controller_Front_Action
 {
+
+
     /**
      * tracking Action
      */
@@ -11,6 +13,7 @@ class FACTFinder_Tracking_ProxyController extends Mage_Core_Controller_Front_Act
         );
     }
 
+
     /**
      * scic Action
      */
@@ -18,4 +21,6 @@ class FACTFinder_Tracking_ProxyController extends Mage_Core_Controller_Front_Act
     {
         $this->trackingAction();
     }
+
+
 }
