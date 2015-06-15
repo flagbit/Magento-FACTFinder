@@ -56,7 +56,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     protected function _addCsvRow($data)
     {
         foreach ($data as &$item) {
-            $item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), trim(strip_tags($item), ';'));
+            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim(strip_tags($item), ';'));
+            $item = addslashes($item);
         }
 
         $this->_lines[] = '"' . implode('";"', $data) . '"' . "\n";
