@@ -341,46 +341,98 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $this->_lines;
     }
 
-    protected function _formatSearchableAttributes($attributes, $values, $storeId = null)
+
+    /**
+     * Format attributes for csv
+     *
+     * @param array    $attributes
+     * @param array    $values
+     * @param string   $type
+     * @param null|int $storeId
+     *
+     * @return string
+     */
+    protected function _formatAttributes($attributes, $values, $type, $storeId = null)
     {
         $returnArray = array();
+        $counter = 0;
+
         foreach ($attributes as $attribute) {
             $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
             if (!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))) {
                 continue;
             }
-            $attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-            if (strval($attributeValue) != "") {
-                $returnArray[] = $attributeValue;
-            }
-        }
-        return implode(',', $returnArray);
-    }
 
-    protected function _formatFilterableAttributes($attributes, $values, $storeId = null)
-    {
-        $returnArray = array();
-        foreach ($attributes as $attribute) {
-            $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
-            if (!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))) {
-                continue;
-            }
             $attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-            $attributeValues = array();
-            if (strpos($attributeValue, '|') !== false) {
-                $attributeValues = explode('|', $attributeValue);
-            } else {
-                $attributeValues[] = $attributeValue;
-            }
 
-            foreach ($attributeValues AS $value) {
-                if (strval($value) != "") {
+            $attributeValues = explode('|', $attributeValue);
+            $attributeValues = $this->_filterAttributeValues($attributeValues);
+            foreach ($attributeValues as $value) {
+                if ($type == 'filterable') {
                     $returnArray[] = $attribute->getAttributeCode() . '=' . $value;
+                } else {
+                    $returnArray[] = $attributeValue;
                 }
             }
+
+            // apply field limit as required by ff
+            $counter++;
+            if ($counter >= 128) {
+                break;
+            }
         }
-        return implode('|', $returnArray);
+
+        $delimiter = $type == 'filterable' ? '|' : ',';
+
+        return implode($delimiter, $returnArray);
     }
+
+
+    /**
+     * Remove all empty values from array
+     *
+     * @param array $values
+     *
+     * @return array
+     */
+    protected function _filterAttributeValues($values)
+    {
+        // filter all empty values out
+        return array_filter($values, function ($value) {
+            return !empty($value);
+        });
+    }
+
+
+    /**
+     * Format searchable attributes for csv
+     *
+     * @param array    $attributes
+     * @param array    $values
+     * @param null|int $storeId
+     *
+     * @return string
+     */
+    protected function _formatSearchableAttributes($attributes, $values, $storeId = null)
+    {
+        return $this->_formatAttributes($attributes, $values, 'searchable', $storeId);
+    }
+
+
+    /**
+     * Format filterable attributes for csv
+     *
+     * @param array    $attributes
+     * @param array    $values
+     * @param null|int $storeId
+     *
+     * @return string
+     */
+    protected function _formatFilterableAttributes($attributes, $values, $storeId = null)
+    {
+        return $this->_formatAttributes($attributes, $values, 'filterable', $storeId);
+    }
+
 
     /**
      * Retrieve Searchable attributes
@@ -415,6 +467,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
             $attributesData = $this->_getWriteAdapter()->fetchAll($select);
             $this->getEavConfig()->importAttributesData($entityType, $attributesData);
+
             foreach ($attributesData as $attributeData) {
                 $attributeCode = $attributeData['attribute_code'];
                 $attribute = $this->getEavConfig()->getAttribute($entityType, $attributeCode);
@@ -427,47 +480,19 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         if (!is_null($type) || !is_null($backendType)) {
             $attributes = array();
             foreach ($this->_searchableAttributes as $attribute) {
-
                 if (!is_null($backendType)
                     && $attribute->getBackendType() != $backendType
                 ) {
                     continue;
                 }
 
-                switch ($type) {
-                    case "system":
-                        if ($attribute->getIsUserDefined()
-                            && !$attribute->getUsedForSortBy()
-                        ) {
-                            continue 2;
-                        }
-                        break;
-                    case "sortable":
-                        if (!$attribute->getUsedForSortBy()) {
-                            continue 2;
-                        }
-                        break;
-                    case "filterable":
-                        if (!$attribute->getIsFilterableInSearch()
-                            || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
-                        ) {
-                            continue 2;
-                        }
-                        break;
-                    case "searchable":
-                        if (!$attribute->getIsUserDefined()
-                            || !$attribute->getIsSearchable()
-                            || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
-                        ) {
-                            continue 2;
-                        }
-                        break;
-                    default:
-                        ;
+                if ($this->_checkIfSkipAttribute($attribute, $type)) {
+                    continue;
                 }
 
                 $attributes[$attribute->getId()] = $attribute;
             }
+
             return $attributes;
         }
         return $this->_searchableAttributes;
@@ -558,6 +583,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
         return $value;
     }
+
 
     /**
      * Return all product children ids
@@ -675,4 +701,50 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
         }
     }
+
+
+    /**
+     * Check whether the attribute should be skipped
+     *
+     * @param $attribute
+     * @param $type
+     *
+     * @return bool
+     */
+    protected function _checkIfSkipAttribute($attribute, $type)
+    {
+        $shouldSkip = false;
+        switch ($type) {
+            case "system":
+                if ($attribute->getIsUserDefined() && !$attribute->getUsedForSortBy()) {
+                    $shouldSkip = true;
+                }
+                break;
+            case "sortable":
+                if (!$attribute->getUsedForSortBy()) {
+                    $shouldSkip = true;
+                }
+                break;
+            case "filterable":
+                if (!$attribute->getIsFilterableInSearch()
+                    || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
+                ) {
+                    $shouldSkip = true;
+                }
+                break;
+            case "searchable":
+                if (!$attribute->getIsUserDefined()
+                    || !$attribute->getIsSearchable()
+                    || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
+                ) {
+                    $shouldSkip = true;
+                }
+                break;
+            default:
+                ;
+        }
+
+        return $shouldSkip;
+    }
+
 }
