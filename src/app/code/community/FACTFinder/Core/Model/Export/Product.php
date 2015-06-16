@@ -53,6 +53,25 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected $_lines = array();
 
+
+    /**
+     * @var array
+     */
+    protected $_deafultHeader = array(
+        'id',
+        'parent_id',
+        'sku',
+        'category',
+        'filterable_attributes',
+        'searchable_attributes',
+    );
+
+
+    /**
+     * Add row to csv
+     *
+     * @param array $data Array of data
+     */
     protected function _addCsvRow($data)
     {
         foreach ($data as &$item) {
@@ -68,7 +87,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      * get Option Text by Option ID
      *
      * @param int $optionId Option ID
-     * @param int $storeId Store ID
+     * @param int $storeId  Store ID
      *
      * @return string
      */
@@ -85,6 +104,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     $this->_optionIdToValue[$option->getId()] = $option->getValue();
                 }
             }
+
             $value = isset($this->_optionIdToValue[$optionId]) ? $this->_optionIdToValue[$optionId] : '';
         }
 
@@ -102,12 +122,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     protected function _getExportAttributes($storeId = 0)
     {
         if (!isset($this->_exportAttributeCodes[$storeId])) {
-            $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
             $headerDynamic = array();
 
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
-                $headerDefault[] = 'image';
-                $headerDefault[] = 'deeplink';
+                $this->_deafultHeader[] = 'image';
+                $this->_deafultHeader[] = 'deeplink';
                 $this->_imageHelper = Mage::helper('catalog/image');
             }
 
@@ -116,6 +135,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if (in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
                     continue;
                 }
+
                 $headerDynamic[] = $attribute->getAttributeCode();
             }
 
@@ -126,17 +146,18 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if (in_array($code, $headerSetup)) {
                     continue;
                 }
+
                 $headerSetup[$code]['attribute'] = $code;
             }
 
             // remove default attributes from setup
-            foreach ($headerDefault as $code) {
+            foreach ($this->_deafultHeader as $code) {
                 if (array_key_exists($code, $headerSetup)) {
                     unset($headerSetup[$code]);
                 }
             }
 
-            $this->_exportAttributeCodes[$storeId] = array_merge($headerDefault, array_keys($headerSetup));
+            $this->_exportAttributeCodes[$storeId] = array_merge($this->_deafultHeader, array_keys($headerSetup));
         }
 
         return $this->_exportAttributeCodes[$storeId];
@@ -278,8 +299,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     $productData[$idFieldName],
                     $productData['sku'],
                     $this->_getCategoryPath($productData['entity_id'], $storeId),
-                    $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttr, $storeId),
-                    $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId)
+                    $this->_formatAttributes('filterable', $productAttr, $storeId),
+                    $this->_formatAttributes('searchable', $productAttr, $storeId),
                 );
 
                 if ($exportImageAndDeeplink) {
@@ -321,8 +342,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                                 $productData[$idFieldName],
                                 $productChild['sku'],
                                 $this->_getCategoryPath($productData['entity_id'], $storeId),
-                                $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
-                                $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId)
+                                $this->_formatAttributes('filterable', $productAttr, $storeId),
+                                $this->_formatAttributes('searchable', $productAttr, $storeId),
                             );
                             if ($exportImageAndDeeplink) {
                                 //dont need to add image and deeplink to child product, just add empty values
@@ -345,15 +366,16 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     /**
      * Format attributes for csv
      *
-     * @param array    $attributes
-     * @param array    $values
      * @param string   $type
+     * @param array    $values
      * @param null|int $storeId
      *
      * @return string
      */
-    protected function _formatAttributes($attributes, $values, $type, $storeId = null)
+    protected function _formatAttributes($type, $values, $storeId = null)
     {
+        $attributes = $this->_getSearchableAttributes(null, $type);
+
         $returnArray = array();
         $counter = 0;
 
@@ -401,36 +423,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return array_filter($values, function ($value) {
             return !empty($value);
         });
-    }
-
-
-    /**
-     * Format searchable attributes for csv
-     *
-     * @param array    $attributes
-     * @param array    $values
-     * @param null|int $storeId
-     *
-     * @return string
-     */
-    protected function _formatSearchableAttributes($attributes, $values, $storeId = null)
-    {
-        return $this->_formatAttributes($attributes, $values, 'searchable', $storeId);
-    }
-
-
-    /**
-     * Format filterable attributes for csv
-     *
-     * @param array    $attributes
-     * @param array    $values
-     * @param null|int $storeId
-     *
-     * @return string
-     */
-    protected function _formatFilterableAttributes($attributes, $values, $storeId = null)
-    {
-        return $this->_formatAttributes($attributes, $values, 'filterable', $storeId);
     }
 
 
@@ -636,7 +628,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         }
 
         if ($attribute->usesSource()) {
-            if ($this->_engine !== null && method_exists($this->_engine, 'allowAdvancedIndex') && $this->_engine->allowAdvancedIndex()) {
+            if (method_exists($this->_engine, 'allowAdvancedIndex') && $this->_engine->allowAdvancedIndex()) {
                 return $value;
             }
 
