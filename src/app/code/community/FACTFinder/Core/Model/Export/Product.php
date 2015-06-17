@@ -53,6 +53,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected $_lines = array();
 
+    /**
+     * @var FACTFinder_Core_Model_File
+     */
+    protected $_file = null;
+
 
     /**
      * @var array
@@ -80,6 +85,24 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         }
 
         $this->_lines[] = '"' . implode('";"', $data) . '"' . "\n";
+    }
+
+
+    /**
+     * Add row to csv
+     *
+     * @param array $data Array of data
+     * @param int   $storeId
+     */
+    protected function _writeCsvRow($data, $storeId)
+    {
+        foreach ($data as &$item) {
+            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim(strip_tags($item), ';'));
+            $item = addslashes($item);
+        }
+
+        $line = '"' . implode('";"', $data) . '"' . "\n";
+        $this->_getFile($storeId)->write($line);
     }
 
 
@@ -199,19 +222,39 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         try {
             $fileName = 'store_' . $storeId . '_product.csv';
 
-            $file = new Varien_Io_File();
-            $file->mkdir($dir);
-            $file->open(array('path' => $dir));
+            $this->doExport($storeId);
 
-            $lines = $this->doExport($storeId);
-
-            $file->write($fileName, implode('', $lines), 'w');
         } catch (Exception $e) {
             Mage::throwException($e);
             return '';
         }
 
         return $dir . DS . $fileName;
+    }
+
+
+    /**
+     * Get file handler instance for store
+     *
+     * @param $storeId
+     *
+     * @return \FACTFinder_Core_Model_File
+     *
+     * @throws \Exception
+     */
+    protected function _getFile($storeId)
+    {
+        if (!$this->_file) {
+            $dir = Mage::getBaseDir('var') . DS . 'factfinder';
+
+            $fileName = 'store_' . $storeId . '_product.csv';
+
+            $this->_file = Mage::getModel('factfinder/file');
+
+            $this->_file->open($dir, $fileName);
+        }
+
+        return $this->_file;
     }
 
 
@@ -241,7 +284,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         }
 
         $header = $this->_getExportAttributes($storeId);
-        $this->_addCsvRow($header);
+        $this->_writeCsvRow($header, $storeId);
 
         // preparesearchable attributes
         $staticFields = array();
@@ -285,11 +328,13 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
                 }
+
                 $productAttr = $productAttributes[$productData['entity_id']];
 
                 if (!isset($productAttr[$visibility->getId()]) || !in_array($productAttr[$visibility->getId()], $visibilityVals)) {
                     continue;
                 }
+
                 if (!isset($productAttr[$status->getId()]) || !in_array($productAttr[$status->getId()], $statusVals)) {
                     continue;
                 }
@@ -325,7 +370,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
                 $this->_getAttributesRowArray($productIndex, $productAttr, $storeId);
 
-                $this->_addCsvRow($productIndex);
+                $this->_writeCsvRow($productIndex, $storeId);
 
                 $productChilds = $productRelations[$productData['entity_id']];
                 if ($productChilds) {
@@ -352,7 +397,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                             }
                             $this->_getAttributesRowArray($subProductIndex, $productAttributes[$productChild['entity_id']], $storeId);
 
-                            $this->_addCsvRow($subProductIndex);
+                            $this->_writeCsvRow($subProductIndex, $storeId);
                         }
                     }
                 }
@@ -466,7 +511,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 $attribute->setEntity($entity);
                 $this->_searchableAttributes[$attribute->getId()] = $attribute;
             }
-            unset($attributesData);
         }
 
         if (!is_null($type) || !is_null($backendType)) {
@@ -487,6 +531,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
             return $attributes;
         }
+
         return $this->_searchableAttributes;
     }
 
