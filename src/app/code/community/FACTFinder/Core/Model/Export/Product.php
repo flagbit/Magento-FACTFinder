@@ -69,6 +69,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         'category',
         'filterable_attributes',
         'searchable_attributes',
+        'numerical_attributes',
     );
 
 
@@ -346,6 +347,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     $this->_getCategoryPath($productData['entity_id'], $storeId),
                     $this->_formatAttributes('filterable', $productAttr, $storeId),
                     $this->_formatAttributes('searchable', $productAttr, $storeId),
+                    $this->_formatAttributes('numerical', $productAttr, $storeId),
                 );
 
                 if ($exportImageAndDeeplink) {
@@ -389,6 +391,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                                 $this->_getCategoryPath($productData['entity_id'], $storeId),
                                 $this->_formatAttributes('filterable', $productAttr, $storeId),
                                 $this->_formatAttributes('searchable', $productAttr, $storeId),
+                                $this->_formatAttributes('numerical', $productAttr, $storeId),
                             );
                             if ($exportImageAndDeeplink) {
                                 //dont need to add image and deeplink to child product, just add empty values
@@ -409,6 +412,28 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
 
     /**
+     * Get attributes by type
+     *
+     * @param string $type    Possible values: filterable|searchable|numerical
+     * @param int    $storeId
+     *
+     * @return array
+     */
+    protected function _getAttributesByType($type, $storeId)
+    {
+        switch ($type) {
+            case 'numerical':
+                $attributes = $this->_getSearchableAttributes('decimal', $type, $storeId);
+                break;
+            default:
+                $attributes = $this->_getSearchableAttributes(null, $type, $storeId);
+        }
+
+        return $attributes;
+    }
+
+
+    /**
      * Format attributes for csv
      *
      * @param string   $type
@@ -419,7 +444,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _formatAttributes($type, $values, $storeId = null)
     {
-        $attributes = $this->_getSearchableAttributes(null, $type);
+        $attributes = $this->_getAttributesByType($type, $storeId);
 
         $returnArray = array();
         $counter = 0;
@@ -435,10 +460,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $attributeValues = explode('|', $attributeValue);
             $attributeValues = $this->_filterAttributeValues($attributeValues);
             foreach ($attributeValues as $value) {
-                if ($type == 'filterable') {
-                    $returnArray[] = $attribute->getAttributeCode() . '=' . $value;
-                } else {
+                if ($type == 'searchable') {
                     $returnArray[] = $attributeValue;
+                } else {
+                    $returnArray[] = $attribute->getAttributeCode() . '=' . $value;
                 }
             }
 
@@ -449,7 +474,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
         }
 
-        $delimiter = $type == 'filterable' ? '|' : ',';
+        $delimiter = ($type == 'searchable' ? ',' : '|');
 
         return implode($delimiter, $returnArray);
     }
@@ -765,6 +790,15 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             case "filterable":
                 if (!$attribute->getIsFilterableInSearch()
                     || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
+                    || $attribute->getBackendType() === 'decimal'
+                ) {
+                    $shouldSkip = true;
+                }
+                break;
+            case 'numerical':
+                if (!$attribute->getIsFilterableInSearch()
+                    || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
+                    || $attribute->getBackendType() != 'decimal'
                 ) {
                     $shouldSkip = true;
                 }
@@ -773,6 +807,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if (!$attribute->getIsUserDefined()
                     || !$attribute->getIsSearchable()
                     || in_array($attribute->getAttributeCode(), $this->_getExportAttributes())
+                    || $attribute->getBackendType() === 'decimal'
                 ) {
                     $shouldSkip = true;
                 }
