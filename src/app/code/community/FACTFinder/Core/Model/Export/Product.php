@@ -277,31 +277,15 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         // reset lines
         $this->_lines = array();
 
-        $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-        if ($storeId !== null) {
-            $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-        }
-
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
-        $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
-        if ($exportImageAndDeeplink) {
-            $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
-            $imageSize = (int) Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
-        }
 
         $header = $this->_getExportAttributes($storeId);
         $this->_writeCsvRow($header, $storeId);
 
         // preparesearchable attributes
-        $staticFields = array();
-        foreach ($this->_getSearchableAttributes('static', 'system', $storeId) as $attribute) {
-            $staticFields[] = $attribute->getAttributeCode();
-        }
+        $staticFields = $this->_getStaticFields($storeId);
 
-        $dynamicFields = array();
-        foreach (array('int', 'varchar', 'text', 'decimal', 'datetime') as $type) {
-            $dynamicFields[$type] = array_keys($this->_getSearchableAttributes($type));
-        }
+        $dynamicFields = $this->_getDynamicFields();
 
         // status and visibility filter
         $visibility = $this->_getSearchableAttribute('visibility');
@@ -320,10 +304,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             foreach ($products as $productData) {
                 $lastProductId = $productData['entity_id'];
                 $productAttributes[$productData['entity_id']] = $productData['entity_id'];
-                $productChilds = $this->_getProductChildIds($productData['entity_id'], $productData['type_id']);
-                $productRelations[$productData['entity_id']] = $productChilds;
-                if ($productChilds) {
-                    foreach ($productChilds as $productChild) {
+                $productChildren = $this->_getProductChildIds($productData['entity_id'], $productData['type_id']);
+                $productRelations[$productData['entity_id']] = $productChildren;
+                if ($productChildren) {
+                    foreach ($productChildren as $productChild) {
                         $productAttributes[$productChild['entity_id']] = $productChild;
                     }
                 }
@@ -357,34 +341,15 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     $this->_formatAttributes('numerical', $productAttr, $storeId),
                 );
 
-                if ($exportImageAndDeeplink) {
-                    $product = Mage::getModel("catalog/product");
-                    $product->setStoreId($storeId);
-                    $product->load($productData['entity_id']);
-
-                    $image = $this->_imageHelper->init($product, $imageType);
-                    if (isset($imageSize) && $imageSize > 0) {
-                        $image->resize($imageSize);
-                    }
-
-                    $image = (string) $image;
-
-                    if ($storeId !== null) {
-                        $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
-                    }
-
-                    $productIndex[] = $image;
-                    $productIndex[] = $product->getProductUrl();
-                    $product->clearInstance();
-                }
+                $productIndex = $this->_exportImageAndDeepLink($productIndex, $productData, $storeId);
 
                 $productIndex = $this->_getAttributesRowArray($productIndex, $productAttr, $storeId);
 
                 $this->_writeCsvRow($productIndex, $storeId);
 
-                $productChilds = $productRelations[$productData['entity_id']];
-                if ($productChilds) {
-                    foreach ($productChilds as $productChild) {
+                $productChildren = $productRelations[$productData['entity_id']];
+                if ($productChildren) {
+                    foreach ($productChildren as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
                             $subProductIndex = array(
                                 $productChild['entity_id'],
@@ -395,7 +360,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                                 $this->_formatAttributes('searchable', $productAttr, $storeId),
                                 $this->_formatAttributes('numerical', $productAttr, $storeId),
                             );
-                            if ($exportImageAndDeeplink) {
+                            if ($this->_getIfExportImageAndDeeplink($storeId)) {
                                 //dont need to add image and deeplink to child product, just add empty values
                                 $subProductIndex[] = '';
                                 $subProductIndex[] = '';
@@ -579,10 +544,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     /**
      * Get Category Path by Product ID
      *
-     * @param   int $productId
-     * @param    int $storeId
+     * @param int $productId
+     * @param int $storeId
      *
-     * @return  string
+     * @return string
      */
     protected function _getCategoryPath($productId, $storeId = null)
     {
@@ -893,6 +858,98 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         }
 
         return false;
+    }
+
+
+    /**
+     * Add image and deep link information to product row
+     *
+     * @param array $productIndex
+     * @param array $productData
+     * @param int   $storeId
+     *
+     * @return array
+     */
+    protected function _exportImageAndDeepLink($productIndex, $productData, $storeId)
+    {
+        if ($this->_getIfExportImageAndDeeplink($storeId)) {
+            $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+            if ($storeId !== null) {
+                $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+            }
+
+            $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
+            $imageSize = Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
+
+            $product = Mage::getModel('catalog/product');
+            $product->setStoreId($storeId);
+            $product->load($productData['entity_id']);
+
+            $image = $this->_imageHelper->init($product, $imageType);
+            if (isset($imageSize) && $imageSize > 0) {
+                $image->resize($imageSize);
+            }
+
+            $image = (string) $image;
+
+            if ($storeId !== null) {
+                $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
+            }
+
+            $productIndex[] = $image;
+            $productIndex[] = $product->getProductUrl();
+
+            $product->clearInstance();
+        }
+
+        return $productIndex;
+    }
+
+
+    /**
+     * Check of image and deep links should be exported
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    protected function _getIfExportImageAndDeeplink($storeId)
+    {
+        return Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
+    }
+
+
+    /**
+     * Get array of dynamic fields to use in csv
+     *
+     * @return array
+     */
+    protected function _getDynamicFields()
+    {
+        $dynamicFields = array();
+        foreach (array('int', 'varchar', 'text', 'decimal', 'datetime') as $type) {
+            $dynamicFields[$type] = array_keys($this->_getSearchableAttributes($type));
+        }
+
+        return $dynamicFields;
+    }
+
+
+    /**
+     * Get array of static fields to use in csv
+     *
+     * @param int $storeId
+     *
+     * @return array
+     */
+    protected function _getStaticFields($storeId)
+    {
+        $staticFields = array();
+        foreach ($this->_getSearchableAttributes('static', 'system', $storeId) as $attribute) {
+            $staticFields[] = $attribute->getAttributeCode();
+        }
+
+        return $staticFields;
     }
 
 
