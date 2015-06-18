@@ -703,7 +703,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 }
             }
         } elseif ($attribute->getBackendType() == 'datetime') {
-            $value = $this->_getStoreDate($storeId, $value);
+            $value = strtotime($value) * 1000; // convert to milliseconds
         } else {
             $inputType = $attribute->getFrontend()->getInputType();
             if ($inputType == 'price') {
