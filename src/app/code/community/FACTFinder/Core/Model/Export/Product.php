@@ -75,26 +75,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     /**
      * Add row to csv
      *
-     * @param array $data Array of data
-     *
-     * @return FACTFinder_Core_Model_Export_Product
-     */
-    protected function _addCsvRow($data)
-    {
-        foreach ($data as &$item) {
-            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim(strip_tags($item), ';'));
-            $item = addslashes($item);
-        }
-
-        $this->_lines[] = '"' . implode('";"', $data) . '"' . "\n";
-
-        return $this;
-    }
-
-
-    /**
-     * Add row to csv
-     *
      * @param array $data    Array of data
      * @param int   $storeId
      *
@@ -103,8 +83,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     protected function _writeCsvRow($data, $storeId)
     {
         foreach ($data as   &$item) {
-            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim(strip_tags($item), ';'));
-            $item = addslashes($item);
+            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim($item, ';'));
         }
 
         $line = '"' . implode('";"', $data) . '"' . "\n";
@@ -711,11 +690,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
         }
 
-        // Add spaces before HTML Tags, so that strip_tags() does not join word which were in different block elements
-        // Additional spaces are not an issue, because they will be removed in the next step anyway
-        $value = preg_replace('/</u', ' <', $value);
-
-        $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
+        $value = $this->_removeTags($value, $storeId);
 
         return $value;
     }
@@ -950,6 +925,33 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         }
 
         return $staticFields;
+    }
+
+
+    /**
+     * Check if html tags and entities should be removed on export
+     *
+     * @param string $value
+     * @param int    $storeId
+     *
+     * @return bool
+     */
+    protected function _removeTags($value, $storeId)
+    {
+        if (Mage::getStoreConfig('factfinder/export/remove_tags', $storeId)) {
+            // Add spaces before HTML Tags, so that strip_tags() does not join word
+            // which were in different block elements
+            // Additional spaces are not an issue, because they will be removed in the next step anyway
+            $value = preg_replace('/</u', ' <', $value);
+            $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
+
+            $value = addslashes($value);
+
+            // remove html entities
+            $value = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $value);
+        }
+
+        return $value;
     }
 
 
