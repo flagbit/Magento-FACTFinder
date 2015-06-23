@@ -258,9 +258,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 
             var temp = '';
             temp += '<li title="' + item.name + '" class="selectable-item ' + item.type + '"';
-            if (item.attributes.deeplink) {
-                temp += ' rel="' + item.attributes.deeplink + '"';
-            }
+            temp += ' rel="' + this.getItemUrl(item)+ '"';
             temp += '>';
 
             temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
@@ -286,5 +284,22 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
         } else {
             return this.i18n[string];
         }
+    },
+
+    getItemUrl: function (item) {
+        if (item.attributes.deeplink) {
+            return item.attributes.deeplink;
+        }
+
+        var qPos = item.searchParams.indexOf('?');
+
+        var url = this.form.action;
+        if (url.indexOf('?') > 0) {
+            url += '&' + item.searchParams.substring(qPos + 1);
+        } else {
+            url += item.searchParams.substring(qPos);
+        }
+
+        return url;
     }
 });
