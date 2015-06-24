@@ -5,6 +5,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 {
     protected $_searchResult;
     protected $_searchResultCount;
+    protected $_paging;
 
 
     /**
@@ -145,6 +146,17 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         }
 
         return $this->_searchResult;
+    }
+
+
+    /**
+     * Get pagination object from FF
+     *
+     * @return \FACTFinder\Data\Paging
+     */
+    public function getPaging()
+    {
+        return $this->_getFacade()->getPaging();
     }
 
 

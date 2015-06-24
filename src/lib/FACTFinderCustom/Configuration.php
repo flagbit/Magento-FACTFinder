@@ -199,7 +199,8 @@ class FACTFinderCustom_Configuration implements FACTFinder\Core\ConfigurationInt
     public function getClientMappings()
     {
         return array(
-            'query' => 'q'
+            'query' => 'q',
+            'page'  => 'p',
         );
     }
 

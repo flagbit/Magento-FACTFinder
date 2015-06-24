@@ -29,5 +29,10 @@
         </reference>
     </factfinder_export_download>
 
+    <catalogsearch_result_index>
+        <reference name="product_list_toolbar">
+            <block type="factfinder/catalog_product_pager" name="product_list_toolbar_pager"/>
+        </reference>
+    </catalogsearch_result_index>
 
 </layout>

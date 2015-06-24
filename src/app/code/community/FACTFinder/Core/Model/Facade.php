@@ -654,4 +654,18 @@ class FACTFinder_Core_Model_Facade
     }
 
 
+    /**
+     * Get paging object (collection)
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return \FACTFinder\Data\Paging
+     */
+    public function getPaging($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject('search', 'getPaging', $channel, $id);
+    }
+
+
 }
