@@ -30,7 +30,10 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
     {
         $this->_facade = $facade;
         $this->_query = $query;
-        $this->_jqueryCallback = $jqueryCallback;
+
+        // prevent xss (<script> tags can open a vulnerability)
+        $this->_jqueryCallback = strip_tags($jqueryCallback);
+
         parent::__construct();
     }
 
