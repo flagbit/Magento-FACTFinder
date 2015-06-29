@@ -2,6 +2,7 @@
 
 class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_Handler_Abstract
 {
+
     /**
      * @var array
      */
@@ -54,17 +55,18 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
     /**
      * Convert ff item to array
      *
-     * @param $item
+     * @param \FACTFinder\Data\TagQuery $item
      *
      * @return array
      */
     protected function assembleTermArray($item)
     {
-        $termArray = array();
-        $termArray['name'] = $item->getValue();
-        $termArray['url'] = $item->getUrl();
-        $termArray['popularity'] = $item->getWeight();
-        $termArray['ratio'] = $item->getWeight();
+        $termArray = array(
+            'name'       => $item->getLabel(),
+            'url'        => $item->getUrl(),
+            'popularity' => $item->getWeight(),
+            'ratio'      => $item->getWeight(),
+        );
 
         return $termArray;
     }
