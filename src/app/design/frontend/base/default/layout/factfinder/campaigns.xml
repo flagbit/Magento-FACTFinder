@@ -21,6 +21,7 @@
     <checkout_cart_index>
         <reference name="checkout.cart.form.before">
             <block type="factfinder_campaigns/cart_feedback" before="-" name="factfinder.campaign.feedback" template="factfinder/campaigns/cart/feedback.phtml"/>
+            <block type="factfinder_campaigns/cart_pushed" name="asdasd" template="factfinder/campaigns/cart/pushed.phtml" />
         </reference>
     </checkout_cart_index>
 

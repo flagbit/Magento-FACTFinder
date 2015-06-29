@@ -20,11 +20,16 @@ class FACTFinder_Campaigns_Model_Handler_Cart extends FACTFinder_Campaigns_Model
      */
     protected function _getProductNumberParam()
     {
-        if (is_array($this->_productIds)) {
-            return $this->_productIds;
-        } else {
-            return array($this->_productIds);
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+
+        $productIds = array();
+
+        /** @var Mage_Sales_Model_Quote_Item $item */
+        foreach ($quote->getAllItems() as $item) {
+            $productIds[] = $item->getProduct()->getData(Mage::helper('factfinder/search')->getIdFieldName());
         }
+
+        return $productIds;
     }
 
 
