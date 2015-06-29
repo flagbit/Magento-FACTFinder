@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<layout>
+
+    <catalog_category_layered>
+        <reference name="right">
+            <block type="factfinder_tagcloud/tagCloud" name="factfinder.tagcloud" template="catalogsearch/term.phtml"/>
+        </reference>
+    </catalog_category_layered>
+
+    <catalogsearch_result_index>
+        <reference name="right">
+            <block type="factfinder_tagcloud/tagCloud" name="factfinder.tagcloud" template="catalogsearch/term.phtml"/>
+        </reference>
+    </catalogsearch_result_index>
+
+</layout>

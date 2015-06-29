@@ -15,11 +15,6 @@
             <factfinder_tagcloud>
                 <class>FACTFinder_Tagcloud_Block</class>
             </factfinder_tagcloud>
-            <catalogsearch>
-                <rewrite>
-                    <term>FACTFinder_Tagcloud_Block_TagCloud</term>
-                </rewrite>
-            </catalogsearch>
         </blocks>
         <helpers>
             <factfinder_tagcloud>
@@ -27,4 +22,13 @@
             </factfinder_tagcloud>
         </helpers>
     </global>
+    <frontend>
+        <layout>
+            <updates>
+                <factfinder_tagcloud>
+                    <file>factfinder/tagcloud.xml</file>
+                </factfinder_tagcloud>
+            </updates>
+        </layout>
+    </frontend>
 </config>
