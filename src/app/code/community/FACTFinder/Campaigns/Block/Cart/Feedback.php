@@ -4,7 +4,7 @@
  *
  * @category  Mage
  * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
  */
 
 /**
@@ -12,6 +12,12 @@
  */
 class FACTFinder_Campaigns_Block_Cart_Feedback extends FACTFinder_Campaigns_Block_Abstract
 {
+
+    /**
+     * @var string
+     */
+    protected $_template = 'factfinder/campaigns/cart/feedback.phtml';
+
 
     /**
      * Handler used to get data from ff
@@ -48,7 +54,10 @@ class FACTFinder_Campaigns_Block_Cart_Feedback extends FACTFinder_Campaigns_Bloc
         $_campaigns = $this->_handler->getCampaigns();
 
         if ($_campaigns && $_campaigns->hasFeedback()) {
-            $feedback = $_campaigns;
+
+            $label = $this->getLabel();
+
+            $feedback = $_campaigns->getFeedback($label);
         }
 
         return $feedback;
