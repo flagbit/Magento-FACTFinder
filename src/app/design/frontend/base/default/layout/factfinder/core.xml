@@ -30,8 +30,11 @@
     </factfinder_export_download>
 
     <catalogsearch_result_index>
-        <reference name="product_list_toolbar">
-            <block type="factfinder/catalog_product_pager" name="product_list_toolbar_pager"/>
+        <reference name="search_result_list">
+            <block type="factfinder/catalog_product_list_toolbar" name="factfinder_product_list_toolbar" template="catalog/product/list/toolbar.phtml">
+                <block type="factfinder/catalog_product_pager" name="product_list_toolbar_pager"/>
+            </block>
+            <action method="setToolbarBlockName"><name>factfinder_product_list_toolbar</name></action>
         </reference>
     </catalogsearch_result_index>
 

@@ -15,8 +15,11 @@
                 <action method="setTemplate"><template>factfinder/asn/layer/slider.phtml</template></action>
             </block>
         </reference>
-        <reference name="product_list_toolbar">
-            <block type="factfinder_asn/catalog_product_pager" name="product_list_toolbar_pager"/>
+        <reference name="product_list">
+            <block type="factfinder_asn/catalog_product_list_toolbar" name="factfinder_product_list_toolbar" template="catalog/product/list/toolbar.phtml">
+                <block type="factfinder_asn/catalog_product_pager" name="product_list_toolbar_pager"/>
+            </block>
+            <action method="setToolbarBlockName"><name>factfinder_product_list_toolbar</name></action>
         </reference>
     </catalog_category_layered>
 

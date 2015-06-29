@@ -160,4 +160,15 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     }
 
 
+    /**
+     * Get sortings object from FF
+     *
+     * @return \FACTFinder\Data\Sorting
+     */
+    public function getSorting()
+    {
+        return $this->_getFacade()->getSorting();
+    }
+
+
 }

@@ -668,4 +668,18 @@ class FACTFinder_Core_Model_Facade
     }
 
 
+    /**
+     * Get sorting object (collection)
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return \FACTFinder\Data\Sorting
+     */
+    public function getSorting($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject('search', 'getSorting', $channel, $id);
+    }
+
+
 }
