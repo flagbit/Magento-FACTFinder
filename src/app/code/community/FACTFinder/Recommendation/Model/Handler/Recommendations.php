@@ -5,6 +5,7 @@
  */
 class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder_Core_Model_Handler_Abstract
 {
+
     /**
      * Array of product ids
      *
@@ -41,6 +42,8 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
 
     /**
      * Set config values and configure adapter
+     *
+     * @return void
      */
     protected function _configureFacade()
     {
@@ -76,7 +79,7 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
      */
     protected function _getIdParam()
     {
-        if (is_array($this->_productIds)){
+        if (is_array($this->_productIds)) {
             return $this->_productIds;
         } else {
             return array($this->_productIds);

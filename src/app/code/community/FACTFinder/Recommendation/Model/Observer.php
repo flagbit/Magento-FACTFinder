@@ -7,6 +7,8 @@ class FACTFinder_Recommendation_Model_Observer
      * Loads recommended items within upsell\cross-sell collection
      *
      * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function loadRecommendedItemsItems($observer)
     {
@@ -69,7 +71,6 @@ class FACTFinder_Recommendation_Model_Observer
         }
 
         $select->setPart(Zend_Db_Select::COLUMNS, $columns);
-
 
         $handler = Mage::getModel('factfinder_recommendation/handler_recommendations', $productIds);
         $recommendations = $handler->getRecommendedIds();

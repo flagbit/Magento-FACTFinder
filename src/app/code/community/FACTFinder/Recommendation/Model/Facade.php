@@ -2,12 +2,15 @@
 class FACTFinder_Recommendation_Model_Facade extends FACTFinder_Core_Model_Facade
 {
 
+
     /**
      * Set config data to recommendations adaptor
      *
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureRecommendationAdapter($params, $channel = null, $id = null)
     {
