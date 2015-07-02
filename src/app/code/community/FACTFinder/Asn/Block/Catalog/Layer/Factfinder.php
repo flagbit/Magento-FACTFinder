@@ -1,5 +1,28 @@
 <?php
+/**
+ * FACTFinder_Asn
+ *
+ * @category Mage
+ * @package FACTFinder_Asn
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
 
+/**
+ * Class FACTFinder_Asn_Block_Catalog_Layer_Factfinder
+ *
+ * Replaces default layer filter attribute
+ *
+ * @category Mage
+ * @package FACTFinder_Asn
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
 class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_Layer_Filter_Attribute
 {
     const TYPE_SLIDER = 'slider';
@@ -7,6 +30,7 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
 
     /**
      * Class constructor
+     * Here we just set our own model as filter model
      */
     public function __construct()
     {
@@ -17,6 +41,7 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
 
     /**
      * Initialize filter model object
+     * The only thing we need here is to set our own template for price filter
      *
      * @return FACTFinder_Asn_Block_Catalog_Layer_Factfinder
      */

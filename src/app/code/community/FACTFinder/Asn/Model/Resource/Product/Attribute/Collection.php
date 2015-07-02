@@ -1,10 +1,26 @@
 <?php
+/**
+ * FACTFinder_Asn
+ *
+ * @category Mage
+ * @package FACTFinder_Asn
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
 
 /**
- * Model class
+ * Class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
  *
  * Filter Attribute Collection
  *
+ * @category Mage
+ * @package FACTFinder_Asn
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
  */
 class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
     extends Mage_Catalog_Model_Resource_Product_Attribute_Collection
