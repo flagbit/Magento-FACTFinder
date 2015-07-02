@@ -2,6 +2,7 @@
 
 class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_Search
 {
+
     /**
      * Navigation array from fact finder
      *
@@ -23,7 +24,6 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     public function getAfterSearchNavigation()
     {
         if (empty($this->_afterSearchNavigation)) {
-
             $result = $this->_getFacade()->getAfterSearchNavigation();
 
             if ($result instanceof FACTFinder\Data\AfterSearchNavigation && count($result)) {
@@ -66,7 +66,6 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
 
             $filterValue = $this->_getAttributeOptionValue($option, $filterGroup);
 
-
             $seoPath = '';
             if (isset($queryParams['seoPath'])) {
                 $seoPath = $queryParams['seoPath'];
@@ -91,6 +90,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
                 $attributeOptions[] = $attributeOptionData;
             }
         }
+
         return $attributeOptions;
     }
 
@@ -99,7 +99,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      * Check if this is a top level navigation option
      *
      * @param \FACTFinder\Data\Filter $option
-     * @param $categoryPath
+     * @param array                   $categoryPath
      *
      * @return bool
      */
@@ -119,8 +119,8 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     /**
      * Remove current categories from query params
      *
-     * @param $categoryPath
-     * @param $params
+     * @param array $categoryPath
+     * @param array $params
      *
      * @return array
      */
@@ -147,7 +147,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      *
      * @param \FACTFinder\Data\SliderFilter $option
      * @param \FACTFinder\Data\FilterGroup  $filterGroup
-     * @param $params
+     * @param array                         $params
      *
      * @return array
      */
@@ -162,7 +162,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
             'selected_min' => $option->getSelectedMinimum(),
             'selected_max' => $option->getSelectedMaximum(),
             'count'        => true,
-            'selected'     => false, //$option->isSelected()
+            'selected'     => false,
             'requestVar'   => 'filter' . $option->getFieldName(),
             'queryParams'  => $params
         );
@@ -174,9 +174,9 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     /**
      * Prepare normal option array
      *
-     * @param \FACTFinder\Data\Filter        $option
-     * @param \FACTFinder\Data\FilterGroup   $filterGroup
-     * @param $filterValue
+     * @param \FACTFinder\Data\Filter      $option
+     * @param \FACTFinder\Data\FilterGroup $filterGroup
+     * @param string                       $filterValue
      *
      * @return array
      */
@@ -226,7 +226,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
                 return array();
             }
 
-            /* @var $category Mage_Catalog_Model_Category */
+            /** @var $category Mage_Catalog_Model_Category */
             $category = Mage::registry('current_category');
 
             $pathInStore = $category->getPathInStore();
@@ -235,7 +235,6 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
             $categories = $category->getParentCategories();
             $mainCategoriesString = '';
             foreach ($pathIds as $categoryId) {
-
                 if (!isset($categories[$categoryId]) || !$categories[$categoryId]->getName()) {
                     continue;
                 }
@@ -303,6 +302,8 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
 
     /**
      * Prepare all request parameters for the search adapter
+     *
+     * @return array
      */
     protected function _collectParams()
     {

@@ -3,10 +3,11 @@
 class FACTFinder_Asn_Model_Observer
 {
 
+
     /**
      * Add layerd navigation filters on current layer block
      *
-     * @param $block
+     * @param Mage_Catalog_Block_Layer_View $block
      *
      * @return $this
      */
@@ -42,7 +43,9 @@ class FACTFinder_Asn_Model_Observer
     /**
      * Add factfinder navigation on catalog
      *
-     * @param $observer
+     * @param Varian_Object $observer
+     *
+     * @return void
      */
     public function addLayerFiltersToCatalog($observer)
     {
@@ -65,7 +68,9 @@ class FACTFinder_Asn_Model_Observer
     /**
      * Add factfinder navigation on search page
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function addLayerFiltersToSearch($observer)
     {
@@ -84,7 +89,9 @@ class FACTFinder_Asn_Model_Observer
     /**
      * Reset current search layer for further use in the block
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function resetCurrentCatalogLayer($observer)
     {

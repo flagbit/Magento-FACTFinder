@@ -5,6 +5,8 @@ class FACTFinder_Asn_Block_Catalog_Product_Pager extends FACTFinder_Core_Block_C
 
     /**
      * Constructor
+     *
+     * @return void
      */
     protected function _construct()
     {

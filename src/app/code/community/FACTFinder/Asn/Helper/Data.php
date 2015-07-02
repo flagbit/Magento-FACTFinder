@@ -3,6 +3,7 @@
 class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+
     /**
      * Parse url and return array of parameters
      *
@@ -10,7 +11,7 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return array
      */
-    function getQueryParams($url)
+    public function getQueryParams($url)
     {
         $queryParams = array();
 
@@ -30,7 +31,6 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
             $value = str_replace('XXX', ' ', $value);
             $result[$key] = $value;
         }
-
 
         return $result;
     }

@@ -9,6 +9,7 @@
 class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
     extends Mage_Catalog_Model_Resource_Product_Attribute_Collection
 {
+
     /**
      * @var array|null
      */
@@ -45,6 +46,9 @@ class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
     /**
      * Load entities records into items
      *
+     * @param bool $printQuery
+     * @param bool $logQuery
+     *
      * @return FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
      */
     public function load($printQuery = false, $logQuery = false)
@@ -63,6 +67,7 @@ class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
                 if ($this->getIdFieldName()) {
                     $item->setIdFieldName($this->getIdFieldName());
                 }
+
                 $row['store_label'] = $this->_getStoreLabelsByAttributeCode($row['name']);
                 $item->addData($row);
                 $this->addItem($item);
@@ -109,7 +114,9 @@ class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
                     null
                 )
                 ->columns(array(
-                    'value' => new Zend_Db_Expr('IF(additional_table.value IS NULL, main_table.frontend_label, additional_table.value)')
+                    'value' => new Zend_Db_Expr(
+                        'IF(additional_table.value IS NULL, main_table.frontend_label, additional_table.value)'
+                    )
                 ))
                 ->where('main_table.entity_type_id = ?', $entityType->getEntityTypeId())
                 ->where('additional_table.store_id IS NULL OR additional_table.store_id=?', $this->_storeId);
@@ -118,7 +125,7 @@ class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
         }
 
         if (!isset($this->_attributeLabels[$attributeCode])) {
-            return  $attributeCode;
+            return $attributeCode;
         }
 
         return $this->_attributeLabels[$attributeCode];

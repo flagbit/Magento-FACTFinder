@@ -2,6 +2,7 @@
 
 class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_Layer_Filter_Abstract
 {
+
     /**
      * Array of Magento Layer Filter Items
      *
@@ -21,7 +22,7 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
      * Apply attribute option filter to product collection
      *
      * @param   Zend_Controller_Request_Abstract $request
-     * @param   Varien_Object $filterBlock
+     * @param   Varien_Object                    $filterBlock
      *
      * @return  Mage_Catalog_Model_Layer_Filter_Attribute
      */
@@ -46,7 +47,9 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
     /**
      * Create filter item object
      *
-     * @param   array $data
+     * @param array  $data
+     * @param string $value
+     * @param int    $count
      *
      * @return  Mage_Catalog_Model_Layer_Filter_Item
      */
@@ -83,6 +86,7 @@ class FACTFinder_Asn_Model_Layer_Filter_Factfinder extends Mage_Catalog_Model_La
                         $this->_selectedFilterItems[$attribute->getAttributeCode()][] = $option;
                         continue;
                     }
+
                     $this->_filterItems[] = $option;
                 }
             }

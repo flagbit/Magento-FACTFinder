@@ -3,6 +3,7 @@
 class FACTFinder_Asn_Model_Resource_Search_Collection extends FACTFinder_Core_Model_Resource_Search_Collection
 {
 
+
     /**
      * Get FACT-Finder Facade
      *
