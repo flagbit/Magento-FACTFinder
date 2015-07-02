@@ -2,10 +2,11 @@
 class FACTFinder_Recommendation_Model_Observer
 {
 
+
     /**
      * Loads recommended items within upsell\cross-sell collection
      *
-     * @param $observer
+     * @param Varien_Object $observer
      */
     public function loadRecommendedItemsItems($observer)
     {
@@ -14,10 +15,13 @@ class FACTFinder_Recommendation_Model_Observer
         }
 
         $collection = $observer->getCollection();
+
+        $availableTypes = array(
+            Mage_Catalog_Model_Product_Link::LINK_TYPE_UPSELL,
+            Mage_Catalog_Model_Product_Link::LINK_TYPE_CROSSSELL,
+        );
         if (!$collection instanceof Mage_Catalog_Model_Resource_Product_Link_Product_Collection
-            || ($collection->getLinkModel()->getLinkTypeId() !== Mage_Catalog_Model_Product_Link::LINK_TYPE_UPSELL
-                && $collection->getLinkModel()->getLinkTypeId() !== Mage_Catalog_Model_Product_Link::LINK_TYPE_CROSSSELL
-            )
+            || !in_array($collection->getLinkModel()->getLinkTypeId(), $availableTypes)
         ) {
             return;
         }
@@ -34,8 +38,10 @@ class FACTFinder_Recommendation_Model_Observer
      * Remove all not needed and add all the necessary filter to the product collection
      *
      * @param Mage_Catalog_Model_Resource_Product_Link_Product_Collection $collection
-     * @param array $productIds
-     * @param string $idFieldName
+     * @param array                                                       $productIds
+     * @param string                                                      $idFieldName
+     *
+     * @return FACTFinder_Recommendation_Model_Observer
      */
     protected function _processCollection($collection, $productIds, $idFieldName)
     {
@@ -48,6 +54,7 @@ class FACTFinder_Recommendation_Model_Observer
         foreach ($linkParts as $linkPart) {
             unset($from[$linkPart]);
         }
+
         $select->setPart(Zend_Db_Select::FROM, $from);
 
         // reset all where conditions
@@ -60,6 +67,7 @@ class FACTFinder_Recommendation_Model_Observer
                 unset($columns[$index]);
             }
         }
+
         $select->setPart(Zend_Db_Select::COLUMNS, $columns);
 
 
@@ -78,13 +86,16 @@ class FACTFinder_Recommendation_Model_Observer
             // do not load anything
             $collection->addAttributeToFilter($idFieldName, array('in' => array(-1)));
         }
+
+        return $this;
     }
 
 
     /**
      * Get current product ids
      *
-     * @param $idFieldName
+     * @param Mage_Catalog_Model_Resource_Product_Link_Product_Collection $collection
+     * @param string                                                      $idFieldName
      *
      * @return array
      */
