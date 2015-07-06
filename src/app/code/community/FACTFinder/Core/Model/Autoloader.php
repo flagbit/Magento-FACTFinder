@@ -37,12 +37,15 @@ class FACTFinder_Core_Model_Autoloader
      * Add autoloader class
      *
      * @param \Varien_Event_Observer $observer
+     *
+     * @return void
      */
     public function addAutoloader(Varien_Event_Observer $observer)
     {
         if (self::$registered) {
             return;
         }
+
         spl_autoload_register(array($this, 'autoload'), false, true);
         self::$registered = true;
     }
@@ -51,7 +54,9 @@ class FACTFinder_Core_Model_Autoloader
     /**
      * Autoload method
      *
-     * @param $class
+     * @param string $class
+     *
+     * @return void
      */
     public function autoload($class)
     {
@@ -61,5 +66,6 @@ class FACTFinder_Core_Model_Autoloader
             include $classFile;
         }
     }
+
 
 }

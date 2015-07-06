@@ -24,6 +24,7 @@
 class FACTFinder_Core_Model_System_Config_Source_Protocol
 {
 
+
     /**
      * Get possible protocols as Option Array
      *
@@ -42,5 +43,6 @@ class FACTFinder_Core_Model_System_Config_Source_Protocol
             )
         );
     }
+
 
 }

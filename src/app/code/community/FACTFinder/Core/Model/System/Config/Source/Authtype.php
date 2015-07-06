@@ -26,6 +26,7 @@
 class FACTFinder_Core_Model_System_Config_Source_Authtype
 {
 
+
     /**
      * Get authtypes as option array
      *
@@ -48,5 +49,6 @@ class FACTFinder_Core_Model_System_Config_Source_Authtype
             )
         );
     }
+
 
 }

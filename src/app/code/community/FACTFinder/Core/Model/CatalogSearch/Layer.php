@@ -24,6 +24,7 @@
 class FACTFinder_Core_Model_CatalogSearch_Layer extends Mage_CatalogSearch_Model_Layer
 {
 
+
     /**
      * Get current layer product collection
      *
@@ -45,5 +46,6 @@ class FACTFinder_Core_Model_CatalogSearch_Layer extends Mage_CatalogSearch_Model
 
         return $collection;
     }
+
 
 }

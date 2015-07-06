@@ -50,6 +50,8 @@ abstract class FACTFinder_Core_Model_Handler_Abstract
      * Implement this method to set up any adapters the handler will need later on.
      * WARNING: You will always have to configure...() the adapter once, even if you do not set any parameters.
      *          This will register the adapter with the Facade and lets it query all data in parallel.
+     *
+     * @return void
      */
     abstract protected function _configureFacade();
 

@@ -142,7 +142,6 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
                     $this->_itemsById[$object->getId()] = array($object);
                 }
             }
-
         }
 
         return $this;

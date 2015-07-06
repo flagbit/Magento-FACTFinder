@@ -11,16 +11,6 @@
  *
  */
 
-/**
- * Status handler
- *
- * @category Mage
- * @package FACTFinder_Core
- * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG (http://www.flagbit.de)
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link http://www.flagbit.de
- */
 use FACTFinder\Loader as FF;
 
 // Possible status/error codes
@@ -38,11 +28,20 @@ define('FFE_WRONG_CREDENTIALS', 16183002);
 define('FFE_SERVER_TIME_MISMATCH', 16183003); // server time is not consistent with FF's server time
 
 /**
+ * Status handler
+ *
  * Checks whether the configuration is working
  *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
  */
 class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler_Search
 {
+
     /**
      * Array of error messages
      *
@@ -116,6 +115,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
             $this->_errorMessages[] = $this->_retrieveErrorMessage($primaryStatus);
             $statusOkay = false;
         }
+
         foreach ($this->_secondaryChannels as $channel) {
             $secondaryStatus = $this->_getFacade()->getFactFinderStatus($channel);
             if ($secondaryStatus !== FFE_OK) {
@@ -131,7 +131,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     /**
      * Retrieve full error message
      *
-     * @param $statusCode
+     * @param int    $statusCode
      * @param string $channel
      *
      * @return string
@@ -168,8 +168,10 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
      */
     protected function _getHelper()
     {
-        if ($this->_helper === null)
+        if ($this->_helper === null) {
             $this->_helper = Mage::helper('factfinder');
+        }
+
         return $this->_helper;
     }
 

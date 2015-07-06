@@ -26,6 +26,7 @@
 class FACTFinder_Core_Model_System_Config_Backend_Enabled extends Mage_Core_Model_Config_Data
 {
 
+
     /**
      * Check request for errors found by Helper and Observer. It will print error messages if errors found and
      * in that case set value to 0.
@@ -47,6 +48,8 @@ class FACTFinder_Core_Model_System_Config_Backend_Enabled extends Mage_Core_Mode
      * Add message that ff cant be activated and specify reasons
      *
      * @param string $message
+     *
+     * @return void
      */
     protected function _addError($message = '')
     {

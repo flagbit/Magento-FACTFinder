@@ -33,6 +33,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 
     /**
      * Set configuration params to the search adapter
+     *
+     * @return void
      */
     protected function _configureFacade()
     {
@@ -44,6 +46,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 
     /**
      * Prepare all request parameters for the primary search adapter
+     *
+     * @return array
      */
     protected function _collectParams()
     {
@@ -91,6 +95,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                 if ($_request->getModuleName() == 'catalogsearch') {
                     $params['query'] = $helper->getQueryText();
                 }
+
                 $params['page'] = $helper->getCurrentPage();
 
                 if ($seoPath = Mage::app()->getRequest()->getParam('seoPath')) {

@@ -148,14 +148,15 @@ class FACTFinder_Core_Model_Facade
         };
 
         $dic['encodingConverter'] = function ($c) {
-            if (extension_loaded('iconv'))
+            if (extension_loaded('iconv')) {
                 $type = 'Core\IConvEncodingConverter';
-            else if (function_exists('utf8_encode')
+            } elseif(function_exists('utf8_encode')
                 && function_exists('utf8_decode')
-            )
+            ) {
                 $type = 'Core\Utf8EncodingConverter';
-            else
+            } else {
                 throw new \Exception('No encoding conversion available.');
+            }
 
             return FF::getInstance(
                 $type,
@@ -166,7 +167,6 @@ class FACTFinder_Core_Model_Facade
 
         $this->_dic = $dic;
 
-//        FF::setLogger($arg);
         $this->_logger = $arg;
     }
 
@@ -230,6 +230,8 @@ class FACTFinder_Core_Model_Facade
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureSearchAdapter($params, $channel = null, $id = null)
     {
@@ -243,6 +245,8 @@ class FACTFinder_Core_Model_Facade
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureCompareAdapter($params, $channel = null, $id = null)
     {
@@ -256,6 +260,8 @@ class FACTFinder_Core_Model_Facade
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureImportAdapter($params, $channel = null, $id = null)
     {
@@ -269,6 +275,8 @@ class FACTFinder_Core_Model_Facade
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureSimilarRecordsAdapter($params, $channel = null, $id = null)
     {
@@ -283,6 +291,8 @@ class FACTFinder_Core_Model_Facade
      * @param string $type
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     protected function _configureAdapter($params, $type, $channel = null, $id = null)
     {
@@ -342,7 +352,7 @@ class FACTFinder_Core_Model_Facade
      *
      * @param string $type
      * @param string $channel (default: null)
-     * @param int    $id (default: null)
+     * @param int    $id      (default: null)
      *
      * @return string
      */
@@ -359,7 +369,7 @@ class FACTFinder_Core_Model_Facade
      *
      * @param string $type
      * @param string $channel (default: null)
-     * @param int    $id (default: null)
+     * @param int    $id      (default: null)
      *
      * @return \FACTFinder\Adapter\AbstractAdapter
      */
@@ -368,8 +378,9 @@ class FACTFinder_Core_Model_Facade
         $hashKey = $this->_getAdapterIdentifier($type, $channel, $id);
 
         // get the channel after calculating the adapter identifier
-        if (!$channel)
+        if (!$channel) {
             $channel = $this->getConfiguration()->getChannel();
+        }
 
         if (!isset($this->_adapters[$hashKey][$channel])) {
             $this->_adapters[$hashKey][$channel] = FF::getInstance(
@@ -380,6 +391,7 @@ class FACTFinder_Core_Model_Facade
                 $this->_dic['clientUrlBuilder']
             );
         }
+
         return $this->_adapters[$hashKey][$channel];
     }
 
@@ -403,6 +415,8 @@ class FACTFinder_Core_Model_Facade
      * Set facade configuration
      *
      * @param array $configArray
+     *
+     * @return void
      */
     public function setConfiguration($configArray)
     {
@@ -447,6 +461,7 @@ class FACTFinder_Core_Model_Facade
         if ($this->_urlBuilder === null) {
             $this->_urlBuilder = $this->_dic['serverUrlBuilder'];
         }
+
         return $this->_urlBuilder;
     }
 
@@ -492,6 +507,7 @@ class FACTFinder_Core_Model_Facade
                 $this->_dic['requestParser']->getRequestParameters()
             );
         }
+
         return $this->_paramsParser;
     }
 
@@ -625,15 +641,17 @@ class FACTFinder_Core_Model_Facade
     /**
      * Get current status of FF
      *
-     * @param $channel
+     * @param string $channel
      *
      * @return null|string
      */
     public function getFactFinderStatus($channel = null)
     {
         try {
-            if (!$channel)
+            if (!$channel) {
                 $channel = $this->getConfiguration()->getChannel();
+            }
+
             return $this->_statusHelpers[$channel]->getStatusCode();
         } catch (Exception $e) {
             Mage::logException($e);

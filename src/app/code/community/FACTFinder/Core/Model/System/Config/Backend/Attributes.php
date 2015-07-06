@@ -27,6 +27,7 @@ class FACTFinder_Core_Model_System_Config_Backend_Attributes extends Mage_Core_M
 
     /**
      * Process data after load
+     * @return void
      */
     protected function _afterLoad()
     {
@@ -38,6 +39,8 @@ class FACTFinder_Core_Model_System_Config_Backend_Attributes extends Mage_Core_M
 
     /**
      * Prepare data before save
+     *
+     * @return void
      */
     protected function _beforeSave()
     {

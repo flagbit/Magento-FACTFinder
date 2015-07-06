@@ -33,7 +33,9 @@ class FACTFinder_Core_Model_Observer
     /**
      * Replace the config entry with search engine when enabling the module
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function setSearchEngine($observer)
     {
@@ -63,7 +65,9 @@ class FACTFinder_Core_Model_Observer
     /**
      * Reset current search layer for further use in the block
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function resetCurrentSearchLayer($observer)
     {
@@ -78,7 +82,9 @@ class FACTFinder_Core_Model_Observer
     /**
      * Remove all layered navigation filters on search page
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function removeLayerFilters($observer)
     {
@@ -101,7 +107,9 @@ class FACTFinder_Core_Model_Observer
      * Manage modules availability
      * Enable them only if they were enable in core configuration
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function manageModules($observer)
     {
@@ -133,7 +141,9 @@ class FACTFinder_Core_Model_Observer
     /**
      * Redirect to product page on single result
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function handleSingleProductRedirect($observer)
     {
@@ -147,7 +157,6 @@ class FACTFinder_Core_Model_Observer
 
         $helper = Mage::helper('factfinder');
         if ($helper->isRedirectForSingleResult()) {
-
             $block = Mage::app()->getLayout()->getBlock('search_result_list');
 
             if (!$block instanceof Mage_Catalog_Block_Product_List) {
@@ -165,5 +174,6 @@ class FACTFinder_Core_Model_Observer
             }
         }
     }
+
 
 }
