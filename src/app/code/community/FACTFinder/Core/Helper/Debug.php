@@ -92,7 +92,8 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
                 Mage::log($message, null, self::LOG_FILE_NAME, true);
             }
         } catch (Exception $e){
-            Mage::logException($e);
+            // actually do nothing
+            return $this;
         }
 
         return $this;
