@@ -59,8 +59,11 @@ class FACTFinder_Tagcloud_Block_TagCloud extends Mage_CatalogSearch_Block_Term
         return $this;
     }
 
+
     /**
      * Determines minimum and maximum popularity among terms
+     *
+     * @return void
      */
     protected function determineMinMaxPopularity()
     {

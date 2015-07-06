@@ -47,6 +47,8 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
 
     /**
      * Configure adapter
+     *
+     * @return void
      */
     protected function _configureFacade()
     {

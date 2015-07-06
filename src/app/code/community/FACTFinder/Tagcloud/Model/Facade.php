@@ -44,6 +44,8 @@ class FACTFinder_Tagcloud_Model_Facade extends FACTFinder_Core_Model_Facade
      * @param array  $params
      * @param string $channel
      * @param int    $id
+     *
+     * @return void
      */
     public function configureTagCloudAdapter($params, $channel = null, $id = null)
     {
