@@ -45,6 +45,7 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
             if ($rule == '__empty') {
                 continue;
             }
+
             if (!array_key_exists($rule, $data)) {
                 $data[$rule] = $setup;
             }
@@ -74,7 +75,7 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
     /**
      * Check whether value is in form retrieved by _encodeArrayFieldValue()
      *
-     * @param mixed
+     * @param mixed $value
      *
      * @return bool
      */
@@ -117,7 +118,7 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
     /**
      * Decode value from used in Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
      *
-     * @param array
+     * @param array $data
      *
      * @return array
      */
@@ -226,13 +227,12 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
 
         foreach ($configData as $key => $keyData) {
             if (!isset($keyData['value'])) {
-
                 $path = 'factfinder/search/' . $key;
 
                 if ($storeCode) {
                     $value = Mage::app()->getWebsite($websiteCode)->getConfig($path);
                 } else {
-                    $value = (string)Mage::getConfig()->getNode('default/' . $path);
+                    $value = (string) Mage::getConfig()->getNode('default/' . $path);
                 }
             } else {
                 $value = $keyData['value'];
@@ -243,5 +243,6 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
 
         return $data;
     }
+
 
 }

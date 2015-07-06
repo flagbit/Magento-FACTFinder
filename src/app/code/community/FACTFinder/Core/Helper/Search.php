@@ -40,6 +40,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
     protected static $_failedAttemptRegistered = false;
 
+
     /**
      * Retrieve query model object
      *
@@ -60,8 +61,9 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     {
         $limit = $this->_getToolbarBlock()->getLimit();
         if ($limit == 'all') {
-            $limit = 2 * 3 * 4 * 5 * 6; //a lot of products working for each layout
+            $limit = 720; // number of products to fit for each layout: 2 * 3 * 4 * 5 * 6 per row
         }
+
         return $limit;
     }
 
@@ -106,6 +108,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         if (!$idFieldName) {
             $idFieldName = $this->getEntity()->getIdFieldName();
         }
+
         return $idFieldName;
     }
 
@@ -129,6 +132,8 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
      * Enable fallback feature
      *
      * @param int $delay
+     *
+     * @return void
      */
     protected function _enableFallback($delay)
     {
@@ -140,6 +145,8 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
     /**
      * Disable fallback feature
+     *
+     * @return void
      */
     protected function _disableFallback()
     {
@@ -188,6 +195,8 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
      * Registers that FACT-Finder has failed to respond.
      * The attempt will be represented as an integer corresponding to attempt's timestamp in minutes.
      * Only one failed attempt per lifetime of this object will be registered.
+     *
+     * @return void
      **/
     public function registerFailedAttempt()
     {
@@ -201,14 +210,19 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         $this->_saveFailedAttempts($failedAttempts);
 
         self::$_failedAttemptRegistered = true;
-        Mage::helper('factfinder/debug')->log('Registered failed attempt to connect to FACT-Finder. ' . count($failedAttempts) . ' failed attempts registered.');
+        Mage::helper('factfinder/debug')->log(
+            'Registered failed attempt to connect to FACT-Finder. '
+            . count($failedAttempts)
+            . ' failed attempts registered.'
+        );
 
         if (count($failedAttempts) >= 3) {
             $delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
 
             $this->_enableFallback($delay);
 
-            // don't output a warning, if the delay is set to 0 as this would cause a lot of messages during a factfinder downtime
+            // don't output a warning, if the delay is set to 0 as this would cause
+            // a lot of messages during a factfinder downtime
             if ($delay > 0) {
                 $this->_outputWarningMessage();
             }
@@ -218,16 +232,19 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
     /**
      * Assemble and output warning message
+     *
+     * @return void
      */
     protected function _outputWarningMessage()
     {
         $delay = Mage::getStoreConfig('factfinder/fallback/wait_time');
 
         $title = 'FACT-Finder unreachable! Falling back to Magento\'s search for ' . $delay . ' minutes.';
-        $message = 'FACT-Finder did not respond for the third time. Magento will now use its own search for '
-            . $delay . ' minutes before trying to reach FACT-Finder again. '
-            . 'If the problem persists, please check your FACT-Finder server and the settings'
-            . ' in Magento\'s FACT-Finder configuration.';
+        $message = <<<MESSAGE
+FACT-Finder did not respond for the third time. Magento will now use its own search for
+{$delay} minutes before trying to reach FACT-Finder again.
+If the problem persists, please check your FACT-Finder server and the settings in Magento\'s FACT-Finder configuration.
+MESSAGE;
 
         $adminNotificationInbox = Mage::getModel('adminnotification/inbox');
 
@@ -291,10 +308,16 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
      * Save failed attempts to cache.
      *
      * @param array $failedAttempts
+     *
+     * @return void
      */
     public function _saveFailedAttempts($failedAttempts)
     {
-        Mage::app()->saveCache(serialize($failedAttempts), $this->_getCacheId('failedAttempts'), array(self::CACHE_TAG));
+        Mage::app()->saveCache(
+            serialize($failedAttempts),
+            $this->_getCacheId('failedAttempts'),
+            array(self::CACHE_TAG)
+        );
     }
 
 
@@ -311,8 +334,10 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
         $minutesTimestamp = intval(time() / 60);
         foreach ($entries as $entry) {
-            if ($minutesTimestamp - $entry < 3)
+            $difference = $minutesTimestamp - $entry;
+            if ($difference < 3) {
                 $newEntries[] = $entry;
+            }
         }
 
         return $newEntries;

@@ -46,7 +46,6 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      */
     const XML_CONFIG_PATH_DEBUG_MODE = 'factfinder/config/debug';
 
-
     /**
      * @var Log4PhpLogger
      */
@@ -78,7 +77,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Debug Log to file var/log/factfinder.log
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return $this
      */
@@ -93,7 +92,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
                 Mage::log($message, null, self::LOG_FILE_NAME, true);
             }
         } catch (Exception $e){
-            // do nothing ?!!
+            Mage::logException($e);
         }
 
         return $this;
@@ -103,7 +102,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix TRACE
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -116,7 +115,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix TRACE
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -129,7 +128,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix INFO
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -142,7 +141,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix WARNING
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -155,7 +154,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix ERROR
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -168,7 +167,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     /**
      * Log message with prefix FATAL ERROR
      *
-     * @param $message
+     * @param mixed $message
      *
      * @return \FACTFinder_Core_Helper_Debug
      */
@@ -176,5 +175,6 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
     {
         return $this->log('FATAL ERROR: ' . $message);
     }
+
 
 }

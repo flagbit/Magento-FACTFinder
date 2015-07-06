@@ -24,6 +24,7 @@
 class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+
     /**
      * Redirect to product page
      *
@@ -45,7 +46,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isRedirectForSingleResult()
     {
-        return (bool)Mage::app()->getStore()->getConfig('factfinder/config/redirectOnSingleResult');
+        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/redirectOnSingleResult');
     }
 
 
@@ -58,9 +59,9 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isEnabled($feature = null)
     {
-        $result = (bool)Mage::app()->getStore()->getConfig('factfinder/search/enabled');
+        $result = (bool) Mage::app()->getStore()->getConfig('factfinder/search/enabled');
         if ($feature !== null) {
-            $result &= (bool)Mage::app()->getStore()->getConfig('factfinder/modules/' . $feature);
+            $result &= (bool) Mage::app()->getStore()->getConfig('factfinder/modules/' . $feature);
         }
 
         return $result;
@@ -76,7 +77,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isModuleActivated($module)
     {
-        return (bool)Mage::app()->getStore()->getConfig('advanced/ff_modules/' . $module);
+        return (bool) Mage::app()->getStore()->getConfig('advanced/ff_modules/' . $module);
     }
 
 
@@ -98,7 +99,9 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      * Update xml file in etc/modules according to backend config
      *
      * @param string $module
-     * @param bool $isActive
+     * @param bool   $isActive
+     *
+     * @return void
      */
     public function updateModuleState($module, $isActive = true)
     {
@@ -117,5 +120,6 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
         $xml->save($file);
     }
+
 
 }
