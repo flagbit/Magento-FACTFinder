@@ -1,5 +1,26 @@
 <?php
+/**
+ * FACTFinder_Core
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
 
+/**
+ * Product collection that uses the ids taken from ff
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
 class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
 
