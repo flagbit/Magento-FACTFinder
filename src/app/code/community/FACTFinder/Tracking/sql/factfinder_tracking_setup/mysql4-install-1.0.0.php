@@ -1,14 +1,19 @@
 <?php
 /**
+ * FACTFinder_Tracking
+ *
+ * @category Mage
+ * @package FACTFinder_Tracking
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
+/**
  * Install script
  *
  * Install script for SCIC queue. Orders are sent to FACT-Finder asynchronously by cronjobs.
- *
- * @category  Mage
- * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
- * @author    Michael Türk <tuerk@flagbit.de>
- * @version   $Id: Processor.php 647 2011-03-21 10:32:14Z rudolf_batt $
  */
 
 $installer = $this;

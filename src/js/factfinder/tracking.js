@@ -1,3 +1,15 @@
+/**
+ * FACTFinder_Tracking
+ *
+ * @category Mage
+ * @package FACTFinder_Tracking
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
+
 var FactfinderTracking = Class.create({
 	url:  null,
 	data: null,
@@ -14,7 +26,7 @@ var FactfinderTracking = Class.create({
 		if(typeof asynchronous !== 'undefined')
 			this.asynchronous = asynchronous;
 	},
-	
+
 	init: function() {
 		$$(this.classname+' a',this.classname+' button').each(function(element) {
 			this.mapping.each(function(pair, index) {
