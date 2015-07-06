@@ -52,7 +52,7 @@ class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_Xm
         foreach ($suggestData as $index => $item) {
             $items .= $suggestXmlObj->xmlentities(strip_tags($item['query']))
                 . self::SUGGEST_ITEM_SEPARATOR
-                . (int)$item['hitCount']
+                . (int) $item['hitCount']
                 . self::SUGGEST_ITEM_SEPARATOR;
         }
 

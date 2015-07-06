@@ -28,7 +28,9 @@ class FACTFinder_Suggest_Model_Observer
     /**
      * Add suggest handle to the layout
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function addSuggestHandles($observer)
     {

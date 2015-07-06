@@ -25,12 +25,17 @@
  */
 class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Handler_Abstract
 {
+
     protected $_query;
+
     protected $_jqueryCallback;
+
     protected $_suggestResult;
+
     protected $_suggestResultAsArray;
 
     protected $_primaryChannel;
+
     protected $_secondaryChannels;
 
     /**
@@ -44,6 +49,9 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
     /**
      * We might need to supply the facade manually, because we might not have a full Magento
      * context and we cannot call Mage::getSingleton().
+     * @param string                          $query
+     * @param string                          $jqueryCallback
+     * @param FACTFinder_Suggest_Model_Facade $facade
      */
     public function __construct($query, $jqueryCallback = '', $facade = null)
     {
@@ -59,6 +67,8 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
 
     /**
      * Set config params to the adapter
+     *
+     * @return void
      */
     protected function _configureFacade()
     {
@@ -125,7 +135,7 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
 
         $resultArray = array();
         foreach ($suggestResult as $resultQuery) {
-            /* @var $resultQuery FACTFinder\Data\SuggestQuery */
+            /** @var $resultQuery FACTFinder\Data\SuggestQuery */
             $resultArray['suggestions'][] = array(
                 'attributes'   => $resultQuery->getAttributes(),
                 'hitCount'     => $resultQuery->getHitCount(),
