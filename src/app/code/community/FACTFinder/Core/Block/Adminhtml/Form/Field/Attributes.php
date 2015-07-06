@@ -24,6 +24,7 @@
 class FACTFinder_Core_Block_Adminhtml_Form_Field_Attributes
     extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {
+
     /**
      * @var FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute
      */
@@ -52,6 +53,8 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attributes
 
     /**
      * Prepare to render
+     *
+     * @return void
      */
     protected function _prepareToRender()
     {
@@ -68,7 +71,9 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attributes
     /**
      * Prepare existing row data object
      *
-     * @param Varien_Object
+     * @param Varien_Object $row
+     *
+     * @return void
      */
     protected function _prepareArrayRow(Varien_Object $row)
     {

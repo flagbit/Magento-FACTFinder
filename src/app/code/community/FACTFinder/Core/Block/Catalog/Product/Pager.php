@@ -44,6 +44,8 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
 
     /**
      * Constructor
+     *
+     * @return void
      */
     protected function _construct()
     {

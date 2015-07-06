@@ -42,6 +42,8 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
     /**
      * Constructor
+     *
+     * @return void
      */
     protected function _construct()
     {

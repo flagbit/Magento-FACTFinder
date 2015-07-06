@@ -23,6 +23,7 @@
  */
 class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Block_Html_Select
 {
+
     /**
      * Attributes cache
      *
@@ -42,8 +43,9 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Blo
             $collection = Mage::getModel('eav/entity_attribute')->getCollection();
             $collection->setEntityTypeFilter(Mage::getSingleton('eav/config')->getEntityType('catalog_product'));
             foreach ($collection as $item) {
-                /* @var $item Mage_Core_Model_Store */
-                $this->_attributes[$item->getAttributeCode()] = $item->getFrontendLabel().' ('.$item->getAttributeCode().')';
+                $code = $item->getAttributeCode();
+                /** @var $item Mage_Core_Model_Store */
+                $this->_attributes[$code] = $item->getFrontendLabel().' ('.$code.')';
             }
         }
 
@@ -79,4 +81,6 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Blo
 
         return parent::_toHtml();
     }
+
+
 }

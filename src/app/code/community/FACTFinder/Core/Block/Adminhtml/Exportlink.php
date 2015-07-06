@@ -106,9 +106,9 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
      * Create html for a hyperlink
      *
      * @param Mage_Core_Model_Store $store
-     * @param string $route
-     * @param string $text
-     * @param array $params
+     * @param string                $route
+     * @param string                $text
+     * @param array                 $params
      *
      * @return string
      */
