@@ -75,7 +75,8 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Blo
     {
         if (!$this->getOptions()) {
             foreach ($this->_getAttributes() as $id => $label) {
-                $this->addOption($id, addslashes($label));
+                $htmlLabel = htmlspecialchars($label, ENT_QUOTES);
+                $this->addOption($id, $htmlLabel);
             }
         }
 
