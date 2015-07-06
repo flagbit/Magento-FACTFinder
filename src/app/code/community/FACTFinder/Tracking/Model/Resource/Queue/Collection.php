@@ -27,6 +27,8 @@ class FACTFinder_Tracking_Model_Resource_Queue_Collection extends Mage_Core_Mode
 
     /**
      * Initialization here
+     *
+     * @return void
      */
     protected function _construct()
     {

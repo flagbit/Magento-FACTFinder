@@ -23,13 +23,16 @@
  */
 class FACTFinder_Tracking_Model_Observer
 {
+
     protected $_facadeModel = 'factfinder_tracking/facade';
 
 
     /**
      * Add tracking handle to the layout
      *
-     * @param $observer
+     * @param Varien_Object $observer
+     *
+     * @return void
      */
     public function addTrackingHandles($observer)
     {
@@ -51,6 +54,8 @@ class FACTFinder_Tracking_Model_Observer
      * Sends information to FACT-Finder if item was added to cart.
      *
      * @param Varien_Event_Observer $observer
+     *
+     * @return void
      */
     public function addToCartTracking($observer)
     {
@@ -74,7 +79,7 @@ class FACTFinder_Tracking_Model_Observer
         }
 
         try {
-            /* @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
+            /** @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackCart(
                 $product->getData($idFieldName),
@@ -97,6 +102,7 @@ class FACTFinder_Tracking_Model_Observer
      * Tracking of single product click
      *
      * @param \Varien_Event_Observer $observer
+     *
      * @internal param $product
      */
     public function sendClickTrackingForRedirectOnSingleResult(Varien_Event_Observer $observer)
@@ -118,7 +124,7 @@ class FACTFinder_Tracking_Model_Observer
                 $customerId = md5('customer_' . $customerId);
             }
 
-            /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+            /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackClick(
                 $product->getData($idFieldName),
@@ -147,6 +153,8 @@ class FACTFinder_Tracking_Model_Observer
      * Adds all ordered items to queue that is sent to FACT-Finder by Cronjob.
      *
      * @param Varien_Event_Observer $observer
+     *
+     * @return void
      */
     public function addOrderDetailsToQueue($observer)
     {
@@ -193,6 +201,8 @@ class FACTFinder_Tracking_Model_Observer
     /**
      * Cronjob observer method.
      * Processes all orders given in queue and sends them to FACT-Finder.
+     *
+     * @return void
      */
     public function processOrderQueue()
     {
@@ -204,7 +214,7 @@ class FACTFinder_Tracking_Model_Observer
 
         try {
             foreach ($queue->getCollection() as $item) {
-                /* @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+                /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
                 $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
                 $tracking->setupCheckoutTracking(
                     $item->getProductId(),

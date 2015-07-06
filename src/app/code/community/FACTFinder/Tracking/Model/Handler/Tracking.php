@@ -23,10 +23,14 @@
  */
 class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_Handler_Abstract
 {
+
     protected $_facadeModel = 'factfinder_tracking/facade';
+
 
     /**
      * Just a stub
+     *
+     * @return void
      */
     protected function _configureFacade()
     {
@@ -36,15 +40,15 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     /**
      * Track a product which was added to the cart.
      *
-     * @param string $id id of product
+     * @param string $id       id of product
      * @param string $masterId masterId of product if variant
-     * @param string $title title of product (optional - is empty by default)
-     * @param string $query query which led to the product (only if module Semantic Enhancer is used)
-     * @param string $sid session id (if empty, then try to set using the function session_id() )
+     * @param string $title    title of product (optional - is empty by default)
+     * @param string $query    query which led to the product (only if module Semantic Enhancer is used)
+     * @param string $sid      session id (if empty, then try to set using the function session_id() )
      * @param string $cookieId cookie id (optional)
-     * @param int $count number of items purchased for each product (optional - default 1)
-     * @param float $price this is the single unit price (optional)
-     * @param string $userid id of user (optional if modul personalisation is not used)
+     * @param int    $count    number of items purchased for each product (optional - default 1)
+     * @param float  $price    this is the single unit price (optional)
+     * @param string $userid   id of user (optional if modul personalisation is not used)
      *
      * @return boolean
      */
@@ -58,8 +62,7 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $count = 1,
         $price = null,
         $userid = null
-    )
-    {
+    ) {
         // Call old scic tracking
         if (Mage::helper('factfinder_tracking')->useOldTracking()) {
             return $this->_getFacade()->getScicAdapter()->trackCart(
@@ -89,16 +92,19 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     /**
      * Track a detail click on a product.
      *
-     * @param string $id id of product
-     * @param string $sid session id (if empty, then try to set using the function session_id() )
-     * @param string $query query which led to the product
-     * @param int $pos position of product in the search result
-     * @param int $origPos original position of product in the search result. this data is delivered by ff (optional)
-     * @param int $page page number where the product was clicked (optional - is 1 by default)
-     * @param float $simi similiarity of the product (optional - is 100.00 by default)
-     * @param string $title title of product (optional - is empty by default)
-     * @param int $pageSize size of the page where the product was found (optional - is 12 by default)
-     * @param int $origPageSize original size of the page before the user could have changed it (optional)
+     * @param string $id           id of product
+     * @param string $query        query which led to the product
+     * @param int    $pos          position of product in the search result
+     * @param mixed  $masterId
+     * @param string $sid          session id (if empty, then try to set using the function session_id() )
+     * @param mixed  $cookieId
+     * @param int    $origPos      original product position in search result. this data is delivered by ff (optional)
+     * @param int    $page         page number where the product was clicked (optional - is 1 by default)
+     * @param float  $simi         similarity of the product (optional - is 100.00 by default)
+     * @param string $title        title of product (optional - is empty by default)
+     * @param int    $pageSize     size of the page where the product was found (optional - is 12 by default)
+     * @param int    $origPageSize original size of the page before the user could have changed it (optional)
+     * @param int    $userid
      *
      * @return bool
      */
@@ -116,8 +122,7 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $pageSize = 12,
         $origPageSize = -1,
         $userid = null
-    )
-    {
+    ) {
         // Call old scic tracking
         if (Mage::helper('factfinder_tracking')->useOldTracking()) {
             return $this->_getFacade()->getScicAdapter()->trackClick(
@@ -163,11 +168,11 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
      * @param string $masterId
      * @param string $title
      * @param string $query
-     * @param int $sid
+     * @param int    $sid
      * @param string $cookieId
-     * @param int $count
-     * @param float $price
-     * @param int $userid
+     * @param int    $count
+     * @param float  $price
+     * @param int    $userid
      *
      * @return mixed
      */
@@ -181,8 +186,7 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $count = 1,
         $price = null,
         $userid = null
-    )
-    {
+    ) {
         // Call old scic tracking
         if (Mage::helper('factfinder_tracking')->useOldTracking()) {
             return $this->_getFacade()->getScicAdapter($id)->setupCheckoutTracking(
@@ -212,7 +216,7 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     /**
      * Send tracking
      *
-     * @param $instance
+     * @param mixed $instance
      *
      * @return bool
      */

@@ -32,7 +32,6 @@ class FACTFinder_Tracking_Model_Processor
     const REQUEST_ID_PREFIX = 'FACTFINDER_';
     const XML_CONFIG_PATH = 'factfinder/search/';
 
-
     /**
      * FactFinder Facade
      *
@@ -58,6 +57,8 @@ class FACTFinder_Tracking_Model_Processor
 
     /**
      * Init fact-finder lib autoloader
+     *
+     * @return void
      */
     protected function _initFFAutoloader()
     {
@@ -69,6 +70,8 @@ class FACTFinder_Tracking_Model_Processor
     /**
      * Get Fact-Finder Facade
      * we do it manually, because we do not have the full magento context
+     *
+     * @param mixed $config
      *
      * @return FACTFinder_Core_Model_Facade
      */
@@ -93,17 +96,15 @@ class FACTFinder_Tracking_Model_Processor
     public function extractContent($content)
     {
         // handle in App Request if "ff_suggest" in Request path
-        if (!$content
+        if (empty($content)
             && strpos($this->_requestId, 'ff_tracking')
             && $this->isAllowed()
         ) {
-
             $requestCacheId = $this->prepareCacheId($this->getRequestId() . 'request');
             $request = Mage::app()->loadCache($requestCacheId);
             if ($request) {
                 $content = $this->handleWithoutAppRequest($request);
             }
-
         }
 
         return $content;
@@ -135,6 +136,8 @@ class FACTFinder_Tracking_Model_Processor
     /**
      * hanlde without App Requests
      *
+     * @param mixed $request
+     *
      * @return string
      */
     public function handleWithoutAppRequest($request)
@@ -161,19 +164,25 @@ class FACTFinder_Tracking_Model_Processor
     /**
      * handle Requests
      *
+     * @param string $request
+     *
      * @return string
      */
     protected function _handleRequest($request)
     {
+        $result = '';
         switch ($request) {
             case 'factfinder_tracking_proxy_scic':
-                return $this->_getFacade()->getScicAdapter()->doTrackingFromRequest();
+                $result = $this->_getFacade()->getScicAdapter()->doTrackingFromRequest();
                 break;
 
             case 'factfinder_tracking_proxy_tracking':
-                return $this->_getFacade()->getTrackingAdapter()->doTrackingFromRequest();
+                $result = $this->_getFacade()->getTrackingAdapter()->doTrackingFromRequest();
                 break;
+            default:;
         }
+
+        return $result;
     }
 
 

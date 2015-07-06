@@ -47,6 +47,7 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
         foreach($this->_getProductResultCollection() as $product){
             $data[$product->getProductUrl()] = $product->getId();
         }
+
         return Mage::helper('core')->jsonEncode($data);
     }
 

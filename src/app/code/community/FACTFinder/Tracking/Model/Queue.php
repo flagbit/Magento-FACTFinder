@@ -27,6 +27,8 @@ class FACTFinder_Tracking_Model_Queue extends Mage_Core_Model_Abstract
 
     /**
      * Initialization method
+     *
+     * @return void
      */
     public function _construct()
     {
