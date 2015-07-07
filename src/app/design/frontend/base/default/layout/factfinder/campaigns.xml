@@ -14,34 +14,108 @@
 <layout>
 
     <catalogsearch_result_index>
+
         <reference name="content">
-            <block type="factfinder_campaigns/search_feedback" before="search.result" name="factfinder.campaign.feedback" template="factfinder/campaigns/search/feedback.phtml">
-                <action method="setTextNumber">
-                    <number>1</number>
-                </action>
+            <block type="factfinder_campaigns/advisory_search" name="ff.search.advisory" before="-" template="factfinder/campaigns/advisory.phtml" />
+            <!-- pushed products -->
+            <block type="factfinder_campaigns/pushed_search" name="search.pushed" before="search.result">
+                <action method="setMaxColNum"><num>3</num></action>
+                <block type="factfinder_campaigns/feedback_search" before="-" name="ff.feedback.above.pushed" as="feedback_above">
+                    <action method="setLabel"><label>above pushed product</label></action>
+                </block>
+                <block type="factfinder_campaigns/feedback_search" after="-" name="ff.feedback.below.pushed" as="feedback_below">
+                    <action method="setLabel"><label>below pushed product</label></action>
+                </block>
             </block>
-            <block type="factfinder_campaigns/search_advisory" after="factfinder.campaign.feedback" name="factfinder.campaign.advisory" template="factfinder/campaigns/search/advisory.phtml"/>
+
+            <!-- above and below search result labels-->
+            <block type="factfinder_campaigns/feedback_search" before="search.result" name="ff.feedback.search.above" as="search_above">
+                <action method="setLabel"><label>above search result</label></action>
+            </block>
+            <block type="factfinder_campaigns/feedback_search" after="search.result" name="ff.feedback.search.below" as="search_below">
+                <action method="setLabel"><label>below search result</label></action>
+            </block>
+
+        </reference>
+
+        <!-- above and below asn labels-->
+        <reference name="left_first">
+            <block type="factfinder_campaigns/feedback_search" before="-" name="ff.feedback.above.asn" as="feedback_above_asn">
+                <action method="setLabel"><label>above asn</label></action>
+            </block>
+            <block type="factfinder_campaigns/feedback_search" after="-" name="ff.feedback.below.asn" as="feedback_below_asn">
+                <action method="setLabel"><label>below asn</label></action>
+            </block>
         </reference>
     </catalogsearch_result_index>
 
-    <catalog_product_view>
+    <catalog_category_view>
         <reference name="content">
-            <block type="factfinder_campaigns/product_feedback" before="product.info" name="factfinder.campaign.feedback" template="factfinder/campaigns/product/feedback.phtml"/>
+            <block type="factfinder_campaigns/advisory_search" name="ff.search.advisory" before="-" template="factfinder/campaigns/advisory.phtml" />
+            <!-- pushed products -->
+            <block type="factfinder_campaigns/pushed_search" name="search.pushed" after="ff.search.advisory">
+                <action method="setMaxColNum"><num>3</num></action>
+                <block type="factfinder_campaigns/feedback_search" before="-" name="ff.feedback.above.pushed" as="feedback_above">
+                    <action method="setLabel"><label>above pushed product</label></action>
+                </block>
+                <block type="factfinder_campaigns/feedback_search" after="-" name="ff.feedback.below.pushed" as="feedback_below">
+                    <action method="setLabel"><label>below pushed product</label></action>
+                </block>
+            </block>
+
+            <!-- above and below search result labels-->
+            <block type="factfinder_campaigns/feedback_search" after="product_list" name="ff.feedback.search.above" as="search_above">
+                <action method="setLabel"><label>above search result</label></action>
+            </block>
+            <block type="factfinder_campaigns/feedback_search" after="category.products" name="ff.feedback.search.below" as="search_below">
+                <action method="setLabel"><label>below search result</label></action>
+            </block>
         </reference>
-    </catalog_product_view>
+
+        <!-- above and below asn labels-->
+        <reference name="left_first">
+            <block type="factfinder_campaigns/feedback_search" before="-" name="ff.feedback.above.asn" as="feedback_above_asn">
+                <action method="setLabel"><label>above asn</label></action>
+            </block>
+        </reference>
+        <reference name="left">
+            <block type="factfinder_campaigns/feedback_search" after="-" name="ff.feedback.below.asn" as="feedback_below_asn">
+                <action method="setLabel"><label>below asn</label></action>
+            </block>
+        </reference>
+    </catalog_category_view>
+
 
     <checkout_cart_index>
         <reference name="checkout.cart">
             <action method="setTemplate"><template>factfinder/campaigns/cart.phtml</template></action>
-            <block type="factfinder_campaigns/cart_pushed" name="ff.pushed.products" as="pushed_products" template="factfinder/campaigns/cart/pushed.phtml">
-                <block type="factfinder_campaigns/cart_feedback" before="crosssell" name="ff.feedback.above.pushed" as="feedback_above">
+            <!-- Pushed products -->
+            <block type="factfinder_campaigns/pushed_cart" name="ff.pushed.products" as="pushed_products">
+                <action method="setMaxColNum"><num>6</num></action>
+                <block type="factfinder_campaigns/feedback_cart" before="-" name="ff.feedback.above.pushed" as="feedback_above">
                     <action method="setLabel"><label>above pushed product</label></action>
                 </block>
-                <block type="factfinder_campaigns/cart_feedback" after="crosssell" name="ff.feedback.below.pushed" as="feedback_below">
+                <block type="factfinder_campaigns/feedback_cart" after="-" name="ff.feedback.below.pushed" as="feedback_below">
                     <action method="setLabel"><label>below pushed product</label></action>
                 </block>
             </block>
         </reference>
     </checkout_cart_index>
+
+
+    <catalog_product_view>
+        <!-- Pushed products -->
+        <reference name="content">
+            <block type="factfinder_campaigns/pushed_product" name="factfinder.pushed.product">
+                <action method="setMaxColNum"><num>6</num></action>
+                <block type="factfinder_campaigns/feedback_product" before="-" name="ff.feedback.above.pushed" as="feedback_above">
+                    <action method="setLabel"><label>above pushed product</label></action>
+                </block>
+                <block type="factfinder_campaigns/feedback_product" after="-" name="ff.feedback.below.pushed" as="feedback_below">
+                    <action method="setLabel"><label>below pushed product</label></action>
+                </block>
+            </block>
+        </reference>
+    </catalog_product_view>
 
 </layout>

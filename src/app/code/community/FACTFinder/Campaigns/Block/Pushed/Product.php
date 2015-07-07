@@ -11,7 +11,7 @@
  */
 
 /**
- * Class FACTFinder_Campaigns_Helper_Data
+ * Class FACTFinder_Campaigns_Block_Pushed_Product
  *
  * @category Mage
  * @package FACTFinder_Campaigns
@@ -20,18 +20,22 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
+class FACTFinder_Campaigns_Block_Pushed_Product extends FACTFinder_Campaigns_Block_Pushed_Abstract
 {
+
+    protected $_handlerModel = 'factfinder_campaigns/handler_product';
 
 
     /**
-     * Check config if showing campaigns on product page is enabled
+     * Check is the campign can be shown on product page
      *
      * @return bool
      */
-    public function canShowCampaignsOnProduct()
+    protected function _canBeShown()
     {
-        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/enable_campaigns_on_prod_page');
+        $enabledOnProduct = Mage::helper('factfinder_campaigns')->canShowCampaignsOnProduct();
+
+        return parent::_canBeShown() && $enabledOnProduct;
     }
 
 

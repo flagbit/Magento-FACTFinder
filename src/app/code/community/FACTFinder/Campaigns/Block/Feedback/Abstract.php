@@ -11,7 +11,7 @@
  */
 
 /**
- * Class FACTFinder_Campaigns_Helper_Data
+ * Class FACTFinder_Campaigns_Block_Feedback_Abstract
  *
  * @category Mage
  * @package FACTFinder_Campaigns
@@ -20,18 +20,29 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
+abstract class FACTFinder_Campaigns_Block_Feedback_Abstract extends FACTFinder_Campaigns_Block_Abstract
 {
+
+    protected $_template = 'factfinder/campaigns/feedback.phtml';
 
 
     /**
-     * Check config if showing campaigns on product page is enabled
+     * Get campaign feedback based on label
      *
-     * @return bool
+     * @return array
      */
-    public function canShowCampaignsOnProduct()
+    public function getActiveFeedback()
     {
-        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/enable_campaigns_on_prod_page');
+        $feedback = '';
+
+        $_campaigns = $this->_getHandler()->getCampaigns();
+
+        if ($_campaigns && $_campaigns->hasFeedback()) {
+            $label = $this->getLabel();
+            $feedback = $_campaigns->getFeedback($label);
+        }
+
+        return $feedback;
     }
 
 

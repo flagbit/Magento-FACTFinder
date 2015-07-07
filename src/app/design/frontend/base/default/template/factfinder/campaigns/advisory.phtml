@@ -15,11 +15,12 @@
     <?php foreach ($questions as $question): ?>
         <div class="factfinder-advisorCampaign">
             <p class="factfinder-advisorCampaign-question"><?php echo $question->getText() ?></p>
-            <p></p>
             <ul>
                 <?php foreach ($question->getAnswers() as $answer): ?>
                     <li>
-                        <a class="factfinder-advisorCampaign-answer" href="<?php echo $answer->getUrl() ?>"><?php echo $answer->getText() ?></a>
+                        <a class="factfinder-advisorCampaign-answer" href="<?php echo $answer->getUrl() ?>">
+                            <?php echo $answer->getText() ?>
+                        </a>
                     </li>
                 <?php endforeach; ?>
             </ul>

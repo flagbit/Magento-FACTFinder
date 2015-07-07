@@ -11,7 +11,7 @@
  */
 
 /**
- * Class FACTFinder_Campaigns_Block_Cart_Pushed
+ * Class FACTFinder_Campaigns_Block_Pushed_Abstract
  *
  * @category Mage
  * @package FACTFinder_Campaigns
@@ -20,12 +20,36 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Block_Cart_Pushed extends Mage_Catalog_Block_Product_List_Upsell
+abstract class FACTFinder_Campaigns_Block_Pushed_Abstract extends Mage_Catalog_Block_Product_List_Upsell
 {
     const HEADER_LABEL = 'pushed products header';
 
+    protected $_template = 'factfinder/campaigns/pushed.phtml';
+
     /**
-     * @return FACTFinder_Campaigns_Block_Cart_Pushed
+     * Handler model to use
+     * Must be redefined in descendants
+     *
+     * @var string
+     */
+    protected $_handlerModel = '';
+
+
+    /**
+     * Get handler singleton
+     *
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getHandler()
+    {
+        return Mage::getSingleton($this->_handlerModel);
+    }
+
+
+    /**
+     * Prepare collection data
+     *
+     * @return FACTFinder_Campaigns_Block_Pushed_Abstract
      */
     protected function _prepareData()
     {
@@ -48,7 +72,7 @@ class FACTFinder_Campaigns_Block_Cart_Pushed extends Mage_Catalog_Block_Product_
     {
         if ($this->_itemCollection === null) {
             $this->_itemCollection = Mage::getResourceModel('factfinder_campaigns/pushedproducts_collection');
-            $this->_itemCollection->setHandler(Mage::getSingleton('factfinder_campaigns/handler_cart'));
+            $this->_itemCollection->setHandler($this->_getHandler());
         }
 
         return $this->_itemCollection;
@@ -62,7 +86,7 @@ class FACTFinder_Campaigns_Block_Cart_Pushed extends Mage_Catalog_Block_Product_
      */
     public function getHeader()
     {
-        $campaigns = Mage::getSingleton('factfinder_campaigns/handler_product')->getCampaigns();
+        $campaigns = $this->_getHandler()->getCampaigns();
 
         $label = $campaigns->getFeedback(self::HEADER_LABEL);
 
@@ -71,6 +95,33 @@ class FACTFinder_Campaigns_Block_Cart_Pushed extends Mage_Catalog_Block_Product_
         }
 
         return $this->__('Pushed products');
+    }
+
+
+    /**
+     * Check if campaigns can be shown
+     *
+     * @return bool
+     */
+    protected function _canBeShown()
+    {
+        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
+    }
+
+
+    /**
+     * Render html
+     * Return empty string if module isn't enabled
+     *
+     * @return string
+     */
+    protected function _toHtml()
+    {
+        if (!$this->_canBeShown()) {
+            return '';
+        }
+
+        return parent::_toHtml();
     }
 
 

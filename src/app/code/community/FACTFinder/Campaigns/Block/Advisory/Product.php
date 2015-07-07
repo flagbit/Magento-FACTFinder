@@ -11,7 +11,7 @@
  */
 
 /**
- * Class FACTFinder_Campaigns_Block_Product_Advisory
+ * Class FACTFinder_Campaigns_Block_Advisory_Product
  *
  * Provides advisory hints to the product view page
  *
@@ -22,35 +22,37 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Block_Product_Advisory extends FACTFinder_Campaigns_Block_Abstract
+class FACTFinder_Campaigns_Block_Advisory_Product extends FACTFinder_Campaigns_Block_Abstract
 {
 
     /**
-     * Handler used to access product campaigns data
-     *
-     * @var FACTFinder_Campaigns_Model_Handler_Product
+     * @var string
      */
-    protected $_productCampaignHandler;
+    protected $_handlerModel = 'factfinder_campaigns/handler_product';
 
 
     /**
-     * Preparing global layout
-     *
-     * @return FACTFinder_Campaigns_Block_Product_Advisory
+     * @return \Mage_Core_Model_Abstract
      */
-    protected function _prepareLayout()
+    protected function _getHandler()
     {
-        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
-            return parent::_prepareLayout();
+        return Mage::getSingleton('factfinder_campaigns/handler_product', $this->_getProductIds());
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function _getProductIds()
+    {
+        $productIds = array();
+        if (Mage::registry('current_product')) {
+            $productIds = array(
+                Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+            );
         }
 
-        $productIds = array(
-            Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
-        );
-
-        $this->_productCampaignHandler = Mage::getSingleton('factfinder_campaigns/handler_product', $productIds);
-
-        return parent::_prepareLayout();
+        return $productIds;
     }
 
 
@@ -64,7 +66,7 @@ class FACTFinder_Campaigns_Block_Product_Advisory extends FACTFinder_Campaigns_B
         $questions = array();
 
         if ($this->canCampaignBeDisplay()) {
-            $questions = $this->_productCampaignHandler->getActiveAdvisorQuestions();
+            $questions = $this->_getHandler()->getActiveAdvisorQuestions();
         }
 
         return $questions;

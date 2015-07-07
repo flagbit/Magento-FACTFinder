@@ -11,7 +11,7 @@
  */
 
 /**
- * Class FACTFinder_Campaigns_Block_Search_Advisory
+ * Class FACTFinder_Campaigns_Block_Advisory_Search
  *
  * @category Mage
  * @package FACTFinder_Campaigns
@@ -20,29 +20,13 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Block_Search_Advisory extends FACTFinder_Campaigns_Block_Abstract
+class FACTFinder_Campaigns_Block_Advisory_Search extends FACTFinder_Campaigns_Block_Abstract
 {
-    /**
-     * Search handler
-     *
-     * @var FACTFinder_Campaigns_Model_Handler_Search
-     */
-    protected $_searchHandler;
-
 
     /**
-     * Preparing global layout. Here we initialize the handler
-     *
-     * @return FACTFinder_Campaigns_Block_Search_Advisory
+     * @var string
      */
-    protected function _prepareLayout()
-    {
-        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
-            return parent::_prepareLayout();
-        }
-
-        $this->_searchHandler = Mage::getSingleton('factfinder_campaigns/handler_search');
-    }
+    protected $_handlerModel = 'factfinder_campaigns/handler_search';
 
 
     /**
@@ -54,7 +38,7 @@ class FACTFinder_Campaigns_Block_Search_Advisory extends FACTFinder_Campaigns_Bl
     {
         $questions = array();
 
-        $_campaigns = $this->_searchHandler->getCampaigns();
+        $_campaigns = $this->_getHandler()->getCampaigns();
         if ($_campaigns && $_campaigns->hasActiveQuestions()) {
             $questions = $_campaigns->getActiveQuestions();
         }

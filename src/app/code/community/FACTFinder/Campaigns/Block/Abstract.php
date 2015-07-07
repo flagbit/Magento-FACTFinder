@@ -20,18 +20,63 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Campaigns_Block_Abstract extends Mage_Core_Block_Template
+abstract class FACTFinder_Campaigns_Block_Abstract extends Mage_Core_Block_Template
 {
+
+    /**
+     * Handler used to get data from ff
+     *
+     * @var FACTFinder_Campaigns_Model_Handler_Cart
+     */
+    protected $_handlerModel = '';
+
+
+    /**
+     * Check if campaigns can be shown
+     *
+     * @return bool
+     */
+    protected function _canBeShown()
+    {
+        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
+    }
+
+
+    /**
+     * Preparing global layout
+     *
+     * @return FACTFinder_Campaigns_Block_Abstract
+     */
+    protected function _prepareLayout()
+    {
+        if (Mage::helper('factfinder')->isEnabled('campaigns')) {
+            $this->_handler = Mage::getSingleton($this->_handlerModel);
+        }
+
+        return parent::_prepareLayout();
+    }
+
+
+    /**
+     * Get handler singleton
+     *
+     * @return \Mage_Core_Model_Abstract
+     */
+    protected function _getHandler()
+    {
+        return Mage::getSingleton($this->_handlerModel);
+    }
 
 
     /**
      * Render html
+     * Return empty string if module isn't enabled
      *
      * @return string
      */
     protected function _toHtml()
     {
-        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
+        if (!$this->_canBeShown()) {
             return '';
         }
 
