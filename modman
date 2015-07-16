@@ -7,4 +7,4 @@ src/app/locale/de_DE/* app/locale/de_DE
 src/app/etc/modules/* app/etc/modules
 src/js/* js
 src/lib/* lib
-src/skin/frontend/base/default/* skin/frontend/base/default/css
+src/skin/frontend/base/default/css/* skin/frontend/base/default/css
