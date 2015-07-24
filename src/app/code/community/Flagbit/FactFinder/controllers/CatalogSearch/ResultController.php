@@ -11,9 +11,19 @@ class Flagbit_FactFinder_CatalogSearch_ResultController extends Mage_CatalogSear
             return parent::indexAction();
         }
 
-        $this->loadLayout();
-        $this->_initLayoutMessages('catalog/session');
-        $this->_initLayoutMessages('checkout/session');
-        $this->renderLayout();
+        $query = Mage::helper('catalogsearch')->getQuery();
+        /* @var $query Mage_CatalogSearch_Model_Query */
+
+        $query->setStoreId(Mage::app()->getStore()->getId());
+
+        if ($query->getQueryText() != '') {
+            $this->loadLayout();
+            $this->_initLayoutMessages('catalog/session');
+            $this->_initLayoutMessages('checkout/session');
+            $this->renderLayout();
+        } else {
+            $this->_redirectReferer();
+        }
+
     }
 }
