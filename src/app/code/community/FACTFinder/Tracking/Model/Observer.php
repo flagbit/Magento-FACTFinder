@@ -86,7 +86,7 @@ class FACTFinder_Tracking_Model_Observer
                 $product->getData($idFieldName),
                 $product->getName(),
                 null,
-                md5(Mage::getSingleton('core/session')->getSessionId()),
+                Mage::helper('factfinder_tracking')->getSessionId(),
                 null,
                 $qty,
                 $product->getFinalPrice($qty),
@@ -131,7 +131,7 @@ class FACTFinder_Tracking_Model_Observer
                 $searchHelper->getQuery()->getQueryText(),
                 1, // pos,
                 $product->getData($idFieldName),
-                md5(Mage::getSingleton('core/session')->getSessionId()),
+                Mage::helper('factfinder_tracking')->getSessionId(),
                 null,
                 1, // origPos
                 1, // page
@@ -185,7 +185,7 @@ class FACTFinder_Tracking_Model_Observer
                 Mage::getModel('factfinder_tracking/queue')
                     ->setProductId($item->getData($idFieldName))
                     ->setProductName($item->getName())
-                    ->setSid(md5(Mage::getSingleton('core/session')->getSessionId()))
+                    ->setSid(Mage::helper('factfinder_tracking')->getSessionId())
                     ->setUserid($customerId)
                     ->setPrice($item->getPrice())
                     ->setCount($item->getQtyOrdered())
@@ -240,5 +240,30 @@ class FACTFinder_Tracking_Model_Observer
         }
     }
 
+    /**
+     * Store initial session id to be able to recognize the user sill after login
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function storeSessionId(Varien_Event_Observer $observer)
+    {
+        $customerSession = Mage::getSingleton('customer/session');
+        if (!$customerSession->getData('ff_session_id')) {
+            $customerSession->setData('ff_session_id', $customerSession->getEncryptedSessionId());
+        }
+    }
 
+    public function loginTracking(Varien_Event_Observer $observer)
+    {
+        $customer = $observer->getCustomer();
+        if($customer->getId()) {
+            /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+            $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
+            $tracking->trackLogin(
+                Mage::helper('factfinder_tracking')->getSessionId(),
+                null,
+                $customer->getId()
+            );
+        }
+    }
 }

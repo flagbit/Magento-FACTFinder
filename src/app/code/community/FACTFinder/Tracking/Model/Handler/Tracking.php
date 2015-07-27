@@ -36,6 +36,25 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     {
     }
 
+    /**
+     * Track login of a user
+     *
+     * @param string $sid session id (if empty, then try to set using the function session_id() )
+     * @param string $cookieId cookie id (optional)
+     * @param string $userid id of user who logged in
+     * @return boolean $success
+     */
+    public function trackLogin(
+        $sid = null,
+        $cookieId = null,
+        $userid = null
+    ) {
+        return $this->_getFacade()->getTrackingAdapter()->trackLogin(
+            $sid,
+            $cookieId,
+            $userid
+        );
+    }
 
     /**
      * Track a product which was added to the cart.
@@ -63,18 +82,6 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $price = null,
         $userid = null
     ) {
-        // Call old scic tracking
-        if (Mage::helper('factfinder_tracking')->useOldTracking()) {
-            return $this->_getFacade()->getScicAdapter()->trackCart(
-                $id,
-                $sid,
-                $count,
-                $price,
-                $userid
-            );
-        }
-
-        // Call new tracking
         return $this->_getFacade()->getTrackingAdapter()->trackCart(
             $id,
             $masterId,
@@ -123,23 +130,6 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $origPageSize = -1,
         $userid = null
     ) {
-        // Call old scic tracking
-        if (Mage::helper('factfinder_tracking')->useOldTracking()) {
-            return $this->_getFacade()->getScicAdapter()->trackClick(
-                $id,
-                $sid,
-                $query,
-                $pos,
-                $origPos,
-                $page,
-                $simi,
-                $title,
-                $pageSize,
-                $origPageSize
-            );
-        }
-
-        // Call new tracking
         return $this->_getFacade()->getTrackingAdapter()->trackClick(
             $id,
             $query,
@@ -187,18 +177,6 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
         $price = null,
         $userid = null
     ) {
-        // Call old scic tracking
-        if (Mage::helper('factfinder_tracking')->useOldTracking()) {
-            return $this->_getFacade()->getScicAdapter($id)->setupCheckoutTracking(
-                $id,
-                $sid,
-                $count,
-                $price,
-                $userid
-            );
-        }
-
-        // Call new tracking
         return $this->_getFacade()->getTrackingAdapter($id)->setupCheckoutTracking(
             $id,
             $masterId,
@@ -222,12 +200,6 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
      */
     public function applyTracking($instance = null)
     {
-        // Call old scic tracking
-        if (Mage::helper('factfinder_tracking')->useOldTracking()) {
-            return $this->_getFacade()->getScicAdapter($instance)->applyTracking();
-        }
-
-        // Call new tracking
         return $this->_getFacade()->getTrackingAdapter($instance)->applyTracking();
     }
 

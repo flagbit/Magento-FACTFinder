@@ -104,6 +104,24 @@
                     </factfinder_tracking_on_single_result_redirect>
                 </observers>
             </factfinder_redirect_on_single_result_before>
+            <controller_action_predispatch>
+                <observers>
+                    <factfinder_tracking_store_session_id>
+                        <type>singleton</type>
+                        <class>factfinder_tracking/observer</class>
+                        <method>storeSessionId</method>
+                    </factfinder_tracking_store_session_id>
+                </observers>
+            </controller_action_predispatch>
+            <customer_login>
+                <observers>
+                    <factfinder_tracking_customer_login>
+                        <type>singleton</type>
+                        <class>factfinder_tracking/observer</class>
+                        <method>loginTracking</method>
+                    </factfinder_tracking_customer_login>
+                </observers>
+            </customer_login>
         </events>
     </frontend>
     <crontab>

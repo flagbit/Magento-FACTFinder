@@ -53,5 +53,15 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
         return $urlPath;
     }
 
+    /**
+     * Get session id which was initialy saved at session start
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return md5(Mage::getSingleton('customer/session')->getData('ff_session_id'));
+    }
+
 
 }

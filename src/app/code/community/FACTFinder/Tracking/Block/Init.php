@@ -70,7 +70,7 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
         $dataTemplate = array(
             'query'         => $searchHelper->getQuery()->getQueryText(),
             'page'          => $searchHelper->getCurrentPage(),
-            'sid'           => md5(Mage::getSingleton('core/session')->getSessionId()),
+            'sid'           => Mage::helper('factfinder_tracking')->getSessionId(),
             'pageSize'      => $searchHelper->getPageLimit(),
             'origPageSize'  => $searchHelper->getDefaultPerPageValue(),
             'channel'       => Mage::getStoreConfig('factfinder/search/channel'),
