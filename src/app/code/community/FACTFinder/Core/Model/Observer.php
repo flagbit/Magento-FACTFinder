@@ -100,6 +100,27 @@ class FACTFinder_Core_Model_Observer
 
         $block->unsetChildren();
         $block->setData('_filterable_attributes', array());
+
+        if(Mage::helper('core')->isModuleEnabled('Mage_ConfigurableSwatches')) {
+            $this->_disableConfigurableSwatchesEvent();
+        }
+    }
+
+    /**
+     * Disable ConfigurableSwatches observer logic
+     */
+    protected function _disableConfigurableSwatchesEvent()
+    {
+        // Initialize reflection for Mage::app()->_events
+        $mageApp = new ReflectionObject(Mage::app());
+        $_events = $mageApp->getProperty('_events');
+        $_events->setAccessible(true);
+
+        // Disable ConfigurableSwatch Event
+        Mage::getConfig()->getEventConfig('frontend','controller_action_layout_generate_blocks_after')
+            ->setNode('/observers/configurableswatches/type', 'disabled');
+
+        $_events->setAccessible(false);
     }
 
 

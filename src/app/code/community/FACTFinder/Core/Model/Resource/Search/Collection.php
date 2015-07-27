@@ -90,12 +90,6 @@ class FACTFinder_Core_Model_Resource_Search_Collection extends Mage_Catalog_Mode
         // get product IDs from Fact-Finder
         $productIds = $this->_getSearchHandler()->getSearchResult();
 
-        $facade = Mage::getSingleton('factfinder/facade');
-        $refKey = $facade->getSearchResult()->getRefKey();
-        if ($refKey) {
-            Mage::getSingleton('core/session')->setFactFinderRefKey($refKey);
-        }
-
         if (!empty($productIds)) {
             $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
