@@ -218,6 +218,8 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             this.field.value = element.title;
 
             this.form.submit();
+        } else {
+            this.form.submit();
         }
     }
 });
