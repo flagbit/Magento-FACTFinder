@@ -3,6 +3,9 @@
     "license": "GPL3",
     "type": "magento-module",
     "description": "Flagbit FACTFinder",
+    "replace": {
+        "connect20/flagbit_factfinder": "~3.3"
+    },
     "require": {
         "magento-hackathon/magento-composer-installer": "*"
     },
