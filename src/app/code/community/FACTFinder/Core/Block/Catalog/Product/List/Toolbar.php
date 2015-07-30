@@ -66,7 +66,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     {
         $sortingId = $this->_getSortingId($params);
 
-        if ($sortingId) {
+        if ($sortingId && $this->_handler) {
             $sortings = $this->_handler->getSorting();
 
             // relevance default and has no directions
@@ -165,16 +165,18 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     protected function _getSelectedOrder()
     {
-        $sortings = $this->_handler->getSorting();
+        if ($this->_handler) {
+            $sortings = $this->_handler->getSorting();
 
-        $this->getRequest()->getQuery();
-        /** @var \FACTFinder\Data\Item $sorting */
-        foreach ($sortings as $sorting) {
-            if ($sorting->isSelected()) {
-                $url = $sorting->getUrl();
-                preg_match('/[\?|\&]{1}sort([a-z\_]*?)=/', $url, $matches);
-                if (isset($matches[1])) {
-                    return $matches[1];
+            $this->getRequest()->getQuery();
+            /** @var \FACTFinder\Data\Item $sorting */
+            foreach ($sortings as $sorting) {
+                if ($sorting->isSelected()) {
+                    $url = $sorting->getUrl();
+                    preg_match('/[\?|\&]{1}sort([a-z\_]*?)=/', $url, $matches);
+                    if (isset($matches[1])) {
+                        return $matches[1];
+                    }
                 }
             }
         }
