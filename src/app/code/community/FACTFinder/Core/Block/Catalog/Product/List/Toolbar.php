@@ -62,7 +62,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      *
      * @return string
      */
-    public function getPagerUrl($params)
+    public function getPagerUrl($params=array())
     {
         $sortingId = $this->_getSortingId($params);
 
