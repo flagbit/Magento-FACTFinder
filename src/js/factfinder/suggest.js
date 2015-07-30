@@ -312,6 +312,9 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             url += item.searchParams.substring(qPos);
         }
 
+        //there's no mapping possibility, so let's hardcode it
+        url = url.replace('query=', 'q=');
+
         return url;
     }
 });
