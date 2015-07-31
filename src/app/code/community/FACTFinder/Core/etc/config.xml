@@ -55,14 +55,14 @@
     </global>
     <adminhtml>
         <events>
-            <controller_action_predispatch_adminhtml_system_config_save>
+            <controller_action_postdispatch_adminhtml_system_config_save>
                 <observers>
                     <factfinder_core_set_search_engine>
                         <class>factfinder/observer</class>
                         <method>setSearchEngine</method>
                     </factfinder_core_set_search_engine>
                 </observers>
-            </controller_action_predispatch_adminhtml_system_config_save>
+            </controller_action_postdispatch_adminhtml_system_config_save>
         </events>
     </adminhtml>
     <frontend>

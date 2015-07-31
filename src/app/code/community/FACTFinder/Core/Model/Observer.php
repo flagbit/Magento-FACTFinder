@@ -45,13 +45,40 @@ class FACTFinder_Core_Model_Observer
         }
 
         $groups = $request->getPost('groups');
+        $website = $request->getParam('website');
+        $store   = $request->getParam('store');
 
-        if (empty($groups['search']['fields']['enabled']['value'])) {
+        if (is_array($groups['search'])
+            && is_array($groups['search']['fields'])
+            && is_array($groups['search']['fields']['enabled'])
+            && isset($groups['search']['fields']['enabled']['value'])
+        ) {
+            $value = $groups['search']['fields']['enabled']['value'];
+        } elseif ($store) {
+            $value = Mage::app()->getWebsite($website)->getConfig('factfinder/search/enabled');
+        } else {
+            $value = (string) Mage::getConfig()->getNode('default/factfinder/search/enabled');
+        }
+
+        if (empty($value)) {
             Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::DEFAULT_SEARCH_ENGINE);
             return;
         }
 
-        Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
+        $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields']);
+
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                Mage::getSingleton('adminhtml/session')->addError($error);
+            }
+
+            Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::DEFAULT_SEARCH_ENGINE);
+            Mage::app()->getConfig()->saveConfig('factfinder/search/enabled', 0);
+        } else {
+            // If there were no errors, reset the fallback feature
+            Mage::helper('factfinder/search')->resetFailedAttemptCount();
+            Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
+        }
 
         // this also helps with module managing
         Mage::app()->cleanCache();

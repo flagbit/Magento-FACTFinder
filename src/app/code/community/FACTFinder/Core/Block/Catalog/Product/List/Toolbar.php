@@ -47,7 +47,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     protected function _construct()
     {
-        if ($this->_useFF) {
+        if ($this->_useFF && Mage::helper('factfinder')->isEnabled()) {
             $this->_handler = Mage::getSingleton('factfinder/handler_search');
         }
 
