@@ -76,8 +76,10 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
             return;
         }
 
+        $resource = Mage::app()->getRequest()->getParam('resource', 'product');
+
         try {
-            $exportModel = Mage::getModel('factfinder/export_product');
+            $exportModel = Mage::getModel('factfinder/export_' . $resource);
             $exportModel->saveExport(
                 $this->_getStoreId()
             );
