@@ -138,6 +138,35 @@
                         </auth_advancedPostfix>
                     </fields>
                 </search>
+                <fallback translate="label">
+                    <label>FACT-Finder Fallback Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>15</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <use_fallback translate="label comment">
+                            <label>Use Fallback</label>
+                            <comment>If activated and FACT-Finder cannot be contacted, Magento's built-in search will be used instead.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_fallback>
+                        <wait_time translate="label comment">
+                            <label>Minutes before next attempt</label>
+                            <comment>After three failed attempts, the module can revert to using Magento for searches. After the specified amount of time has passed, the module will try to contact FACT-Finder again. If you enter 0, the module will first attempt to contact FACT-Finder for every search.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </wait_time>
+                    </fields>
+                </fallback>
                 <export translate="label">
                     <label>FACT-Finder Export Configuration</label>
                     <frontend_type>text</frontend_type>

@@ -143,6 +143,10 @@
                     <pageURI>UTF-8</pageURI>
                 </encoding>
             </search>
+            <fallback>
+                <use_fallback>0</use_fallback>
+                <wait_time>15</wait_time>
+            </fallback>
             <modules>
                 <asn>1</asn>
             </modules>
