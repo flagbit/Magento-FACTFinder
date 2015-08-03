@@ -24,6 +24,7 @@
 class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+    const SKIP_FF_PARAM_NAME = 'skip_ff';
 
     /**
      * Redirect to product page
@@ -59,6 +60,10 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isEnabled($feature = null)
     {
+        if ($this->_getRequest()->getParam('skip_ff')) {
+            return false;
+        }
+
         $result = (bool) Mage::app()->getStore()->getConfig('factfinder/search/enabled');
         if ($feature !== null) {
             $result &= (bool) Mage::app()->getStore()->getConfig('factfinder/modules/' . $feature);
@@ -119,6 +124,25 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $xml->save($file);
+    }
+
+
+    /**
+     * Redirect to the same url but with the skip parameter
+     *
+     * @return void
+     */
+    public function performFallbackRedirect()
+    {
+        if (!$this->_getRequest()->getParam(self::SKIP_FF_PARAM_NAME)
+            && Mage::getStoreConfig('factfinder/fallback/use_fallback')
+        ) {
+            $url = Mage::helper('core/url')->getCurrentUrl();
+            $url .= strpos($url, '?') ? '&' : '?';
+            $url .= self::SKIP_FF_PARAM_NAME . '=1';
+            header('Location: ' . $url);
+            exit(0);
+        }
     }
 
 

@@ -105,7 +105,7 @@ class FACTFinder_Tagcloud_Model_Handler_TagCloud extends FACTFinder_Core_Model_H
         if ($this->_tagCloud === null) {
             $this->_tagCloud = $this->_getFacade()->getTagCloud();
             if ($this->_tagCloud === null) {
-                $this->_tagCloud = array();
+                Mage::helper('factfinder')->performFallbackRedirect();
             }
         }
 

@@ -75,8 +75,6 @@ class FACTFinder_Core_Model_Observer
             Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::DEFAULT_SEARCH_ENGINE);
             Mage::app()->getConfig()->saveConfig('factfinder/search/enabled', 0);
         } else {
-            // If there were no errors, reset the fallback feature
-            Mage::helper('factfinder/search')->resetFailedAttemptCount();
             Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
         }
 

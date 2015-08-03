@@ -84,7 +84,7 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
         if ($this->_recommendations === null) {
             $this->_recommendations = $this->_getFacade()->getRecommendations();
             if ($this->_recommendations === null) {
-                $this->_recommendations = array();
+                Mage::helper('factfinder')->performFallbackRedirect();
             }
         }
 

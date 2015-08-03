@@ -126,6 +126,10 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     {
         if ($this->_searchResultCount === null) {
             $result = $this->_getFacade()->getSearchResult();
+            if (!$result) {
+                Mage::helper('factfinder')->performFallbackRedirect();
+            }
+
             if ($result instanceof \FACTFinder\Data\Result) {
                 $this->_searchResultCount = $result->getFoundRecordsCount();
             }
@@ -151,8 +155,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
             $error = $this->_getFacade()->getSearchError();
 
             if ($result === null || $error) {
-                Mage::helper('factfinder/search')->registerFailedAttempt();
                 Mage::logException(new Exception($error));
+                Mage::helper('factfinder')->performFallbackRedirect();
             }
 
             $this->_searchResult = array();
