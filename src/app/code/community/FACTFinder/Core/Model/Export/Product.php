@@ -966,6 +966,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $value = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $value);
         }
 
+        $value = str_replace(array('|', '#', '='), '', $value);
         $value = addslashes($value);
 
         return $value;
