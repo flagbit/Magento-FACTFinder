@@ -140,7 +140,8 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
             $url = Mage::helper('core/url')->getCurrentUrl();
             $url .= strpos($url, '?') ? '&' : '?';
             $url .= self::SKIP_FF_PARAM_NAME . '=1';
-            header('Location: ' . $url);
+            Mage::app()->getResponse()->setRedirect($url)
+                ->sendResponse();
             exit(0);
         }
     }
