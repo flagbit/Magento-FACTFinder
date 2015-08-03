@@ -191,4 +191,49 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
     }
 
 
+    /**
+     * Used to forward actions from wrappers
+     *
+     * @param string $resource
+     *
+     * @return void
+     */
+    protected function _forwardExport($resource)
+    {
+        $params = $this->getRequest()->getParams();
+        $params = array_merge($params, array(
+            'resource' => $resource,
+        ));
+
+        $this->_forward('export', null, null, $params);
+    }
+
+
+    /**
+     * Wrapper for price export
+     */
+    public function priceAction()
+    {
+        $this->_forwardExport('price');
+    }
+
+
+    /**
+     * Wrapper ro stock export
+     */
+    public function stockAction()
+    {
+        $this->_forwardExport('stock');
+    }
+
+
+    /**
+     * Wrapper for product export
+     */
+    public function productAction()
+    {
+        $this->_forwardExport('product');
+    }
+
+
 }
