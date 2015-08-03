@@ -119,6 +119,10 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     public function getCurrentOrder()
     {
+        if (!$this->_handler) {
+            return parent::getCurrentOrder();
+        }
+
         $order = $this->_getData('_current_grid_order');
         if ($order) {
             return $order;
@@ -192,7 +196,11 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     public function getDirectionVarName()
     {
-        return 'sort' . $this->getCurrentOrder();
+        if ($this->_handler) {
+            return 'sort' . $this->getCurrentOrder();
+        }
+
+        return parent::getDirectionVarName();
     }
 
 
