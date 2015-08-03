@@ -533,7 +533,17 @@ class FACTFinder_Core_Model_Facade
      */
     public function getSearchResult($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("search", "getResult", $channel, $id);
+        $result =  $this->_getFactFinderObject("search", "getResult", $channel, $id);
+
+        $helper = Mage::helper('factfinder/debug');
+        if ($helper->isDebugMode()
+            && $this->getSearchError($channel, $id)
+            && $this->getSearchStackTrace($channel, $id)
+        ) {
+            $helper->trace($this->getSearchStackTrace($channel, $id));
+        }
+
+        return $result;
     }
 
 

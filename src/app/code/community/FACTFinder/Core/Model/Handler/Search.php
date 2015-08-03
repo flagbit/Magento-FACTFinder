@@ -113,6 +113,11 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                 }
         }
 
+        if (Mage::helper('factfinder/debug')->isDebugMode()) {
+            $params['verbose'] = 'true';
+        }
+
+
         return $params;
     }
 
@@ -126,7 +131,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     {
         if ($this->_searchResultCount === null) {
             $result = $this->_getFacade()->getSearchResult();
-            if (!$result) {
+            if (!count($result)) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
