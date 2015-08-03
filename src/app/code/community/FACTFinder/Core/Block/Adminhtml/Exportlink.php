@@ -115,7 +115,14 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
     protected function _createLink(Mage_Core_Model_Store $store, $route, $text, $params)
     {
         $text = Mage::helper('factfinder')->__($text);
-        $href = $store->getUrl($route, $params);
+
+        $url = Mage::app()->getStore($store)->getBaseUrl() . $route . '?';
+
+        foreach ($params as $key => $value) {
+            $url .= $key . '=' . $value . '&';
+        }
+
+        $href = rtrim($url, '&');
 
         return "<a href=\"{$href}\" target=\"_blank\">{$text}</a><br />";
     }
