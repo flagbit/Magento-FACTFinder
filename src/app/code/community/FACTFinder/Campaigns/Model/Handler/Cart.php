@@ -47,7 +47,7 @@ class FACTFinder_Campaigns_Model_Handler_Cart extends FACTFinder_Campaigns_Model
 
         /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ($quote->getAllItems() as $item) {
-            $productIds[] = $item->getProduct()->getData(Mage::helper('factfinder/search')->getIdFieldName());
+            $productIds[] = $item->getProduct()->getData(Mage::helper('factfinder_campaigns')->getIdFieldName());
         }
 
         return $productIds;

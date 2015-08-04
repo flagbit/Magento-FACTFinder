@@ -35,4 +35,15 @@ class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Get id field name for campaigns
+     *
+     * @return bool
+     */
+    public function getIdFieldName()
+    {
+        return (bool) Mage::getStoreConfig('factfinder/config/campaigns_identifier');
+    }
+
+
 }

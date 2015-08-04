@@ -60,7 +60,7 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
     public function getJsonDataObject()
     {
         $searchHelper = Mage::helper('factfinder/search');
-        $idFieldName = $searchHelper->getIdFieldName();
+        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         if ($customerId) {

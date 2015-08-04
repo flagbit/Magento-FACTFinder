@@ -48,7 +48,7 @@ class FACTFinder_Campaigns_Block_Advisory_Product extends FACTFinder_Campaigns_B
         $productIds = array();
         if (Mage::registry('current_product')) {
             $productIds = array(
-                Mage::registry('current_product')->getData(Mage::helper('factfinder/search')->getIdFieldName())
+                Mage::registry('current_product')->getData(Mage::helper('factfinder_campaigns')->getIdFieldName())
             );
         }
 

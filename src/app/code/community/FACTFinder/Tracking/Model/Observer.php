@@ -68,8 +68,7 @@ class FACTFinder_Tracking_Model_Observer
         $quoteItem = $observer->getQuoteItem();
         $product = $observer->getProduct();
 
-        $searchHelper = Mage::helper('factfinder/search');
-        $idFieldName = $searchHelper->getIdFieldName();
+        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
 
         $qty = $quoteItem->getQty();
 
@@ -117,7 +116,7 @@ class FACTFinder_Tracking_Model_Observer
         }
 
         try {
-            $idFieldName = $searchHelper->getIdFieldName();
+            $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
 
             $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
             if ($customerId) {
@@ -171,7 +170,7 @@ class FACTFinder_Tracking_Model_Observer
         }
 
         $searchHelper = Mage::helper('factfinder/search');
-        $idFieldName = $searchHelper->getIdFieldName();
+        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
         if ($idFieldName == 'entity_id') {
             $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
         }

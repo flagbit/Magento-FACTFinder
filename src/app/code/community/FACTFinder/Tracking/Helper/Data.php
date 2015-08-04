@@ -64,4 +64,15 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Get id field name for tracking
+     *
+     * @return bool
+     */
+    public function getIdFieldName()
+    {
+        return (bool) Mage::getStoreConfig('factfinder/config/tracking_identifier');
+    }
+
+
 }

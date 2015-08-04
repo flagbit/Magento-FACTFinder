@@ -136,4 +136,11 @@
             </factfinder_tracking_queue_processing>
         </jobs>
     </crontab>
+    <default>
+        <factfinder>
+            <config>
+                <tracking_identifier>entity_id</tracking_identifier>
+            </config>
+        </factfinder>
+    </default>
 </config>

@@ -57,4 +57,11 @@
             </updates>
         </layout>
     </frontend>
+    <default>
+        <factfinder>
+            <config>
+                <campaigns_identifier>entity_id</campaigns_identifier>
+            </config>
+        </factfinder>
+    </default>
 </config>
