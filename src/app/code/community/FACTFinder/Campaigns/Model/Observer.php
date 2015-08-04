@@ -32,7 +32,9 @@ class FACTFinder_Campaigns_Model_Observer
      */
     public function handleCampaignsRedirect($observer)
     {
-        if (!Mage::helper('factfinder')->isEnabled('campaigns')) {
+        if (!Mage::helper('factfinder')->isEnabled('campaigns')
+            || (Mage::registry('current_product') && !Mage::helper('factfinder_campaigns')->canShowCampaignsOnProduct())
+        ) {
             return;
         }
 
