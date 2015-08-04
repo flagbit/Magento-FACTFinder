@@ -86,6 +86,7 @@ class FACTFinder_Asn_Model_Resource_Product_Attribute_Collection
 
                 $row['store_label'] = $this->_getStoreLabelsByAttributeCode($row['name']);
                 $item->addData($row);
+                $item->setAttributeCode(strtolower($item->getAttributeCode()));
                 $this->addItem($item);
             }
 
