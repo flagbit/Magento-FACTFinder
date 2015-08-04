@@ -212,6 +212,7 @@ class FACTFinder_Tracking_Model_Observer
         $queue = Mage::getModel('factfinder_tracking/queue');
 
         try {
+            $collectionSize = $queue->getCollection()->count();
             foreach ($queue->getCollection() as $item) {
                 /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
                 $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
@@ -230,7 +231,7 @@ class FACTFinder_Tracking_Model_Observer
                 $item->delete($item);
             }
 
-            if ($queue->getCollection()->count()) {
+            if ($collectionSize > 0) {
                 // We use the last adapter instance to start the parallel request
                 $tracking->applyTracking($item->getProductId());
             }
