@@ -233,7 +233,9 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
     },
 
     loadDataCallback: function (data) {
-        data = data.suggestions;
+        if (data.suggestions) {
+            data = data.suggestions;
+        }
 
         // Try to get channel from search request, if no channel was found
         data.each(function (item) {

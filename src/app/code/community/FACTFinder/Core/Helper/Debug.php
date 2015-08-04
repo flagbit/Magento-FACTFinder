@@ -75,6 +75,17 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
 
 
     /**
+     * Check if the debug mode is enabled
+     *
+     * @return bool
+     */
+    public function isDebugMode()
+    {
+        return (bool) Mage::getStoreConfig(self::XML_CONFIG_PATH_DEBUG_MODE);
+    }
+
+
+    /**
      * Debug Log to file var/log/factfinder.log
      *
      * @param mixed $message
@@ -88,7 +99,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
         }
 
         try {
-            if (Mage::getStoreConfig(self::XML_CONFIG_PATH_DEBUG_MODE)) {
+            if ($this->isDebugMode()) {
                 Mage::log($message, null, self::LOG_FILE_NAME, true);
             }
         } catch (Exception $e){
