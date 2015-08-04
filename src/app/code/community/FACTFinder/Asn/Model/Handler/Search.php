@@ -331,7 +331,9 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     {
         $params = parent::_collectParams();
 
-        if (Mage::app()->getRequest()->getModuleName() == 'catalog') {
+        if (Mage::app()->getRequest()->getModuleName() == 'catalog'
+            && !Mage::app()->getRequest()->getParam('advisorStatus')
+        ) {
             $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
             $params['navigation'] = 'true';
         }
