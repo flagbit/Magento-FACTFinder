@@ -268,7 +268,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
                     $this->_currentFactFinderCategoryPath['filtercategoryROOT' . $mainCategoriesString] = $categoryName;
                 }
 
-                $mainCategoriesString .= '/' . str_replace('/', '%2F', $categoryName);
+                $mainCategoriesString .= '/' . $this->_encodeSpecialCharacters($categoryName);
             }
         }
 
@@ -337,6 +337,25 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
         }
 
         return $params;
+    }
+
+
+    /**
+     * Encode special characters according to ff list
+     *
+     * @param string $categoryName
+     *
+     * @return string
+     */
+    protected function _encodeSpecialCharacters($categoryName)
+    {
+        $categoryName = str_replace(
+            array('%', '#', '|', '/', '=', '+'),
+            array('%25', '%23', '%7D', '%2F', '%3D', '%2B'),
+            $categoryName
+        );
+
+        return $categoryName;
     }
 
 
