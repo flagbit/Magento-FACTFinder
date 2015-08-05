@@ -87,10 +87,9 @@
 
 
     <checkout_cart_index>
-        <reference name="checkout.cart">
-            <action method="setTemplate"><template>factfinder/campaigns/cart.phtml</template></action>
+        <reference name="content">
             <!-- Pushed products -->
-            <block type="factfinder_campaigns/pushed_cart" name="ff.pushed.products" as="pushed_products">
+            <block type="factfinder_campaigns/pushed_cart" name="ff.pushed.products" as="pushed_products" before="-">
                 <action method="setMaxColNum"><num>6</num></action>
                 <block type="factfinder_campaigns/feedback_cart" before="-" name="ff.feedback.above.pushed" as="feedback_above">
                     <action method="setLabel"><label>above pushed product</label></action>
