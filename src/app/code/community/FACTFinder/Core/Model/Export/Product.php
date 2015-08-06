@@ -704,7 +704,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 }
             }
         } elseif ($attribute->getBackendType() == 'datetime') {
-            $value = strtotime($value);
+            $value = strtotime($value) * 1000; // Java.lang.System.currentTimeMillis()
         } else {
             $inputType = $attribute->getFrontend()->getInputType();
             if ($inputType == 'price') {
