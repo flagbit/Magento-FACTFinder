@@ -109,4 +109,19 @@ class Flagbit_FactFinder_Block_Cart_Crosssell extends Mage_Checkout_Block_Cart_C
         }
         return $ids;
     }
+
+
+    /**
+     * @param int $count
+     *
+     * @return $this
+     */
+    public function setMaxItemCount($count)
+    {
+        $this->_maxItemCount = $count;
+
+        return $this;
+    }
+
+
 }
