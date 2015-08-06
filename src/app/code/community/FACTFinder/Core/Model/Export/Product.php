@@ -436,7 +436,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($type == 'searchable') {
                     $returnArray[] = $attributeValue;
                 } else {
-                    $returnArray[] = $attribute->getAttributeCode() . '=' . $value;
+                    $returnArray[] = $this->_removeTags($attribute->getAttributeCode(), $storeId) . '=' . $attributeValue;
                 }
             }
 
