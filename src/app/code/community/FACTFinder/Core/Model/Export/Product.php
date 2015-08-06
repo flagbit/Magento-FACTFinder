@@ -185,6 +185,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
 
             $this->_exportAttributeCodes[$storeId] = array_merge($this->_deafultHeader, array_keys($headerSetup));
+
+            // apply field limit as required by ff
+            if(count($this->_exportAttributeCodes[$storeId]) > 128) {
+                array_splice($this->_exportAttributeCodes[$storeId], 128);
+            }
         }
 
         return $this->_exportAttributeCodes[$storeId];
@@ -437,7 +442,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
             // apply field limit as required by ff
             $counter++;
-            if ($counter >= 128) {
+            if ($counter >= 1000) {
                 break;
             }
         }
