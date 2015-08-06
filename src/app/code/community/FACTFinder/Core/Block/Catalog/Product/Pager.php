@@ -66,7 +66,7 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
      */
     public function getPagerUrl($params = array())
     {
-        if (!$this->_handler) {
+        if (!$this->_handler || !$this->_handler->getPaging()) {
             return parent::getPagerUrl($params);
         }
 

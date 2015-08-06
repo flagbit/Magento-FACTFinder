@@ -169,7 +169,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     protected function _getSelectedOrder()
     {
-        if ($this->_handler) {
+        if ($this->_handler && $this->_handler->getSorting()) {
             $sortings = $this->_handler->getSorting();
 
             $this->getRequest()->getQuery();
