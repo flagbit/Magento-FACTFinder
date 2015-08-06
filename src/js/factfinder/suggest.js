@@ -279,7 +279,12 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             if (item.image) {
                 temp += '<img src="' + item.image + '" title="' + item.name + '" class="thumbnail"/>';
             }
+
             temp += item.name.replace(new RegExp("("+this.field.value+")","ig"), '<strong>$1</strong>');
+
+            if (item.attributes.parentCategory) {
+                temp += ' (' + decodeURIComponent(item.attributes.parentCategory) + ')';
+            }
 
             temp += '</li>';
             content += temp;
