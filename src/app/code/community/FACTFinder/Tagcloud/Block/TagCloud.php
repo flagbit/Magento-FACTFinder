@@ -36,6 +36,12 @@ class FACTFinder_Tagcloud_Block_TagCloud extends Mage_CatalogSearch_Block_Term
             return '';
         }
 
+        // only show on "no result" page
+        $searchResultBlock = $this->getLayout()->getBlock('search.result');
+        if(!$searchResultBlock || ($searchResultBlock && $searchResultBlock->getResultCount())) {
+            return '';
+        }
+
         return parent::_toHtml();
     }
 
