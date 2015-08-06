@@ -262,6 +262,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
         }
 
         $stackTrace = $this->_getFacade()->getSearchAdapter()->getStackTrace();
+        Mage::helper('factfinder/debug')->trace($stackTrace);
         preg_match('/^(.+?):?\s/', $stackTrace, $matches);
         $ffException = $matches[1];
 

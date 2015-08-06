@@ -80,6 +80,13 @@ class FACTFinder_Core_Model_Facade
     protected $_paramHashes = array();
 
     /**
+     * flag if stacktrace was already logged
+     *
+     * @var null
+     */
+    protected $_stackTraceLogged = null;
+
+    /**
      * @var boolean is set to true, if caching is enabled and can be used
      */
     private $_useCaching = null;
@@ -476,7 +483,11 @@ class FACTFinder_Core_Model_Facade
      */
     public function getAfterSearchNavigation($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject("search", "getAfterSearchNavigation", $channel, $id);
+        $result = $this->_getFactFinderObject("search", "getAfterSearchNavigation", $channel, $id);
+
+        $this->_checkStackTrace($channel, $id);
+
+        return $result;
     }
 
 
@@ -535,13 +546,7 @@ class FACTFinder_Core_Model_Facade
     {
         $result =  $this->_getFactFinderObject("search", "getResult", $channel, $id);
 
-        $helper = Mage::helper('factfinder/debug');
-        if ($helper->isDebugMode()
-            && $this->getSearchError($channel, $id)
-            && $this->getSearchStackTrace($channel, $id)
-        ) {
-            $helper->trace($this->getSearchStackTrace($channel, $id));
-        }
+        $this->_checkStackTrace($channel, $id);
 
         return $result;
     }
@@ -709,7 +714,11 @@ class FACTFinder_Core_Model_Facade
      */
     public function getPaging($channel = null, $id = null)
     {
-        return $this->_getFactFinderObject('search', 'getPaging', $channel, $id);
+        $result = $this->_getFactFinderObject('search', 'getPaging', $channel, $id);
+
+        $this->_checkStackTrace($channel, $id);
+
+        return $result;
     }
 
 
@@ -726,5 +735,22 @@ class FACTFinder_Core_Model_Facade
         return $this->_getFactFinderObject('search', 'getSorting', $channel, $id);
     }
 
+    /**
+     * Log stack trace if there is one in result
+     */
+    protected function _checkStackTrace($channel, $id)
+    {
+        if($this->_stackTraceLogged) {
+            return;
+        }
 
+        $helper = Mage::helper('factfinder/debug');
+        if ($helper->isDebugMode()
+            && $this->getSearchError($channel, $id)
+            && $this->getSearchStackTrace($channel, $id)
+        ) {
+            $helper->trace($this->getSearchStackTrace($channel, $id));
+            $this->_stackTraceLogged = true;
+        }
+    }
 }
