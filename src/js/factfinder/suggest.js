@@ -320,6 +320,8 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             url += item.searchParams.substring(qPos);
         }
 
+        url += '&ignoreForCache=userInput&ignoreForCache=queryFromSuggest';
+
         //there's no mapping possibility, so let's hardcode it
         url = url.replace('query=', 'q=');
 
