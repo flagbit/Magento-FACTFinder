@@ -1,0 +1,43 @@
+<?php
+/**
+ * FACTFinder_Campaigns
+ *
+ * @category Mage
+ * @package FACTFinder_Campaigns
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
+?>
+
+<?php if(count($this->getItemCollection()->getItems())): ?>
+    <div class="upsell">
+        <p class="factfinder-feedbackCampaign"><?php echo $this->getChildHtml('feedback_above'); ?></p>
+        <h2><?php echo $this->getHeader() ?></h2>
+        <ul id="pushed-products-list" class="products-grid products-grid--max-<?php echo $this->getMaxColNum(); ?>-col">
+            <?php foreach ($this->getItemCollection()->getItems() as $_item): ?>
+                <li class="item">
+                    <a class="product-image" href="<?php echo $_item->getProductUrl() ?>" title="<?php echo $this->escapeHtml($_item->getName()) ?>">
+                        <img src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(210); ?>" alt="<?php echo $this->escapeHtml($_item->getName()) ?>" />
+                    </a>
+                    <div class="product-details">
+                        <h3 class="product-name"><a href="<?php echo $_item->getProductUrl() ?>"><?php echo $this->escapeHtml($_item->getName()) ?></a></h3>
+                        <?php echo $this->getPriceHtml($_item, true) ?>
+                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_item) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                        <ul class="add-to-links">
+                            <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                                <li><a href="<?php echo $this->getAddToWishlistUrl($_item) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                            <?php endif; ?>
+                            <?php if($_compareUrl=$this->getAddToCompareUrl($_item)): ?>
+                                <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <p class="factfinder-feedbackCampaign"><?php echo $this->getChildHtml('feedback_below'); ?></p>
+    </div>
+<?php endif; ?>
+

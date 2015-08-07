@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!--
+/**
+* FACTFinder_Suggest
+*
+* @category Mage
+* @package FACTFinder_Suggest
+* @author Flagbit Magento Team <magento@flagbit.de>
+* @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link http://www.flagbit.de
+*
+*/
+-->
+<config>
+    <sections>
+        <factfinder>
+            <groups>
+                <search>
+                    <fields>
+                        <secondary_channels translate="label">
+                            <label>Secondary Channels</label>
+                            <comment>Enter any secondary channels you want to search. Multiple channels should be separated by semicolons. NOTE: Secondary channels will only be considered for Suggest results if the proxy is used (see option in section "FACT-Finder Config Data")!</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </secondary_channels>
+                    </fields>
+                </search>
+                <export>
+                    <fields>
+                        <urls translate="label">
+                            <label>Export Images and Deeplinks</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </urls>
+                        <suggest_image_size translate="label comment">
+                            <label>Size of Suggest images</label>
+                            <comment>Please enter the desired edge length of the Suggest images in pixels. If you do not want them to be resized, enter 0.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suggest_image_size>
+                        <suggest_image_type translate="label">
+                            <label>Type of Suggest images</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>factfinder_suggest/system_config_source_imagetype</source_model>
+                            <sort_order>16</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suggest_image_type>
+                    </fields>
+                </export>
+                <config>
+                    <fields>
+                        <proxy translate="label">
+                            <label>Use Proxy for Suggest</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </proxy>
+                    </fields>
+                </config>
+            </groups>
+        </factfinder>
+    </sections>
+</config>

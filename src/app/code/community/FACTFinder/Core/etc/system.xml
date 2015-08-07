@@ -1,0 +1,421 @@
+<?xml version="1.0"?>
+<!--
+/**
+* FACTFinder_Core
+*
+* @category Mage
+* @package FACTFinder_Core
+* @author Flagbit Magento Team <magento@flagbit.de>
+* @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link http://www.flagbit.de
+*
+*/
+-->
+<config>
+   <sections>
+        <factfinder translate="label" module="factfinder">
+            <label>FACT-Finder</label>
+            <tab>catalog</tab>
+            <sort_order>420</sort_order>
+            <frontend_type>text</frontend_type>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <search translate="label">
+                    <label>FACT-Finder</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <!--<backend_model>factfinder/system_config_backend_enabled</backend_model>-->
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enabled>
+                        <address translate="label">
+                            <label>Server URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </address>
+                        <port translate="label">
+                            <label>Server Port</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </port>
+                        <protocol translate="label">
+                            <label>Protocol</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>factfinder/system_config_source_protocol</source_model>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </protocol>
+                        <context translate="label comment">
+                            <label>Context Name</label>
+                            <comment>Name of the FACT-Finder application</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </context>
+                        <auth_user translate="label comment">
+                            <label>User name</label>
+                            <comment>User name for authentication</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auth_user>
+                        <auth_password translate="label">
+                            <label>Password</label>
+                            <frontend_type>password</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auth_password>
+                        <channel translate="label comment">
+                            <label>Primary Channel</label>
+                            <comment>FACT-Finder can provide multiple search indexes, each represented by a "channel". Enter the channel that will be filled with your Magento export. Leave empty to use the default channel.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </channel>
+                        <language translate="label comment">
+                            <label>Language</label>
+                            <comment>Some text strings come directly from FACT-Finder. Enter the language code here. Leave empty to use the language specified by the user's browser.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </language>
+                        <auth_type translate="label">
+                            <label>Authentication Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>factfinder/system_config_source_authtype</source_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auth_type>
+                        <auth_advancedPrefix translate="label comment">
+                            <label>Advanced Authentication Prefix</label>
+                            <frontend_type>text</frontend_type>
+                            <comment>The advanced authentication post- and prefix are only used when the authentication type is "advanced".</comment>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auth_advancedPrefix>
+                        <auth_advancedPostfix>
+                            <label>Advanced Authentication Postfix</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auth_advancedPostfix>
+                    </fields>
+                </search>
+                <fallback translate="label">
+                    <label>FACT-Finder Fallback Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>15</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <use_fallback translate="label comment">
+                            <label>Use Fallback</label>
+                            <comment>If activated and FACT-Finder cannot be contacted, Magento's built-in search will be used instead.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_fallback>
+                    </fields>
+                </fallback>
+                <export translate="label">
+                    <label>FACT-Finder Export Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <remove_tags translate="label">
+                            <label>Remove html entities and tags</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>55</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </remove_tags>
+                        <attributes translate="label">
+                            <label>Attributes</label>
+                            <frontend_model>factfinder/adminhtml_form_field_attributes</frontend_model>
+                            <backend_model>factfinder/system_config_backend_attributes</backend_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </attributes>
+                        <export_url translate="label">
+                            <frontend_model>factfinder/adminhtml_exportlink</frontend_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </export_url>
+                    </fields>
+                </export>
+                <config translate="label">
+                    <label>FACT-Finder Config Data</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <personalization translate="label">
+                            <label>Enable Personalization (>= 7.0)</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </personalization>
+                        <identifier translate="label">
+                            <label>Product Identifier</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>factfinder/system_config_source_identifier</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </identifier>
+                        <redirectOnSingleResult>
+                            <label>Redirect to product details page for single results</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </redirectOnSingleResult>
+                        <internal_ip translate="label">
+                            <label>Internal IPs</label>
+                            <comment>Enter your internal IP addresses. Multiple IP addresses should be separated by semicolons.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </internal_ip>
+                        <debug translate="label">
+                            <label>Debug Log</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </debug>
+                    </fields>
+                </config>
+                <cron translate="label">
+                    <label>FACT-Finder Cron Export Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>25</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enable Cron Pre-Generation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enabled>
+                        <time translate="label">
+                            <label>Start Time</label>
+                            <frontend_type>time</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </time>
+                        <frequency translate="label">
+                            <label>Frequency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_cron_frequency</source_model>
+                            <backend_model>factfinder/system_config_backend_cron</backend_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </frequency>
+                    </fields>
+                </cron>
+                <modules translae="label">
+                    <label>FACT-Finder Features</label>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <asn translate="label">
+                            <label>Enable FACT-Finder After Search Navigation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </asn>
+                        <suggest translate="label">
+                            <label>Enable FACT-Finder Suggest</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </suggest>
+                        <recommendation translate="label">
+                            <label>Enable FACT-Finder Recommendation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </recommendation>
+                        <tagcloud translate="label">
+                            <label>Enable FACT-Finder Tag Cloud</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tagcloud>
+                        <tracking>
+                            <label>Enable FACT-Finder Tracking</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tracking>
+                        <campaigns>
+                            <label>Enable FACT-Finder Campaigns</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </campaigns>
+                    </fields>
+                </modules>
+            </groups>
+        </factfinder>
+       <advanced>
+           <groups>
+               <ff_modules translae="label">
+                   <label>Disable FACT-Finder Sub-Modules</label>
+                   <sort_order>0</sort_order>
+                   <show_in_default>1</show_in_default>
+                   <show_in_website>0</show_in_website>
+                   <show_in_store>0</show_in_store>
+                   <fields>
+                       <asn translate="label">
+                           <label>FACT-Finder After Search Navigation</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>10</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </asn>
+                       <suggest translate="label">
+                           <label>FACT-Finder Suggest</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>20</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </suggest>
+                       <recommendation translate="label">
+                           <label>FACT-Finder Recommendation</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>30</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </recommendation>
+                       <tagcloud translate="label">
+                           <label>FACT-Finder Tag Cloud</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>40</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </tagcloud>
+                       <tracking>
+                           <label>FACT-Finder Tracking</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>50</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </tracking>
+                       <campaigns>
+                           <label>FACT-Finder Campaigns</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                           <sort_order>60</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </campaigns>
+                   </fields>
+               </ff_modules>
+           </groups>
+       </advanced>
+    </sections>
+</config>

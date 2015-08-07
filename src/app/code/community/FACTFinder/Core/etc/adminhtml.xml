@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FACTFinder_Core
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
+ -->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <factfinder>
+                                        <title>FACT-Finder</title>
+                                    </factfinder>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

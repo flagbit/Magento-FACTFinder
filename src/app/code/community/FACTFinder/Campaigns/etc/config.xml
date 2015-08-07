@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FACTFinder_Campaigns
+ *
+ * @category Mage
+ * @package FACTFinder_Campaigns
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
+-->
+<config>
+    <modules>
+        <FACTFinder_Campaigns>
+            <version>0.1.0</version>
+        </FACTFinder_Campaigns>
+    </modules>
+    <global>
+        <models>
+            <factfinder_campaigns>
+                <class>FACTFinder_Campaigns_Model</class>
+                <resourceModel>factfinder_campaigns_resource</resourceModel>
+            </factfinder_campaigns>
+            <factfinder_campaigns_resource>
+                <class>FACTFinder_Campaigns_Model_Resource</class>
+            </factfinder_campaigns_resource>
+        </models>
+        <blocks>
+            <factfinder_campaigns>
+                <class>FACTFinder_Campaigns_Block</class>
+            </factfinder_campaigns>
+        </blocks>
+        <helpers>
+            <factfinder_campaigns>
+                <class>FACTFinder_Campaigns_Helper</class>
+            </factfinder_campaigns>
+        </helpers>
+    </global>
+    <frontend>
+        <events>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <factfinder_handle_campaigns_redirect>
+                        <class>factfinder_campaigns/observer</class>
+                        <method>handleCampaignsRedirect</method>
+                    </factfinder_handle_campaigns_redirect>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
+        </events>
+        <layout>
+            <updates>
+                <factfinder_campaigns>
+                    <file>factfinder/campaigns.xml</file>
+                </factfinder_campaigns>
+            </updates>
+        </layout>
+    </frontend>
+    <default>
+        <factfinder>
+            <config>
+                <campaigns_identifier>entity_id</campaigns_identifier>
+                <enable_campaigns_on_prod_page>1</enable_campaigns_on_prod_page>
+            </config>
+        </factfinder>
+    </default>
+</config>

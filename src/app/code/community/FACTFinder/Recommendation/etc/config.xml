@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FACTFinder_Recommendation
+ *
+ * @category Mage
+ * @package FACTFinder_Recommendation
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
+-->
+<config>
+    <modules>
+        <FACTFinder_Recommendation>
+            <version>1.0.0</version>
+        </FACTFinder_Recommendation>
+    </modules>
+    <global>
+        <models>
+            <factfinder_recommendation>
+                <class>FACTFinder_Recommendation_Model</class>
+            </factfinder_recommendation>
+        </models>
+        <blocks>
+            <factfinder_recommendation>
+                <class>FACTFinder_Recommendation_Block</class>
+            </factfinder_recommendation>
+        </blocks>
+        <helpers>
+            <factfinder_recommendation>
+                <class>FACTFinder_Recommendation_Helper</class>
+            </factfinder_recommendation>
+        </helpers>
+    </global>
+    <frontend>
+        <events>
+            <catalog_product_collection_load_before>
+                <observers>
+                    <factfinder_recommendation_load_upsell>
+                        <class>factfinder_recommendation/observer</class>
+                        <method>loadRecommendedItemsItems</method>
+                    </factfinder_recommendation_load_upsell>
+                </observers>
+            </catalog_product_collection_load_before>
+        </events>
+    </frontend>
+</config>

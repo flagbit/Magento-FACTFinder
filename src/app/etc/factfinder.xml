@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding="utf-8" ?>
+<config>
+    <global>
+        <cache>
+            <request_processors>
+                <ff_suggest>FACTFinder_Suggest_Model_Processor</ff_suggest>
+                <ff_tracking>FACTFinder_Tracking_Model_Processor</ff_tracking>
+            </request_processors>
+        </cache>
+    </global>
+</config>
