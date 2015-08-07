@@ -257,12 +257,15 @@ class FACTFinder_Tracking_Model_Observer
     {
         $customer = $observer->getCustomer();
         if($customer->getId()) {
+
+            $customerId = md5('customer_' . $customer->getId());
+
             /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackLogin(
                 Mage::helper('factfinder_tracking')->getSessionId(),
                 null,
-                $customer->getId()
+                $customerId
             );
         }
     }
