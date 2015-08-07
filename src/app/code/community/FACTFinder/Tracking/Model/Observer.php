@@ -255,6 +255,10 @@ class FACTFinder_Tracking_Model_Observer
 
     public function loginTracking(Varien_Event_Observer $observer)
     {
+        if(!Mage::getStoreConfigFlag('factfinder/config/personalization')) {
+            return;
+        }
+
         $customer = $observer->getCustomer();
         if($customer->getId()) {
 

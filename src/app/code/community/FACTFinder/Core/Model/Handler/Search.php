@@ -117,6 +117,9 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
             $params['verbose'] = 'true';
         }
 
+        if(Mage::getStoreConfigFlag('factfinder/config/personalization')) {
+            $params['sid'] = Mage::helper('factfinder_tracking')->getSessionId();
+        }
 
         return $params;
     }
