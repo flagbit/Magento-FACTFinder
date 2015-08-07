@@ -175,7 +175,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                     $this->_searchResult[$record->getId()] = new Varien_Object(
                         array(
                             'similarity' => $record->getSimilarity(),
-                            'position' => $record->getPosition()
+                            'position' => $record->getPosition(),
+                            'original_position' => $record->getField('__ORIG_POSITION__')
                         )
                     );
                 }
