@@ -251,17 +251,17 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _getFile($storeId)
     {
-        if (!$this->_file) {
+        if (!isset($this->_file[$storeId])) {
             $dir = Mage::getBaseDir('var') . DS . 'factfinder';
 
             $fileName = 'store_' . $storeId . '_product.csv';
 
-            $this->_file = Mage::getModel('factfinder/file');
+            $this->_file[$storeId] = Mage::getModel('factfinder/file');
 
-            $this->_file->open($dir, $fileName);
+            $this->_file[$storeId]->open($dir, $fileName);
         }
 
-        return $this->_file;
+        return $this->_file[$storeId];
     }
 
 
