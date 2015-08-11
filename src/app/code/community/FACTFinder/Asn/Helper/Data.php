@@ -67,4 +67,27 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Remove category filter params if they are the save as the current category ones
+     *
+     * On catalog navigation if we use all the params from ff we have unnecessary ugly params
+     * which we don't need. This function removes them
+     *
+     * @param string $url
+     *
+     * @return mixed
+     */
+    public function removeCategoryParams($url)
+    {
+        $categoryPath = Mage::getSingleton('factfinder_asn/handler_search')->getCurrentFactFinderCategoryPath();
+        $query = http_build_query($categoryPath);
+        $query = str_replace('+', '%20', $query);
+        $url = str_replace($query, '', $url);
+        //remove redundant &
+        $url = str_replace(array('?&', '&&'), array('?', '&'), $url);
+
+        return $url;
+    }
+
+
 }

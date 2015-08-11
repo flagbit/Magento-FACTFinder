@@ -41,4 +41,19 @@ class FACTFinder_Asn_Block_Catalog_Product_List_Toolbar extends FACTFinder_Core_
     }
 
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getPagerUrl($params = array())
+    {
+        $url = parent::getPagerUrl($params);
+
+        if ($this->_handler && !Mage::helper('factfinder/search')->getIsOnSearchPage()) {
+            $url = Mage::helper('factfinder_asn')->removeCategoryParams($url);
+        }
+
+        return $url;
+    }
+
+
 }
