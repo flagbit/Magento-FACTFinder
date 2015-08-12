@@ -211,5 +211,13 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         return $this->_getFacade()->getSorting();
     }
 
-
+    /**
+     * Return ArticleNumberSearchStatus
+     *
+     * @return \FACTFinder\Data\ArticleNumberSearchStatus
+     */
+    public function getArticleNumberStatus()
+    {
+        return $this->_getFacade()->getSearchAdapter()->getArticleNumberStatus();
+    }
 }

@@ -203,16 +203,19 @@ class FACTFinder_Core_Model_Observer
 
         $helper = Mage::helper('factfinder');
         if ($helper->isRedirectForSingleResult()) {
-            $block = Mage::app()->getLayout()->getBlock('search_result_list');
 
-            if (!$block instanceof Mage_Catalog_Block_Product_List) {
-                return;
-            }
+            $searchHandler = Mage::getSingleton('factfinder/handler_search');
 
-            $collection = $block->getLoadedProductCollection();
-            $collection->load();
+            $articleNumberStatus = $searchHandler->getArticleNumberStatus();
+            if($articleNumberStatus === \FACTFinder\Data\ArticleNumberSearchStatus::IsArticleNumberResultFound()
+                && $searchHandler->getSearchResultCount() == 1) {
 
-            if (count($collection) === 1) {
+                $block = Mage::app()->getLayout()->getBlock('search_result_list');
+                if (!($block instanceof Mage_Catalog_Block_Product_List)) {
+                    return;
+                }
+
+                $collection = $block->getLoadedProductCollection();
                 Mage::dispatchEvent('factfinder_redirect_on_single_result_before',
                     array('product' => $collection->getFirstItem())
                 );
