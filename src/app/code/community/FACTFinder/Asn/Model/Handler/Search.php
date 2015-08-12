@@ -80,7 +80,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     {
         $attributeOptions = array();
 
-        $currentCategoryPath = $this->_getCurrentFactfinderCategoryPath();
+        $currentCategoryPath = $this->getCurrentFactFinderCategoryPath();
 
         foreach ($filterGroup as $option) {
             $queryParams = Mage::helper('factfinder_asn')->getQueryParams($option->getUrl());
@@ -240,7 +240,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      *
      * @return array
      */
-    protected function _getCurrentFactFinderCategoryPath()
+    public function getCurrentFactFinderCategoryPath()
     {
         if (empty($this->_currentFactFinderCategoryPath)) {
 
@@ -333,7 +333,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
 
         if (Mage::app()->getRequest()->getModuleName() == 'catalog') {
             if (!Mage::app()->getRequest()->getParam('advisorStatus')) {
-                $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
+                $params = array_merge($params, $this->getCurrentFactFinderCategoryPath());
             }
 
             $params['navigation'] = 'true';
