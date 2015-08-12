@@ -31,6 +31,16 @@
             <factfinder_asn>
                 <class>FACTFinder_Asn_Block</class>
             </factfinder_asn>
+            <catalog>
+                <rewrite>
+                    <layer_state>FACTFinder_Asn_Block_Catalog_Layer_State</layer_state>
+                </rewrite>
+            </catalog>
+            <catalogsearch>
+                <rewrite>
+                    <layer_state>FACTFinder_Asn_Block_Catalog_Layer_State</layer_state>
+                </rewrite>
+            </catalogsearch>
         </blocks>
         <helpers>
             <factfinder_asn>
