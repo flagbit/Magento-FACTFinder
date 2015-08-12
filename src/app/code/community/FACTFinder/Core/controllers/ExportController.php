@@ -110,7 +110,9 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
             return;
         }
 
-        echo file_get_contents($filePath . $fileName);
+        $this->getResponse()->setBody(
+            file_get_contents($filePath . $fileName)
+        );
     }
 
 
