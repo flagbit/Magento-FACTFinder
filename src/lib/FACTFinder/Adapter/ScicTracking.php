@@ -7,6 +7,7 @@ use FACTFinder\Loader as FF;
  * This tracking adapter uses the old SCIC (Shopping Cart Information Collector)
  * interface, which is recommended over the new Analytic Dashboard tracking
  * until further notice.
+ * @deprecated use TrackingAdapter instead
  */
 class ScicTracking extends AbstractAdapter
 {

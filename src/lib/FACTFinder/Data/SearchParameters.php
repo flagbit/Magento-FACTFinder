@@ -14,6 +14,7 @@ class SearchParameters
      */
     private $query;
     private $channel;
+    private $advisorStatus;
 
     /**
      * @var int
@@ -44,6 +45,10 @@ class SearchParameters
 
         // Properly prepared server parameters will always have a channel set
         $this->channel = $parameters['channel'];
+
+        $this->advisorStatus   = isset($parameters['advisorStatus'])
+                                 ? $parameters['advisorStatus']
+                                 : '';
 
         $this->productsPerPage = isset($parameters['productsPerPage'])
                                  ? $parameters['productsPerPage']
@@ -89,6 +94,14 @@ class SearchParameters
     public function getChannel()
     {
         return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdvisorStatus()
+    {
+        return $this->advisorStatus;
     }
 
     /**

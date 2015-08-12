@@ -75,6 +75,16 @@ class SliderFilter extends Filter
         return $this->getBaseUrl() . $this->selectedMinimum
                              . '-' . $this->selectedMaximum;
     }
+    
+    /**
+     * Return URL without any added params.
+     * Like Item::getUrl()
+     * @return string
+     */
+    public function getParentUrl()
+    {
+        return parent::getUrl();
+    }
 
     /**
      * @return float

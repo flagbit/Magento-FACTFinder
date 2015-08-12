@@ -5,6 +5,7 @@ use FACTFinder\Loader as FF;
 
 class Search extends AbstractAdapter
 {
+    
     /**
      * @var FACTFinder\Util\LoggerInterface
      */
@@ -49,6 +50,16 @@ class Search extends AbstractAdapter
      * @var FACTFinder\Data\CampaignIterator
      */
     private $campaigns;
+    
+    /**
+     * @var bool
+     */
+    private $recordsUpToDate = false;
+    
+    /**
+     * @var bool
+     */
+    private $idsOnly = false;
 
     public function __construct(
         $loggerClass,
@@ -76,14 +87,42 @@ class Search extends AbstractAdapter
     {
         $this->parameters['query'] = $query;
     }
+    
+    /**
+     * Set Value for parameter sid
+     * @param string $sSid session id
+     */
+    public function setSid($sSid)
+    {
+        $this->parameters['sid'] = $sSid;
+    }
+    
+    /**
+     * Set this to true to only retrieve the IDs of products instead
+     * of full Record objects.
+     * 
+     * @param $idsOnly bool
+     */
+    public function setIDsOnly($idsOnly)
+    {
+        if($this->idsOnly && !$idsOnly)
+            $this->recordsUpToDate = false;
+
+        $this->idsOnly = $idsOnly;
+        $parameters = $this->request->getParameters();
+        $parameters['idsOnly'] = $idsOnly ? 'true' : 'false';
+    }
 
     /**
      * @return \FACTFinder\Data\Result
      */
     public function getResult()
     {
-        if (is_null($this->result))
+        if (is_null($this->result) || !$this->recordsUpToDate) {
+            $this->request->resetLoaded();
             $this->result = $this->createResult();
+            $this->recordsUpToDate = true;
+        }
 
         return $this->result;
     }
@@ -184,27 +223,52 @@ class Search extends AbstractAdapter
 
         return $singleWordSearch;
     }
+
     /**
-     * @return string
+     * @return \FACTFinder\Data\SearchStatus
      */
     public function getStatus()
     {
-        $jsonData = $this->getResponseContent();
-
         $searchStatusEnum = FF::getClassName('Data\SearchStatus');
-        switch($jsonData['searchResult']['resultStatus'])
+        $status = $searchStatusEnum::NoResult();
+                
+        $jsonData = $this->getResponseContent();
+        if (isset($jsonData['searchResult'])) 
         {
-        case 'nothingFound':
-            $status = $searchStatusEnum::EmptyResult();
-            break;
-        case 'resultsFound':
-            $status = $searchStatusEnum::RecordsFound();
-            break;
-        default:
-            $status = $searchStatusEnum::NoResult();
-            break;
+            switch($jsonData['searchResult']['resultStatus'])
+            {
+            case 'nothingFound':
+                $status = $searchStatusEnum::EmptyResult();
+                break;
+            case 'resultsFound':
+                $status = $searchStatusEnum::RecordsFound();
+                break;
+            }
         }
+        return $status;
+    }
 
+    /**
+     * @return \FACTFinder\Data\ArticleNumberSearchStatus
+     */
+    public function getArticleNumberStatus()
+    {   
+        $articleNumberSearchStatusEnum = FF::getClassName('Data\ArticleNumberSearchStatus');
+        $status = $articleNumberSearchStatusEnum::IsNoArticleNumberSearch();
+        
+        $jsonData = $this->getResponseContent();
+        if (isset($jsonData['searchResult'])) 
+        {
+            switch ($jsonData['searchResult']['resultArticleNumberStatus']) 
+            {
+            case 'resultsFound':
+                $status = $articleNumberSearchStatusEnum::IsArticleNumberResultFound();
+                break;
+            case 'nothingFound':
+                $status = $articleNumberSearchStatusEnum::IsNoArticleNumberResultFound();
+                break;
+            }
+        }
         return $status;
     }
 
@@ -214,8 +278,11 @@ class Search extends AbstractAdapter
     public function isSearchTimedOut()
     {
         $jsonData = $this->getResponseContent();
-
-        return $jsonData['searchResult']['timedOut'];
+        if (isset($jsonData['searchResult']))
+        {
+            return $jsonData['searchResult']['timedOut'];
+        }
+        return true;
     }
 
     /**
@@ -431,37 +498,40 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        $rppData = $jsonData['searchResult']['resultsPerPageList'];
-        if (!empty($rppData))
+        if (isset($jsonData['searchResult']))
         {
-            foreach ($rppData as $optionData)
+            $rppData = $jsonData['searchResult']['resultsPerPageList'];
+            if (!empty($rppData))
             {
-                $optionLink = $this->convertServerQueryToClientUrl(
-                    $optionData['searchParams']
-                );
+                foreach ($rppData as $optionData)
+                {
+                    $optionLink = $this->convertServerQueryToClientUrl(
+                        $optionData['searchParams']
+                    );
 
-                $option = FF::getInstance(
-                    'Data\Item',
-                    $optionData['value'],
-                    $optionLink,
-                    $optionData['selected']
-                );
+                    $option = FF::getInstance(
+                        'Data\Item',
+                        $optionData['value'],
+                        $optionLink,
+                        $optionData['selected']
+                    );
 
-                if ($optionData['default'])
-                    $defaultOption = $option;
-                if ($optionData['selected'])
-                    $selectedOption = $option;
+                    if ($optionData['default'])
+                        $defaultOption = $option;
+                    if ($optionData['selected'])
+                        $selectedOption = $option;
 
-                $options[] = $option;
+                    $options[] = $option;
+                }
             }
+            return FF::getInstance(
+                'Data\ResultsPerPageOptions',
+                $options,
+                $defaultOption,
+                $selectedOption
+            );
         }
-
-        return FF::getInstance(
-            'Data\ResultsPerPageOptions',
-            $options,
-            $defaultOption,
-            $selectedOption
-        );
+        return null;
     }
 
     /**
@@ -484,42 +554,45 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        $pagingData = $jsonData['searchResult']['paging'];
-        if (!empty($pagingData))
+        if (isset($jsonData['searchResult']))
         {
-            $currentPage = null;
-            $pageCount = $pagingData['pageCount'];
-
-            foreach ($pagingData['pageLinks'] as $pageData)
+            $pagingData = $jsonData['searchResult']['paging'];
+            if (!empty($pagingData))
             {
-                $page = $this->createPageItem($pageData);
+                $currentPage = null;
+                $pageCount = $pagingData['pageCount'];
 
-                if ($pageData['currentPage'])
-                    $currentPage = $page;
+                foreach ($pagingData['pageLinks'] as $pageData)
+                {
+                    $page = $this->createPageItem($pageData);
 
-                $pages[] = $page;
+                    if ($pageData['currentPage'])
+                        $currentPage = $page;
+
+                    $pages[] = $page;
+                }
             }
-        }
 
-        if (!$currentPage)
-            $currentPage = FF::getInstance(
-                'Data\Page',
-                $pagingData['currentPage'],
-                $pagingData['currentPage'],
-                '#',
-                true
+            if (!$currentPage)
+                $currentPage = FF::getInstance(
+                    'Data\Page',
+                    $pagingData['currentPage'],
+                    $pagingData['currentPage'],
+                    '#',
+                    true
             );
-
-        return FF::getInstance(
-            'Data\Paging',
-            $pages,
-            $pageCount,
-            $currentPage,
-            $this->createPageItem($pagingData['firstLink']),
-            $this->createPageItem($pagingData['lastLink']),
-            $this->createPageItem($pagingData['previousLink']),
-            $this->createPageItem($pagingData['nextLink'])
-        );
+            return FF::getInstance(
+                'Data\Paging',
+                $pages,
+                $pageCount,
+                $currentPage,
+                $this->createPageItem($pagingData['firstLink']),
+                $this->createPageItem($pagingData['lastLink']),
+                $this->createPageItem($pagingData['previousLink']),
+                $this->createPageItem($pagingData['nextLink'])
+            );
+        }
+        return null;
     }
 
 
@@ -566,28 +639,32 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        $sortingData = $jsonData['searchResult']['sortsList'];
-        if (!empty($sortingData))
+        if (isset($jsonData['searchResult']))
         {
-            foreach ($sortingData as $optionData)
+            $sortingData = $jsonData['searchResult']['sortsList'];
+            if (!empty($sortingData))
             {
-                $optionLink = $this->convertServerQueryToClientUrl(
-                    $optionData['searchParams']
-                );
+                foreach ($sortingData as $optionData)
+                {
+                    $optionLink = $this->convertServerQueryToClientUrl(
+                        $optionData['searchParams']
+                    );
 
-                $sortOptions[] = FF::getInstance(
-                    'Data\Item',
-                    $optionData['description'],
-                    $optionLink,
-                    $optionData['selected']
-                );
+                    $sortOptions[] = FF::getInstance(
+                        'Data\Item',
+                        $optionData['description'],
+                        $optionLink,
+                        $optionData['selected']
+                    );
+                }
             }
-        }
 
-        return FF::getInstance(
-            'Data\Sorting',
-            $sortOptions
-        );
+            return FF::getInstance(
+                'Data\Sorting',
+                $sortOptions
+            );
+        }
+        return null;
     }
 
     /**
@@ -610,35 +687,38 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        $breadCrumbTrailData = $jsonData['searchResult']['breadCrumbTrailItems'];
-        if (!empty($breadCrumbTrailData))
+        if (isset($jsonData['searchResult']))
         {
-            $i = 1;
-            foreach ($breadCrumbTrailData as $breadCrumbData)
+            $breadCrumbTrailData = $jsonData['searchResult']['breadCrumbTrailItems'];
+            if (!empty($breadCrumbTrailData))
             {
-                $breadCrumbLink = $this->convertServerQueryToClientUrl(
-                    $breadCrumbData['searchParams']
-                );
+                $i = 1;
+                foreach ($breadCrumbTrailData as $breadCrumbData)
+                {
+                    $breadCrumbLink = $this->convertServerQueryToClientUrl(
+                        $breadCrumbData['searchParams']
+                    );
 
-                $breadCrumbTypeEnum = FF::getClassName('Data\BreadCrumbType');
-                if ($breadCrumbData['type'] == 'filter')
-                    $type = $breadCrumbTypeEnum::Filter();
-                else
-                    $type = $breadCrumbTypeEnum::Search();
+                    $breadCrumbTypeEnum = FF::getClassName('Data\BreadCrumbType');
+                    if ($breadCrumbData['type'] == 'filter')
+                        $type = $breadCrumbTypeEnum::Filter();
+                    else
+                        $type = $breadCrumbTypeEnum::Search();
 
-                $breadCrumbs[] = FF::getInstance(
-                    'Data\BreadCrumb',
-                    $breadCrumbData['text'],
-                    $breadCrumbLink,
-                    $i == count($breadCrumbTrailData),
-                    $type,
-                    $breadCrumbData['associatedFieldName']
-                );
+                    $breadCrumbs[] = FF::getInstance(
+                        'Data\BreadCrumb',
+                        $breadCrumbData['text'],
+                        $breadCrumbLink,
+                        $i == count($breadCrumbTrailData),
+                        $type,
+                        $breadCrumbData['associatedFieldName']
+                    );
 
-                ++$i;
+                    ++$i;
+                }
             }
         }
-
+        
         return FF::getInstance(
             'Data\BreadCrumbTrail',
             $breadCrumbs
@@ -872,5 +952,34 @@ class Search extends AbstractAdapter
     {
         $jsonData = $this->getResponseContent();
         return isset($jsonData['stacktrace']) ? $jsonData['stacktrace'] : null;
+    }
+    
+    /**
+     * Value for parameter "followSearch" for followups on initial search like filters, pagination, ...
+     * Either from request parameters or from search results "simiFirstRecord".
+     * Returns 0 if no valid value for followSearch exists.
+     * @return int
+     */
+    public function getFollowSearchValue()
+    {
+        
+        $searchParameters = FF::getInstance(
+            'Data\SearchParameters',
+            $this->parameters
+        );
+        $sorting = $searchParameters->getSortings();
+        // check if followSearch was set in request data
+        if($searchParameters->getFollowSearch() !== 10000) {
+            $followSearch =  $searchParameters->getFollowSearch();
+        // use simiFirstRecord only if result was not sorted
+        } elseif (empty($sorting)) {
+            $jsonData = $this->getResponseContent();
+            if($jsonData && $jsonData['searchResult'] && isset($jsonData['searchResult']['simiFirstRecord']))
+                $followSearch = $jsonData['searchResult']['simiFirstRecord'];
+        // mark as no followSearch
+        } else {
+            $followSearch = 0;
+        }
+        return $followSearch;
     }
 }

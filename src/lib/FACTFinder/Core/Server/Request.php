@@ -113,4 +113,14 @@ class Request
         }
         return $this->connectionData->getResponse();
     }
+    
+    /**
+     * Reset loaded state of request to force reloading from server.
+     * 
+     * @return void
+     */
+    public function resetLoaded()
+    {
+        $this->blLoaded = false;
+    }
 }

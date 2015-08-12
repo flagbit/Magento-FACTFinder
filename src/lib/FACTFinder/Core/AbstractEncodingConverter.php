@@ -58,6 +58,22 @@ abstract class AbstractEncodingConverter
      */
     protected function convert($inCharset, $outCharset, $data)
     {
+        if($inCharset == $outCharset) {
+            return $data;
+        }
+        return $this->convert_recursive($inCharset, $outCharset, $data);
+    }
+    
+    /**
+     * Converts data from $inCharset to $outCharset.
+     * @param mixed $data If a string is given, it's encoding will be converted.
+     *        If an associative array is given, keys and values will be
+     *        converted recursively. All other data types will be returned
+     *        unchanged.
+     * @return mixed
+     */
+    protected function convert_recursive($inCharset, $outCharset, $data)
+    {
         if (FF::isInstanceOf($data, 'Util\Parameters'))
         {
             $result = FF::getInstance(
@@ -70,8 +86,8 @@ abstract class AbstractEncodingConverter
             $result = array();
             foreach ($data as $k => $v)
             {
-                $k = $this->convert($inCharset, $outCharset, $k);
-                $result[$k] = $this->convert($inCharset, $outCharset, $v);
+                $k = $this->convert_recursive($inCharset, $outCharset, $k);
+                $result[$k] = $this->convert_recursive($inCharset, $outCharset, $v);
             }
         }
         else if (is_string($data))

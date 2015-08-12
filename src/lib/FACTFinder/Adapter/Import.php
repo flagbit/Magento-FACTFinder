@@ -39,6 +39,9 @@ class Import extends AbstractAdapter
      */
     public function triggerDataImport($download = false)
     {
+        //this function changes parameters, action, ... so reload of response is neccessary
+        $this->request->resetLoaded();
+        
         $this->request->setAction('Import.ff');
 
         $this->parameters['download'] = $download ? 'true' : 'false';
@@ -54,6 +57,9 @@ class Import extends AbstractAdapter
      */
     public function triggerSuggestImport($download = false)
     {
+        //this function changes parameters, action, ... so reload of response is neccessary
+        $this->request->resetLoaded();
+        
         $this->request->setAction('Import.ff');
 
         $this->parameters['download'] = $download ? 'true' : 'false';
@@ -75,6 +81,9 @@ class Import extends AbstractAdapter
      */
     public function triggerRecommendationImport($download = false)
     {
+        //this function changes parameters, action, ... so reload of response is neccessary
+        $this->request->resetLoaded();
+        
         $this->request->setAction('Recommender.ff');
 
         $this->parameters['download'] = $download ? 'true' : 'false';

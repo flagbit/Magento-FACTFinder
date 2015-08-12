@@ -20,6 +20,11 @@ class ProductCampaign extends AbstractAdapter
      */
     protected $isShoppingCartCampaign = false;
     private $campaignsUpToDate = false;
+    
+    /**
+     * @var bool
+     */
+    private $idsOnly = false;
 
     public function __construct(
         $loggerClass,
@@ -90,6 +95,22 @@ class ProductCampaign extends AbstractAdapter
     {
         $this->addProductNumbers($productIDs);
     }
+    
+    /**
+     * Set this to true to only retrieve the IDs of pushed products instead
+     * of full Record objects.
+     * 
+     * @param $idsOnly bool
+     */
+    public function setIDsOnly($idsOnly)
+    {
+        if($this->idsOnly && !$idsOnly)
+            $this->campaignsUpToDate = false;
+
+        $this->idsOnly = $idsOnly;
+        $parameters = $this->request->getParameters();
+        $parameters['idsOnly'] = $idsOnly ? 'true' : 'false';
+    }
 
     /**
      * Sets the adapter up for fetching campaigns on product detail pages
@@ -122,6 +143,7 @@ class ProductCampaign extends AbstractAdapter
         if (is_null($this->campaigns)
             || !$this->campaignsUpToDate
         ) {
+            $this->request->resetLoaded();
             $this->campaigns = $this->createCampaigns();
             $this->campaignsUpToDate = true;
         }

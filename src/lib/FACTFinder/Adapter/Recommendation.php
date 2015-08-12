@@ -124,6 +124,7 @@ class Recommendation extends AbstractAdapter
         if (is_null($this->recommendations)
             || !$this->recommendationsUpToDate
         ) {
+            $this->request->resetLoaded();
             $this->recommendations = $this->createRecommendations();
             $this->recommendationsUpToDate = true;
         }

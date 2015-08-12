@@ -160,6 +160,7 @@ class SimilarRecords extends AbstractAdapter
         if (is_null($this->similarRecords)
             || !$this->recordsUpToDate
         ) {
+            $this->request->resetLoaded();
             $this->similarRecords = $this->createSimilarRecords();
             $this->recordsUpToDate = true;
         }

@@ -162,6 +162,14 @@ class Campaign
     }
 
     /**
+     * @return string[]
+     */
+    public function getFeedbackArray()
+    {
+        return $this->feedback;
+    }
+
+    /**
      * @param AdvisorQuestion[] $activeQuestions
      */
     public function addActiveQuestions(array $activeQuestions)

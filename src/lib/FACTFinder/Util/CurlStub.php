@@ -346,7 +346,7 @@ class CurlStub implements CurlInterface
         if ($key = array_search($ch, $this->multiHandles[$mh]->handles))
         {
             unset($this->multiHandles[$mh]->handles[$key]);
-            $this->handle[$ch]->inMultiHandle = false;
+            $this->handles[$ch]->inMultiHandle = false;
             return CURLM_OK;
         }
         else
