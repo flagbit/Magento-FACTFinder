@@ -92,6 +92,39 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
 
     /**
+     * @param int $limit
+     *
+     * @return string
+     */
+    public function getLimitUrl($limit)
+    {
+        $params = array(
+            $this->getLimitVarName() => $limit,
+        );
+
+        $query = http_build_query($params);
+
+        $url = trim(Mage::getBaseUrl('web'), '/');
+
+        // using super global because magento doesn't return real uri
+        // but its target like catalog/category/view
+        $currentRequest = explode('?', $_SERVER['REQUEST_URI']);
+
+        if (count($currentRequest) > 1) {
+            $params = array_pop($currentRequest);
+            $params = $this->_removeParam($params, 'limit');
+            $params = $this->_removeParam($params, 'p');
+
+            $currentRequest = array_pop($currentRequest);
+
+            return $url . $currentRequest . '?' . $params . '&' . $query;
+        } else {
+            return parent::getPagerUrl($params);
+        }
+    }
+
+
+    /**
      * Get sorting id
      *
      * @param array $params
@@ -201,6 +234,28 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
 
         return parent::getDirectionVarName();
+    }
+
+
+    /**
+     * Remove specific parameter from url parameters string
+     *
+     * @param string $paramString
+     * @param string $paramName
+     *
+     * @return string
+     */
+    protected function _removeParam($paramString, $paramName)
+    {
+
+        $params = explode('&', $paramString);
+        foreach ($params as $key => $part) {
+            if (strpos($part, $paramName . '=') === 0) {
+                unset($params[$key]);
+            }
+        }
+
+        return implode('&', $params);
     }
 
 
