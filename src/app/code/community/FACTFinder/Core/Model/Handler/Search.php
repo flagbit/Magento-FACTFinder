@@ -134,7 +134,9 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     {
         if ($this->_searchResultCount === null) {
             $result = $this->_getFacade()->getSearchResult();
-            if (!count($result)) {
+
+            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
+            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
@@ -160,10 +162,9 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     {
         if ($this->_searchResult === null) {
             $result = $this->_getFacade()->getSearchResult();
-            $error = $this->_getFacade()->getSearchError();
 
-            if ($result === null || $error) {
-                Mage::logException(new Exception($error));
+            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
+            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
