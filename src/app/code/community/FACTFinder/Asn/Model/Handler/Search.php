@@ -354,7 +354,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
     {
         $categoryName = str_replace(
             array('%', '#', '|', '/', '=', '+'),
-            array('%25', '%23', '%7D', '%2F', '%3D', '%2B'),
+            array('%25', '%23', '%7C', '%2F', '%3D', '%2B'),
             $categoryName
         );
 
