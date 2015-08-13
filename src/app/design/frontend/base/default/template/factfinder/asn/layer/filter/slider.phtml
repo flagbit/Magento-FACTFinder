@@ -29,8 +29,8 @@
                             currentRight: <?php echo $this->getSelectedMax();?>,
                             unit:"<?php echo $this->getUnit();?>",
                             callback:function(left, right){
-                                var url = decodeURI('<?php echo $_item->getUrl() ?>');
-                                window.location.href= url.replace('[VALUE]',left + ' - ' + right);
+                                var url = '<?php echo $_item->getUrl() ?>';
+                                window.location.href= url.replace('%5BVALUE%5D',left + ' - ' + right);
                             }
                         });
                     }
