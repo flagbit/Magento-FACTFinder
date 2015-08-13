@@ -151,12 +151,17 @@ abstract class AbstractAdapter
 
             // PHP does not (yet?) support $this->method($args) for callable
             // properties
-          
-            $this->responseContent =  $this->responseContentProcessor->__invoke($content);
-            if ($this->encodingConverter != null)
-            {
-                $this->responseContent = $this->encodingConverter->encodeContentForPage($this->responseContent);
+
+            if($content !== null) {
+                $this->responseContent =  $this->responseContentProcessor->__invoke($content);
+                if ($this->encodingConverter != null)
+                {
+                    $this->responseContent = $this->encodingConverter->encodeContentForPage($this->responseContent);
+                }
+            } else {
+                $this->responseContent = array();
             }
+
             $this->lastResponse = $response;
         }
 
