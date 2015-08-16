@@ -9,3 +9,4 @@ src/lib/*                                       lib
 src/shell/*                                     shell
 src/js/factfinder                               js/factfinder
 src/skin/frontend/base/default/css/*            skin/frontend/base/default/css
+src/skin/frontend/base/default/js/*             skin/frontend/base/default/js
