@@ -14,7 +14,7 @@
 <config>
     <modules>
         <FACTFinder_Asn>
-            <version>0.1.0</version>
+            <version>4.0.0</version>
         </FACTFinder_Asn>
     </modules>
     <global>

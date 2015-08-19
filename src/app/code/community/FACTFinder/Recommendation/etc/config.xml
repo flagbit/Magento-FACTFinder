@@ -14,7 +14,7 @@
 <config>
     <modules>
         <FACTFinder_Recommendation>
-            <version>1.0.0</version>
+            <version>4.0.0</version>
         </FACTFinder_Recommendation>
     </modules>
     <global>
