@@ -65,7 +65,10 @@ class FACTFinder_Tracking_Model_Observer
             return;
         }
 
+        /** @var Mage_Sales_Model_Quote_Item $quoteItem */
         $quoteItem = $observer->getQuoteItem();
+
+        /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getProduct();
 
         $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
@@ -81,7 +84,7 @@ class FACTFinder_Tracking_Model_Observer
             /** @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackCart(
-                $product->getData($idFieldName),
+                $quoteItem->getProductId(),
                 $product->getData($idFieldName),
                 $product->getName(),
                 null,
@@ -123,13 +126,13 @@ class FACTFinder_Tracking_Model_Observer
                 $customerId = md5('customer_' . $customerId);
             }
 
-            /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+            /** @var FACTFinder_Tracking_Model_Handler_Tracking $tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackClick(
                 $product->getData($idFieldName),
                 $searchHelper->getQuery()->getQueryText(),
                 1, // pos,
-                $product->getData($idFieldName),
+                $product->getData($idFieldName), // master id but there's none on redirect
                 Mage::helper('factfinder_tracking')->getSessionId(),
                 null,
                 1, // origPos
@@ -212,9 +215,9 @@ class FACTFinder_Tracking_Model_Observer
         $queue = Mage::getModel('factfinder_tracking/queue');
 
         try {
-            $collectionSize = $queue->getCollection()->count();
+            $collectionSize = $queue->getCollection()->getSize();
             foreach ($queue->getCollection() as $item) {
-                /** @var $tracking Flagbit_FactFinder_Model_Handler_Tracking */
+                /** @var FACTFinder_Tracking_Model_Handler_Tracking $tracking */
                 $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
                 $tracking->setupCheckoutTracking(
                     $item->getProductId(),
