@@ -142,9 +142,11 @@ class Flagbit_FactFinder_Model_Observer
                 continue;
             }
 
+            $product = $item->getProduct();
+            /* @var $product Mage_Catalog_Model_Product */
             try {
                 Mage::getModel('factfinder/scic_queue')
-                    ->setProductId($item->getData($idFieldName))
+                    ->setProductId($product->getData($idFieldName))
                     ->setSid(md5(Mage::getSingleton('core/session')->getSessionId()))
                     ->setUserid($customerId)
                     ->setPrice($item->getPrice())
