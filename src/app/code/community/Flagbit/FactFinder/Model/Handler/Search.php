@@ -92,6 +92,10 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
             }
 
+            if(!isset($requestParams['order'])) {
+                $requestParams['order'] = $helper->getCurrentOrder();
+            }
+
 
             $params['navigation'] = 'true';
 
