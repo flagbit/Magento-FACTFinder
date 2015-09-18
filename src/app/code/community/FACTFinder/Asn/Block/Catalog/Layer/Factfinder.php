@@ -54,6 +54,7 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
             $this->setTemplate('factfinder/asn/layer/filter/slider.phtml');
             $this->setData((current($attribute->getItems())));
             $this->setUnit($attribute->getUnit());
+            $this->setLinkCount($attribute->getLinkCount());
         }
 
         return $this;
