@@ -232,13 +232,28 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     );
 
                 if ($exportImageAndDeeplink) {
-                    $product = Mage::getModel("catalog/product");
-                    $product->setStoreId($storeId);
-                    $product->load($productData['entity_id']);
+                    list($width, $height) = explode('x', strtolower($imageSize));
+                    $imageBaseFile = Mage::getResourceSingleton('catalog/product')->getAttributeRawValue($productData['entity_id'], $imageType, $storeId);
+                    $imageModel = Mage::getModel('catalog/product_image')
+                        ->setWidth($width)
+                        ->setHeight($height)
+                        ->setDestinationSubdir($imageType)
+                        ->setBaseFile($imageBaseFile);
+                    if(!$imageModel->isCached()) {
+                        $imageModel->resize();
+                    }
+                    $productImage = $imageModel->getUrl();
 
-                    $productIndex[] = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
-                    $productIndex[] = $product->getProductUrl();
-                    $product->clearInstance();
+                    $productUrl = Mage::getModel('catalog/product')
+                        ->getCollection()
+                        ->addAttributeToFilter('entity_id', $productData['entity_id'])
+                        ->setStoreId($storeId)
+                        ->addUrlRewrite()
+                        ->getFirstItem()
+                        ->getProductUrl();
+
+                    $productIndex[] = $productImage;
+                    $productIndex[] = $productUrl;
                 }
                 
                 $this->_getAttributesRowArray($productIndex, $productAttr, $storeId);
