@@ -151,9 +151,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         if (!isset($this->_exportAttributeCodes[$storeId])) {
             $headerDynamic = array();
 
+            $additionalColumns = [];
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
-                $this->_defaultHeader[] = 'image';
-                $this->_defaultHeader[] = 'deeplink';
+                $additionalColumns[] = 'image';
+                $additionalColumns[] = 'deeplink';
                 $this->_imageHelper = Mage::helper('catalog/image');
             }
 
@@ -184,7 +185,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 }
             }
 
-            $this->_exportAttributeCodes[$storeId] = array_merge($this->_defaultHeader, array_keys($headerSetup));
+            $this->_exportAttributeCodes[$storeId] = array_merge(
+                $this->_defaultHeader,
+                $additionalColumns,
+                array_keys($headerSetup)
+            );
 
             // apply field limit as required by ff
             if(count($this->_exportAttributeCodes[$storeId]) > 128) {
@@ -561,6 +566,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 ${$categoryModel->getAttributeCode() . 'Model'} = $categoryModel;
             }
 
+            //todo: refactor here - undefined variables
             $select = $this->_getReadAdapter()->select()
                 ->from(
                     array('main' => $nameModel->getBackendTable()),
