@@ -78,7 +78,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     /**
      * @var array
      */
-    protected $_deafultHeader = array(
+    protected $_defaultHeader = array(
         'id',
         'parent_id',
         'sku',
@@ -152,8 +152,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $headerDynamic = array();
 
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
-                $this->_deafultHeader[] = 'image';
-                $this->_deafultHeader[] = 'deeplink';
+                $this->_defaultHeader[] = 'image';
+                $this->_defaultHeader[] = 'deeplink';
                 $this->_imageHelper = Mage::helper('catalog/image');
             }
 
@@ -178,13 +178,13 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
 
             // remove default attributes from setup
-            foreach ($this->_deafultHeader as $code) {
+            foreach ($this->_defaultHeader as $code) {
                 if (array_key_exists($code, $headerSetup)) {
                     unset($headerSetup[$code]);
                 }
             }
 
-            $this->_exportAttributeCodes[$storeId] = array_merge($this->_deafultHeader, array_keys($headerSetup));
+            $this->_exportAttributeCodes[$storeId] = array_merge($this->_defaultHeader, array_keys($headerSetup));
 
             // apply field limit as required by ff
             if(count($this->_exportAttributeCodes[$storeId]) > 128) {
