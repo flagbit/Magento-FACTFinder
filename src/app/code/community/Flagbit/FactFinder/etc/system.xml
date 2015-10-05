@@ -10,7 +10,7 @@
 
 /**
  * System Config
- * 
+ *
  * @category  Mage
  * @package   Flagbit_FactFinder
  * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
@@ -27,7 +27,7 @@
             <frontend_type>text</frontend_type>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>            
+            <show_in_store>1</show_in_store>
             <groups>
                 <search translate="label">
                     <label>FACT-Finder Access Data</label>
@@ -252,7 +252,16 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </attributes>       
+                        </attributes>
+                        <exclude_category_ids translate="label">
+                            <label>Category IDs to exclude</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>55</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Comma separated IDs of categories, that should not be exported and then displayed in ASN]]></comment>
+                        </exclude_category_ids>
 						<export_url translate="label">
                             <label></label>
                             <frontend_model>factfinder/adminhtml_exportlink</frontend_model>
@@ -260,7 +269,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </export_url>                 
+                        </export_url>
                     </fields>
                 </export>
                 <cron translate="label">

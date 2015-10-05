@@ -102,4 +102,22 @@ class Flagbit_FactFinder_Helper_Data extends Mage_Core_Helper_Abstract {
 
         return $result;
     }
+
+
+    /**
+     * Retrieve from config category ids that should not be exported
+     *
+     * @return array
+     */
+    public function getCategoryIdToExclude()
+    {
+        if (empty($this->_categoryIdsToExclude)) {
+            $categoryIds = Mage::getStoreConfig('factfinder/export/exclude_category_ids');
+            $this->_categoryIdsToExclude = explode(',', $categoryIds);
+        }
+
+        return $this->_categoryIdsToExclude;
+    }
+
+
 }
