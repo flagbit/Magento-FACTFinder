@@ -37,7 +37,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * Category Names by ID
      * @var mixed
      */
-    protected $_categoryNames = null;
+    protected $_categoryNames = array();
 
     /**
      * export attribute codes
@@ -45,17 +45,17 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected $_exportAttributeCodes = null;
 
-	/**
+    /**
      * export attribute objects
      * @var mixed
      */
     protected $_exportAttributes = null;
 
-	/**
-	 * helper to generate the image urls
+    /**
+     * helper to generate the image urls
      * @var Mage_Catalog_Helper_Image
-	 */
-	protected $_imageHelper = null;
+     */
+    protected $_imageHelper = null;
 
     /**
      * add CSV Row
@@ -138,7 +138,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             foreach($headerDefault as $code){
                 if(array_key_exists($code, $headerSetup)){
                     unset($headerSetup[$code]);
-                 }
+                }
             }
 
             $this->_exportAttributeCodes[$storeId] = array_merge($headerDefault, array_keys($headerSetup));
@@ -273,14 +273,14 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 }
 
                 $productIndex = array(
-                        $productData['entity_id'],
-                        $productData[$idFieldName],
-                        $productData['sku'],
-                        $this->_getCategoryPath($productData['entity_id'], $storeId),
-                        $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttr, $storeId),
-                        $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId),
-                        $productData['stock_id'],
-                    );
+                    $productData['entity_id'],
+                    $productData[$idFieldName],
+                    $productData['sku'],
+                    $this->_getCategoryPath($productData['entity_id'], $storeId),
+                    $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttr, $storeId),
+                    $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttr, $storeId),
+                    $productData['stock_id'],
+                );
 
                 if ($exportImageAndDeeplink) {
                     $product = Mage::getModel("catalog/product");
@@ -316,14 +316,14 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                             } */
 
                             $subProductIndex = array(
-                                    $productChild['entity_id'],
-                                    $productData[$idFieldName],
-                                    $productChild['sku'],
-                                    $this->_getCategoryPath($productData['entity_id'], $storeId),
-                                    $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
-                                    $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId),
-                                    $productData['stock_id'],
-                                );
+                                $productChild['entity_id'],
+                                $productData[$idFieldName],
+                                $productChild['sku'],
+                                $this->_getCategoryPath($productData['entity_id'], $storeId),
+                                $this->_formatFilterableAttributes($this->_getSearchableAttributes(null, 'filterable'), $productAttributes[$productChild['entity_id']], $storeId),
+                                $this->_formatSearchableAttributes($this->_getSearchableAttributes(null, 'searchable'), $productAttributes[$productChild['entity_id']], $storeId),
+                                $productData['stock_id'],
+                            );
                             if ($exportImageAndDeeplink) {
                                 //dont need to add image and deeplink to child product, just add empty values
                                 $subProductIndex[] = '';
@@ -400,7 +400,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             $entityType = $this->getEavConfig()->getEntityType('catalog_product');
             $entity     = $entityType->getEntity();
 
-			$userDefinedAttributes = array_keys(Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId)));
+            $userDefinedAttributes = array_keys(Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId)));
 
             $whereCond  = array(
                 $this->_getWriteAdapter()->quoteInto('additional_table.is_searchable=? or additional_table.is_filterable=? or additional_table.used_for_sort_by=?', 1),
@@ -434,8 +434,8 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
 
                 if (!is_null($backendType)
                     && $attribute->getBackendType() != $backendType) {
-                        continue;
-                    }
+                    continue;
+                }
 
                 switch($type) {
 
@@ -484,8 +484,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected function _getCategoryPath($productId, $storeId = null)
     {
+        if($storeId === null) {
+            $storeId = 0;
+        }
 
-        if ($this->_categoryNames === null) {
+        if (!isset($this->_categoryNames[$storeId])) {
             $categoryCollection = Mage::getResourceModel('catalog/category_attribute_collection');
             $categoryCollection->getSelect()->where("attribute_code IN('name', 'is_active')");
 
@@ -497,17 +500,17 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->from(
                     array('main' => $nameModel->getBackendTable()),
                     array('entity_id', 'value')
-                    )
+                )
                 ->join(
                     array('e' => $is_activeModel->getBackendTable()),
                     'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = '.$storeId.') AND e.attribute_id='.$is_activeModel->getAttributeId(),
-                       null
+                    null
                 )
                 ->where('main.attribute_id=?', $nameModel->getAttributeId())
                 ->where('e.value=?', '1')
                 ->where('main.store_id = 0 OR main.store_id = ?', $storeId);
 
-            $this->_categoryNames = $this->_getReadAdapter()->fetchPairs($select);
+            $this->_categoryNames[$storeId] = $this->_getReadAdapter()->fetchPairs($select);
         }
 
         if ($this->_productsToCategoryPath === null) {
@@ -515,11 +518,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->from(
                     array('main' => $this->getTable('catalog/category_product_index')),
                     array('product_id')
-                    )
+                )
                 ->join(
                     array('e' => $this->getTable('catalog/category')),
                     'main.category_id=e.entity_id',
-                       null
+                    null
                 )
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
                 ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
@@ -550,10 +553,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 $categoryIdsCount = count($categoryIds);
                 $categoryPath = '';
                 for($i=2;$i < $categoryIdsCount;$i++) {
-                    if (!isset($this->_categoryNames[$categoryIds[$i]])) {
+                    if (!isset($this->_categoryNames[$storeId][$categoryIds[$i]])) {
                         continue 2;
                     }
-                    $categoryPath .= urlencode(trim($this->_categoryNames[$categoryIds[$i]])).'/';
+                    $categoryPath .= urlencode(trim($this->_categoryNames[$storeId][$categoryIds[$i]])).'/';
                 }
                 if ($categoryIdsCount > 2) {
                     $value .= rtrim($categoryPath,'/').'|';
@@ -605,7 +608,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 ->join(
                     array('e' => $this->getTable('catalog/product')),
                     'main.'.$relation->getChildFieldName().'=e.entity_id',
-                       array('entity_id', 'type_id', 'sku')
+                    array('entity_id', 'type_id', 'sku')
                 )
 
                 ->where("{$relation->getParentFieldName()}=?", $productId);
@@ -618,9 +621,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
         return null;
     }
 
-	/**
+    /**
      * Retrieve attribute source value for search
-	 * This method is mostly copied from Mage_CatalogSearch_Model_Resource_Fulltext, but it also retrieves attribute values from non-searchable/non-filterable attributes
+     * This method is mostly copied from Mage_CatalogSearch_Model_Resource_Fulltext, but it also retrieves attribute values from non-searchable/non-filterable attributes
      *
      * @param int $attributeId
      * @param mixed $value
@@ -631,7 +634,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
     {
         $attribute = $this->_getSearchableAttribute($attributeId);
         if (!$attribute->getIsSearchable() && $attribute->getAttributeCode() == 'visibility') {
-			return $value;
+            return $value;
         }
 
         if ($attribute->usesSource()) {
@@ -677,28 +680,28 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     protected function _getAttributesRowArray(&$dataArray, $values, $storeId=null)
     {
-		// get attributes objects assigned to their position at the export
-		if ($this->_exportAttributes == null) {
-			$this->_exportAttributes = array_fill(0, sizeof($this->_getExportAttributes($storeId)), null);
+        // get attributes objects assigned to their position at the export
+        if ($this->_exportAttributes == null) {
+            $this->_exportAttributes = array_fill(0, sizeof($this->_getExportAttributes($storeId)), null);
 
-			$attributeCodes = array_flip($this->_getExportAttributes($storeId));
-			foreach ($this->_getSearchableAttributes() as $attribute) {
-				if (isset($attributeCodes[$attribute->getAttributeCode()]) && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
-					$this->_exportAttributes[$attributeCodes[$attribute->getAttributeCode()]] = $attribute;
-				}
-			}
-		}
-		// fill dataArray with the values of the attributes that should be exported
-		foreach($this->_exportAttributes AS $pos => $attribute) {
-			if ($attribute != null) {
-				$value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
-				$dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
-			} else if (!array_key_exists($pos, $dataArray)) {
+            $attributeCodes = array_flip($this->_getExportAttributes($storeId));
+            foreach ($this->_getSearchableAttributes() as $attribute) {
+                if (isset($attributeCodes[$attribute->getAttributeCode()]) && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))) {
+                    $this->_exportAttributes[$attributeCodes[$attribute->getAttributeCode()]] = $attribute;
+                }
+            }
+        }
+        // fill dataArray with the values of the attributes that should be exported
+        foreach($this->_exportAttributes AS $pos => $attribute) {
+            if ($attribute != null) {
+                $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+                $dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+            } else if (!array_key_exists($pos, $dataArray)) {
                 // it is very unlikely that an attribute exists in the header but is not delivered by "getSearchableAttributes",
                 // but actually it might be a result of a broken database or something like that..
                 $dataArray[$pos] = null;
             }
-		}
+        }
     }
 
 
