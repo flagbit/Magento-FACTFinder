@@ -285,7 +285,7 @@
                         </frequency>
                     </fields>
                 </cron>
-                <modules translae="label">
+                <modules translate="label">
                     <label>FACT-Finder Features</label>
                     <sort_order>50</sort_order>
                     <show_in_default>1</show_in_default>
@@ -352,8 +352,10 @@
         </factfinder>
        <advanced>
            <groups>
-               <ff_modules translae="label">
+               <ff_modules translate="label comment">
                    <label>Disable FACT-Finder Sub-Modules</label>
+                   <comment><![CDATA[These settings allow to completely disable FACT-Finder sub-modules through changing xml files.<br />
+                       To make this feature work the web-server should have the write permissions to the app/etc/modules directory]]></comment>
                    <sort_order>0</sort_order>
                    <show_in_default>1</show_in_default>
                    <show_in_website>0</show_in_website>
