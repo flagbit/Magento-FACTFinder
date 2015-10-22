@@ -102,11 +102,12 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Update xml file in etc/modules according to backend config
+     * Return true, if the file was written and false if an error occurred
      *
      * @param string $module
      * @param bool   $isActive
      *
-     * @return void
+     * @return bool
      */
     public function updateModuleState($module, $isActive = true)
     {
@@ -123,7 +124,8 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
             $item->nodeValue = $isActive;
         }
 
-        $xml->save($file);
+        // silencing is not good, but we only need the result of the operation
+        return (bool) @$xml->save($file);
     }
 
 

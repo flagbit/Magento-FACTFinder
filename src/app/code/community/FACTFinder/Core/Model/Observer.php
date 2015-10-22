@@ -162,7 +162,7 @@ class FACTFinder_Core_Model_Observer
         $config = Mage::getConfig();
         $modules = $config->getNode('modules');
 
-        $mustCleanCache = false;
+        $isConfigUpdated = false;
         foreach ($modules->children() as $module => $data) {
             if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
                 $configName = strtolower(str_replace('FACTFinder_', '', $module));
@@ -173,12 +173,11 @@ class FACTFinder_Core_Model_Observer
                     continue;
                 }
 
-                Mage::helper('factfinder')->updateModuleState($module, $isActivated);
-                $mustCleanCache = true;
+                $isConfigUpdated = Mage::helper('factfinder')->updateModuleState($module, $isActivated);
             }
         }
 
-        if ($mustCleanCache) {
+        if ($isConfigUpdated) {
             Mage::app()->cleanCache();
         }
     }
