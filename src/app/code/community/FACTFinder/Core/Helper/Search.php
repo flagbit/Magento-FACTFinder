@@ -1,0 +1,170 @@
+<?php
+/**
+ * FACTFinder_Core
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
+
+/**
+ * Helper class
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ */
+class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
+{
+    /**
+     * XML Config Path to Product Identifier Setting
+     *
+     * @var string
+     */
+    const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';
+
+    const REQUEST_ID_PREFIX = 'FACTFINDER_';
+
+
+    /**
+     * Retrieve query model object
+     *
+     * @return String
+     */
+    public function getQueryText()
+    {
+        return Mage::helper('catalogsearch')->getQueryText();
+    }
+
+
+    /**
+     * get Page Limit
+     *
+     * @return int
+     */
+    public function getPageLimit()
+    {
+        $limit = $this->_getToolbarBlock()->getLimit();
+        if ($limit == 'all') {
+            $limit = 720; // number of products to fit for each layout: 2 * 3 * 4 * 5 * 6 per row
+        }
+
+        return $limit;
+    }
+
+
+    /**
+     * get Toolbar Block
+     *
+     * @return Mage_Catalog_Block_Product_List_Toolbar
+     */
+    protected function _getToolbarBlock()
+    {
+        $mainBlock = Mage::app()->getLayout()->getBlock('search.result');
+        if ($mainBlock instanceof Mage_CatalogSearch_Block_Result) {
+            $toolbarBlock = $mainBlock->getListBlock()->getToolbarBlock();
+        } else {
+            $toolbarBlock = Mage::app()->getLayout()->createBlock('catalog/product_list_toolbar');
+        }
+
+        return $toolbarBlock;
+    }
+
+
+    /**
+     * get current Page Number
+     *
+     * @return int
+     */
+    public function getCurrentPage()
+    {
+        return $this->_getToolbarBlock()->getCurrentPage();
+    }
+
+
+    /**
+     * get Entity ID Field Name by Configuration or via Entity
+     *
+     * @return string
+     */
+    public function getIdFieldName()
+    {
+        $idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
+        if (!$idFieldName) {
+            $idFieldName = $this->getEntity()->getIdFieldName();
+        }
+
+        return $idFieldName;
+    }
+
+
+    /**
+     * Retrieve default per page values
+     *
+     * @return string (comma separated)
+     */
+    public function getDefaultPerPageValue()
+    {
+        return $this->_getToolbarBlock()->getDefaultPerPageValue();
+    }
+
+
+    /**
+     * get current Order
+     *
+     * @return string
+     */
+    public function getCurrentOrder()
+    {
+        return $this->_getToolbarBlock()->getCurrentOrder();
+    }
+
+
+    /**
+     * get current Order Direction
+     *
+     * @return string
+     */
+    public function getCurrentDirection()
+    {
+        return $this->_getToolbarBlock()->getCurrentDirection();
+    }
+
+
+    /**
+     * Retrieve query model object
+     *
+     * @return Mage_CatalogSearch_Model_Query
+     */
+    public function getQuery()
+    {
+        return Mage::helper('catalogsearch')->getQuery();
+    }
+
+
+    /**
+     * Get Module Status depending on Module
+     *
+     * @return bool
+     */
+    public function getIsOnSearchPage()
+    {
+        $moduleName = Mage::app()->getRequest()->getModuleName();
+        if ($moduleName == 'catalogsearch'
+            || ($moduleName == 'xmlconnect' && strpos(Mage::app()->getRequest()->getActionName(), 'search') !== false)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+}

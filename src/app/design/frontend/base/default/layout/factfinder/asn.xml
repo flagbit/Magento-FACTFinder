@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!--
+/**
+* FACTFinder_Asn
+*
+* @category Mage
+* @package FACTFinder_Asn
+* @author Flagbit Magento Team <magento@flagbit.de>
+* @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
+* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link http://www.flagbit.de
+*/
+-->
+<layout>
+
+    <catalogsearch_result_index>
+        <reference name="head">
+            <block type="core/template" name="ff_slider_script">
+                <action method="setTemplate"><template>factfinder/asn/layer/slider.phtml</template></action>
+            </block>
+        </reference>
+    </catalogsearch_result_index>
+
+    <catalog_category_layered>
+        <reference name="head">
+            <block type="core/template" name="ff_slider_script">
+                <action method="setTemplate"><template>factfinder/asn/layer/slider.phtml</template></action>
+            </block>
+        </reference>
+        <reference name="product_list">
+            <block type="factfinder_asn/catalog_product_list_toolbar" name="factfinder_product_list_toolbar" template="catalog/product/list/toolbar.phtml">
+                <block type="factfinder_asn/catalog_product_pager" name="product_list_toolbar_pager"/>
+            </block>
+            <action method="setToolbarBlockName"><name>factfinder_product_list_toolbar</name></action>
+        </reference>
+    </catalog_category_layered>
+
+</layout>

@@ -1,28 +1,10 @@
 <?xml version='1.0' encoding="utf-8" ?>
-<!--
-/**
- * Flagbit_FactFinder
- *
- * @category  Mage
- * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
- */
-
-/**
- * Module Config
- * 
- * @category  Mage
- * @package   Flagbit_FactFinder
- * @copyright Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
- * @author    Joerg Weller <weller@flagbit.de>
- * @version   $Id$
- */
--->
 <config>
     <global>
         <cache>
             <request_processors>
-                <factfinder>Flagbit_FactFinder_Model_Processor</factfinder>
+                <ff_suggest>FACTFinder_Suggest_Model_Processor</ff_suggest>
+                <ff_tracking>FACTFinder_Tracking_Model_Processor</ff_tracking>
             </request_processors>
         </cache>
     </global>

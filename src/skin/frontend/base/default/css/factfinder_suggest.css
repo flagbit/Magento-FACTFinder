@@ -1,0 +1,17 @@
+.form-search .search-autocomplete.advanced-suggest li {
+    overflow: hidden;
+}
+
+.form-search .search-autocomplete.advanced-suggest li.delimiter {
+    cursor: default;
+    font-weight: bold;
+}
+
+.form-search .search-autocomplete.advanced-suggest img.thumbnail {
+    float:left;
+    margin-top: 2px;
+    margin-bottom: 3px;
+    margin-right: 5px;
+    width: 31px;
+    height: 31px;
+}

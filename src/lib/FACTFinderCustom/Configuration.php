@@ -6,7 +6,7 @@
  *
  * @package FACTFinder\Common
  */
-class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuration
+class FACTFinderCustom_Configuration implements FACTFinder\Core\ConfigurationInterface
 {
     const HTTP_AUTH     = 'http';
     const SIMPLE_AUTH   = 'simple';
@@ -18,31 +18,9 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     private $authType;
 	private $secondaryChannels;
     private $storeId = null;
-	private $semaphoreTimeout = self::DEFAULT_SEMAPHORE_TIMEOUT;
 
-    private $ignoredPageParams = array(
-        'channel' => true,
-        'format' => true,
-        'log' => true,
-        'productsPerPage' => true,
-        'query' => true,
-        'catalog' => true,
-        'navigation' => true
-    );
-
-    private $ignoredServerParams = array(
-        'q' => true,
-        'p' => true,
-        'limit' => true,
-        'is_ajax' => true,
-        'type_search' => true,
-        'order' => true,
-        'dir' => true,
-        'mode' => true
-    );
-
-	// Should the search adapters retrieve only product ids? (otherwise, full records will be requested)
-	private $idsOnly = true;
+    // Should the search adapters retrieve only product ids? (otherwise, full records will be requested)
+    private $idsOnly = true;
 
     public function __construct($config = null)
     {
@@ -52,36 +30,6 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     	} else {
 			$this->config->setData(Mage::getStoreConfig(self::XML_CONFIG_PATH));
 		}
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersion() {
-        return $this->getCustomValue('version');
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isDebugEnabled() {
-        return $this->getCustomValue('debug') == 'true';
-    }
-
-    /**
-     * @param string name
-     * @return string value
-     */
-    public function getCustomValue($name)
-    {
-    	if(!$this->config->hasData($name)){
-    		try{
-    			$this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.'/'.$name, $this->storeId));
-    		}catch (Exception $e){
-    			$this->config->setData($name, null);
-    		}
-    	}
-    	return $this->config->getData($name);
     }
 
     public function __sleep() {
@@ -96,61 +44,6 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
     	return array('config');
     }
 
-    /**
-	 * @deprecated because of wrong spelling; use getRequestProtocol() instead
-     * @return string
-     */
-    public function getRequestProtokoll() {
-    	return $this->getRequestProtocol();
-    }
-
-    /**
-     * @return string
-     */
-	public function getRequestProtocol() {
-		$protocol = $this->getCustomValue('protocol');
-		// legacy code because of wrong spelling
-		if (!$protocol) {
-			$protocol = $this->getCustomValue('protokoll');
-		}
-		return $protocol;
-	}
-
-    /**
-     * @return string
-     */
-    public function getServerAddress() {
-		return $this->getCustomValue('address');
-    }
-
-    /**
-     * @return int
-     */
-    public function getServerPort() {
-		return $this->getCustomValue('port');
-    }
-
-    /**
-     * @return string
-     */
-    public function getContext() {
-		return $this->getCustomValue('context');
-    }
-	
-	/**
-	 * @return string
-	 **/
-	public function getFactFinderVersion() {
-		return $this->getCustomValue('ffversion');
-	}
-
-    /**
-     * @return string
-     */
-    public function getChannel() {
-        return $this->getCustomValue('channel');
-    }
-	
 	/**
 	 * @return array of strings
 	 **/
@@ -164,24 +57,102 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
 	}
 
     /**
+     * Allows to catch configuration for certain store id.
+     * If given store id differs from internal store id, then configuration is cleared.
+     *
+     * @param int $storeId
+     * @return FACTFinderCustom_Configuration
+     */
+    public function setStoreId($storeId) {
+        if ($this->storeId != $storeId) {
+            $this->config = new Varien_Object();
+        }
+
+        $this->storeId = $storeId;
+
+        return $this;
+    }
+
+    /**
+     * @param string name
+     * @return string value
+     */
+    public function getCustomValue($name)
+    {
+        if(!$this->config->hasData($name)){
+            try{
+                $this->config->setData($name,  Mage::getStoreConfig(self::XML_CONFIG_PATH.'/'.$name, $this->storeId));
+            }catch (Exception $e){
+                $this->config->setData($name, null);
+            }
+        }
+        return $this->config->getData($name);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDebugEnabled() {
+        return $this->getCustomValue('debug') == 'true';
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestProtocol() {
+        $protocol = $this->getCustomValue('protocol');
+        // legacy code because of wrong spelling
+        if (!$protocol) {
+            $protocol = $this->getCustomValue('protokoll');
+        }
+        return $protocol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerAddress() {
+        return $this->getCustomValue('address');
+    }
+
+    /**
+     * @return int
+     */
+    public function getServerPort() {
+        return $this->getCustomValue('port');
+    }
+
+    /**
+     * @return string
+     */
+    public function getContext() {
+        return $this->getCustomValue('context');
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannel() {
+        return $this->getCustomValue('channel');
+    }
+
+    /**
      * @return string
      */
     public function getLanguage() {
-		return $this->getCustomValue('language');
+        return $this->getCustomValue('language');
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthUser() {
-		return $this->getCustomValue('auth_user');
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthPasswort() {
-		return $this->getCustomValue('auth_password');
+    public function getAuthType() {
+        if ($this->authType == null) {
+            $this->authType = $this->getCustomValue('auth_type');
+            if ( $this->authType != self::HTTP_AUTH
+                && $this->authType != self::SIMPLE_AUTH
+                && $this->authType != self::ADVANCED_AUTH ) {
+                $this->authType = self::HTTP_AUTH;
+            }
+        }
+        return $this->authType;
     }
 
     /**
@@ -205,40 +176,31 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
         return $this->getAuthType() == self::ADVANCED_AUTH;
     }
 
-    private function getAuthType() {
-        if ($this->authType == null) {
-            $this->authType = $this->getCustomValue('auth_type');
-            if ( $this->authType != self::HTTP_AUTH
-                    && $this->authType != self::SIMPLE_AUTH
-                    && $this->authType != self::ADVANCED_AUTH ) {
-                $this->authType = self::HTTP_AUTH;
-            }
-        }
-        return $this->authType;
+    public function getUserName()
+    {
+        return $this->getCustomValue('auth_user');
     }
 
-    /**
-     * @return string
-     */
-    public function getAdvancedAuthPrefix() {
-    	return $this->getCustomValue('auth_advancedPrefix');
+    public function getPassword()
+    {
+        return $this->getCustomValue('auth_password');
     }
 
-    /**
-     * @return string
-     */
-    public function getAdvancedAuthPostfix() {
-		return $this->getCustomValue('auth_advancedPostfix');
+    public function getAuthenticationPrefix()
+    {
+        return $this->getCustomValue('auth_advancedPrefix');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return array
-     */
-    public function getPageMappings() {
+    public function getAuthenticationPostfix()
+    {
+        return $this->getCustomValue('auth_advancedPostfix');
+    }
+
+    public function getClientMappings()
+    {
         return array(
-            'query' => 'q'
+            'query' => 'q',
+            'page'  => 'p',
         );
     }
 
@@ -251,148 +213,111 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
         return array();
     }
 
-    /**
-     * add parameter that should be ignored for page urls
-     *
-     * @param $parameterName
-     */
-    public function addIgnoredPageParam($parameterName) {
-        $this->ignoredPageParams[$parameterName] = true;
+    public function getIgnoredClientParameters()
+    {
+        return array(
+            'channel' => true,
+            'format' => true,
+            'log' => true,
+            'productsPerPage' => true,
+            'query' => true,
+            'catalog' => true,
+            'navigation' => true
+        );
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return array with string as key and boolean true as value for each of them
-     */
-    public function getIgnoredPageParams() {
-        return $this->ignoredPageParams;
+    public function getIgnoredServerParameters()
+    {
+        return array(
+            'q' => true,
+            'p' => true,
+            'limit' => true,
+            'is_ajax' => true,
+            'type_search' => true,
+            'order' => true,
+            'dir' => true,
+            'mode' => true
+        );
     }
 
-    /**
-     * add parameter that should be ignored for the server request
-     *
-     * @param $parameterName
-     */
-    public function addIgnoredServerParam($parameterName) {
-        $this->ignoredServerParams[$parameterName] = true;
+    public function getRequiredClientParameters()
+    {
+        return array();
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return array with string as key and boolean true as value for each of them
-     */
-    public function getIgnoredServerParams() {
-        return $this->ignoredServerParams;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return array string to string map (param-name as array-key; default value as array-value)
-     */
-    public function getRequiredPageParams() {
+    public function getRequiredServerParameters()
+    {
         return array();
     }
 
     /**
      * {@inheritdoc}
      *
-     * @return array string to string map (param-name as array-key; default value as array-value)
-     */
-    function getRequiredServerParams() {
-        return array();
-    }
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getDefaultConnectTimeout() {
-		return 2;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getDefaultTimeout() {
-		return 4;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getSuggestConnectTimeout() {
-		return 1;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getSuggestTimeout() {
-		return 2;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getScicConnectTimeout() {
-		return 1;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getScicTimeout() {
-		return 1;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getImportConnectTimeout() {
-		return 10;
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 *
-	 * @return string
-	 **/
-	 
-	function getImportTimeout() {
-		return 360;
-	}
+     * @return string
+     **/
 
+    function getDefaultConnectTimeout() {
+        return 2;
+    }
 
     /**
      * {@inheritdoc}
      *
      * @return string
-     */
-    function getPageContentEncoding() {
-    	return $this->getCustomValue('pageContent');
+     **/
+
+    function getDefaultTimeout() {
+        return 4;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return string
+     **/
+
+    function getSuggestConnectTimeout() {
+        return 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return string
+     **/
+
+    function getSuggestTimeout() {
+        return 2;
+    }
+
+    public function getTrackingConnectTimeout()
+    {
+        return 2;
+    }
+
+    public function getTrackingTimeout()
+    {
+        return 2;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return string
+     **/
+
+    function getImportConnectTimeout() {
+        return 10;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return string
+     **/
+
+    function getImportTimeout() {
+        return 360;
     }
 
     /**
@@ -400,71 +325,31 @@ class FACTFinderCustom_Configuration implements FACTFinder_Abstract_Configuratio
      *
      * @return string
      */
-    function getPageUrlEncoding() {
-    	return $this->getCustomValue('pageURI');
+    public function getPageContentEncoding() {
+        return $this->getCustomValue('encoding/pageContent');
+    }
+
+    public function getClientUrlEncoding()
+    {
+        return $this->getCustomValue('encoding/pageURI');
     }
 
     /**
-     * {@inheritdoc}
+     * Sets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters.
+     * Request only products ids if true, full records otherwise
      *
-     * @return string
-     */
-    function getServerUrlEncoding() {
-    	return $this->getCustomValue('serverURI');
+     * @param	bool	value
+     **/
+    public function setIdsOnly($value) {
+        $this->idsOnly = $value;
     }
-
 
     /**
-     * Allows to catch configuration for certain store id.
-     * If given store id differs from internal store id, then configuration is cleared.
+     * Gets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters
      *
-     * @param int $storeId
-     * @return FACTFinderCustom_Configuration
-     */
-    public function setStoreId($storeId) {
-        if ($this->storeId != $storeId) {
-            $this->config = new Varien_Object();
-        }
-
-        $this->storeId = $storeId;
-
-        return $this;
+     * @return bool
+     **/
+    public function getIdsOnly() {
+        return $this->idsOnly;
     }
-	
-	/**
-	 * Sets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters.
-	 * Request only products ids if true, full records otherwise
-	 *
-	 * @param	bool	value
-	 **/
-	public function setIdsOnly($value) {
-		$this->idsOnly = $value;
-	}
-	
-	/**
-	 * Gets the idsOnly flag, which determines whether product ids or full records should be requested by the search adapters
-	 *
-	 * @return bool
-	 **/
-	public function getIdsOnly() {
-		return $this->idsOnly;
-	}
-	
-	/**
-	 * Sets the time span in seconds after which semaphores expire
-	 *
-	 * @param	int		value in seconds
-	 **/
-	public function setSemaphoreTimeout($valueInSeconds) {
-		$this->semaphoreTimeout = $valueInSeconds;
-	}
-	
-	/**
-	 * Gets the time span in seconds after which semaphores expire
-	 *
-	 * @return int
-	 **/
-	public function getSemaphoreTimeout() {
-		return $this->semaphoreTimeout;
-	}
 }

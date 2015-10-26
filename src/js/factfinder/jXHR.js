@@ -6,16 +6,16 @@
 	var SETTIMEOUT = global.setTimeout, // for better compression
 		doc = global.document,
 		callback_counter = 0;
-		
+
 	global.jXHR = function() {
 		var script_url,
 			script_loaded,
 			jsonp_callback,
 			scriptElem,
 			publicAPI = null;
-			 
+
 		function removeScript() { try { scriptElem.parentNode.removeChild(scriptElem); } catch (err) { } }
-			
+
 		function reset() {
 			script_loaded = false;
 			script_url = "";
@@ -23,7 +23,7 @@
 			scriptElem = null;
 			fireReadyStateChange(0);
 		}
-		
+
 		function ThrowError(msg) {
 			try { publicAPI.onerror.call(publicAPI,msg,script_url); } catch (err) { throw new Error(msg); }
 		}
@@ -35,13 +35,13 @@
 			if (publicAPI.readyState !== 4) ThrowError("Script failed to load ["+script_url+"].");
 			removeScript();
 		}
-		
+
 		function fireReadyStateChange(rs,args) {
 			args = args || [];
 			publicAPI.readyState = rs;
 			if (typeof publicAPI.onreadystatechange === "function") publicAPI.onreadystatechange.apply(publicAPI,args);
 		}
-				
+
 		publicAPI = {
 			onerror:null,
 			onreadystatechange:null,
@@ -51,10 +51,10 @@
 				internal_callback = "cb"+(callback_counter++);
 				(function(icb){
 					global.jXHR[icb] = function() {
-						try { fireReadyStateChange.call(publicAPI,4,arguments); } 
-						catch(err) { 
+						try { fireReadyStateChange.call(publicAPI,4,arguments); }
+						catch(err) {
 							publicAPI.readyState = -1;
-							ThrowError("Script failed to run ["+script_url+"]."); 
+							ThrowError("Script failed to run ["+script_url+"].");
 						}
 						global.jXHR[icb] = null;
 					};
@@ -78,7 +78,7 @@
 		};
 
 		reset();
-		
+
 		return publicAPI;
 	};
 })(window);

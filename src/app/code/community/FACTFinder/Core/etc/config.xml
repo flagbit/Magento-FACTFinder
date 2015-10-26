@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<!--
+/**
+* FACTFinder_Core
+*
+* @category Mage
+* @package FACTFinder_Core
+* @author Flagbit Magento Team <magento@flagbit.de>
+* @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link http://www.flagbit.de
+*
+*/
+-->
+<config>
+    <modules>
+        <FACTFinder_Core>
+            <version>4.0.1</version>
+        </FACTFinder_Core>
+    </modules>
+    <global>
+        <models>
+            <factfinder>
+                <class>FACTFinder_Core_Model</class>
+                <resourceModel>factfinder_core_resource</resourceModel>
+            </factfinder>
+            <factfinder_core_resource>
+                <class>FACTFinder_Core_Model_Resource</class>
+            </factfinder_core_resource>
+        </models>
+        <blocks>
+            <factfinder>
+                <class>FACTFinder_Core_Block</class>
+            </factfinder>
+        </blocks>
+        <helpers>
+            <factfinder>
+                <class>FACTFinder_Core_Helper</class>
+            </factfinder>
+        </helpers>
+        <events>
+            <controller_front_init_before>
+                <observers>
+                    <factfinder>
+                        <class>factfinder/autoloader</class>
+                        <method>addAutoloader</method>
+                    </factfinder>
+                    <factfinder_manage_modules>
+                        <class>factfinder/observer</class>
+                        <method>manageModules</method>
+                    </factfinder_manage_modules>
+                </observers>
+            </controller_front_init_before>
+        </events>
+    </global>
+    <adminhtml>
+        <events>
+            <controller_action_postdispatch_adminhtml_system_config_save>
+                <observers>
+                    <factfinder_core_set_search_engine>
+                        <class>factfinder/observer</class>
+                        <method>setSearchEngine</method>
+                    </factfinder_core_set_search_engine>
+                </observers>
+            </controller_action_postdispatch_adminhtml_system_config_save>
+        </events>
+    </adminhtml>
+    <frontend>
+        <events>
+            <controller_action_predispatch_catalogsearch_result_index>
+                <observers>
+                    <factfinder_core_reset_search_layer>
+                        <class>factfinder/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </factfinder_core_reset_search_layer>
+                </observers>
+            </controller_action_predispatch_catalogsearch_result_index>
+            <controller_action_predispatch_catalogsearch_advanced_result>
+                <observers>
+                    <factfinder_core_reset_search_layer>
+                        <class>factfinder/observer</class>
+                        <method>resetCurrentSearchLayer</method>
+                    </factfinder_core_reset_search_layer>
+                </observers>
+            </controller_action_predispatch_catalogsearch_advanced_result>
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <factfinder_core_remove_layer_filters>
+                        <class>factfinder/observer</class>
+                        <method>removeLayerFilters</method>
+                    </factfinder_core_remove_layer_filters>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <factfinder_handle_single_product_redirect>
+                        <class>factfinder/observer</class>
+                        <method>handleSingleProductRedirect</method>
+                    </factfinder_handle_single_product_redirect>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
+        </events>
+        <routers>
+            <factfinder>
+                <use>standard</use>
+                <args>
+                    <module>FACTFinder_Core</module>
+                    <frontName>factfinder</frontName>
+                </args>
+            </factfinder>
+        </routers>
+        <layout>
+            <updates>
+                <factfinder_core>
+                    <file>factfinder/core.xml</file>
+                </factfinder_core>
+            </updates>
+        </layout>
+    </frontend>
+    <default>
+        <factfinder>
+            <config>
+                <debug>1</debug>
+                <identifier>entity_id</identifier>
+            </config>
+            <search>
+                <address>example.com</address>
+                <port>80</port>
+                <protocol>http</protocol>
+                <!-- possible values: http, https -->
+
+                <!--<ffversion>68</ffversion>-->
+
+                <auth_type>advanced</auth_type>
+                <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
+                <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
+                <auth_advancedPostfix>FACT-FINDER</auth_advancedPostfix>
+
+                <!-- encoding settings -->
+                <encoding>
+                    <pageContent>UTF-8</pageContent>
+                    <serverURI>UTF-8</serverURI>
+                    <pageURI>UTF-8</pageURI>
+                </encoding>
+            </search>
+            <fallback>
+                <use_fallback>0</use_fallback>
+            </fallback>
+            <modules>
+                <asn>1</asn>
+            </modules>
+        </factfinder>
+        <advanced>
+            <ff_modules>
+                <asn>1</asn>
+                <suggest>1</suggest>
+                <campaigns>1</campaigns>
+                <tracking>1</tracking>
+                <recommendation>1</recommendation>
+                <tagcloud>1</tagcloud>
+            </ff_modules>
+        </advanced>
+    </default>
+    <crontab>
+        <jobs>
+            <factfinder_generate>
+                <run>
+                    <model>factfinder/export_product::saveAll</model>
+                </run>
+            </factfinder_generate>
+        </jobs>
+    </crontab>
+</config>

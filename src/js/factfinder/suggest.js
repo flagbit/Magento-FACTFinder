@@ -1,3 +1,15 @@
+/**
+* FACTFinder_Suggest
+*
+* @category Mage
+* @package FACTFinder_Suggest
+* @author Flagbit Magento Team <magento@flagbit.de>
+* @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @link http://www.flagbit.de
+*
+*/
+
 var FactFinderAjax = {
     getTransport: function() {
         return new jXHR();
@@ -164,15 +176,14 @@ var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {
     getEntry: function(index) {
         return this.update.select('.selectable-item')[index];
     }
-})
+});
 
 var FactFinderSuggest = Class.create(Varien.searchForm, {
-    initialize : function($super, form, field, emptyText, loadDataCallback) {
+    initialize : function($super, form, field, emptyText, i18n, defaultChannel) {
         $super(form, field, emptyText);
-        this.loadDataCallback = loadDataCallback;
+        this.i18n = i18n;
+        this.defaultChannel = defaultChannel;
     },
-
-    loadDataCallback: null,
 
     request: null,
 
@@ -219,5 +230,101 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 
             this.form.submit();
         }
+    },
+
+    loadDataCallback: function (data) {
+        if (data.suggestions) {
+            data = data.suggestions;
+        }
+
+        // Try to get channel from search request, if no channel was found
+        data.each(function (item) {
+            if (!item.channel) {
+                var params = item.searchParams.toQueryParams();
+                if (params.channel) {
+                    item.channel = params.channel;
+                }
+            }
+        });
+
+
+        var content = '<ul>';
+        content += '<li style="display: none" class="selected selectable-item"></li>';
+        var currentChannel = '';
+        var currentType = '';
+        if (data.length) {
+            if (data[0].channel != this.defaultChannel) {
+                content += '<li class="delimiter">' + this.translate('Channel: ' + data[0].channel) + '</li>';
+            }
+            currentChannel = data[0].channel;
+        }
+
+        data.each(function(item) {
+            if (item.channel != currentChannel) {
+                content += '<li class="delimiter">' + this.translate('Channel: ' + item.channel) + '</li>';
+                currentChannel = item.channel;
+            }
+
+            if (item.type != currentType) {
+                content += '<li class="delimiter">' + this.translate(item.type) + '</li>';
+                currentType = item.type;
+            }
+
+            var temp = '';
+            temp += '<li title="' + item.name + '" class="selectable-item ' + item.type + '"';
+            temp += ' rel="' + this.getItemUrl(item)+ '"';
+            temp += '>';
+
+            temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
+            if (item.image) {
+                temp += '<img src="' + item.image + '" title="' + item.name + '" class="thumbnail"/>';
+            }
+
+            temp += item.name.replace(new RegExp("("+this.field.value+")","ig"), '<strong>$1</strong>');
+
+            if (item.attributes.parentCategory) {
+                temp += ' (' + decodeURIComponent(item.attributes.parentCategory) + ')';
+            }
+
+            temp += '</li>';
+            content += temp;
+        }.bind(this));
+
+        content += '</ul>';
+
+        return content;
+    },
+
+    translate: function (string) {
+        // Internationalization lookup:
+        // Add a new anonymous object for every string you want to internationalize (with the property being the string).
+        // These objects consist of one string for each locale, where the property is the locale code.
+        if (this.i18n[string] === undefined) {
+            return string;
+        } else {
+            return this.i18n[string];
+        }
+    },
+
+    getItemUrl: function (item) {
+        if (item.attributes.deeplink) {
+            return item.attributes.deeplink;
+        }
+
+        var qPos = item.searchParams.indexOf('?');
+
+        var url = this.form.action;
+        if (url.indexOf('?') > 0) {
+            url += '&' + item.searchParams.substring(qPos + 1);
+        } else {
+            url += item.searchParams.substring(qPos);
+        }
+
+        url += '&userInput='+this.field.value+'&queryFromSuggest=true';
+
+        //there's no mapping possibility, so let's hardcode it
+        url = url.replace('query=', 'q=');
+
+        return url;
     }
 });

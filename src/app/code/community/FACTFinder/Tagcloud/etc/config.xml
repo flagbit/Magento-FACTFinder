@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FACTFinder_TagCloud
+ *
+ * @category Mage
+ * @package FACTFinder_TagCloud
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @link http://www.flagbit.de
+ *
+ */
+ -->
+<config>
+    <modules>
+        <FACTFinder_Tagcloud>
+            <version>4.0.1</version>
+        </FACTFinder_Tagcloud>
+    </modules>
+    <global>
+        <models>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Model</class>
+            </factfinder_tagcloud>
+        </models>
+        <blocks>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Block</class>
+            </factfinder_tagcloud>
+        </blocks>
+        <helpers>
+            <factfinder_tagcloud>
+                <class>FACTFinder_Tagcloud_Helper</class>
+            </factfinder_tagcloud>
+        </helpers>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <factfinder_tagcloud>
+                    <file>factfinder/tagcloud.xml</file>
+                </factfinder_tagcloud>
+            </updates>
+        </layout>
+    </frontend>
+</config>

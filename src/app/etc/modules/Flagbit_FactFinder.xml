@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Flagbit_FactFinder>
-            <active>true</active>
-            <codePool>community</codePool>
-        </Flagbit_FactFinder>
-    </modules>
-</config>

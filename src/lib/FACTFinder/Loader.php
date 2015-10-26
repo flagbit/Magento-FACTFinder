@@ -1,119 +1,113 @@
 <?php
 /**
- * FACT-Finder PHP Framework
- *
- * @category  Library
- * @package   FACTFinder\Common
- * @copyright Copyright (c) 2012 Omikron Data Quality GmbH (www.omikron.net)
+ * Bootstrap file which should be called on every request. It defines some basic
+ * constants and defines the autoloader class, which handles classloading and
+ * instance creation.
  */
- 
-/**
- * boot strap file which should be called on every request
- * it defines some basic constants and loads the autoloader class, which handles the classloading,
- * constructing and holds the singletons
- *
- * @author    Rudolf Batt <rb@omikron.net>
- * @version  $Id: Loader.php 25893 2010-06-29 08:19:43Z rb $
- * @package  FACTFinder\Common
- */
+namespace FACTFinder;
 
-/**
- * short cut for the constant DIRECTORY_SEPARATOR
- */
-if (!defined('DS')) {
+use FACTFinder\Loader as FF;
+use FACTFinder\Util\LoggerInterface;
+
+if (!defined('DS'))
+{
+    /**
+     * Short alias for the constant DIRECTORY_SEPARATOR
+     */
     define('DS', DIRECTORY_SEPARATOR);
 }
 
-/**
- * contains the complete lib directory path
- */
-if (!defined('LIB_DIR')) {
-    define('LIB_DIR', dirname(dirname(__FILE__)));
+if (!defined('FF_LIB_DIR'))
+{
+    /**
+     * Contains the absolute directory path to the library.
+     */
+    define('FF_LIB_DIR', dirname(dirname(__FILE__)));
 }
 
-/**
- * set as include path if this is not the case yet
- */
+// set as include path if this is not the case yet
 $includePaths = explode(PATH_SEPARATOR, get_include_path());
-if ( array_search(LIB_DIR, $includePaths, true) === false ) {
-	set_include_path( get_include_path() . PATH_SEPARATOR . LIB_DIR);
+if ( array_search(FF_LIB_DIR, $includePaths, true) === false )
+{
+	set_include_path( get_include_path() . PATH_SEPARATOR . FF_LIB_DIR);
 }
-spl_autoload_register(array('FACTFinder_Loader', 'autoload'));
+spl_autoload_register(array('FACTFinder\Loader', 'autoload'));
 
 // don't know, whether I should do that
-if (function_exists('__autoload') && array_search('__autoload', spl_autoload_functions()) === false) {
+if (function_exists('__autoload')
+    && array_search('__autoload', spl_autoload_functions()) === false)
+{
     spl_autoload_register('__autoload');
 }
 
 /**
- * shortcut / alias for the loader class
+ * Responsible for auto loading and instance creation. Please instantiate all
+ * library classes through this loader, as it automatically takes care of
+ * overriding library implementations with custom ones.
  *
- * @author    Rudolf Batt <rb@omikron.net>
- * @package  FACTFinder\Common
+ * For convenience, you can alias this class with FF in your source files like:
+ * use FACTFinder\Loader as FF;
  */
-final class FF extends FACTFinder_Loader{}
-
-
-/**
- * handles different loading tasks
- *
- * @author    Rudolf Batt <rb@omikron.net>
- * @package  FACTFinder\Common
- */
-class FACTFinder_Loader
+class Loader
 {
-    protected static $singletons = array();
     protected static $classNames = array();
-	protected static $logger = null;
 
+    // TODO: Check parent namespaces, too?
     public static function autoload($classname)
     {
         $filename = self::getFilename($classname);
-        if (file_exists($filename)) {
+        if (file_exists($filename))
             include_once $filename;
-        }
     }
 
     private static function getFilename($classname)
     {
-        return LIB_DIR . DS . str_replace('_', DS, $classname) . '.php';
-    }
-
-    private static function canLoadClass($classname)
-    {
-        return file_exists(self::getFilename($classname));
+        return FF_LIB_DIR . DS . str_replace('\\', DS, $classname) . '.php';
     }
 
     /**
-     * Creates an instance of a class taking into account classes with the prefix "Custom_" instead of "FACTFinder_".
-     * USE THIS method instead of the PHP "new" keyword.
-     * Eg. "$obj = new myclass;" should be "$obj = FACTFinder_Loader::getInstance("myclass")" instead!
+     * Creates an instance of a class taking into account classes within the
+     * "FACTFinder\Custom\" namespace instead of "FACTFinder\".
+     * Note that classes in the \Custom namespace should inherit the class they
+     * overwrite - otherwise some of the type hinting within the library might
+     * break.
+     * USE THIS method instead of the PHP "new" keyword for all classes from
+     * this library.
+     * Eg. instead of "$obj = new myclass;", you should use
+     * "$obj = FACTFinder\Loader::getInstance("myclass")"!
      * You can also pass arguments for a constructor:
-     *     FACTFinder_Loader::getInstance('myClass', $arg1, $arg2,  ..., $argN)
+     *     Loader::getInstance('myClass', $arg1, $arg2,  ..., $argN)
      *
-     * @param    string class name to instantiate
-     * @param    mixed optional as many parameters as the class needs to be created
-     * @return    object A reference to the object
+     * @param    string $name   Class name to instantiate
+     * @param    mixed optional Constructor parameters
+     * @return   object         A reference to the instance
      */
     public static function getInstance($name)
     {
-        if (isset(self::$classNames[$name])) {
+        if (isset(self::$classNames[$name]))
+        {
             $className = self::$classNames[$name];
-        } else {
+        }
+        else
+        {
             $className = self::getClassName($name);
             self::$classNames[$name] = $className;
         }
 
-        // this snippet is from the typo3 class "t3lib_div" written by Kasper Skaarhoj <kasperYYYY@typo3.com>
-        if (func_num_args() > 1) {
+        // this snippet is from the typo3 class "t3lib_div"
+        // written by Kasper Skaarhoj <kasperYYYY@typo3.com>
+        if (func_num_args() > 1)
+        {
             // getting the constructor arguments by removing this
             // method's first argument (the class name)
             $constructorArguments = func_get_args();
             array_shift($constructorArguments);
 
-            $reflectedClass = new ReflectionClass($className);
+            $reflectedClass = new \ReflectionClass($className);
             $instance = $reflectedClass->newInstanceArgs($constructorArguments);
-        } else {
+        }
+        else
+        {
             $instance = new $className;
         }
 
@@ -121,79 +115,55 @@ class FACTFinder_Loader
     }
 
     /**
-     * creates an instance of the class once and returns it every time. uses getInstance
+     * Expects a fully qualified class name. if the leading namespace is omitted
+     * or "FACTFinder", we first check whether there is a custom class in
+     * namespace "FACTFinder\Custom\", then we look in "FACTFinder\". If none of
+     * them exist, it also checks if the name is the class name itself.
+     * Note that classes in the \Custom namespace should inherit the class they
+     * overwrite - otherwise some of the type hinting within the library might
+     * break.
      *
-     * @param    string class name to instantiate
-     * @param    mixed optional as many parameters as the class needs to be created
-     * @return    object A reference to the object
-     */
-    public static function getSingleton($name)
-    {
-        if (!isset(self::$singletons[$name])) {
-            $params = func_get_args();
-            self::$singletons[$name] = call_user_func_array(array("self", "getInstance"), $params);
-        }
-        return self::$singletons[$name];
-    }
-	
-	/**
-     * set a logger which will log the Loaders activity
+     * @param string $name The class name to be resolved.
      *
-     * @param    string file name of the configuration file
+     * @return string The class name to be used.
      */
-    public static function setLogger(FACTFinder_Abstract_Logger $logger)
+    public static function getClassName($name)
     {
-        self::$logger = $logger;
-    }
-    
-    /**
-     * gets the set logger. if none is set, a NullLogger will be initialized, which does not log anything.
-     *
-     * @return    Logger 	the Loader's logger
-     */
-    public static function getLogger()
-    {
-        if (self::$logger == null) {
-            self::$logger = FF::getSingleton('nullLogger');
-        }
-        
-        return self::$logger;
-    }
-
-    /**
-     * check whether there is a custom class with the prefix "FACTFinderCustom_" instead of "FACTFinder_"
-     * if non of them exists, it also checks if the name is the class name itself
-     */
-    protected static function getClassName($name)
-    {
-        $name = trim(str_replace('factfinder/', '', $name));
-        $name = str_replace(' ', '_', ucwords(str_replace('/', ' ', $name)));
+        $name = trim(preg_replace('/^FACTFinder\\\\/i', '', $name));
 
         // check whether there is a custom or lib-unrelated class
-        $oldCustomClassName  = 'Custom_' . $name;
-        $customClassName     = 'FACTFinderCustom_' . $name;
-        $factfinderClassName = 'FACTFinder_' . $name;
-        $defaultAdapterName  = '';
-        if(preg_match('/adapter$/i', $name))
-        {
-            $defaultAdapterName = 'FACTFinder_' . preg_replace('~^[^_]*~', 'Default', $name);
-        }
+        $customClassName     = 'FACTFinder\Custom\\' . $name;
+        $factfinderClassName = 'FACTFinder\\' . $name;
         $defaultClassName    = $name;
 
-        if (self::canLoadClass($customClassName)) {
-            $className = $customClassName;
-        } else if (self::canLoadClass($oldCustomClassName)) {
-            $className = $oldCustomClassName;
-        } else if (self::canLoadClass($factfinderClassName)) {
+        //if (class_exists($customClassName))
+        //    $className = $customClassName;
+        //else
+        if (class_exists($factfinderClassName))
             $className = $factfinderClassName;
-        } else if ($defaultAdapterName && self::canLoadClass($defaultAdapterName)) {
-            $className = $defaultAdapterName;
-        } else if (class_exists($defaultClassName)) {
+        else if (class_exists($defaultClassName))
             $className = $defaultClassName;
-        } else {
-            self::getLogger()->error("Could not load class '$defaultClassName'.");
-            throw new Exception("class '$defaultClassName' not found");
-        }
+        else
+            throw new \Exception("class '$factfinderClassName' not found");
         return $className;
+    }
+
+    /**
+     * This a convenient wrapper around instanceof or is_a() when dealing with
+     * library classes.
+     * Instead of a class name it expects an identifier like getClassName() or
+     * getInstance() does, and checks that the object passed is actually of the
+     * class that is currently in use for this identifier.
+     *
+     * @param object $object The object whose class to check.
+     * @param string $class An identifier for the class to require the object to
+     *        stem from.
+     *
+     * @return bool True, if $object belongs to $class.
+     */
+    public static function isInstanceOf($object, $class)
+    {
+        $className = self::getClassName($class);
+        return $object instanceof $className;
     }
 }
