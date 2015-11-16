@@ -280,8 +280,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     public function doExport($storeId = null)
     {
-        // reset lines
+        // reset internal state
         $this->_lines = array();
+		$this->_categoryNames = null;
+		$this->_productsToCategoryPath = null;
 
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
