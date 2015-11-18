@@ -17,6 +17,9 @@
             <p class="factfinder-advisorCampaign-question"><?php echo $question->getText() ?></p>
             <ul>
                 <?php foreach ($question->getAnswers() as $answer): ?>
+                    <?php //foreach ($answer->getFollowUpQuestions() as $question): ?>
+                        <?php //$question->getAnswers(); ?>
+                    <?php //endforeach; ?>
                     <li>
                         <a class="factfinder-advisorCampaign-answer" href="<?php echo $answer->getUrl() ?>">
                             <?php echo $answer->getText() ?>
