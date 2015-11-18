@@ -280,8 +280,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     public function doExport($storeId = null)
     {
-        // reset lines
-        $this->_lines = array();
+        $this->_resetInternalState();
 
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
@@ -337,11 +336,17 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     continue;
                 }
 
+                $categoryPath = $this->_getCategoryPath($productData['entity_id'], $storeId);
+
+                if ($categoryPath == '') {
+                    continue;
+                }
+
                 $productIndex = array(
                     $productData['entity_id'],
                     $productData[$idFieldName],
                     $productData['sku'],
-                    $this->_getCategoryPath($productData['entity_id'], $storeId),
+                    $categoryPath,
                     $this->_formatAttributes('filterable', $productAttr, $storeId),
                     $this->_formatAttributes('searchable', $productAttr, $storeId),
                     $this->_formatAttributes('numerical', $productAttr, $storeId),
@@ -388,6 +393,16 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $this->_lines;
     }
 
+    /**
+     * Resets the internal state of this export.
+     */
+    protected function _resetInternalState()
+    {
+        $this->_lines = array();
+        $this->_categoryNames = null;
+        $this->_productsToCategoryPath = null;
+        $this->_exportAttributes = null;
+    }
 
     /**
      * Get attributes by type
