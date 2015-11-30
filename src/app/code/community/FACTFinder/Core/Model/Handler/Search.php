@@ -135,8 +135,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         if ($this->_searchResultCount === null) {
             $result = $this->_getFacade()->getSearchResult();
 
-            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
-            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
+            $searchStatus = $this->getSearchStatus();
+            if ($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
@@ -163,8 +163,8 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         if ($this->_searchResult === null) {
             $result = $this->_getFacade()->getSearchResult();
 
-            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
-            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
+            $searchStatus = $this->getSearchStatus();
+            if ($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
@@ -212,6 +212,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         return $this->_getFacade()->getSorting();
     }
 
+
     /**
      * Return ArticleNumberSearchStatus
      *
@@ -219,6 +220,33 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
      */
     public function getArticleNumberStatus()
     {
-        return $this->_getFacade()->getSearchAdapter()->getArticleNumberStatus();
+        $status = \FACTFinder\Data\ArticleNumberSearchStatus::IsNoArticleNumberResultFound();
+        try {
+            $status = $this->_getFacade()->getSearchAdapter()->getArticleNumberStatus();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        return $status;
     }
+
+
+    /**
+     * Get search status object
+     *
+     * @return \FACTFinder\Data\SearchStatus
+     */
+    public function getSearchStatus()
+    {
+        $searchStatus = \FACTFinder\Data\SearchStatus::NoResult();
+        try {
+            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        return $searchStatus;
+    }
+
+
 }
