@@ -60,6 +60,10 @@ class FACTFinder_Campaigns_Model_Handler_Search extends FACTFinder_Core_Model_Ha
             $this->_campaigns = $this->_getFacade()->getSearchCampaigns();
         }
 
+        if ($this->_campaigns === null) {
+            $this->_campaigns = array();
+        }
+
         return $this->_campaigns;
     }
 
