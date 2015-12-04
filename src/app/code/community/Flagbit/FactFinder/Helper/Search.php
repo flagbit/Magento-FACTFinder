@@ -28,6 +28,8 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     const XML_CONFIG_PATH_PRODUCT_IDENTIFIER = 'factfinder/config/identifier';
 
+    const DEFAULT_ENTITY_ID_FIELD_NAME = 'entity_id';
+
     /**
      * XML Config Path to Product Identifier Setting
      *
@@ -320,7 +322,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
     {
         $idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
         if(!$idFieldName){
-            $idFieldName = $this->getEntity()->getIdFieldName();
+            $idFieldName = self::DEFAULT_ENTITY_ID_FIELD_NAME;
         }
         return $idFieldName;
     }
