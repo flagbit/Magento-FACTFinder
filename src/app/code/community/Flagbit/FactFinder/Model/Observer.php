@@ -255,13 +255,13 @@ class Flagbit_FactFinder_Model_Observer
 
         $request->setPost('groups', $groups);
     }
-    
-    
+
+
     /**
      * Replaces the link to the management cockpit functionality in the Magento Backend with the external link that
      * opens in a new browser tab. Pretty dirty solution, but Magento does not offer any possibility to edit link urls
      * in its backend menu model, nor does it allow to add absolute links for external sites.
-     * 
+     *
      * @param Varien_Event_Observer $observer
      */
     public function rewriteBackendMenuHtmlForCockpitRedirect($observer)
@@ -270,10 +270,10 @@ class Flagbit_FactFinder_Model_Observer
         if ($block->getNameInLayout() != 'menu') {
             return;
         }
-        
+
         $transport = $observer->getTransport();
         $html = $transport->getHtml();
-        
+
         $matches = array();
         $label = preg_quote(Mage::helper('factfinder')->__('FACT-Finder Business User Cockpit'));
         $pattern = '/(\<a[^\>]*href=\"([^\"]*)\"[^\>]*)\>\w*\<span\>\w*' . $label . '\w*\<\/span\>/msU';
@@ -284,10 +284,10 @@ class Flagbit_FactFinder_Model_Observer
             $transport->setHtml(str_replace($matches[1], $replace, $html));
         }
     }
-    
+
     /**
     * Adds layout handles based on FACT-Finder configuration.
-    * 
+    *
     * @param Varien_Event_Observer $observer
     */
     public function addActivationLayoutHandles($observer)
@@ -322,7 +322,7 @@ class Flagbit_FactFinder_Model_Observer
             $update->addHandle('factfinder_clicktracking_enabled');
         }
     }
-    
+
     public function initializeAfterSearchNavigation()
     {
         $asnBlock = Mage::registry(self::_asnBlockRegistryKey);
@@ -351,7 +351,11 @@ class Flagbit_FactFinder_Model_Observer
      */
     protected function _redirectToProductIfSingleResult()
     {
-        if (!Mage::helper('factfinder/search')->getIsEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage() || Mage::registry('redirectAlreadyChecked')) {
+        if (!Mage::helper('factfinder/search')->getIsEnabled()
+            || !Mage::helper('factfinder/search')->getIsOnSearchPage()
+            || Mage::registry('redirectAlreadyChecked')
+            || Mage::helper('factfinder/search')->getIsPaged()
+        ) {
             return;
         }
 

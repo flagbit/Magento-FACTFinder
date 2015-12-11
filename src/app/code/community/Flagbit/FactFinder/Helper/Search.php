@@ -438,4 +438,17 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
         }
         return false;
     }
+
+
+    /**
+     * Check if the current page is not the first one
+     *
+     * @return bool
+     */
+    public function getIsPaged()
+    {
+        return $this->getCurrentPage() > 1;
+    }
+
+
 }
