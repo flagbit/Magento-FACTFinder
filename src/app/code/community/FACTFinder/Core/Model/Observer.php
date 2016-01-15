@@ -192,6 +192,11 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
+        $block = Mage::app()->getLayout()->getBlock('search_result_list');
+        if (!($block instanceof Mage_Catalog_Block_Product_List)) {
+            return;
+        }
+
         if (Mage::registry(self::REDIRECT_ALREADY_CHECKED_FLAG)
             || Mage::app()->getRequest()->getParam('p', 0) > 1
         ) {
@@ -200,27 +205,43 @@ class FACTFinder_Core_Model_Observer
 
         Mage::register(self::REDIRECT_ALREADY_CHECKED_FLAG, true, true);
 
-        $helper = Mage::helper('factfinder');
-        if ($helper->isRedirectForSingleResult()) {
+        if ($this->shouldRedirectToProduct()) {
+            $collection = $block->getLoadedProductCollection();
+            $product = $collection->getFirstItem();
+            Mage::dispatchEvent('factfinder_redirect_on_single_result_before',
+                array('product' => $product)
+            );
 
-            $searchHandler = Mage::getSingleton('factfinder/handler_search');
-
-            $articleNumberStatus = $searchHandler->getArticleNumberStatus();
-            if($articleNumberStatus === \FACTFinder\Data\ArticleNumberSearchStatus::IsArticleNumberResultFound()
-                && $searchHandler->getSearchResultCount() == 1) {
-
-                $block = Mage::app()->getLayout()->getBlock('search_result_list');
-                if (!($block instanceof Mage_Catalog_Block_Product_List)) {
-                    return;
-                }
-
-                $collection = $block->getLoadedProductCollection();
-                Mage::dispatchEvent('factfinder_redirect_on_single_result_before',
-                    array('product' => $collection->getFirstItem())
-                );
-                $helper->redirectToProductPage($collection->getFirstItem());
-            }
+            /** @var FACTFinder_Core_Helper_Search $helper */
+            $helper = Mage::helper('factfinder/search');
+            $helper->redirectToProductPage($product);
         }
+    }
+
+
+    /**
+     * @return bool
+     */
+    protected function shouldRedirectToProduct()
+    {
+        /** @var FACTFinder_Core_Helper_Search $helper */
+        $helper = Mage::helper('factfinder/search');
+        if (!$helper->getIsOnSearchPage() || !$helper->isRedirectForSingleResult()) {
+            return false;
+        }
+
+        /** @var FACTFinder_Core_Model_Handler_Search $searchHandler */
+        $searchHandler = Mage::getSingleton('factfinder/handler_search');
+
+        $articleNumberStatus = $searchHandler->getArticleNumberStatus();
+
+        if ($articleNumberStatus === \FACTFinder\Data\ArticleNumberSearchStatus::IsArticleNumberResultFound()
+            && $searchHandler->getSearchResultCount() == 1
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 

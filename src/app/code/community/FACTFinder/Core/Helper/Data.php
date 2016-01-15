@@ -26,30 +26,6 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
     const SKIP_FF_PARAM_NAME = 'skip_ff';
 
-    /**
-     * Redirect to product page
-     *
-     * @param \Mage_Catalog_Model_Product $product
-     */
-    public function redirectToProductPage(Mage_Catalog_Model_Product $product)
-    {
-        $response = Mage::app()->getResponse();
-        $response->setRedirect($product->getProductUrl());
-        $response->sendResponse();
-        exit;
-    }
-
-
-    /**
-     * Check if redirect to product page for single result
-     *
-     * @return bool
-     */
-    public function isRedirectForSingleResult()
-    {
-        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/redirectOnSingleResult');
-    }
-
 
     /**
      * Check if the module is enabled

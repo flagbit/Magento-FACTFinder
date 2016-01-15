@@ -167,4 +167,29 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Check if redirect to product page for single result
+     *
+     * @return bool
+     */
+    public function isRedirectForSingleResult()
+    {
+        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/redirectOnSingleResult');
+    }
+
+
+    /**
+     * Redirect to product page
+     *
+     * @param \Mage_Catalog_Model_Product $product
+     */
+    public function redirectToProductPage(Mage_Catalog_Model_Product $product)
+    {
+        $response = Mage::app()->getResponse();
+        $response->setRedirect($product->getProductUrl());
+        $response->sendResponse();
+        exit;
+    }
+
+
 }
