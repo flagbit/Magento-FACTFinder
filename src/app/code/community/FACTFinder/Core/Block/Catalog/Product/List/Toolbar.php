@@ -83,11 +83,13 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
                     }
                 }
             }
-
-            return $this->_sortings[$sortingId];
         }
 
-        return parent::getPagerUrl($params);
+        if (isset($this->_sortings[$sortingId])) {
+            return $this->_sortings[$sortingId];
+        } else {
+            return parent::getPagerUrl($params);
+        }
     }
 
 

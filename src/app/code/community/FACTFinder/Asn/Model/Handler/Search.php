@@ -45,7 +45,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      */
     public function getAfterSearchNavigation()
     {
-        if (empty($this->_afterSearchNavigation)) {
+        if (empty($this->_afterSearchNavigation) && $this->isSearchHasResult()) {
             $result = $this->_getFacade()->getAfterSearchNavigation();
 
             if ($result instanceof FACTFinder\Data\AfterSearchNavigation && count($result)) {

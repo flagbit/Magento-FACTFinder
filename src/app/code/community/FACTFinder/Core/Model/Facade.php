@@ -586,7 +586,7 @@ class FACTFinder_Core_Model_Facade
      * @param string $channel
      * @param int    $id
      *
-     * @return \FACTFinder\Data\CampaignIterator
+     * @return \FACTFinder\Data\CampaignIterator|null
      */
     public function getSearchCampaigns($channel = null, $id = null)
     {
@@ -596,6 +596,7 @@ class FACTFinder_Core_Model_Facade
 
     /**
      * Get an object of a specified type
+     * Returns null in case of an error
      *
      * @param string $type
      * @param string $objectGetter

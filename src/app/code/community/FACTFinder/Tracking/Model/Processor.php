@@ -41,6 +41,11 @@ class FACTFinder_Tracking_Model_Processor
 
 
     /**
+     * @var array with loaded config values
+     */
+    protected $_config;
+
+    /**
      * Class constructor
      */
     public function __construct()

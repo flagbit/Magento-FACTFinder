@@ -280,8 +280,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     public function doExport($storeId = null)
     {
-        // reset lines
-        $this->_lines = array();
+        $this->_resetInternalState();
 
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
@@ -337,11 +336,17 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     continue;
                 }
 
+                $categoryPath = $this->_getCategoryPath($productData['entity_id'], $storeId);
+
+                if ($categoryPath == '') {
+                    continue;
+                }
+
                 $productIndex = array(
                     $productData['entity_id'],
                     $productData[$idFieldName],
                     $productData['sku'],
-                    $this->_getCategoryPath($productData['entity_id'], $storeId),
+                    $categoryPath,
                     $this->_formatAttributes('filterable', $productAttr, $storeId),
                     $this->_formatAttributes('searchable', $productAttr, $storeId),
                     $this->_formatAttributes('numerical', $productAttr, $storeId),
@@ -388,6 +393,16 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         return $this->_lines;
     }
 
+    /**
+     * Resets the internal state of this export.
+     */
+    protected function _resetInternalState()
+    {
+        $this->_lines = array();
+        $this->_categoryNames = null;
+        $this->_productsToCategoryPath = null;
+        $this->_exportAttributes = null;
+    }
 
     /**
      * Get attributes by type
@@ -559,56 +574,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     {
 
         if ($this->_categoryNames === null) {
-            $categoryCollection = Mage::getResourceModel('catalog/category_attribute_collection');
-            $categoryCollection->getSelect()->where("attribute_code IN('name', 'is_active')");
-
-            foreach ($categoryCollection as $categoryModel) {
-                ${$categoryModel->getAttributeCode() . 'Model'} = $categoryModel;
-            }
-
-            //todo: refactor here - undefined variables
-            $select = $this->_getReadAdapter()->select()
-                ->from(
-                    array('main' => $nameModel->getBackendTable()),
-                    array('entity_id', 'value')
-                )
-                ->join(
-                    array('e' => $is_activeModel->getBackendTable()),
-                    'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = ' . $storeId
-                    . ') AND e.attribute_id=' . $is_activeModel->getAttributeId(),
-                    null
-                )
-                ->where('main.attribute_id=?', $nameModel->getAttributeId())
-                ->where('e.value=?', '1')
-                ->where('main.store_id = 0 OR main.store_id = ?', $storeId);
-
-            $this->_categoryNames = $this->_getReadAdapter()->fetchPairs($select);
+            $this->_loadCategoryNames($storeId);
         }
 
         if ($this->_productsToCategoryPath === null) {
-            $select = $this->_getReadAdapter()->select()
-                ->from(
-                    array('main' => $this->getTable('catalog/category_product_index')),
-                    array('product_id')
-                )
-                ->join(
-                    array('e' => $this->getTable('catalog/category')),
-                    'main.category_id=e.entity_id',
-                    null
-                )
-                ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
-                ->where(
-                    'main.visibility IN(?)',
-                    array(
-                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH,
-                        Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
-                    )
-                )
-                ->where('main.store_id = ?', $storeId)
-                ->where('e.path LIKE \'1/' . Mage::app()->getStore($storeId)->getRootCategoryId() . '/%\'')
-                ->group('main.product_id');
-
-            $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);
+            $this->_loadCategoryPaths($storeId);
         }
 
         $value = '';
@@ -981,6 +951,106 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $value = addslashes($value);
 
         return $value;
+    }
+
+
+    /**
+     * Load category names to cache variable
+     *
+     * @param int $storeId
+     *
+     * @return $this
+     */
+    protected function _loadCategoryNames($storeId)
+    {
+        $nameAttribute = $this->_getCategoryNameAttribute();
+        $statusAttribute = $this->_getCategoryStatusAttribute();
+
+        $select = $this->_getReadAdapter()->select()
+            ->from(
+                array('main' => $nameAttribute->getBackendTable()),
+                array('entity_id', 'value')
+            )
+            ->join(
+                array('e' => $statusAttribute->getBackendTable()),
+                'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = ' . $storeId
+                . ') AND e.attribute_id=' . $statusAttribute->getAttributeId(),
+                null
+            )
+            ->where('main.attribute_id=?', $nameAttribute->getAttributeId())
+            ->where('e.value=?', '1')
+            ->where('main.store_id = 0 OR main.store_id = ?', $storeId);
+
+        $this->_categoryNames = $this->_getReadAdapter()->fetchPairs($select);
+
+        return $this;
+    }
+
+
+    /**
+     * Get category name attribute model
+     *
+     * @return mixed
+     */
+    protected function _getCategoryNameAttribute()
+    {
+        $categoryAttributeCollection = Mage::getResourceModel('catalog/category_attribute_collection');
+        $categoryAttributeCollection->addFieldToFilter('attribute_code', array('eq' => 'name'))
+            ->getSelect()->limit(1);
+
+        return $categoryAttributeCollection->getFirstItem();
+    }
+
+
+    /**
+     * Get category status attribute model (is_active)
+     *
+     * @return mixed
+     */
+    protected function _getCategoryStatusAttribute()
+    {
+        $categoryAttributeCollection = Mage::getResourceModel('catalog/category_attribute_collection');
+        $categoryAttributeCollection->addFieldToFilter('attribute_code', array('eq' => 'is_active'))
+            ->getSelect()->limit(1);
+
+        return $categoryAttributeCollection->getFirstItem();
+    }
+
+
+    /**
+     * Load products to category paths
+     *
+     * @param int $storeId
+     *
+     * @return $this
+     */
+    protected function _loadCategoryPaths($storeId)
+    {
+        $select = $this->_getReadAdapter()->select()
+            ->from(
+                array('main' => $this->getTable('catalog/category_product_index')),
+                array('product_id')
+            )
+            ->join(
+                array('e' => $this->getTable('catalog/category')),
+                'main.category_id=e.entity_id',
+                null
+            )
+            ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
+            ->where(
+                'main.visibility IN(?)',
+                array(
+                    Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH,
+                    Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
+                )
+            )
+            ->where('main.store_id = ?', $storeId)
+            ->where('e.path LIKE \'1/' . Mage::app()->getStore($storeId)->getRootCategoryId() . '/%\'')
+            ->group('main.product_id');
+
+        $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);
+
+        return $this;
     }
 
 

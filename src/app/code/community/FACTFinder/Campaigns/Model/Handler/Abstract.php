@@ -39,9 +39,9 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
     /**
      * Available campaigns
      *
-     * @var array
+     * @var array|null
      */
-    protected $_campaigns;
+    protected $_campaigns = null;
 
 
     /**
@@ -139,15 +139,13 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
      */
     public function getCampaigns()
     {
-        if (!$this->_featureAvailable) {
-            $this->_campaigns = array();
+        if ($this->_featureAvailable && $this->_campaigns === null) {
+            $this->_campaigns = $this->_getFacade()->getProductCampaigns();
         }
 
+        // it's still null (disabled or en error happened)
         if ($this->_campaigns === null) {
-            $this->_campaigns = $this->_getFacade()->getProductCampaigns();
-            if ($this->_campaigns === null) {
-                $this->_campaigns = array();
-            }
+            $this->_campaigns = array();
         }
 
         return $this->_campaigns;

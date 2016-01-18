@@ -26,6 +26,9 @@ use FACTFinder\Loader as FF;
 
 class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler_Abstract
 {
+
+    const SEARCH_STATUS_REGISTRY_KEY = 'ff_search_status';
+
     protected $_searchResult;
     protected $_searchResultCount;
     protected $_paging;
@@ -133,13 +136,11 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     public function getSearchResultCount()
     {
         if ($this->_searchResultCount === null) {
-            $result = $this->_getFacade()->getSearchResult();
-
-            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
-            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
+            if (!$this->isSearchHasResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
+            $result = $this->_getFacade()->getSearchResult();
             if ($result instanceof \FACTFinder\Data\Result) {
                 $this->_searchResultCount = $result->getFoundRecordsCount();
             }
@@ -161,17 +162,15 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     public function getSearchResult()
     {
         if ($this->_searchResult === null) {
-            $result = $this->_getFacade()->getSearchResult();
-
-            $searchStatus = $this->_getFacade()->getSearchAdapter()->getStatus();
-            if($searchStatus === \FACTFinder\Data\SearchStatus::NoResult()) {
+            if (!$this->isSearchHasResult()) {
                 Mage::helper('factfinder')->performFallbackRedirect();
             }
 
             $this->_searchResult = array();
 
+            $result = $this->_getFacade()->getSearchResult();
             if ($result instanceof \FACTFinder\Data\Result) {
-                foreach ($result AS $record) {
+                foreach ($result as $record) {
                     if (isset($this->_searchResult[$record->getId()])) {
                         continue;
                     }
@@ -198,6 +197,10 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
      */
     public function getPaging()
     {
+        if (!$this->isSearchHasResult()) {
+            return null;
+        }
+
         return $this->_getFacade()->getPaging();
     }
 
@@ -205,12 +208,17 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     /**
      * Get sortings object from FF
      *
-     * @return \FACTFinder\Data\Sorting
+     * @return \FACTFinder\Data\Sorting|null
      */
     public function getSorting()
     {
+        if (!$this->isSearchHasResult()) {
+            return null;
+        }
+
         return $this->_getFacade()->getSorting();
     }
+
 
     /**
      * Return ArticleNumberSearchStatus
@@ -219,6 +227,54 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
      */
     public function getArticleNumberStatus()
     {
-        return $this->_getFacade()->getSearchAdapter()->getArticleNumberStatus();
+        $status = \FACTFinder\Data\ArticleNumberSearchStatus::IsNoArticleNumberResultFound();
+
+        if (!$this->isSearchHasResult()) {
+            return $status;
+        }
+
+        try {
+            $status = $this->_getFacade()->getSearchAdapter()->getArticleNumberStatus();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        return $status;
     }
+
+
+    /**
+     * Get search status object
+     *
+     * @return \FACTFinder\Data\SearchStatus
+     */
+    public function getSearchStatus()
+    {
+        $status = Mage::registry(self::SEARCH_STATUS_REGISTRY_KEY);
+        if ($status === null) {
+            $status = \FACTFinder\Data\SearchStatus::NoResult();
+            try {
+                $status = $this->_getFacade()->getSearchAdapter()->getStatus();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+
+            Mage::register(self::SEARCH_STATUS_REGISTRY_KEY, $status, true);
+        }
+
+        return $status;
+    }
+
+
+    /**
+     * Check if the seach request contains results
+     *
+     * @return bool
+     */
+    public function isSearchHasResult()
+    {
+        return $this->getSearchStatus() !== \FACTFinder\Data\SearchStatus::NoResult();
+    }
+
+
 }
