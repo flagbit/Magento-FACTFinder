@@ -119,7 +119,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
             $stocks = $this->_getStockData($storeId, $page++);
         }
 
-        return $this;
+        return $this->_getFile()->getPath();
     }
 
 
