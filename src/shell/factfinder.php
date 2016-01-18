@@ -20,6 +20,20 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
             }
             $file = Mage::getModel('factfinder/export_product')->saveExport($this->getArg('exportStore'));
             echo 'Successfully generated export to: ' . $file . "\n";
+        } elseif ($this->getArg('exportStorePrice')) {
+            if(!is_numeric($this->getArg('exportStorePrice'))) {
+                echo $this->usageHelp();
+                return;
+            }
+            $file = Mage::getModel('factfinder/export_price')->saveExport($this->getArg('exportStorePrice'));
+            echo 'Successfully generated price export to: ' . $file . "\n";
+        } elseif ($this->getArg('exportStoreStock')) {
+            if(!is_numeric($this->getArg('exportStoreStock'))) {
+                echo $this->usageHelp();
+                return;
+            }
+            $file = Mage::getModel('factfinder/export_stock')->saveExport($this->getArg('exportStoreStock'));
+            echo 'Successfully generated stock export to: ' . $file . "\n";
         } else {
             echo $this->usageHelp();
         }
@@ -36,6 +50,8 @@ Usage:  php factfinder.php -- [options]
 
   --exportAll                   Export products for every store
   --exportStore <storeId>       Show Indexer(s) Index Mode
+  --exportStorePrice <storeId>  Export Price CSV For Store
+  --exportStoreStock <storeId>  Export Stock CSV For Store
   exportall                     Export products for every store
   help                          This help
 

@@ -29,6 +29,10 @@ class FACTFinder_Core_Model_File
      */
     protected $_file;
 
+    /**
+     * @var string
+     */
+    protected $_path;
 
     /**
      * Class constructor
@@ -66,6 +70,8 @@ class FACTFinder_Core_Model_File
      */
     public function open($dir, $filename)
     {
+        $this->_path = $dir . DS . $filename;
+
         $this->_file->mkdir($dir);
         $this->_file->open(array('path' => $dir));
 
@@ -85,6 +91,15 @@ class FACTFinder_Core_Model_File
         return $this->_file->streamWrite($str);
     }
 
+    /**
+     * Returns path of current file
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->_path;
+    }
 
     /**
      * Close stream
@@ -104,6 +119,4 @@ class FACTFinder_Core_Model_File
     {
         $this->close();
     }
-
-
 }
