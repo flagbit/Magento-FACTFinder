@@ -443,20 +443,28 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $counter = 0;
 
         foreach ($attributes as $attribute) {
-            $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
-            if (!$value || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))) {
+            $attributeValue = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+            if (!$attributeValue
+                || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))
+            ) {
                 continue;
             }
 
-            $attributeValue = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+            $attributeValues = $this->_getAttributeValue($attribute->getId(), $attributeValue, $storeId);
 
-            $attributeValues = explode('|', $attributeValue);
+            if (!is_array($attributeValues)) {
+                $attributeValues = array($attributeValues);
+            }
+
             $attributeValues = $this->_filterAttributeValues($attributeValues);
-            foreach ($attributeValues as $value) {
+            foreach ($attributeValues as $attributeValue) {
+                $attributeValue = $this->_removeTags($attributeValue, $storeId);
                 if ($type == 'searchable') {
                     $returnArray[] = $attributeValue;
                 } else {
-                    $returnArray[] = $this->_removeTags($attribute->getAttributeCode(), $storeId) . '=' . $attributeValue;
+                    $attributeCode = $this->_removeTags($attribute->getAttributeCode(), $storeId);
+                    $attributeValue = str_replace(array('|', '=', '#'), '', array($attributeCode, $attributeValue));
+                    $returnArray[] = implode('=', $attributeValue);
                 }
             }
 
@@ -671,9 +679,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $attribute->setStoreId($storeId);
             $value = $attribute->getSource()->getOptionText($value);
 
-            if (is_array($value)) {
-                $value = implode($this->_separator, $value);
-            } elseif (empty($value)) {
+            if (empty($value)) {
                 $inputType = $attribute->getFrontend()->getInputType();
                 if ($inputType == 'select' || $inputType == 'multiselect') {
                     return null;
@@ -687,8 +693,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 $value = Mage::app()->getStore($storeId)->roundPrice($value);
             }
         }
-
-        $value = $this->_removeTags($value, $storeId);
 
         return $value;
     }
@@ -723,7 +727,9 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         foreach ($this->_exportAttributes as $pos => $attribute) {
             if ($attribute != null) {
                 $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
-                $dataArray[$pos] = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+                $value = $this->_getAttributeValue($attribute->getId(), $value, $storeId);
+                $value = $this->_removeTags($value, $storeId);
+                $dataArray[$pos] = $value;
             } else if (!array_key_exists($pos, $dataArray)) {
                 // it's unlikely that an attribute exists in header but is not delivered by "getSearchableAttributes",
                 // but actually it might be a result of a broken database or something like that..
@@ -947,7 +953,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $value = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $value);
         }
 
-        $value = str_replace(array('|', '#', '='), '', $value);
         $value = addslashes($value);
 
         return $value;
