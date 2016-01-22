@@ -4,9 +4,9 @@
  *
  * @category    Mage
  * @package     Flagbit_FactFinder
- * @copyright   Copyright (c) 2010 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @copyright   Copyright (c) 2013 Flagbit GmbH & Co. KG (http://www.flagbit.de/)
+ * @author      Nicolai Essig <nicolai.essig@flagbit.de>
  * @author      Martin Buettner <martin.buettner@omikron.net>
- * @version     $Id: Search.php 17.09.12 11:50 $
  *
  **/
 class Flagbit_FactFinder_Model_Handler_Search
@@ -42,129 +42,79 @@ class Flagbit_FactFinder_Model_Handler_Search
             $params['log'] = 'internal';
         }
 
-        switch($_request->getModuleName()) {
-
-        case "xmlconnect":
-            $_query = $helper->getQueryText();
-            $params['idsOnly'] = FF::getSingleton('configuration')->getIdsOnly() ? 'true' : 'false';
-            $params['query'] = $_query;
-
-            $count = isset($requestParams['count']) ? $requestParams['count'] : 0;
-            if ($count > 0) {
-                $params['productsPerPage'] = $count;
-                $params['page'] = ($requestParams['offset'] / $count) + 1;
-            }
-
-            // add Sorting Param
-            foreach($requestParams as $key => $value){
-                if(substr($key, 0, 6) == 'order_') {
-                    $key = substr($key, 6);
-                    if(!in_array($key, array('position', 'relevance'))) {
-                        $params['sort'.$key] = $value;
-                    }
-                }
-            }
-
-            // add Filter Params
-            foreach($requestParams as $key => $value){
-                $value = base64_decode($value);
-                if(strpos($value, '|')) {
-                    $param = explode('|', $value);
-                    if($key == 'Category' || $key == 'category') {
-                        $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
-                        foreach($categories AS $k => $v) { $categories[$k] = urldecode($v); }
-                        $filterKey = '';
-                        foreach($categories as $category){
-                            $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                            $params['filtercategoryROOT'.$filterKey] = $category;
-                            $filterKey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
-                        }
-                    } else {
-                        $params['filter'.$param[0]] = $param[1];
-                    }
-                }
-            }
-
-            break;
-
-        case "catalog":
-            if (!isset($requestParams['Category']) && !isset($requestParams['category'])) {
-                $requestParams['Category'] = $this->_getCurrentFactFinderCategoryPath();
-            }
-
-
-            $params['navigation'] = 'true';
-
-        case "catalogsearch":
-        default:
-            $_query = '*';
-            if ($_request->getModuleName() == 'catalogsearch') {
+        switch($_request->getModuleName())
+        {
+            case "xmlconnect":
                 $_query = $helper->getQueryText();
-            }
+                $params['idsOnly'] = FF::getSingleton('configuration')->getIdsOnly() ? 'true' : 'false';
+                $params['query'] = $_query;
 
-            // add Default Params
-            $params['idsOnly'] = FF::getSingleton('configuration')->getIdsOnly() ? 'true' : 'false';
-            $params['productsPerPage'] = $helper->getPageLimit();
-            $params['query'] = $_query;
-            $params['page'] = $helper->getCurrentPage();
-
-            // add Sorting Param, but only if it was set explicitly via url
-            foreach($requestParams as $key => $value) {
-                if($key == 'order'
-                    && $helper->getCurrentOrder()
-                    && $helper->getCurrentDirection()
-                    && $helper->getCurrentOrder() != 'position'
-                    && $helper->getCurrentOrder() != 'relevance')
-                {
-                    $params['sort'.$helper->getCurrentOrder()] = $helper->getCurrentDirection();
+                $count = isset($requestParams['count']) ? $requestParams['count'] : 0;
+                if ($count > 0) {
+                    $params['productsPerPage'] = $count;
+                    $params['page'] = ($requestParams['offset'] / $count) + 1;
                 }
-            }
 
-            // add Filter Params
-            foreach($requestParams as $key => $value) {
-                if(strpos($value, '|')) {
-                    $param = explode('|', $value);
-                    switch($param[1]) {
-
-                    case 'slider':
-                        $subParam = explode(':', $param[2]);
-                        $params[$subParam[0]] = $subParam[1];
-                        $subParam = explode(':', $param[3]);
-                        $params[$subParam[0]] = $subParam[1];
-                        break;
-
-                    default:
-                        if($key == 'Category' || $key == 'category') {
-                            $categories = array_merge(array_slice(explode('/', $param[0]), 1), array($param[1]));
-                            foreach($categories AS $k => $v) { $categories[$k] = $v; }
-                            $filterKey = '';
-                            foreach($categories as $category) {
-                                $category = str_replace('%2F', '/', str_replace('%2B', '+', $category));
-                                $params['filtercategoryROOT'.$filterKey] = $category;
-                                $filterKey .= '/'.str_replace('+', '%2B', str_replace('/', '%2F', $category));
-                            }
-
-                        } else {
-                            $params['filter'.$param[0]] = $param[1];
+                // add Sorting Param
+                foreach($requestParams as $key => $value){
+                    if(substr($key, 0, 6) == 'order_') {
+                        $key = substr($key, 6);
+                        if(!in_array($key, array('position', 'relevance'))) {
+                            $params['sort'.$key] = $value;
                         }
-                        break;
                     }
                 }
-            }
-            break;
 
+                break;
+            case "catalog":
+                $params = array_merge($params, $this->_getCurrentFactFinderCategoryPath());
+
+                if(Mage::getStoreConfig('factfinder/search/ffversion') >= 69) {
+                    $params['navigation'] = 'true';
+                } else {
+                    $params['catalog'] = 'true';
+                }
+
+            case "catalogsearch":
+            default:
+                // add Default Params
+                $params['idsOnly'] = FF::getSingleton('configuration')->getIdsOnly() ? 'true' : 'false';
+                $params['productsPerPage'] = $helper->getPageLimit();
+
+                if ($_request->getModuleName() == 'catalogsearch') {
+                    $params['query'] = $helper->getQueryText();
+                }
+                $params['page'] = $helper->getCurrentPage();
+
+                if($seoPath = Mage::app()->getRequest()->getParam('seoPath')) {
+                    $params['seoPath'] = $seoPath;
+                }
+
+                // add Sorting Param, but only if it was set explicitly via url
+                foreach($requestParams as $key => $value) {
+                    if($key == 'order'
+                        && $helper->getCurrentOrder()
+                        && $helper->getCurrentDirection()
+                        && $helper->getCurrentOrder() != 'position'
+                        && $helper->getCurrentOrder() != 'relevance')
+                    {
+                        $params['sort'.$helper->getCurrentOrder()] = $helper->getCurrentDirection();
+                    }
+                }
+                break;
         }
 
         return $params;
     }
 
-    protected function _getCurrentFactFinderCategoryPath($all = false)
+    protected function _getCurrentFactFinderCategoryPath()
     {
-        $returnValue = array();
-        if($this->_currentFactFinderCategoryPath == null){
+        if($this->_currentFactFinderCategoryPath == null)
+        {
             $this->_currentFactFinderCategoryPath = array();
-            if (Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
-                $this->_currentFactFinderCategoryPath = array();
+
+            if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && Mage::registry('current_category')){
+
                 /* @var $category Mage_Catalog_Model_Category */
                 $category = Mage::registry('current_category');
 
@@ -174,30 +124,22 @@ class Flagbit_FactFinder_Model_Handler_Search
                 $categories = $category->getParentCategories();
                 $mainCategoriesString = '';
                 foreach ($pathIds as $categoryId) {
-                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName()) {
-                        if(empty($mainCategoriesString)){
-                            $this->_currentFactFinderCategoryPath[] = 'categoryROOT|'.$categories[$categoryId]->getName();
-                        }else{
-                            $this->_currentFactFinderCategoryPath[] = 'categoryROOT'.$mainCategoriesString.'|'.$categories[$categoryId]->getName();
+                    if (isset($categories[$categoryId]) && $categories[$categoryId]->getName())
+                    {
+                        $categoryName = html_entity_decode($categories[$categoryId]->getName());
+
+                        if(empty($mainCategoriesString)) {
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'] = $categoryName;
+                        } else {
+                            $this->_currentFactFinderCategoryPath['filtercategoryROOT'.$mainCategoriesString] = $categoryName;
                         }
-                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categories[$categoryId]->getName());
+                        $mainCategoriesString .= '/'. str_replace('/', '%2F', $categoryName);
                     }
                 }
             }
         }
 
-        if($all === false){
-            if (isset($this->_currentFactFinderCategoryPath[count($this->_currentFactFinderCategoryPath)-1])) {
-                $returnValue = $this->_currentFactFinderCategoryPath[count($this->_currentFactFinderCategoryPath)-1];
-            }
-            else {
-                $returnValue = false;
-            }
-        } else {
-            $returnValue = $this->_currentFactFinderCategoryPath;
-        }
-
-        return $returnValue;
+        return $this->_currentFactFinderCategoryPath;
     }
 
     public function getAfterSearchNavigation()
@@ -211,6 +153,7 @@ class Flagbit_FactFinder_Model_Handler_Search
                 && count($result)) {
 
                 foreach ($result as $row) {
+
                     $this->_afterSearchNavigation[] = array(
                         'attribute_code' => $row->getName(),
                         'name' => $row->getName(),
@@ -218,7 +161,9 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'items' => $this->_getAttributeOptions($row->getArrayCopy(), $row->getUnit()),
                         'count' => $row->count(),
                         'type'    => $this->_getFilterType($row->getArrayCopy()),
-                        'store_label' => $row->getName()
+                        'store_label' => $row->getName(),
+                        'link_count' => $row->getDetailedLinkCount(),
+                        'is_multiselect' => $row->isMultiSelectStyle()
                     );
                 }
             }
@@ -256,13 +201,42 @@ class Flagbit_FactFinder_Model_Handler_Search
     {
         $attributeOption = array();
         if (!empty($unit)) $unit = ' ' . $unit;
-        $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath(true);
+        $_currentCategoryPath = $this->_getCurrentFactfinderCategoryPath();
         $helper = Mage::helper('factfinder/search');
-        foreach($options as $option){
+        foreach($options as $option)
+        {
+            $queryParams = Mage::helper('factfinder')->getQueryParams($option->getUrl());
 
-            switch ($option->getType()){
+            $_filterValue = $this->_getAttributeOptionValue($option);
 
+            // Remove current categories from query params
+            if(Mage::getStoreConfigFlag('factfinder/activation/navigation') && !$helper->getIsOnSearchPage())
+            {
+                foreach($_currentCategoryPath as $filterParam => $filterValue)
+                {
+                    if(isset($queryParams[$filterParam])) {
+                        unset($queryParams[$filterParam]);
+                    }
+                }
+
+                if(isset($queryParams['q']) && Mage::app()->getRequest()->getModuleName() == 'catalog') {
+                    unset($queryParams['q']);
+                }
+            }
+
+            $seoPath = '';
+            if(isset($queryParams['seoPath'])) {
+                $seoPath = $queryParams['seoPath'];
+            }
+            if((!empty($_filterValue) && !$helper->getIsOnSearchPage()) || $helper->getIsOnSearchPage()) {
+                unset($queryParams['seoPath']);
+            }
+
+            switch ($option->getType())
+            {
                 case "slider":
+                    $queryParams['filter'.$option->getField()] = $_filterValue;
+
                     $attributeOption[] = array(
                         'type'    => $option->getType(),
                         'label' => 'slider',
@@ -272,7 +246,9 @@ class Flagbit_FactFinder_Model_Handler_Search
                         'selected_min' => $option->getSelectedMin(),
                         'selected_max' => $option->getSelectedMax(),
                         'count' => true,
-                        'selected' => false //$option->isSelected()
+                        'selected' => false, //$option->isSelected()
+                        'requestVar' => 'filter'.$option->getField(),
+                        'queryParams' => $queryParams
                     );
                     break;
 
@@ -280,27 +256,31 @@ class Flagbit_FactFinder_Model_Handler_Search
                     if (!Mage::helper('core/string')->strlen($option->getValue())) {
                         continue;
                     }
+
                     // remove Categories from top Level Navigation
-                    $_value = $this->_getAttributeOptionValue($option);
                     if(Mage::getStoreConfigFlag('factfinder/activation/navigation')
                         && !$helper->getIsOnSearchPage()
-                        && strpos($option->getField(), 'categoryROOT') !== FALSE
-                        && (
-                            empty($_value) === true
-                            || in_array($_value, $_currentCategoryPath)
-                            && $_currentCategoryPath[count($_currentCategoryPath)-1] != $_value
-                        )){
+                        && strpos($option->getField(),'categoryROOT') !== FALSE
+                        && in_array($option->getValue(), $_currentCategoryPath)
+                    ){
                         continue;
                     }
 
-                    $attributeOption[] = array(
+                    $attributeOptionData = array(
                         'type'    => 'attribute',
                         'label' => $option->getValue() . $unit,
-                        'value' => $_value,
+                        'value' => $_filterValue,
                         'count' => $option->getMatchCount(),
                         'selected' => $option->isSelected(),
-                        'clusterLevel' => $option->getClusterLevel()
+                        'clusterLevel' => $option->getClusterLevel(),
+                        'requestVar' => 'filter'.$option->getField(),
+                        'previewImage' => $option->getPreviewImage()
                     );
+
+                    $attributeOptionData['seoPath'] = $seoPath;
+                    $attributeOptionData['queryParams'] = $queryParams;
+
+                    $attributeOption[] = $attributeOptionData;
                     break;
             }
         }
@@ -315,55 +295,25 @@ class Flagbit_FactFinder_Model_Handler_Search
      */
     protected function _getAttributeOptionValue($option)
     {
-        $searchParams = $this->_getFacade()->getSearchParams();
-        if($searchParams instanceof FACTFinder_Parameters)
-            $selectOptions = $searchParams->getFilters();
-
         $value = null;
         switch ($option->getType()) {
 
-        // handle Slider Attributes
-        case "slider":
-            $value = $option->getField().'|'.$option->getType().'|'.str_replace(array('&', '='), array('|', ':'), $option->getValue()).'[VALUE]';
-            break;
+            // handle Slider Attributes
+            case "slider":
+                $value = '[VALUE]';
+                break;
+            // handle default Attributes
+            default:
 
-        // handle default Attributes
-        default:
-            $value = $option->getField();
-            if($option->isSelected()) {
+                $queryParams = Mage::helper('factfinder')->getQueryParams($option->getUrl());
 
-                // handle multi-selectable Attributes
-                if(isset($selectOptions[$option->getField()]) ){
-                    if(strpos($option->getField(), 'categoryROOT') === false) {
-                        $values = explode('~~~', $selectOptions[$option->getField()]);
-                        unset($values[array_search($option->getValue(), $values)]);
-                        $value .= '|'.implode('~~~', $values);
-
-                    } else {
-                        $values = explode('/',str_replace('|'.$selectOptions[$option->getField()], '', $value));
-                        $valueCount = count($values);
-                        $value = '';
-                        if($valueCount > 1) {
-                            for($i=0 ; $valueCount > $i ; $i++) {
-                                $value .= ($i != 0 ? ($i == $valueCount-1 ? '|' : '/') : '').$values[$i];
-                            }
-                        }
-                    }
+                if(isset($queryParams['filter'.$option->getField()])) {
+                    $value = $queryParams['filter'.$option->getField()];
+                } else {
+                    $value = '';
                 }
-            } else {
-                $value .= '|'.$option->getValue();
-                // handle multi-selectable Attributes
-                if(isset($selectOptions[$option->getField()])) {
-                    $value .= '~~~'.$selectOptions[$option->getField()];
-                }
-            }
 
-            // Workaround if only one option is selected
-            if($value == $option->getField().'|') {
-                $value = '';
-            }
-
-            break;
+                break;
         }
         return $value;
     }

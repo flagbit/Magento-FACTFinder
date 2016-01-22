@@ -22,7 +22,7 @@
     <modules>
         <Flagbit_FactFinder>
             <active>true</active>
-            <version>3.5.5</version>
+            <version>3.6.0</version>
         </Flagbit_FactFinder>
     </modules>
     <global>
@@ -39,11 +39,13 @@
                 <rewrite>
                     <term>Flagbit_FactFinder_Block_TagCloud</term>
                     <layer>Flagbit_FactFinder_Block_Layer</layer>
+                    <layer_state>Flagbit_FactFinder_Block_Layer_State</layer_state>
                 </rewrite>
             </catalogsearch>
             <catalog>
                 <rewrite>
                     <layer_view>Flagbit_FactFinder_Block_Layer</layer_view>
+                    <layer_state>Flagbit_FactFinder_Block_Layer_State</layer_state>
                     <product_list_upsell>Flagbit_FactFinder_Block_Product_List_Upsell</product_list_upsell>
                     <product_list_crosssell>Flagbit_FactFinder_Block_Product_List_Crosssell</product_list_crosssell>
                 </rewrite>
@@ -57,6 +59,7 @@
                 <rewrite>
                     <catalogsearch_layer>Flagbit_FactFinder_Block_Layer</catalogsearch_layer>
                     <catalog_layer_view>Flagbit_FactFinder_Block_Layer</catalog_layer_view>
+                    <catalog_layer_state>Flagbit_FactFinder_Block_Layer_State</catalog_layer_state>
                 </rewrite>
             </enterprise_search>
             <xmlconnect>
@@ -102,6 +105,15 @@
             </factfinder_setup>
         </resources>
         <events>
+            <controller_front_init_routers>
+                <observers>
+                    <flagbit_seo>
+                        <type>singleton</type>
+                        <class>Flagbit_FactFinder_Controller_Router</class>
+                        <method>addSeoRouter</method>
+                    </flagbit_seo>
+                </observers>
+            </controller_front_init_routers>
             <controller_action_predispatch_adminhtml_system_config_save>
                 <observers>
                     <setEnabledFlagInFactFinderConfig>
@@ -115,7 +127,7 @@
             <types>
                 <factfinder_search translate="label,description" module="factfinder">
                     <label>FACT-Finder</label>
-                    <description>Search Request Cache (won't work with PHP 5.2 or less)</description>
+                    <description>Search Request Cache</description>
                     <tags>FACTFINDER_SEARCH</tags>
                 </factfinder_search>
             </types>
@@ -137,6 +149,13 @@
                     <frontName>factfinder</frontName>
                 </args>
             </factfinder>
+            <catalogsearch>
+                <args>
+                    <modules>
+                        <Flagbit_FactFinder before="Mage_CatalogSearch">Flagbit_FactFinder_CatalogSearch</Flagbit_FactFinder>
+                    </modules>
+                </args>
+            </catalogsearch>
         </routers>
         <events>
             <checkout_cart_product_add_after>
@@ -244,27 +263,25 @@
             </adminhtml>
         </routers>
     </admin>
-    <crontab>
-        <jobs>
-            <factfinder_scic_queue_processing>
-                <schedule><cron_expr>* * * * *</cron_expr></schedule>
-                <run><model>factfinder/observer::processScicOrderQueue</model></run>
-            </factfinder_scic_queue_processing>
-        </jobs>
-    </crontab>
-    <default> 
+    <default>
         <catalog>
             <search>
                 <engine>factfinder/search_engine</engine>
             </search>
         </catalog>
         <factfinder>
-            <version>3.5.5</version>
+            <version>3.5.2</version>
             <revision>$Rev: 25896 $</revision>
             <debug>false</debug>
     
             <!-- search settings: WARNING: dont change settings here, please use the Magento backoffice ... 
                 if you still have to change something here, dont forget to clear the configuration cache -->
+
+            <log>
+                <enabled>0</enabled>
+                <time/>
+                <frequency>D</frequency>
+            </log>
             <search>
                 <address>example.com</address>
                 <port>80</port>
@@ -310,4 +327,21 @@
             </encoding>
         </factfinder>
     </default>    
+    <crontab>
+        <jobs>
+            <factfinder_scic_queue_processing>
+                <schedule>
+                    <cron_expr>* * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>factfinder/observer::processScicOrderQueue</model>
+                </run>
+            </factfinder_scic_queue_processing>
+            <factfinder_generate>
+                <run>
+                    <model>factfinder/export_product::saveAll</model>
+                </run>
+            </factfinder_generate>
+        </jobs>
+    </crontab>
 </config>

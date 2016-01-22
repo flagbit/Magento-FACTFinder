@@ -62,13 +62,16 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * 
      * @param array $data
      */
+
+    protected $_lines = array();
+
     protected function _addCsvRow($data)
     {           
         foreach ($data as &$item) {
             $item = str_replace(array("\r", "\n", "\""), array(' ', ' ', "''"), trim( strip_tags($item), ';') );
         }
 
-        echo '"'.implode('";"', $data).'"'."\n";
+        $this->_lines[] =  '"'.implode('";"', $data).'"'."\n";
     }    
     
     /**
@@ -102,9 +105,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param int $storeId
      * @return array
      */
-    protected function _getExportAttributes($storeId = null) 
+    protected function _getExportAttributes($storeId = 0)
     {
-        if($this->_exportAttributeCodes === null){
+        if(!isset($this->_exportAttributeCodes[$storeId])){
             $headerDefault = array('id', 'parent_id', 'sku', 'category', 'filterable_attributes', 'searchable_attributes');
             $headerDynamic = array();
             
@@ -120,36 +123,76 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     continue;
                 }            
                 $headerDynamic[] = $attribute->getAttributeCode();
-            }    
+            }
             
             // compare dynamic with setup attributes
             $headerSetup = Mage::helper('factfinder/backend')->makeArrayFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId));
-            $setupUpdate = false;
             foreach($headerDynamic as $code){
                 if(in_array($code, $headerSetup)){
                     continue;
                 }
                 $headerSetup[$code]['attribute'] = $code;
-                $setupUpdate = true;
             }
             
             // remove default attributes from setup
             foreach($headerDefault as $code){
                 if(array_key_exists($code, $headerSetup)){
                     unset($headerSetup[$code]);
-                    $setupUpdate = true;
-                }
+                 }
             }
-            
-            if($setupUpdate === true){
-                Mage::getModel('core/config')->saveConfig('factfinder/export/attributes', Mage::helper('factfinder/backend')->makeStorableArrayFieldValue($headerSetup), 'stores', $storeId);
-            }         
-            
-            $this->_exportAttributeCodes = array_merge($headerDefault, array_keys($headerSetup));
+
+            $this->_exportAttributeCodes[$storeId] = array_merge($headerDefault, array_keys($headerSetup));
         }
-        return $this->_exportAttributeCodes;
+        return $this->_exportAttributeCodes[$storeId];
     }
-    
+
+    /**
+     * Pre-Generate all product exports for all stores
+     *
+     * @return array
+     */
+    public function saveAll()
+    {
+        $paths = array();
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $id => $store)
+        {
+            try {
+                $paths[] = $this->saveExport($id);
+            } catch(Exception $e) {
+                Mage::logException($e);
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Generate product export for specific store
+     *
+     * @param int $storeId
+     * @return string
+     */
+    public function saveExport($storeId = 0)
+    {
+        $dir = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder';
+
+        try {
+            $fileName = 'store_' . $storeId . '_product.csv';
+
+            $file = new Varien_Io_File();
+            $file->mkdir($dir);
+            $file->open(array('path' => $dir));
+
+            $lines = $this->doExport($storeId);
+
+            $file->write($fileName , implode('', $lines), 'w');
+        } catch(Exception $e) {
+            Mage::throwException($e);
+        }
+
+        return $dir . DS .$fileName;
+    }
     
     /**
      * export Product Data with Attributes
@@ -159,6 +202,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      */
     public function doExport($storeId = null)
     {
+        $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+        if (!is_null($storeId)) {
+            $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+        }
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $exportImageAndDeeplink = Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
         if ($exportImageAndDeeplink) {            
@@ -236,7 +283,11 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     $product->setStoreId($storeId);
                     $product->load($productData['entity_id']);
 
-                    $productIndex[] = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
+                    $image = (string) $this->_imageHelper->init($product, $imageType)->resize($imageSize);
+                    if (!is_null($storeId)) {
+                        $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
+                    }
+                    $productIndex[] = $image;
                     $productIndex[] = $product->getProductUrl();
                     $product->clearInstance();
                 }
@@ -278,8 +329,9 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             unset($products);
             unset($productAttributes);
             unset($productRelations);
-            flush();
         }
+
+        return $this->_lines;
     }
     
     protected function _formatSearchableAttributes($attributes, $values, $storeId=null)

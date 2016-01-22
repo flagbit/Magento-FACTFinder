@@ -80,14 +80,96 @@ class Flagbit_FactFinder_ExportController extends Mage_Core_Controller_Front_Act
 		
 		try {
 			$exportModel = Mage::getModel('factfinder/export_product');
-			$exportModel->doExport(
+            $lines = $exportModel->doExport(
 				$this->_getStoreId()
 			);
+
+            echo implode('', $lines);
+
 			$this->releaseSemaphore(); // finally-workaround
 		} catch(Exception $e) {
 			$this->releaseSemaphore(); // finally-workaround
 			throw $e;
 		}
+    }
+
+    /**
+     * Output pre-generated export files for a specific resource and store (for ff import process)
+     */
+    public function getAction()
+    {
+        $resource = Mage::app()->getRequest()->getParam('resource', 'product');
+
+        $fileName = 'store_' . $this->_getStoreId() . '_' . $resource . '.csv';
+        $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
+
+        if(!file_exists($filePath . $fileName)) {
+            echo
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+                '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">',
+                '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>',
+                '<body>',
+                $this->__('Currently there is no pre-generated file for your resource request.'), "<br>\n",
+                $this->__('Please start an export request in the backend or wait until the file is generated through the cron.'),
+                '</body></html>';
+                flush();
+            return;
+        }
+
+        echo file_get_contents($filePath . $fileName);
+    }
+
+    /**
+     * Download pre-generated export files for a specific resource and store
+     */
+    public function downloadAction()
+    {
+        $resource = Mage::app()->getRequest()->getParam('resource', 'product');
+
+        $fileName = 'store_' . $this->_getStoreId() . '_' . $resource . '.csv';
+        $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
+
+        if(!file_exists($filePath . $fileName)) {
+            echo
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+            '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">',
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head>',
+            '<body>',
+            $this->__('Currently there is no pre-generated file for your resource request.'), "<br>\n",
+            $this->__('Please start an export request in the backend or wait until the file is generated through the cron.'),
+            '</body></html>';
+            flush();
+            return;
+        }
+
+        $this->_prepareDownloadResponse(
+            $fileName,
+            array(
+                'type' => 'filename',
+                'value' => $filePath . $fileName
+            )
+        );
+    }
+
+    public function scheduleExportAction()
+    {
+        $schedule = Mage::getModel('cron/schedule');
+        $schedule->setJobCode('factfinder_generate')
+            ->setCreatedAt(time())
+            ->setScheduledAt(time() + 60)
+            ->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->save();
+
+        $this->_redirectReferer();
+    }
+
+    public function storesAction()
+    {
+        $exportModel = Mage::getModel('factfinder/export_product');
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $id => $store ){
+            $exportModel->saveExport($id);
+        }
     }
     
     /**

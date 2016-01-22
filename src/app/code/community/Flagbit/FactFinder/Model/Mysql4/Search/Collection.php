@@ -52,8 +52,8 @@ class Flagbit_FactFinder_Model_Mysql4_Search_Collection
 		// get product IDs from Fact-Finder
     	$productIds = $this->_getSearchHandler()->getSearchResult();
 
-        $searchResult = Mage::getSingleton('factfinder/facade')->getSearchResult();
-        if($searchResult && $refKey = $searchResult->getRefKey()) {
+        if(Mage::getSingleton('factfinder/facade')->getSearchResult() && $refKey = Mage::getSingleton('factfinder/facade')->getSearchResult()->getRefKey())
+        {
             Mage::getSingleton('core/session')->setFactFinderRefKey($refKey);
         }
 			
