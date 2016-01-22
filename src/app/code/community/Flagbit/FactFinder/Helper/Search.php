@@ -342,6 +342,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
 			$url = Mage::getSingleton('factfinder/facade')->getSuggestUrl();
             if (Mage::app()->getStore()->isCurrentlySecure()) {
                 $url = preg_replace('/^http:/', 'https:', $url);
+                $url = preg_replace('#:\d+/#', '/', $url, 1); //remove explicit port nr.
             }
 		}
         return $url;
