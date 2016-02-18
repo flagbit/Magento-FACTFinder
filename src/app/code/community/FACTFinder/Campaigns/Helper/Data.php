@@ -22,6 +22,9 @@
  */
 class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const CATALOG_NAVIGATION_REPLACED_CONFIG_PATH = 'factfinder/modules/catalog_navigation';
+    const CAMPAIGNS_IDENTIFIER_CONFIG_PATH = 'factfinder/config/campaigns_identifier';
+    const ENABLE_CAMPAIGNS_ON_PROD_PAGE_CONFIG_PATH = 'factfinder/config/enable_campaigns_on_prod_page';
 
 
     /**
@@ -31,7 +34,7 @@ class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function canShowCampaignsOnProduct()
     {
-        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/enable_campaigns_on_prod_page');
+        return (bool) Mage::app()->getStore()->getConfig(self::ENABLE_CAMPAIGNS_ON_PROD_PAGE_CONFIG_PATH);
     }
 
 
@@ -42,7 +45,18 @@ class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getIdFieldName()
     {
-        return Mage::getStoreConfig('factfinder/config/campaigns_identifier');
+        return Mage::getStoreConfig(self::CAMPAIGNS_IDENTIFIER_CONFIG_PATH);
+    }
+
+
+    /**
+     * Check is catalog navigation replacement is enabled
+     *
+     * @return bool
+     */
+    public function isCatalogNavigationReplaced()
+    {
+        return (bool) Mage::app()->getStore()->getConfig(self::CATALOG_NAVIGATION_REPLACED_CONFIG_PATH);
     }
 
 

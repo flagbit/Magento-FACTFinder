@@ -38,22 +38,13 @@ abstract class FACTFinder_Campaigns_Block_Abstract extends Mage_Core_Block_Templ
      */
     protected function _canBeShown()
     {
-        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
-    }
-
-
-    /**
-     * Preparing global layout
-     *
-     * @return FACTFinder_Campaigns_Block_Abstract
-     */
-    protected function _prepareLayout()
-    {
-        if (Mage::helper('factfinder')->isEnabled('campaigns')) {
-            $this->_handler = Mage::getSingleton($this->_handlerModel);
+        if (Mage::registry('current_category')
+            && !Mage::helper('factfinder_campaigns')->isCatalogNavigationReplaced()
+        ) {
+            return false;
         }
 
-        return parent::_prepareLayout();
+        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
     }
 
 
