@@ -418,7 +418,7 @@ class Flagbit_FactFinder_Helper_Search extends Mage_Core_Helper_Abstract {
      */
     public function getQueryText()
     {
-        return Mage::helper('catalogsearch')->getQueryText();
+        return Mage::helper('catalogsearch')->getEscapedQueryText();
     }
 
     public function areFiltersSelected()
