@@ -124,6 +124,18 @@
             </customer_login>
         </events>
     </frontend>
+    <default>
+        <factfinder>
+            <export>
+                <clicktracking>1</clicktracking>
+                <track_carts>1</track_carts>
+                <track_checkout>1</track_checkout>
+            </export>   
+            <config>
+                <tracking_identifier>entity_id</tracking_identifier>
+            </config>
+        </factfinder>
+    </default>
     <crontab>
         <jobs>
             <factfinder_tracking_queue_processing>
@@ -136,11 +148,4 @@
             </factfinder_tracking_queue_processing>
         </jobs>
     </crontab>
-    <default>
-        <factfinder>
-            <config>
-                <tracking_identifier>entity_id</tracking_identifier>
-            </config>
-        </factfinder>
-    </default>
 </config>

@@ -77,4 +77,11 @@
             </modules>
         </translate>
     </frontend>
+    <default>
+        <factfinder>
+            <config>
+                <proxy>1</proxy>
+            </config>
+        </factfinder>
+    </default>
 </config>

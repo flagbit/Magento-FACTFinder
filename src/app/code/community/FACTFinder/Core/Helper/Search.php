@@ -40,7 +40,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
      */
     public function getQueryText()
     {
-        return Mage::helper('catalogsearch')->getEscapedQueryText();
+        return strip_tags(Mage::helper('catalogsearch')->getQueryText());
     }
 
 

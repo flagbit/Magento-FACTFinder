@@ -124,13 +124,11 @@
                 <identifier>entity_id</identifier>
             </config>
             <search>
-                <address>example.com</address>
+                <address>cname.fact-finder.com</address>
                 <port>80</port>
                 <protocol>http</protocol>
+                <context>FACT-Finder</context>
                 <!-- possible values: http, https -->
-
-                <!--<ffversion>68</ffversion>-->
-
                 <auth_type>advanced</auth_type>
                 <!-- possible values: http (for FF <= 6.4); simple | advanced (for FF >= 6.5)-->
                 <auth_advancedPrefix>FACT-FINDER</auth_advancedPrefix>
@@ -146,8 +144,13 @@
             <fallback>
                 <use_fallback>0</use_fallback>
             </fallback>
+            <export>
+                <remove_tags>1</remove_tags>
+            </export>
             <modules>
                 <asn>1</asn>
+                <suggest>1</suggest>
+                <tracking>1</tracking>
             </modules>
         </factfinder>
         <advanced>
