@@ -110,7 +110,8 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
         // using super global because magento doesn't return real uri
         // but its target like catalog/category/view
-        $currentRequest = explode('?', $_SERVER['REQUEST_URI']);
+        $urlWithoutBasePath = str_replace(parse_url($url, PHP_URL_PATH), '', $_SERVER['REQUEST_URI']);
+        $currentRequest = explode('?', $urlWithoutBasePath);
 
         if (count($currentRequest) > 1) {
             $params = array_pop($currentRequest);
