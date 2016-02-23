@@ -110,8 +110,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
         // using super global because magento doesn't return real uri
         // but its target like catalog/category/view
-        $urlWithoutBasePath = str_replace(parse_url($url, PHP_URL_PATH), '', $_SERVER['REQUEST_URI']);
-        $currentRequest = explode('?', $urlWithoutBasePath);
+        $currentRequest = explode('?', $this->removeBasePathByBaseUrl($_SERVER['REQUEST_URI'], $url));
 
         if (count($currentRequest) > 1) {
             $params = array_pop($currentRequest);
@@ -126,6 +125,22 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
     }
 
+    /**
+     * Uses a given base URL to remove subfolders from the current request path in case Magento is hosted in a
+     * subdirectory.
+     *
+     * @param string $fullPath The full request path.
+     * @param string $baseUrl The base URL of the Magento installation.
+     * @return string
+     */
+    private function removeBasePathByBaseUrl($fullPath, $baseUrl){
+        $basePath = parse_url($baseUrl, PHP_URL_PATH);
+        $pos = strpos($fullPath, $basePath);
+        if ($pos !== false) {
+            return substr_replace($fullPath, '', $pos, strlen($basePath));
+        }
+        return $fullPath;
+    }
 
     /**
      * Get sorting id
