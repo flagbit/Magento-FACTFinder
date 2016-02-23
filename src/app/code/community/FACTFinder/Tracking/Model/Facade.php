@@ -37,18 +37,4 @@ class FACTFinder_Tracking_Model_Facade extends FACTFinder_Core_Model_Facade
         return $this->_getAdapter("tracking", $channel);
     }
 
-
-    /**
-     * Get instance of SCIC adapter
-     *
-     * @param string $channel
-     *
-     * @return \FACTFinder\Adapter\AbstractAdapter
-     */
-    public function getScicAdapter($channel = null)
-    {
-        return $this->_getAdapter("scicTracking", $channel);
-    }
-
-
 }

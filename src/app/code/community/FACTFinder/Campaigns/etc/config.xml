@@ -61,7 +61,7 @@
         <factfinder>
             <config>
                 <campaigns_identifier>sku</campaigns_identifier>
-                <enable_campaigns_on_prod_page>1</enable_campaigns_on_prod_page>
+                <enable_campaigns_on_prod_page>0</enable_campaigns_on_prod_page>
             </config>
         </factfinder>
     </default>

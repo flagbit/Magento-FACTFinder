@@ -13,7 +13,7 @@
 /**
  * Install script
  *
- * Install script for SCIC queue. Orders are sent to FACT-Finder asynchronously by cronjobs.
+ * Install script for Tracking queue. Orders are sent to FACT-Finder asynchronously by cronjobs.
  */
 
 $installer = $this;
