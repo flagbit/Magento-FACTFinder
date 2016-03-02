@@ -6,7 +6,7 @@
  *
  * @package FACTFinder\Common
  */
-class FACTFinderCustom_Configuration implements FACTFinder\Core\ConfigurationInterface
+class FACTFinderCustom_Configuration extends FACTFinder\Core\AbstractConfiguration
 {
     const HTTP_AUTH     = 'http';
     const SIMPLE_AUTH   = 'simple';

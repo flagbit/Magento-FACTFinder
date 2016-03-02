@@ -104,6 +104,12 @@ abstract class AbstractAdapter
                     "json_decode() raised an error: ".json_last_error()
                 );
 
+            if(is_array($jsonData) && isset($jsonData['error'])) {
+                $this->log->error("FACT-Finder returned error: " . strip_tags($jsonData['error']));
+                if(isset($jsonData['stacktrace'])) {
+                    $this->log->error("Stacktrace:\n" . $jsonData['stacktrace']);
+                }
+            }
             return $jsonData;
         };
     }
@@ -113,7 +119,14 @@ abstract class AbstractAdapter
         $this->responseContentProcessor = function($string) {
             libxml_use_internal_errors(true);
             // The constructor throws an exception on error
-            return new \SimpleXMLElement($string);
+            $response = new \SimpleXMLElement($string);
+            if(isset($response->error)) {
+                $this->log->error("FACT-Finder returned error: " . strip_tags($response->error));
+                if(isset($response->stacktrace)) {
+                    $this->log->error("Stacktrace:\n" . $response->stacktrace);
+                }
+            }
+            return $response;
         };
     }
 
@@ -153,7 +166,7 @@ abstract class AbstractAdapter
             // properties
 
             if($content !== null) {
-                $this->responseContent =  $this->responseContentProcessor->__invoke($content);
+                $this->responseContent = $this->responseContentProcessor->__invoke($content);
                 if ($this->encodingConverter != null)
                 {
                     $this->responseContent = $this->encodingConverter->encodeContentForPage($this->responseContent);

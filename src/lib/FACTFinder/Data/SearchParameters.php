@@ -58,7 +58,7 @@ class SearchParameters
                                  : 1;
         $this->followSearch    = isset($parameters['followSearch'])
                                  ? $parameters['followSearch']
-                                 : 10000;
+                                 : 0;
 
         $this->navigationEnabled = (isset($parameters['catalog']) && $parameters['catalog'] == 'true')
                                    || (isset($parameters['navigation']) && $parameters['navigation'] == 'true');

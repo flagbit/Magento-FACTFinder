@@ -112,6 +112,20 @@ interface ConfigurationInterface
     public function getIgnoredServerParameters();
 
     /**
+     * Get parameters which are allowed in client URLs.
+     * 
+     * @return array with string as key and boolean true as value for each item
+     */
+    public function getWhitelistClientParameters();
+
+    /**
+     * Get parameters which are allowed in server URLs.
+     * 
+     * @return array with string as key and boolean true as value for each item
+     */
+    public function getWhitelistServerParameters();
+
+    /**
      * Get parameters which are required in client URLs.
      *
      * @return array with parameter name as key and default value as value.
@@ -195,3 +209,4 @@ interface ConfigurationInterface
      */
     public function getClientUrlEncoding();
 }
+

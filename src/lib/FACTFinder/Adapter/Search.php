@@ -334,9 +334,6 @@ class Search extends AbstractAdapter
         case 'SLIDER':
             $filterStyle = $filterStyleEnum::Slider();
             break;
-        case 'COLOR':
-            $filterStyle = $filterStyleEnum::Color();
-            break;
         case 'TREE':
             $filterStyle = $filterStyleEnum::Tree();
             break;
@@ -401,7 +398,8 @@ class Search extends AbstractAdapter
             $groupData['detailedLinks'],
             $groupData['unit'],
             $filterSelectionType,
-            $filterType
+            $filterType,
+            $groupData['showPreviewImages']
         );
     }
 
@@ -453,10 +451,17 @@ class Search extends AbstractAdapter
             $matches
         );
 
-        $query = $matches[1] . $matches[3];
-        $fieldName = $matches[2];
+        if(!empty($matches)) {
+         $query = $matches[1] . $matches[3];
+            $fieldName = $matches[2];
+        } else {
+            // The URL of searchParams was not as expected, propably the current filter was not
+            // added as an empty parameter. Therefore no need to remove it and we can use full searchParams URL.
+            $query = $filterData['searchParams'];
+            $fieldName = $filterData['associatedFieldName'];
+        }
 
-        if ($fieldName != $filterData['associatedFieldName'])
+        if (urldecode($fieldName) != $filterData['associatedFieldName'])
             $this->log->warn('Filter parameter of slider does not correspond '
                            . 'to transmitted "associatedFieldName". Parameter: '
                            . "$fieldName. Field name: "
@@ -956,27 +961,38 @@ class Search extends AbstractAdapter
     
     /**
      * Value for parameter "followSearch" for followups on initial search like filters, pagination, ...
-     * Either from request parameters or from search results "simiFirstRecord".
-     * Returns 0 if no valid value for followSearch exists.
+     * Either from search results searchParams, request parameters or from search results "simiFirstRecord".
+     * Returns 0 if no parameter "followSearch" could be acquired.
+     * 
      * @return int
      */
     public function getFollowSearchValue()
     {
-        
+        $jsonData = $this->getResponseContent();
+        //use searchParams of result if available
+        if($jsonData && $jsonData['searchResult'] && isset($jsonData['searchResult']['searchParams'])) {
+            $parameters = FF::getInstance(
+                'Util\Parameters',
+                $jsonData['searchResult']['searchParams']
+            );
+        //fallback to current request
+        } else {
+            $parameters = $this->parameters;
+        }
         $searchParameters = FF::getInstance(
             'Data\SearchParameters',
-            $this->parameters
+            $parameters
         );
         $sorting = $searchParameters->getSortings();
-        // check if followSearch was set in request data
-        if($searchParameters->getFollowSearch() !== 10000) {
+        // check if followSearch was set in request data or sent by FF in result searchParams
+        if($searchParameters->getFollowSearch() !== 0) {
             $followSearch =  $searchParameters->getFollowSearch();
         // use simiFirstRecord only if result was not sorted
         } elseif (empty($sorting)) {
             $jsonData = $this->getResponseContent();
             if($jsonData && $jsonData['searchResult'] && isset($jsonData['searchResult']['simiFirstRecord']))
                 $followSearch = $jsonData['searchResult']['simiFirstRecord'];
-        // mark as no followSearch
+        //mark as not valid
         } else {
             $followSearch = 0;
         }
