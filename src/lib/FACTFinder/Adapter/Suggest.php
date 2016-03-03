@@ -90,7 +90,6 @@ class Suggest extends AbstractAdapter
                     $suggestQueryData['hitCount'],
                     $suggestQueryData['type'],
                     $suggestQueryData['image'],
-                    isset($suggestQueryData['refKey']) ? $suggestQueryData['refKey'] : '',
                     $suggestAttributes
                 );
             }

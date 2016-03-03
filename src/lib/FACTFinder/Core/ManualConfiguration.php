@@ -6,7 +6,7 @@ namespace FACTFinder\Core;
  * values to be set manually through the magic __set(). Really only useful for
  * testing.
  */
-class ManualConfiguration implements ConfigurationInterface
+class ManualConfiguration extends AbstractConfiguration
 {
     const HTTP_AUTHENTICATION     = 'http';
     const SIMPLE_AUTHENTICATION   = 'simple';
@@ -124,6 +124,16 @@ class ManualConfiguration implements ConfigurationInterface
         return $this->configuration['ignoredServerParameters'];
     }
 
+    public function getWhitelistClientParameters()
+    {
+        return $this->configuration['whitelistClientParameters'];
+    }
+
+    public function getWhitelistServerParameters()
+    {
+        return $this->configuration['whitelistServerParameters'];
+    }
+
     public function getRequiredClientParameters()
     {
         return $this->configuration['requiredClientParameters'];
@@ -184,3 +194,4 @@ class ManualConfiguration implements ConfigurationInterface
         return $this->configuration['clientUrlEncoding'];
     }
 }
+

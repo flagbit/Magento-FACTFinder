@@ -5,7 +5,7 @@ namespace FACTFinder\Core;
  * Implements ConfigurationInterface by reading from an XML file. Also allows
  * for some values to be changed later on.
  */
-class XmlConfiguration implements ConfigurationInterface
+class XmlConfiguration extends AbstractConfiguration
 {
     const HTTP_AUTHENTICATION     = 'http';
     const SIMPLE_AUTHENTICATION   = 'simple';
@@ -22,6 +22,8 @@ class XmlConfiguration implements ConfigurationInterface
     private $serverMappings;
     private $ignoredClientParameters;
     private $ignoredServerParameters;
+    private $whitelistClientParameters;
+    private $whitelistServerParameters;
     private $requiredClientParameters;
     private $requiredServerParameters;
 
@@ -209,6 +211,41 @@ class XmlConfiguration implements ConfigurationInterface
             }
         }
         return $ignoredParameters;
+    }
+
+    public function getWhitelistClientParameters()
+    {
+        if ($this->whitelistClientParameters == null) {
+            $this->whitelistClientParameters = $this->retrieveWhitelistParameters(
+                $this->configuration->parameters->client
+            );
+        }
+        return $this->whitelistClientParameters;
+    }
+
+    public function getWhitelistServerParameters()
+    {
+        if ($this->whitelistServerParameters == null) {
+            $this->whitelistServerParameters = $this->retrieveWhitelistParameters(
+                $this->configuration->parameters->server
+            );
+            if (empty($this->whitelistServerParameters)) {
+                $this->whitelistServerParameters = parent::getWhitelistServerParameters();
+            }
+        }
+        return $this->whitelistServerParameters;
+    }
+
+    private function retrieveWhitelistParameters(\SimpleXMLElement $section)
+    {
+        $whitelist = array();
+        if (isset($section->whitelist)) {
+            //load whitelist
+            foreach($section->whitelist as $rule) {
+                $whitelist[(string)$rule->attributes()->name] = true;
+            }
+        }
+        return $whitelist;
     }
 
     public function getRequiredClientParameters()
