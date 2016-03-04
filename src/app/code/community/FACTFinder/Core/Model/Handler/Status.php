@@ -117,7 +117,7 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
         }
 
         foreach ($this->_secondaryChannels as $channel) {
-            $secondaryStatus = $this->_getFacade()->getFactFinderStatus($channel);
+            $secondaryStatus = $this->getStatusCode($channel);
             if ($secondaryStatus !== FFE_OK) {
                 $this->_errorMessages[] = $this->_retrieveErrorMessage($secondaryStatus, $channel);
                 $statusOkay = false;
@@ -216,12 +216,14 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     /**
      * Get status code from ff adapter
      *
+     * @param string|null $channel
+     *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode($channel = null)
     {
         /* start @todo solve this problem without reflection */
-        $resultObj = $this->_getFacade()->getSearchAdapter();
+        $resultObj = $this->_getFacade()->getSearchAdapter($channel);
 
         $reflectionClass = new ReflectionClass('FACTFinder\Adapter\Search');
         $property = $reflectionClass->getProperty('request');
