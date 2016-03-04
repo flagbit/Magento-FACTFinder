@@ -223,6 +223,8 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     public function getStatusCode($channel = null)
     {
         /* start @todo solve this problem without reflection */
+        $params = array('channel' => $channel);
+        $this->_getFacade()->configureSearchAdapter($params, $channel);
         $resultObj = $this->_getFacade()->getSearchAdapter($channel);
 
         $reflectionClass = new ReflectionClass('FACTFinder\Adapter\Search');
