@@ -217,10 +217,22 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 
     _loadData: function(data) {
         this.request.updateChoices(this.loadDataCallback(data));
+        this.updateSelectionOnMouseMove();
+    },
+
+    updateSelectionOnMouseMove: function () {
+        $('suggest-options').observe('mouseleave', function (e) {
+            $$('#suggest-options .selected').each(function (option) {
+                option.removeClassName('selected');
+                this.field.focus();
+            }.bind(this));
+        }.bind(this));
     },
 
     _selectAutocompleteItem : function(element){
-        if(element.attributes.rel) {
+        if (!element.hasClassName('selected')) {
+            this.form.submit();
+        } else if(element.attributes.rel) {
             document.location.href = element.attributes.rel.nodeValue;
         } else if(element.title) {
             this.form.insert('<input type="hidden" name="queryFromSuggest" value="true" />');
@@ -250,7 +262,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
         });
 
 
-        var content = '<ul>';
+        var content = '<ul id="suggest-options">';
         content += '<li style="display: none" class="selected selectable-item"></li>';
         var currentChannel = '';
         var currentType = '';
