@@ -104,6 +104,8 @@ class FACTFinder_Core_Model_Facade
             $arg = Mage::helper('factfinder/debug');
         }
 
+        FF::disableCustomClasses();
+
         $dic = FF::getInstance('Util\Pimple');
 
         $dic['loggerClass'] = function ($c) use ($arg) {
