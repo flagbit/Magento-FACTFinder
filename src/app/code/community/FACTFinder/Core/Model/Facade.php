@@ -39,13 +39,6 @@ class FACTFinder_Core_Model_Facade
     protected $_adapters = array();
 
     /**
-     * Key corresponds to channel
-     *
-     * @var array of FACTFinder_Http_StatusHelper
-     */
-    protected $_statusHelpers = array();
-
-    /**
      * @var FACTFinderCustom_Configuration
      */
     protected $_config = null;
@@ -85,11 +78,6 @@ class FACTFinder_Core_Model_Facade
      * @var null
      */
     protected $_stackTraceLogged = null;
-
-    /**
-     * @var boolean is set to true, if caching is enabled and can be used
-     */
-    private $_useCaching = null;
 
 
     /**
@@ -619,62 +607,6 @@ class FACTFinder_Core_Model_Facade
         }
 
         return $data;
-    }
-
-
-    /**
-     * Get current ff version
-     *
-     * @return array|null
-     */
-    public function getActualFactFinderVersion()
-    {
-        try {
-            $channel = $this->getConfiguration()->getChannel();
-            return $this->_statusHelpers[$channel]->getVersionNumber();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
-    }
-
-
-    /**
-     * Get actual version of FF as string
-     *
-     * @return null|string
-     */
-    public function getActualFactFinderVersionString()
-    {
-        try {
-            $channel = $this->getConfiguration()->getChannel();
-            return $this->_statusHelpers[$channel]->getVersionString();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
-    }
-
-
-    /**
-     * Get current status of FF
-     *
-     * @param string $channel
-     *
-     * @return null|string
-     */
-    public function getFactFinderStatus($channel = null)
-    {
-        try {
-            if (!$channel) {
-                $channel = $this->getConfiguration()->getChannel();
-            }
-
-            return $this->_statusHelpers[$channel]->getStatusCode();
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return null;
-        }
     }
 
 

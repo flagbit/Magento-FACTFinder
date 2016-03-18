@@ -192,6 +192,10 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
+        if (Mage::app()->getRequest()->getControllerName() !== 'result') {
+            return;
+        }
+
         $block = Mage::app()->getLayout()->getBlock('search_result_list');
         if (!($block instanceof Mage_Catalog_Block_Product_List)) {
             return;
