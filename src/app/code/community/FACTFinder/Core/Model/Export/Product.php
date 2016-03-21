@@ -861,25 +861,51 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
             $imageSize = Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
 
-            $product = Mage::getModel('catalog/product');
-            $product->setStoreId($storeId);
-            $product->load($productData['entity_id']);
-
-            $image = $this->_imageHelper->init($product, $imageType);
+            //$product = Mage::getModel('catalog/product');
+            //$product->setStoreId($storeId);
+            //$product->load($productData['entity_id']);
+            //
+            //$image = $this->_imageHelper->init($product, $imageType);
             if (isset($imageSize) && $imageSize > 0) {
-                $image->resize($imageSize);
+
+                list($width, $height) = explode('x', strtolower($imageSize));
+                $imageBaseFile = Mage::getResourceSingleton('catalog/product')->getAttributeRawValue($productData['entity_id'], $imageType, $storeId);
+                $imageModel = Mage::getModel('catalog/product_image')
+                    ->setWidth($width)
+                    ->setHeight($height)
+                    ->setDestinationSubdir($imageType)
+                    ->setBaseFile($imageBaseFile);
+
+                if(!$imageModel->isCached()) {
+                    $imageModel->resize();
+                }
+                $productImage = $imageModel->getUrl();
+
+                $productUrl = Mage::getModel('catalog/product')
+                    ->getCollection()
+                    ->addAttributeToFilter('entity_id', $productData['entity_id'])
+                    ->setStoreId($storeId)
+                    ->addUrlRewrite()
+                    ->getSelect()->limit(1);
+
+                $productUrl->getFirstItem()->getProductUrl();
+
+                //$image->resize($imageSize);
+
+                if ($storeId !== null) {
+                    $productImage = str_replace($baseAdminUrl, $currentBaseUrl, $productImage);
+                }
+
+                $productIndex[] = $productImage;
+                $productIndex[] = $productUrl;
             }
 
-            $image = (string) $image;
+            //$image = (string) $image;
 
-            if ($storeId !== null) {
-                $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
-            }
+            //$productIndex[] = $image;
+            //$productIndex[] = $product->getProductUrl();
 
-            $productIndex[] = $image;
-            $productIndex[] = $product->getProductUrl();
-
-            $product->clearInstance();
+            //$product->clearInstance();
         }
 
         return $productIndex;
