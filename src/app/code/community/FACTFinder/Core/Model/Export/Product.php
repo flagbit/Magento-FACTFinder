@@ -305,6 +305,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 break;
             }
 
+            $productAttributes = array();
             $productRelations = array();
             foreach ($products as $productData) {
                 $lastProductId = $productData['entity_id'];
