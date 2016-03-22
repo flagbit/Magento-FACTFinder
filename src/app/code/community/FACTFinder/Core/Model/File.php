@@ -92,6 +92,19 @@ class FACTFinder_Core_Model_File
     }
 
     /**
+     * Write array as comma separated values to file
+     *
+     * @param array $data
+     * @param string $delimiter
+     * @param string $enclosure
+     * @return bool|int
+     */
+    public function writeCsv(array $data, $delimiter = ',', $enclosure = '"')
+    {
+        return $this->_file->streamWriteCsv($data, $delimiter, $enclosure);
+    }
+
+    /**
      * Returns path of current file
      *
      * @return string
