@@ -86,13 +86,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      */
     protected function _addCsvRow($data, $storeId = 0)
     {
-        foreach($data as &$item){
-            $item = str_replace(array("\r", "\n", "\""), ' ', addcslashes(strip_tags($item), '"'));
-        }
-
-        $line =  '"'.implode('";"', $data).'"'."\n";
-
-        return $this->_getFile($storeId)->write($line);
+        return $this->_getFile($storeId)->writeCsv($data, ';');
     }
 
 

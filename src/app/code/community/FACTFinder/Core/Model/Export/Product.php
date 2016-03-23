@@ -99,13 +99,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _writeCsvRow($data, $storeId)
     {
-        foreach ($data as   &$item) {
-            $item = str_replace(array("\r", "\n"), array(' ', ' '), trim($item, ';'));
-        }
-
-        $line = '"' . implode('";"', $data) . '"' . "\n";
-        $this->_getFile($storeId)->write($line);
-
+        $this->_getFile($storeId)->writeCsv($data, ';');
         return $this;
     }
 
