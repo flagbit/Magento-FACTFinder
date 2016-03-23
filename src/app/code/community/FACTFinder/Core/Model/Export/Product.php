@@ -145,7 +145,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         if (!isset($this->_exportAttributeCodes[$storeId])) {
             $headerDynamic = array();
 
-            $additionalColumns = [];
+            $additionalColumns = array();
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
                 $additionalColumns[] = 'image';
                 $additionalColumns[] = 'deeplink';
