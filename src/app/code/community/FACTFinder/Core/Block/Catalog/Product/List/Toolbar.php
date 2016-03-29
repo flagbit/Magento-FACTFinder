@@ -228,7 +228,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
             foreach ($sortings as $sorting) {
                 if ($sorting->isSelected()) {
                     $url = $sorting->getUrl();
-                    preg_match('/[\?|\&]{1}sort([a-z\_]*?)=/', $url, $matches);
+                    preg_match('/[\?|\&]{1}sort([a-z0-9\_]*?)=/', $url, $matches);
                     if (isset($matches[1])) {
                         return $matches[1];
                     }
