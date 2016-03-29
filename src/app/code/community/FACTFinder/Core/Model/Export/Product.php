@@ -385,8 +385,14 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             }
         }
 
+        Mage::dispatchEvent('factfinder_export_after', array(
+            'store_id' => $storeId,
+            'file'     => $this->_getFile($storeId),
+        ));
+
         return $this->_lines;
     }
+
 
     /**
      * Resets the internal state of this export.

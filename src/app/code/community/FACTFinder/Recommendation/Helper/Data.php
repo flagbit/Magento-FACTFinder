@@ -26,4 +26,21 @@
 class FACTFinder_Recommendation_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+    /**
+     * Check if import should be triggered for store
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function shouldTriggerImport($storeId)
+    {
+        if (!Mage::getStoreConfigFlag('factfinder/modules/recommendation', $storeId)) {
+            return false;
+        }
+
+        return Mage::getStoreConfigFlag('factfinder/export/trigger_recommendation_import', $storeId);
+    }
+
+
 }

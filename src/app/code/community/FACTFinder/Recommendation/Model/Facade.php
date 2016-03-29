@@ -56,4 +56,19 @@ class FACTFinder_Recommendation_Model_Facade extends FACTFinder_Core_Model_Facad
     }
 
 
+    /**
+     * Trigger recommendations import on FF side
+     *
+     * @param null|string $channel
+     *
+     * @return SimpleXMLElement
+     */
+    public function triggerRecommendationImport($channel = null)
+    {
+        $this->configureImportAdapter(array('channel' => $channel));
+
+        return $this->getImportAdapter($channel)->triggerRecommendationImport();
+    }
+
+
 }

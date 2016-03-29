@@ -33,6 +33,16 @@
                 <class>FACTFinder_Recommendation_Helper</class>
             </factfinder_recommendation>
         </helpers>
+        <events>
+            <factfinder_export_after>
+                <observers>
+                    <factfinder_recommendation_import>
+                        <class>factfinder_recommendation/observer</class>
+                        <method>triggerImportAfterExport</method>
+                    </factfinder_recommendation_import>
+                </observers>
+            </factfinder_export_after>
+        </events>
     </global>
     <frontend>
         <events>

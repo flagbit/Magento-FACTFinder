@@ -44,4 +44,21 @@ class FACTFinder_Suggest_Model_Observer
     }
 
 
+    /**
+     * @param Varien_Object $observer
+     *
+     * @return void
+     */
+    public function triggerImportAfterExport($observer)
+    {
+        $storeId = $observer->getStoreId();
+        if (Mage::helper('factfinder_suggest')->shouldTriggerImport($storeId)) {
+            foreach (Mage::helper('factfinder')->getStoreChannels($storeId) as $channel) {
+                $facade = Mage::getModel('factfinder_suggest/facade');
+                $facade->triggerSuggestImport($channel);
+            }
+        }
+    }
+
+
 }

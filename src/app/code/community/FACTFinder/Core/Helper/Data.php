@@ -125,4 +125,34 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Check whether import must be triggered
+     *
+     * @param null|int $storeId
+     *
+     * @return bool
+     */
+    public function isImportTriggerEnabled($storeId = null)
+    {
+        return Mage::getStoreConfigFlag('factfinder/export/trigger_data_import', $storeId);
+    }
+
+
+    /**
+     * Get list of channels for store
+     *
+     * @param null|int $storeId
+     *
+     * @return array
+     */
+    public function getStoreChannels($storeId = null)
+    {
+        $primary = Mage::getStoreConfig('factfinder/search/channel', $storeId);
+        $secondary = Mage::getStoreConfig('factfinder/search/secondary_channels', $storeId);
+        $secondary = explode(';', $secondary);
+
+        return array_merge(array($primary), $secondary);
+    }
+
+
 }

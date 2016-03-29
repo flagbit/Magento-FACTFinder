@@ -249,4 +249,22 @@ class FACTFinder_Core_Model_Observer
     }
 
 
+    /**
+     * @param Varien_Object $observer
+     *
+     * @return void
+     */
+    public function triggerImportAfterExport($observer)
+    {
+        $helper = Mage::helper('factfinder');
+        $storeId = $observer->getStoreId();
+        if ($helper->isEnabled() && $helper->isImportTriggerEnabled($storeId)) {
+            foreach ($helper->getStoreChannels($storeId) as $channel) {
+                $facade = Mage::getModel('factfinder/facade');
+                $facade->triggerDataImport($channel);
+            }
+        }
+    }
+
+
 }

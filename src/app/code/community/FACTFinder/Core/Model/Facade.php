@@ -688,4 +688,21 @@ class FACTFinder_Core_Model_Facade
             $this->_stackTraceLogged = true;
         }
     }
+
+
+    /**
+     * Trigger data import on FF side
+     *
+     * @param null|string $channel
+     *
+     * @return SimpleXMLElement
+     */
+    public function triggerDataImport($channel = null)
+    {
+        $this->configureImportAdapter(array('channel' => $channel));
+
+        return $this->getImportAdapter($channel)->triggerDataImport();
+    }
+
+
 }

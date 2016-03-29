@@ -51,6 +51,14 @@
                     </factfinder_manage_modules>
                 </observers>
             </controller_front_init_before>
+            <factfinder_export_after>
+                <observers>
+                    <factfinder_core_import>
+                        <class>factfinder/observer</class>
+                        <method>triggerImportAfterExport</method>
+                    </factfinder_core_import>
+                </observers>
+            </factfinder_export_after>
         </events>
     </global>
     <adminhtml>

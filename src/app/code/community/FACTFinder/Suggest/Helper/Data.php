@@ -63,4 +63,21 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Check if import should be triggered for store
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function shouldTriggerImport($storeId)
+    {
+        if (!Mage::getStoreConfigFlag('factfinder/modules/suggest', $storeId)) {
+            return false;
+        }
+
+        return Mage::getStoreConfigFlag('factfinder/export/trigger_suggest_import', $storeId);
+    }
+
+
 }

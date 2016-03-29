@@ -39,6 +39,16 @@
                 <class>FACTFinder_Suggest_Helper</class>
             </factfinder_suggest>
         </helpers>
+        <events>
+            <factfinder_export_after>
+                <observers>
+                    <factfinder_suggest_import>
+                        <class>factfinder_suggest/observer</class>
+                        <method>triggerImportAfterExport</method>
+                    </factfinder_suggest_import>
+                </observers>
+            </factfinder_export_after>
+        </events>
     </global>
     <frontend>
         <routers>
