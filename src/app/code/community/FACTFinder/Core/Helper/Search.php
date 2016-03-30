@@ -157,8 +157,11 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     public function getIsOnSearchPage()
     {
         $moduleName = Mage::app()->getRequest()->getModuleName();
-        if ($moduleName == 'catalogsearch'
-            || ($moduleName == 'xmlconnect' && strpos(Mage::app()->getRequest()->getActionName(), 'search') !== false)
+        $controllerName = Mage::app()->getRequest()->getControllerName();
+        $actionName = Mage::app()->getRequest()->getActionName();
+
+        if (($moduleName == 'catalogsearch' && $controllerName === 'result')
+            || ($moduleName == 'xmlconnect' && strpos($actionName, 'search') !== false)
         ) {
             return true;
         }

@@ -46,7 +46,7 @@ class FACTFinder_Campaigns_Model_Observer
             $product = Mage::registry('current_product');
             $ids = array($product->getData(Mage::helper('factfinder_campaigns')->getIdFieldName()));
             $handler = Mage::getModel('factfinder_campaigns/handler_product', $ids);
-        } elseif (Mage::app()->getRequest()->getControllerName() === 'result') {
+        } elseif (Mage::helper('factfinder/search')->getIsOnSearchPage()) {
             $handler = Mage::getSingleton('factfinder_campaigns/handler_search');
         } else {
             return;

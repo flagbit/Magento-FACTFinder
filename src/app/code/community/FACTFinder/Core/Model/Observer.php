@@ -192,7 +192,7 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
-        if (Mage::app()->getRequest()->getControllerName() !== 'result') {
+        if (!Mage::helper('factfinder/search')->getIsOnSearchPage()) {
             return;
         }
 
