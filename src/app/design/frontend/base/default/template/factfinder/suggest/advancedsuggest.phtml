@@ -38,7 +38,7 @@
     <?php if (Mage::helper('factfinder')->isEnabled('suggest')): ?>
         searchForm = new FactFinderSuggest(
             'search_mini_form', 'search',
-            '<?php echo $this->__('Search entire shop here...') ?>',
+            '<?php echo $this->__('Search entire store here...') ?>',
             <?php echo $this->getTranslationsAsJson(); ?>,
             '<?php echo Mage::getStoreConfig('factfinder/search/channel'); ?>'
         );
