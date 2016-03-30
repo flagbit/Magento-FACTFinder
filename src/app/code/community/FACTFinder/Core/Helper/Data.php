@@ -97,7 +97,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
         $xml = new DOMDocument();
         $xml->load($file);
         foreach ($xml->getElementsByTagName('active') as $item) {
-            $item->nodeValue = $isActive;
+            $item->nodeValue = $isActive ? 'true' : 'false';
         }
 
         // silencing is not good, but we only need the result of the operation
