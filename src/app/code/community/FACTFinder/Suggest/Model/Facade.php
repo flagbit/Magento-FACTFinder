@@ -75,7 +75,7 @@ class FACTFinder_Suggest_Model_Facade extends FACTFinder_Core_Model_Facade
     {
         $this->configureImportAdapter(array('channel' => $channel));
 
-        return $this->getImportAdapter($channel)->triggerSuggestImport();
+        return $this->getImportAdapter($channel)->triggerSuggestImport(true);
     }
 
 

@@ -701,7 +701,7 @@ class FACTFinder_Core_Model_Facade
     {
         $this->configureImportAdapter(array('channel' => $channel));
 
-        return $this->getImportAdapter($channel)->triggerDataImport();
+        return $this->getImportAdapter($channel)->triggerDataImport(true);
     }
 
 
