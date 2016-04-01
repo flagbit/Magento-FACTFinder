@@ -357,6 +357,9 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($productChildren) {
                     foreach ($productChildren as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
+							
+							$productAttr = $productAttributes[$productChild['entity_id']];
+							
                             $subProductIndex = array(
                                 $productChild['entity_id'],
                                 $productData[$idFieldName],
