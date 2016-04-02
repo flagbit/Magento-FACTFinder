@@ -331,17 +331,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                     continue;
                 }
 
-                $categoryPath = $this->_getCategoryPath($productData['entity_id'], $storeId);
-
-                if ($categoryPath == '') {
-                    continue;
-                }
-
                 $productIndex = array(
                     $productData['entity_id'],
                     $productData[$idFieldName],
                     $productData['sku'],
-                    $categoryPath,
+                    $this->_getCategoryPath($productData['entity_id'], $storeId),
                     $this->_formatAttributes('filterable', $productAttr, $storeId),
                     $this->_formatAttributes('searchable', $productAttr, $storeId),
                     $this->_formatAttributes('numerical', $productAttr, $storeId),
