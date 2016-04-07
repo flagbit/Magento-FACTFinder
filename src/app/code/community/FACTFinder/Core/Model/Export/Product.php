@@ -953,7 +953,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             $value = preg_replace('/</u', ' <', $value);
             $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
 
-            // remove html entities
+            // decode html entities
+            $value = html_entity_decode($value, null, 'UTF-8');
+			
+            // remove rest html entities
             $value = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $value);
         }
 
