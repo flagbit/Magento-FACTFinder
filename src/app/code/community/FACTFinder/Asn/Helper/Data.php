@@ -36,7 +36,7 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         $queryParams = array();
 
         //conserve url encoded spaces, since parse_str replaces them with underscores
-        $url = str_replace('%20', 'XXX', $url);
+        $url = str_replace('%20', 'XXXXXXXXXX', $url);
 
         $parseUrl = parse_url($url);
         if (isset($parseUrl['query'])) {
@@ -47,8 +47,8 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         // we use not encoded values since they will be encoded with Mage::getUrl()
         $result = array();
         foreach ($queryParams as $key => $value) {
-            $key = str_replace('XXX', ' ', $key);
-            $value = str_replace('XXX', ' ', $value);
+            $key = str_replace('XXXXXXXXXX', ' ', $key);
+            $value = str_replace('XXXXXXXXXX', ' ', $value);
             $result[$key] = $value;
         }
 
