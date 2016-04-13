@@ -333,7 +333,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
                 $categoryPath = $this->_getCategoryPath($productData['entity_id'], $storeId);
 
-                if ($categoryPath == '') {
+                if ($categoryPath == '' && !$this->_isExportProductsWithoutCategories($storeId)) {
                     continue;
                 }
 
@@ -963,6 +963,19 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $value = addslashes($value);
 
         return $value;
+    }
+
+
+    /**
+     * Check if products without categories should be exported
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    protected function _isExportProductsWithoutCategories($storeId)
+    {
+        return Mage::getStoreConfig('factfinder/export/products_without_categories', $storeId);
     }
 
 
