@@ -32,6 +32,8 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
     const REQUEST_ID_PREFIX = 'FACTFINDER_';
 
+    const DEFAULT_ENTITY_ID_FIELD_NAME = 'entity_id';
+
 
     /**
      * Retrieve query model object
@@ -98,7 +100,7 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
     {
         $idFieldName = Mage::getStoreConfig(self::XML_CONFIG_PATH_PRODUCT_IDENTIFIER);
         if (!$idFieldName) {
-            $idFieldName = $this->getEntity()->getIdFieldName();
+            $idFieldName = self::DEFAULT_ENTITY_ID_FIELD_NAME;
         }
 
         return $idFieldName;
