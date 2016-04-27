@@ -28,6 +28,8 @@ class FACTFinder_Core_Model_Observer
     const SEARCH_ENGINE = 'factfinder/search_engine';
     const DEFAULT_SEARCH_ENGINE = 'catalogsearch/fulltext_engine';
     const REDIRECT_ALREADY_CHECKED_FLAG = 'factifinder_single_result_redirect_flag';
+    const SCOPE_STORE = 'stores';
+    const SCOPE_WEBSITE = 'websites';
 
 
     /**
@@ -65,17 +67,10 @@ class FACTFinder_Core_Model_Observer
             return;
         }
 
-        $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields']);
-
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                Mage::getSingleton('adminhtml/session')->addError($error);
-            }
-
-            Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::DEFAULT_SEARCH_ENGINE);
-            Mage::app()->getConfig()->saveConfig('factfinder/search/enabled', 0);
-        } else {
-            Mage::app()->getConfig()->saveConfig('catalog/search/engine', self::SEARCH_ENGINE);
+        $storeIds = $this->getStoreIdsFromRequest($request);
+        foreach ($storeIds as $storeId) {
+            $errors = Mage::helper('factfinder/backend')->checkConfigData($groups['search']['fields'], $storeId);
+            $this->_handleEngine($errors, $this->getScope($request), $this->getScopeId($request));
         }
 
         // this also helps with module managing
@@ -264,6 +259,97 @@ class FACTFinder_Core_Model_Observer
                 $facade->triggerDataImport($channel);
             }
         }
+    }
+
+
+    /**
+     * Get scope from request
+     *
+     * @param Varien_Object $request
+     *
+     * @return string
+     */
+    protected function getScope($request)
+    {
+        $website = $request->getParam('website');
+        $store = $request->getParam('store');
+
+        return $store ? self::SCOPE_STORE : ($website ? self::SCOPE_WEBSITE : 'default');
+    }
+
+
+    /**
+     * Get scope id from request
+     *
+     * @param Varien_Object $request
+     *
+     * @return int
+     *
+     * @throws \Mage_Core_Exception
+     */
+    protected function getScopeId($request)
+    {
+        $scope = $this->getScope($request);
+
+        if ($scope === self::SCOPE_WEBSITE) {
+            return Mage::app()->getWebsite($request->getParam('website'))->getId();
+        } elseif ($scope === self::SCOPE_STORE) {
+            return Mage::app()->getStore($request->getParam('store'))->getId();
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Save engine configuration
+     *
+     * @param array  $errors
+     * @param string $scope
+     * @param int    $scopeId
+     *
+     * @return $this
+     */
+    protected function _handleEngine($errors, $scope = 'default', $scopeId = 0)
+    {
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                Mage::getSingleton('adminhtml/session')->addError($error);
+            }
+
+            Mage::app()->getConfig()
+                ->saveConfig('catalog/search/engine', self::DEFAULT_SEARCH_ENGINE, $scope, $scopeId)
+                ->saveConfig('factfinder/search/enabled', 0, $scope, $scopeId);
+        } else {
+            Mage::app()->getConfig()
+                ->saveConfig('catalog/search/engine', self::SEARCH_ENGINE, $scope, $scopeId);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Get store ids for scope
+     *
+     * @param Varien_Object $request
+     *
+     * @return array
+     *
+     * @throws \Mage_Core_Exception
+     */
+    protected function getStoreIdsFromRequest($request)
+    {
+        $scope = $this->getScope($request);
+        $scopeId = $this->getScopeId($request);
+
+        if ($scope == self::SCOPE_STORE) {
+            return array($scopeId);
+        } elseif ($scope == self::SCOPE_WEBSITE) {
+            return Mage::app()->getWebsite($scopeId)->getStoreIds();
+        }
+
+        return array(0);
     }
 
 

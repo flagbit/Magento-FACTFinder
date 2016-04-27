@@ -64,6 +64,13 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     protected $_secondaryChannels;
 
     /**
+     * Store id for the config data
+     *
+     * @var int
+     */
+    protected $_storeId = 0;
+
+    /**
      * Mapping of error codes and messages
      *
      * @var array
@@ -82,12 +89,31 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
 
 
     /**
+     * Receive store id parameter
+     *
+     * @param int $storeId
+     */
+    public function __construct($storeId = 0)
+    {
+        if ($storeId) {
+            $this->_storeId = $storeId;
+        }
+
+        parent::__construct();
+    }
+
+
+    /**
      * prepares all request parameters for the primary search adapter
      *
      * @return array
      */
     protected function _collectParams()
     {
+        if ($this->_storeId) {
+            $this->_getFacade()->setStoreId($this->_storeId);
+        }
+
         $this->_secondaryChannels = $this->_getFacade()->getConfiguration()->getSecondaryChannels();
 
         $params = array();

@@ -179,10 +179,11 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
      * Check configuration data by contacting FACT-Finder servers.
      *
      * @param array $configData
+     * @param int   $storeId
      *
      * @return array
      */
-    public function checkConfigData($configData)
+    public function checkConfigData($configData, $storeId = 0)
     {
         $dataArray = $this->_getCompleteFieldsetData($configData);
         $data = new Varien_Object($dataArray);
@@ -202,7 +203,7 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
         }
 
         if (count($errors) == 0) {
-            $checkStatusHandler = Mage::getSingleton('factfinder/handler_status', $dataArray);
+            $checkStatusHandler = Mage::getSingleton('factfinder/handler_status', $storeId);
             if (!$checkStatusHandler->checkStatus()) {
                 $errors = $checkStatusHandler->getErrorMessages();
             }
