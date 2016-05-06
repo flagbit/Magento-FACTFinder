@@ -91,12 +91,12 @@ class FACTFinder_Core_Model_Handler_Status extends FACTFinder_Core_Model_Handler
     /**
      * Receive store id parameter
      *
-     * @param int $storeId
+     * @param array $params
      */
-    public function __construct($storeId = 0)
+    public function __construct($params)
     {
-        if ($storeId) {
-            $this->_storeId = $storeId;
+        if (isset($params['store_id'])) {
+            $this->_storeId = $params['store_id'];
         }
 
         parent::__construct();

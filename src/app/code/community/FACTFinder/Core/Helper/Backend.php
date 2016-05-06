@@ -203,7 +203,7 @@ class FACTFinder_Core_Helper_Backend extends Mage_Core_Helper_Abstract
         }
 
         if (count($errors) == 0) {
-            $checkStatusHandler = Mage::getSingleton('factfinder/handler_status', $storeId);
+            $checkStatusHandler = Mage::getSingleton('factfinder/handler_status', array('store_id' => $storeId));
             if (!$checkStatusHandler->checkStatus()) {
                 $errors = $checkStatusHandler->getErrorMessages();
             }
