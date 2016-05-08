@@ -15,7 +15,7 @@
 <config>
     <modules>
         <FACTFinder_Tracking>
-            <version>4.0.1</version>
+            <version>4.1.2</version>
         </FACTFinder_Tracking>
     </modules>
     <global>
@@ -130,7 +130,7 @@
                 <clicktracking>1</clicktracking>
                 <track_carts>1</track_carts>
                 <track_checkout>1</track_checkout>
-            </export>   
+            </export>
             <config>
                 <tracking_identifier>entity_id</tracking_identifier>
             </config>

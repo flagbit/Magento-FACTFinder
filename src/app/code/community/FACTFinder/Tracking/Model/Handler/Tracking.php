@@ -36,12 +36,29 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     {
     }
 
+
+    /**
+     * Set store id for facade
+     *
+     * @param int $storeId
+     *
+     * @return $this
+     */
+    public function setStoreId($storeId = 0)
+    {
+        $this->_getFacade()->setStoreId($storeId);
+
+        return $this;
+    }
+
+
     /**
      * Track login of a user
      *
-     * @param string $sid session id (if empty, then try to set using the function session_id() )
+     * @param string $sid      session id (if empty, then try to set using the function session_id() )
      * @param string $cookieId cookie id (optional)
-     * @param string $userid id of user who logged in
+     * @param string $userid   id of user who logged in
+     *
      * @return boolean $success
      */
     public function trackLogin(
@@ -201,6 +218,22 @@ class FACTFinder_Tracking_Model_Handler_Tracking extends FACTFinder_Core_Model_H
     public function applyTracking($instance = null)
     {
         return $this->_getFacade()->getTrackingAdapter($instance)->applyTracking();
+    }
+
+
+    /**
+     * Get an instance of FACT-Finder facade
+     *
+     * @return FACTFinder_Core_Model_Facade
+     */
+    protected function _getFacade()
+    {
+        if ($this->_facade === null) {
+            // get new model, not singleton
+            $this->_facade = Mage::getModel($this->_facadeModel);
+        }
+
+        return $this->_facade;
     }
 
 

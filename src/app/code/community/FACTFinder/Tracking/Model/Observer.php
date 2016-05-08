@@ -172,7 +172,6 @@ class FACTFinder_Tracking_Model_Observer
             $customerId = md5('customer_' . $customerId);
         }
 
-        $searchHelper = Mage::helper('factfinder/search');
         $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
         if ($idFieldName == 'entity_id') {
             $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
@@ -191,6 +190,7 @@ class FACTFinder_Tracking_Model_Observer
                     ->setUserid($customerId)
                     ->setPrice($item->getPrice())
                     ->setCount($item->getQtyOrdered())
+                    ->setStoreId($order->getStoreId())
                     ->save();
             }
             catch (Exception $e) {
@@ -215,27 +215,32 @@ class FACTFinder_Tracking_Model_Observer
         $queue = Mage::getModel('factfinder_tracking/queue');
 
         try {
-            $collectionSize = $queue->getCollection()->getSize();
+            $itemsByStore = array();
             foreach ($queue->getCollection() as $item) {
-                /** @var FACTFinder_Tracking_Model_Handler_Tracking $tracking */
-                $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
-                $tracking->setupCheckoutTracking(
-                    $item->getProductId(),
-                    $item->getProductId(),
-                    $item->getProductName(),
-                    null,
-                    $item->getSid(),
-                    null,
-                    $item->getCount(),
-                    $item->getPrice(),
-                    $item->getUserid()
-                );
-
-                $item->delete($item);
+                $itemsByStore[$item->getStoreId()][] = $item;
             }
 
-            if ($collectionSize > 0) {
-                // We use the last adapter instance to start the parallel request
+            foreach ($itemsByStore as $storeId => $items) {
+                /** @var FACTFinder_Tracking_Model_Handler_Tracking $tracking */
+                $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
+                $tracking->setStoreId($storeId);
+
+                foreach ($items as $item) {
+                    $tracking->setupCheckoutTracking(
+                        $item->getProductId(),
+                        $item->getProductId(),
+                        $item->getProductName(),
+                        null,
+                        $item->getSid(),
+                        null,
+                        $item->getCount(),
+                        $item->getPrice(),
+                        $item->getUserid()
+                    );
+
+                    $item->delete($item);
+                }
+
                 $tracking->applyTracking($item->getProductId());
             }
         } catch (Exception $e) {
