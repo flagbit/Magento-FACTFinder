@@ -187,7 +187,7 @@ class FACTFinder_Core_Model_Observer
      */
     public function handleSingleProductRedirect($observer)
     {
-        if (!Mage::helper('factfinder/search')->getIsOnSearchPage()) {
+        if (!Mage::helper('factfinder')->isEnabled() || !Mage::helper('factfinder/search')->getIsOnSearchPage()) {
             return;
         }
 
