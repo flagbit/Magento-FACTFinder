@@ -99,6 +99,10 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _writeCsvRow($data, $storeId)
     {
+        foreach ($data as &$item) {
+            $item = str_replace(array("\r", "\n", "\""), array(" ", " ", "\\\""), $item);
+        }
+
         $this->_getFile($storeId)->writeCsv($data, ';');
         return $this;
     }
@@ -357,9 +361,9 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($productChildren) {
                     foreach ($productChildren as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
-							
-							$productAttr = $productAttributes[$productChild['entity_id']];
-							
+                            
+                            $productAttr = $productAttributes[$productChild['entity_id']];
+                            
                             $subProductIndex = array(
                                 $productChild['entity_id'],
                                 $productData[$idFieldName],
@@ -688,7 +692,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($inputType == 'select' || $inputType == 'multiselect') {
                     return null;
                 }
-            }
+            } 
         } elseif ($attribute->getBackendType() == 'datetime') {
             $value = strtotime($value) * 1000; // Java.lang.System.currentTimeMillis()
         } else {
@@ -931,7 +935,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         foreach ($this->_getSearchableAttributes('static', 'system', $storeId) as $attribute) {
             $staticFields[] = $attribute->getAttributeCode();
         }
-
         return $staticFields;
     }
 
@@ -947,20 +950,22 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     protected function _removeTags($value, $storeId)
     {
         if (Mage::getStoreConfig('factfinder/export/remove_tags', $storeId)) {
-            // Add spaces before HTML Tags, so that strip_tags() does not join word
-            // which were in different block elements
-            // Additional spaces are not an issue, because they will be removed in the next step anyway
-            $value = preg_replace('/</u', ' <', $value);
-            $value = preg_replace("#\s+#siu", ' ', trim(strip_tags($value)));
-
-            // decode html entities
-            $value = html_entity_decode($value, null, 'UTF-8');
-			
-            // remove rest html entities
-            $value = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $value);
+            $attributeValues = $value;
+            if (!is_array($attributeValues)) {
+                $attributeValues = array($value);
+            }
+            foreach ($attributeValues as &$attributeValue) {
+                // decode html entities
+               $attributeValue = html_entity_decode($attributeValue, null, 'UTF-8');
+               // Add spaces before HTML Tags, so that strip_tags() does not join word which were in different block elements
+               // Additional spaces are not an issue, because they will be removed in the next step anyway
+               $attributeValue = preg_replace('/</u', ' <', $attributeValue);
+               $attributeValue = preg_replace("#\s+#siu", ' ', trim(strip_tags($attributeValue)));
+                // remove rest html entities
+               $attributeValue = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $attributeValue);
+            }
+            $value = implode("|", $attributeValues);
         }
-
-        $value = addslashes($value);
 
         return $value;
     }
