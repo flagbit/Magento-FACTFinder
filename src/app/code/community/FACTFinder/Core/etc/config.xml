@@ -27,11 +27,21 @@
             <factfinder_core_resource>
                 <class>FACTFinder_Core_Model_Resource</class>
             </factfinder_core_resource>
+            <catalogsearch>
+                <rewrite>
+                    <query>FACTFinder_Core_Model_CatalogSearch_Query</query>
+                </rewrite>
+            </catalogsearch>
         </models>
         <blocks>
             <factfinder>
                 <class>FACTFinder_Core_Block</class>
             </factfinder>
+             <catalogsearch>
+                <rewrite>
+                    <layer>FACTFinder_Core_Block_CatalogSearch_Layer</layer>
+                </rewrite>
+            </catalogsearch>
         </blocks>
         <helpers>
             <factfinder>
