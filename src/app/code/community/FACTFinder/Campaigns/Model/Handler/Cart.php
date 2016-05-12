@@ -43,14 +43,12 @@ class FACTFinder_Campaigns_Model_Handler_Cart extends FACTFinder_Campaigns_Model
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
 
-        $productIds = array();
-
         /** @var Mage_Sales_Model_Quote_Item $item */
         foreach ($quote->getAllItems() as $item) {
-            $productIds[] = $item->getProduct()->getData(Mage::helper('factfinder_campaigns')->getIdFieldName());
+            $this->_productIds[] = $item->getProduct()->getData(Mage::helper('factfinder_campaigns')->getIdFieldName());
         }
 
-        return $productIds;
+        return $this->_productIds;
     }
 
 
@@ -61,7 +59,9 @@ class FACTFinder_Campaigns_Model_Handler_Cart extends FACTFinder_Campaigns_Model
      */
     public function getCampaigns()
     {
-        $this->_getFacade()->getProductCampaignAdapter()->makeShoppingCartCampaign();
+        if (!empty($this->_productIds)) {
+            $this->_getFacade()->getProductCampaignAdapter()->makeShoppingCartCampaign();
+        }
 
         return parent::getCampaigns();
     }

@@ -139,7 +139,7 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
      */
     public function getCampaigns()
     {
-        if ($this->_featureAvailable && $this->_campaigns === null) {
+        if ($this->_featureAvailable && $this->_campaigns === null && !empty($this->_productIds)) {
             $this->_campaigns = $this->_getFacade()->getProductCampaigns();
         }
 
