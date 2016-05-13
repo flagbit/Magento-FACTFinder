@@ -109,7 +109,7 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
             );
         }
 
-        $idFieldName = Mage::helper('factfinder_campaigns')->getIdFieldName();
+        $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
         if (!empty($productIds)) {
             // add Filter to Query
