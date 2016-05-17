@@ -61,7 +61,7 @@ class Suggest extends AbstractAdapter
 
         $this->parameters['format'] = 'json';
         $suggestData = $this->getResponseContent();
-        if (!empty($suggestData))
+        if (parent::isValidResponse($suggestData))
         {
             if (isset($suggestData['suggestions']))
             {

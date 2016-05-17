@@ -139,9 +139,12 @@ class SimilarRecords extends AbstractAdapter
         else
         {
             $jsonData = $this->getResponseContent();
-            foreach($jsonData['attributes'] as $attributeData)
+            if(parent::isValidResponse($jsonData))
             {
-                $attributes[$attributeData['name']] = $attributeData['value'];
+                foreach($jsonData['attributes'] as $attributeData)
+                {
+                    $attributes[$attributeData['name']] = $attributeData['value'];
+                }
             }
         }
 
@@ -182,12 +185,15 @@ class SimilarRecords extends AbstractAdapter
         {
             $position = 1;
             $jsonData = $this->getResponseContent();
-            foreach($jsonData['records'] as $recordData)
+            if(parent::isValidResponse($jsonData))
             {
-                if ($this->idsOnly)
-                    $records[] = $this->createSparseRecord($recordData);
-                else
-                    $records[] = $this->createRecord($recordData, $position++);
+                foreach($jsonData['records'] as $recordData)
+                {
+                    if ($this->idsOnly)
+                        $records[] = $this->createSparseRecord($recordData);
+                    else
+                        $records[] = $this->createRecord($recordData, $position++);
+                }
             }
         }
 

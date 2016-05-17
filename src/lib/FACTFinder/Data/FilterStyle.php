@@ -15,7 +15,6 @@ class FilterStyle
     static private $slider;
     static private $tree;
     static private $multiSelect;
-    static private $color;
 
     // This ID is never used, but it ensures that an equality test between two
     // different instances will return false (since '==' object comparison is
@@ -45,7 +44,6 @@ class FilterStyle
             self::$slider        = new FilterStyle();
             self::$tree          = new FilterStyle();
             self::$multiSelect   = new FilterStyle();
-            self::$color         = new FilterStyle();
 
             self::$initialized = true;
         }
@@ -56,7 +54,6 @@ class FilterStyle
     static public function Slider()      { return self::$slider; }
     static public function Tree()        { return self::$tree; }
     static public function MultiSelect() { return self::$multiSelect; }
-    static public function Color()       { return self::$color; }
 }
 
 // And finally we call the class initializer.

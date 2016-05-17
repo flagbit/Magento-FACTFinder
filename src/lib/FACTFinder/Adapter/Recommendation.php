@@ -145,17 +145,20 @@ class Recommendation extends AbstractAdapter
         else
         {
             $recommenderData = $this->getResponseContent();
-            if (isset($recommenderData['resultRecords']))
+            if (parent::isValidResponse($recommenderData))
             {
-                $recommenderData = $recommenderData['resultRecords'];
-            }
-            $position = 1;
-            foreach($recommenderData as $recordData)
-            {
-                if ($this->idsOnly)
-                    $records[] = $this->createSparseRecord($recordData);
-                else
-                    $records[] = $this->createRecord($recordData, $position++);
+                if (isset($recommenderData['resultRecords']))
+                {
+                    $recommenderData = $recommenderData['resultRecords'];
+                }
+                $position = 1;
+                foreach($recommenderData as $recordData)
+                {
+                    if ($this->idsOnly)
+                        $records[] = $this->createSparseRecord($recordData);
+                    else
+                        $records[] = $this->createRecord($recordData, $position++);
+                }
             }
         }
 
@@ -185,7 +188,7 @@ class Recommendation extends AbstractAdapter
             $position
         );
     }
-	
+    
     /**
      * Get the recommendations from FACT-Finder as the string returned by the
      * server.

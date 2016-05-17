@@ -88,7 +88,7 @@ class TagCloud extends AbstractAdapter
         $tagCloud = array();
 
         $tagCloudData = $this->getResponseContent();
-        if (!empty($tagCloudData))
+        if (parent::isValidResponse($tagCloudData))
         {
             foreach ($tagCloudData as $tagQueryData)
             {

@@ -57,17 +57,26 @@ class FileSystemDataProvider extends AbstractDataProvider
             $connectionData->setNullResponse();
             return;
         }
+        $fileNamePrefix = $this->getFileNamePrefix($connectionData);
 
-        $fileName = $this->getFileName($connectionData);
+        $fileExtension = $this->getFileExtension($connectionData);
+        $queryString = $this->getQueryString($connectionData);
+        $fileName = $this->getFileName($fileNamePrefix, md5($queryString), $fileExtension);
 
         if (!$this->hasFileNameChanged($id, $fileName))
             return;
 
         $this->log->info("Trying to load file: $fileName");
+        
+        $fileContent = null;
+        if(!$fileContent = @file_get_contents($fileName))
+        {
+            throw new \Exception('File "'.$fileName.' (original: ' . $fileNamePrefix . $queryString . $fileExtension . '" not found');
+        }
 
         $response = FF::getInstance(
             'Core\Server\Response',
-            file_get_contents($fileName),
+            $fileContent,
             200,
             0,
             ''
@@ -76,39 +85,54 @@ class FileSystemDataProvider extends AbstractDataProvider
         $connectionData->setResponse($response, $fileName);
     }
 
-    private function getFileName($connectionData)
+    private function getFileNamePrefix($connectionData)
     {
         $action = $connectionData->getAction();
 
-        // Replace the .ff file extension with an underscore.
-        $fileName = preg_replace('/[.]ff$/i', '_', $action);
+        // Replace the .ff file extension with a dot.
+        $prefix = preg_replace('/[.]ff$/i', '.', $action);
+    
+        return $prefix;
+    }
+    
+    private function getFileExtension($connectionData)
+    {
+        $parameters = $connectionData->getParameters();
 
-        $parameters = clone $connectionData->getParameters();
-
+        $fileExtension = null;
         if (isset($parameters['format']))
             $fileExtension = '.' . $parameters['format'];
         else
             $fileExtension = '.raw';
-
+        
+        return $fileExtension;
+    }
+    
+    private function getQueryString($connectionData)
+    {
+        $parameters = clone $connectionData->getParameters();
+  
         unset($parameters['format']);
         unset($parameters['user']);
         unset($parameters['pw']);
         unset($parameters['timestamp']);
         unset($parameters['channel']);
-
+        
         $rawParameters = &$parameters->getArray();
-
         // We received that array by reference, so we can sort it to sort the
         // Parameters object internally, too.
         ksort($rawParameters, SORT_STRING);
-
+        
         $queryString = $parameters->toJavaQueryString();
-        $fileName .= str_replace('&', '_', $queryString);
-        $fileName .= $fileExtension;
-
-        return $this->fileLocation . $fileName;
+        
+        return $queryString;
     }
 
+    private function getFileName($prefix, $queryString, $extension)
+    {
+        return $this->fileLocation . $prefix . $queryString . $extension;
+    }
+    
     private function hasFileNameChanged($id, $newFileName)
     {
         $connectionData = $this->connectionData[$id];

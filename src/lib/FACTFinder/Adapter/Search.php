@@ -139,7 +139,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult'])) {
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) {
             $searchResultData = $jsonData['searchResult'];
             $refKey = $searchResultData['refKey'];
 
@@ -192,9 +192,9 @@ class Search extends AbstractAdapter
         $singleWordSearch = array();
 
         $jsonData = $this->getResponseContent();
-        if (!empty($jsonData['searchResult']['singleWordResults']))
+        if (parent::isValidResponse($jsonData) && !empty($jsonData['searchResult']['singleWordResults']))
         {
-            foreach ($jsonData['searchResults']['singleWordResults'] as $swsData)
+            foreach ($jsonData['searchResult']['singleWordResults'] as $swsData)
             {
                 $item = FF::getInstance(
                     'Data\SingleWordSearchItem',
@@ -202,18 +202,18 @@ class Search extends AbstractAdapter
                     $this->convertServerQueryToClientUrl(
                         $swsData['searchParams']
                     ),
-                    $swsData['count']
+                    $swsData['recordCount']
                 );
 
                 foreach ($swsData['previewRecords'] as $recordData)
                 {
-                    $item->addPreviewRecord(FF::getInstance(
-                        'Data\Record',
+                    $item->addPreviewRecord(FF::getInstance('Data\Record',
                         (string)$recordData['id'],
-                        $recordData['record']
-                        // TODO: Which are other fields are returned for preview
-                        // records?
-                        // TODO: Add a test for this.
+                        $recordData['record'],
+                        $recordData['searchSimilarity'],
+                        $recordData['position'],
+                        '',
+                        $recordData['keywords']
                     ));
                 }
 
@@ -233,7 +233,7 @@ class Search extends AbstractAdapter
         $status = $searchStatusEnum::NoResult();
                 
         $jsonData = $this->getResponseContent();
-        if (isset($jsonData['searchResult'])) 
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) 
         {
             switch($jsonData['searchResult']['resultStatus'])
             {
@@ -257,7 +257,7 @@ class Search extends AbstractAdapter
         $status = $articleNumberSearchStatusEnum::IsNoArticleNumberSearch();
         
         $jsonData = $this->getResponseContent();
-        if (isset($jsonData['searchResult'])) 
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) 
         {
             switch ($jsonData['searchResult']['resultArticleNumberStatus']) 
             {
@@ -278,7 +278,7 @@ class Search extends AbstractAdapter
     public function isSearchTimedOut()
     {
         $jsonData = $this->getResponseContent();
-        if (isset($jsonData['searchResult']))
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
         {
             return $jsonData['searchResult']['timedOut'];
         }
@@ -305,7 +305,7 @@ class Search extends AbstractAdapter
 
         $filterGroups = array();
 
-        if (isset($jsonData['searchResult']['groups'])) {
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']['groups'])) {
             foreach ($jsonData['searchResult']['groups'] as $groupData)
                 $filterGroups[] = $this->createFilterGroup($groupData);
         }
@@ -503,7 +503,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult']))
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
         {
             $rppData = $jsonData['searchResult']['resultsPerPageList'];
             if (!empty($rppData))
@@ -559,7 +559,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult']))
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
         {
             $pagingData = $jsonData['searchResult']['paging'];
             if (!empty($pagingData))
@@ -644,7 +644,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult']))
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
         {
             $sortingData = $jsonData['searchResult']['sortsList'];
             if (!empty($sortingData))
@@ -692,7 +692,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult']))
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
         {
             $breadCrumbTrailData = $jsonData['searchResult']['breadCrumbTrailItems'];
             if (!empty($breadCrumbTrailData))
@@ -749,7 +749,7 @@ class Search extends AbstractAdapter
         $campaigns = array();
         $jsonData = $this->getResponseContent();
 
-        if (isset($jsonData['searchResult']['campaigns'])) {
+        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']['campaigns'])) {
             foreach ($jsonData['searchResult']['campaigns'] as $campaignData) {
                 $campaign = $this->createEmptyCampaignObject($campaignData);
 
@@ -970,7 +970,7 @@ class Search extends AbstractAdapter
     {
         $jsonData = $this->getResponseContent();
         //use searchParams of result if available
-        if($jsonData && $jsonData['searchResult'] && isset($jsonData['searchResult']['searchParams'])) {
+        if (parent::isValidResponse($jsonData) && $jsonData['searchResult'] && isset($jsonData['searchResult']['searchParams'])) {
             $parameters = FF::getInstance(
                 'Util\Parameters',
                 $jsonData['searchResult']['searchParams']

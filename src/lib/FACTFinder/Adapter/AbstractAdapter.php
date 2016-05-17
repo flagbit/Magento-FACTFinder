@@ -191,4 +191,9 @@ abstract class AbstractAdapter
 
         return $this->urlBuilder->generateUrl($parameters);
     }
+
+    protected function isValidResponse($jsonData)
+    {
+        return (!empty($jsonData) && !isset($jsonData['error']));
+    }
  }

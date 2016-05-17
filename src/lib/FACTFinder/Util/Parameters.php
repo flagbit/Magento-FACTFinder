@@ -148,7 +148,7 @@ class Parameters implements \ArrayAccess, \Countable
      *
      * @throws InvalidArgumentException if the name has no values set.
      */
-	public function offsetGet($name)
+    public function offsetGet($name)
     {
         if (!isset($this->parameters[$name]))
             throw new \InvalidArgumentException('Requested parameter has no value set.');

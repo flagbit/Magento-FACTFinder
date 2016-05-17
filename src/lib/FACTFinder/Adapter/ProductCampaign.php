@@ -61,18 +61,6 @@ class ProductCampaign extends AbstractAdapter
     }
 
     /**
-     * For product campaigns, FACT-Finder needs the product numbers - not the IDs.
-     *
-     * @deprecated use setProductNumbers instead
-     * @param string|string[] $productIDs
-     */
-    public function setProductIDs($productIDs)
-    {
-        // preserve the previous logic
-        $this->setProductNumbers($productIDs);
-    }
-
-    /**
      * Add one or multiple product numbser to get campaigns for, in addition to any
      * numbers previously set.
      *
@@ -83,17 +71,6 @@ class ProductCampaign extends AbstractAdapter
         $parameters = $this->request->getParameters();
         $parameters->add('productNumber', $productNumbers);
         $this->campaignsUpToDate = false;
-    }
-
-    /**
-     * For product campaigns, FACT-Finder needs the product numbers - not the IDs.
-     *
-     * @deprecated use addProductNumbers instead
-     * @param string|string[] $productIDs
-     */
-    public function addProductIDs($productIDs)
-    {
-        $this->addProductNumbers($productIDs);
     }
     
     /**
@@ -170,23 +147,27 @@ class ProductCampaign extends AbstractAdapter
             {
                 // Use only the first product ID
                 $productIDs = $this->parameters['productNumber'];
-                if (is_array($productIDs))
+                if (is_array($productIDs) && !empty($productIDs))
+                {
                     $this->parameters['productNumber'] = $productIDs[0];
-
+                }
                 $jsonData = $this->getResponseContent();
 
                 // Restore IDs
                 $this->parameters['productNumber'] = $productIDs;
             }
 
-            foreach ($jsonData as $campaignData) {
-                $campaign = $this->createEmptyCampaignObject($campaignData);
+            if(parent::isValidResponse($jsonData))
+            {
+                foreach ($jsonData as $campaignData) {
+                    $campaign = $this->createEmptyCampaignObject($campaignData);
 
-                $this->fillCampaignWithFeedback($campaign, $campaignData);
-                $this->fillCampaignWithPushedProducts($campaign, $campaignData);
+                    $this->fillCampaignWithFeedback($campaign, $campaignData);
+                    $this->fillCampaignWithPushedProducts($campaign, $campaignData);
 
-                $campaigns[] = $campaign;
-            }
+                    $campaigns[] = $campaign;
+                }
+            }        
         }
 
         $campaignIterator = FF::getInstance(

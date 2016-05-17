@@ -120,16 +120,6 @@ class FilterGroup extends \ArrayIterator
     }
 
     /**
-     * @deprecated use hasPreviewImages instead
-     * @return bool
-     */
-    public function isColorStyle()
-    {
-        $filterStyleEnum = FF::getClassName('Data\FilterStyle');
-        return $this->style == $filterStyleEnum::Color();
-    }
-
-    /**
      * @return int
      */
     public function getDetailedLinkCount()

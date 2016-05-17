@@ -114,13 +114,15 @@ class Compare extends AbstractAdapter
         else
         {
             $jsonData = $this->getResponseContent();
-            foreach($jsonData['attributes'] as $attributeData)
+            if (parent::isValidResponse($jsonData))
             {
-                $name = $attributeData['attributeName'];
-                $attributes[$name] = $attributeData['different'];
+                foreach($jsonData['attributes'] as $attributeData)
+                {
+                    $name = $attributeData['attributeName'];
+                    $attributes[$name] = $attributeData['different'];
+                }
             }
         }
-
         return $attributes;
     }
 
@@ -157,15 +159,18 @@ class Compare extends AbstractAdapter
         {
             $position = 1;
             $jsonData = $this->getResponseContent();
-            foreach($jsonData['records'] as $recordData)
+            if (parent::isValidResponse($jsonData))
             {
-                $records[] = FF::getInstance(
-                    'Data\Record',
-                    (string)$recordData['id'],
-                    $recordData['record'],
-                    100.0,
-                    $position++
-                );
+                foreach($jsonData['records'] as $recordData)
+                {
+                    $records[] = FF::getInstance(
+                        'Data\Record',
+                        (string)$recordData['id'],
+                        $recordData['record'],
+                        100.0,
+                        $position++
+                    );
+                }
             }
         }
 
