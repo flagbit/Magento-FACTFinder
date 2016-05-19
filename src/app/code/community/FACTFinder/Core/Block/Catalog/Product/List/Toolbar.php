@@ -52,6 +52,15 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
 
         parent::_construct();
+
+        // reset orders if we use the ones from FF
+        if (Mage::helper('factfinder/search')->useSortings()) {
+            $this->_availableOrder = array();
+            $sortItems = $this->_handler->getSorting();
+            foreach ($sortItems as $item) {
+                $this->addOrderToAvailableOrders($item->getLabel(), $item->getLabel());
+            }
+        }
     }
 
 
@@ -64,26 +73,16 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     public function getPagerUrl($params=array())
     {
-        $sortingId = $this->_getSortingId($params);
-
-        if ($sortingId && $this->_handler) {
-            $sortings = $this->_handler->getSorting();
-
-            // relevance default and has no directions
-            if ($sortingId == $this->_orderField) {
-                $sorting = $sortings[0];
-                $this->_sortings[$sortingId] = $sorting->getUrl();
-            } elseif (!isset($this->_sortings[$sortingId])) {
-                /** @var \FACTFinder\Data\Item $sorting */
-                foreach ($sortings as $sorting) {
-                    $url = $sorting->getUrl();
-                    if (strpos($url, $sortingId) !== false) {
-                        $this->_sortings[$sortingId] = $sorting->getUrl();
-                        break;
-                    }
-                }
+        if (Mage::helper('factfinder/search')->useSortings()) {
+            $sortingUrl = $this->getSortingUrl($params);
+            if ($sortingUrl) {
+                return $sortingUrl;
             }
         }
+
+        $sortingId = $this->_getSortingId($params);
+
+        $this->initSortings($sortingId);
 
         if (isset($this->_sortings[$sortingId])) {
             return $this->_sortings[$sortingId];
@@ -125,22 +124,26 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
     }
 
+
     /**
      * Uses a given base URL to remove subfolders from the current request path in case Magento is hosted in a
      * subdirectory.
      *
      * @param string $fullPath The full request path.
-     * @param string $baseUrl The base URL of the Magento installation.
+     * @param string $baseUrl  The base URL of the Magento installation.
      * @return string
      */
-    private function removeBasePathByBaseUrl($fullPath, $baseUrl){
+    protected function removeBasePathByBaseUrl($fullPath, $baseUrl)
+    {
         $basePath = parse_url($baseUrl, PHP_URL_PATH);
         $pos = strpos($fullPath, $basePath);
         if ($pos !== false) {
             return substr_replace($fullPath, '', $pos, strlen($basePath));
         }
+
         return $fullPath;
     }
+
 
     /**
      * Get sorting id
@@ -157,6 +160,28 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
             }
 
             return 'sort' . $params[$this->getOrderVarName()] . '=' . $params[$this->getDirectionVarName()];
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Get sorting Url
+     *
+     * @param array $params
+     *
+     * @return bool|string
+     */
+    protected function getSortingUrl($params)
+    {
+        if (isset($params[$this->getOrderVarName()])) {
+            $sortItems = $this->_handler->getSorting();
+            foreach ($sortItems as $sortItem) {
+                if ($params[$this->getOrderVarName()] == $sortItem->getLabel()) {
+                    return $sortItem->getUrl();
+                }
+            }
         }
 
         return false;
@@ -227,6 +252,10 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
             /** @var \FACTFinder\Data\Item $sorting */
             foreach ($sortings as $sorting) {
                 if ($sorting->isSelected()) {
+                    if (Mage::helper('factfinder/search')->useSortings()) {
+                        return $sorting->getLabel();
+                    }
+
                     $url = $sorting->getUrl();
                     preg_match('/[\?|\&]{1}sort([a-z0-9\_]*?)=/', $url, $matches);
                     if (isset($matches[1])) {
@@ -274,6 +303,57 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
 
         return implode('&', $params);
+    }
+
+
+    /**
+     * Avoid resetting orders by magento if we should use ours
+     *
+     * @param array $orders
+     *
+     * @return $this
+     */
+    public function setAvailableOrders($orders)
+    {
+        if (Mage::helper('factfinder/search')->useSortings()) {
+            return $this;
+        }
+
+        return parent::setAvailableOrders($orders);
+    }
+
+
+    /**
+     * Init sortings and map them according to parameters in the query
+     *
+     * @param string $sortingId
+     *
+     * @return $this
+     */
+    protected function initSortings($sortingId)
+    {
+        if (!$sortingId && $this->_handler) {
+            return $this;
+        }
+
+        $sortings = $this->_handler->getSorting();
+
+        // relevance default and has no directions
+        if ($sortingId == $this->_orderField) {
+            $sorting = $sortings[0];
+            $this->_sortings[$sortingId] = $sorting->getUrl();
+        } elseif (!isset($this->_sortings[$sortingId])) {
+            /** @var \FACTFinder\Data\Item $sorting */
+            foreach ($sortings as $sorting) {
+                $url = $sorting->getUrl();
+                if (strpos($url, $sortingId) !== false) {
+                    $this->_sortings[$sortingId] = $sorting->getUrl();
+                    break;
+                }
+            }
+        }
+
+        return $this;
     }
 
 

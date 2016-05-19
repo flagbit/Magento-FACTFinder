@@ -184,6 +184,17 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
 
     /**
+     * Check if we should use sorting items delivered from FF
+     *
+     * @return bool
+     */
+    public function useSortings()
+    {
+        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/use_sortings');
+    }
+
+
+    /**
      * Redirect to product page
      *
      * @param \Mage_Catalog_Model_Product $product
