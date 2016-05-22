@@ -361,4 +361,15 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     }
 
 
+    /**
+     * Returns url model class name
+     *
+     * @return string
+     */
+    protected function _getUrlModelClass()
+    {
+        return 'factfinder/url';
+    }
+
+
 }
