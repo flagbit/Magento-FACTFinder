@@ -54,7 +54,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         parent::_construct();
 
         // reset orders if we use the ones from FF
-        if (Mage::helper('factfinder/search')->useSortings()) {
+        if ($this->_handler && Mage::helper('factfinder/search')->useSortings()) {
             $this->_availableOrder = array();
             $sortItems = $this->_handler->getSorting();
             foreach ($sortItems as $item) {
@@ -73,6 +73,10 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     public function getPagerUrl($params=array())
     {
+        if (empty($this->_handler)) {
+            return parent::getPagerUrl($params);
+        }
+
         if (Mage::helper('factfinder/search')->useSortings()) {
             $sortingUrl = $this->getSortingUrl($params);
             if ($sortingUrl) {
@@ -332,7 +336,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     protected function initSortings($sortingId)
     {
-        if (!$sortingId && $this->_handler) {
+        if (!$sortingId || !$this->_handler) {
             return $this;
         }
 
