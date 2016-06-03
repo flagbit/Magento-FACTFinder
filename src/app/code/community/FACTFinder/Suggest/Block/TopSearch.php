@@ -39,7 +39,8 @@ class FACTFinder_Suggest_Block_TopSearch extends Mage_Core_Block_Template
             $result->{'Channel: ' . $channel} = $this->__('Channel: ' . $channel);
         }
 
-        $result->{'searchTerm'} = $this->__('ff_searchTerm');
+        $result->{'searchTerm'} = $this->__('ff_searchTerm');        
+        $result->{'brand'} = $this->__('ff_brand');
         $result->{'category'} = $this->__('ff_category');
         $result->{'productName'} = $this->__('ff_productName');
 
