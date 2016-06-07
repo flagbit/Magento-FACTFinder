@@ -36,7 +36,9 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isEnabled($feature = null)
     {
-        if ($this->_getRequest()->getParam('skip_ff')) {
+        if ($this->_getRequest()->getParam(self::SKIP_FF_PARAM_NAME)
+            && Mage::getStoreConfig('factfinder/fallback/use_fallback')
+        ) {
             return false;
         }
 
