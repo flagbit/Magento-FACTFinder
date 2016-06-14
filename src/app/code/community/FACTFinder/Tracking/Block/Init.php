@@ -84,7 +84,7 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
 
             $data[$key] = array(
                 'id' => $product->getData($idFieldName),
-                'masterid' => $product->getData($idFieldName),
+                'masterId' => $product->getData($idFieldName),
                 'pos'      => $product->getPosition(),
                 'origPos'  => $product->getOriginalPosition() ? $product->getOriginalPosition() : $product->getPosition(),
                 'title'    => $product->getName(),
