@@ -39,7 +39,7 @@ class FACTFinder_Core_Block_CatalogSearch_Layer extends Mage_CatalogSearch_Block
 
             $resultNumber = $this->getLayer()->getProductCollection()->getSize();
             if ($resultNumber > 0
-                && ($availableResCount > 0 && $availableResCount > $resultNumber)
+                && (!$availableResCount || $availableResCount > $resultNumber)
             ) {
                 return true;
             }
