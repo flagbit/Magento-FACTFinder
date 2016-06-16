@@ -34,15 +34,7 @@ class FACTFinder_Core_Block_CatalogSearch_Layer extends Mage_CatalogSearch_Block
     public function canShowBlock()
     {
         if (Mage::helper('factfinder')->isEnabled()) {
-            $availableResCount = (int) Mage::app()->getStore()
-                ->getConfig(Mage_CatalogSearch_Model_Layer::XML_PATH_DISPLAY_LAYER_COUNT);
-
-            $resultNumber = $this->getLayer()->getProductCollection()->getSize();
-            if ($resultNumber > 0
-                && (!$availableResCount || $availableResCount > $resultNumber)
-            ) {
-                return true;
-            }
+            return (bool) $this->getLayer()->getProductCollection()->getSize();
         }
 
         return parent::canShowBlock();
