@@ -26,6 +26,8 @@
 class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Resource_Fulltext
 {
 
+    const FILENAME_PATTERN = 'store_%s_product.csv';
+
     /**
      * Option ID to Value Mapping Array
      * @var mixed
@@ -105,6 +107,28 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
         $this->_getFile($storeId)->writeCsv($data, ';');
         return $this;
+    }
+
+
+    /**
+     * Get export filename for store
+     *
+     * @param int $storeId
+     *
+     * @return string
+     */
+    public function getFilenameForStore($storeId)
+    {
+        return sprintf(self::FILENAME_PATTERN, $storeId);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getExportDirectory()
+    {
+        return Mage::helper('factfinder/export')->getExportDirectory();
     }
 
 
@@ -229,8 +253,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     public function saveExport($storeId = 0)
     {
-        $fileName = 'store_' . $storeId . '_product.csv';
-        $dir = Mage::getBaseDir('var') . DS . 'factfinder';
+        $fileName = $this->getFilenameForStore($storeId);
+        $dir = $this->getExportDirectory();
 
         try {
             $this->doExport($storeId);
@@ -255,9 +279,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     protected function _getFile($storeId)
     {
         if (!isset($this->_file[$storeId])) {
-            $dir = Mage::getBaseDir('var') . DS . 'factfinder';
-
-            $fileName = 'store_' . $storeId . '_product.csv';
+            $dir = $this->getExportDirectory();
+            $fileName = $this->getFilenameForStore($storeId);
 
             $this->_file[$storeId] = Mage::getModel('factfinder/file');
 
@@ -361,9 +384,9 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($productChildren) {
                     foreach ($productChildren as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
-                            
+
                             $productAttr = $productAttributes[$productChild['entity_id']];
-                            
+
                             $subProductIndex = array(
                                 $productChild['entity_id'],
                                 $productData[$idFieldName],
@@ -692,7 +715,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 if ($inputType == 'select' || $inputType == 'multiselect') {
                     return null;
                 }
-            } 
+            }
         } elseif ($attribute->getBackendType() == 'datetime') {
             $value = strtotime($value) * 1000; // Java.lang.System.currentTimeMillis()
         } else {

@@ -253,11 +253,54 @@ class FACTFinder_Core_Model_Observer
     {
         $helper = Mage::helper('factfinder');
         $storeId = $observer->getStoreId();
-        if ($helper->isEnabled() && $helper->isImportTriggerEnabled($storeId)) {
+
+        $this->uploadFileToFtp($observer);
+
+        if ($helper->isEnabled() && Mage::helper('factfinder/export')->isImportTriggerEnabled($storeId)) {
             foreach ($helper->getStoreChannels($storeId) as $channel) {
                 $facade = Mage::getModel('factfinder/facade');
                 $facade->triggerDataImport($channel);
             }
+        }
+    }
+
+
+    /**
+     * Archive and export files and upload them to FTP
+     *
+     * @param Varien_Object $observer
+     *
+     * @return void
+     */
+    protected function uploadFileToFtp($observer)
+    {
+        $helper = Mage::helper('factfinder/export');
+        $storeId = $observer->getStoreId();
+
+        if (!$helper->useFtp($storeId)) {
+            return;
+        }
+
+        $file = $helper->archiveFiles($storeId);
+
+        if (!is_file($file)) {
+            return;
+        }
+
+        $helper->setStoreId($storeId);
+
+        try {
+            $ftp = Mage::getModel('factfinder/ftp', array(
+                $helper->getFtpHost(),
+                $helper->getFtpPort(),
+                $helper->getFtpSecure()
+            ));
+            $ftp->login($helper->getFtpUser(), $helper->getFtpPassword())
+                ->chDir($helper->getFtpDirectory())
+                ->upload($file)
+                ->close();
+        } catch (Exception $e) {
+            Mage::logException($e);
         }
     }
 

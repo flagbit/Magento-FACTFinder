@@ -128,19 +128,6 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Check whether import must be triggered
-     *
-     * @param null|int $storeId
-     *
-     * @return bool
-     */
-    public function isImportTriggerEnabled($storeId = null)
-    {
-        return Mage::getStoreConfigFlag('factfinder/export/trigger_data_import', $storeId);
-    }
-
-
-    /**
      * Get list of channels for store
      *
      * @param null|int $storeId
