@@ -281,6 +281,14 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     public function getDirectionVarName()
     {
         if ($this->_handler) {
+            if (Mage::helper('factfinder/search')->useSortings()) {
+                foreach ($this->getRequest()->getParams() as $key => $value) {
+                    if (preg_match('/sort[a-z]+/', $key)) {
+                        return $key;
+                    }
+                }
+            }
+
             return 'sort' . $this->getCurrentOrder();
         }
 
@@ -369,6 +377,34 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     protected function _getUrlModelClass()
     {
         return 'factfinder/url';
+    }
+
+
+    /**
+     * Retrieve Pager URL
+     *
+     * @param string $order
+     * @param string $direction
+     *
+     * @return string
+     */
+    public function getOrderUrl($order, $direction)
+    {
+        if ($order === null
+            && Mage::helper('factfinder/search')->useSortings()
+            && $this->getRequest()->getParam($this->getDirectionVarName())
+        ) {
+            // we use raw value since the one from magento doesn't use redirect url
+            $request = $_SERVER['REQUEST_URI'];
+            $request = preg_replace(
+                "/{$this->getDirectionVarName()}=([^&]+)/",
+                $this->getDirectionVarName() . '=' . $direction,
+                $request
+            );
+            return trim(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB), '/') . $request;
+        }
+
+        return parent::getOrderUrl($order, $direction);
     }
 
 
