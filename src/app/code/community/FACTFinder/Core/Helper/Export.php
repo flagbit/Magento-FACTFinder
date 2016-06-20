@@ -189,7 +189,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         $archiveName = sprintf(self::ARCHIVE_PATTERN, $storeId);
 
         $zip = new ZipArchive();
-        $zip->open($dir . DS . $archiveName, ZIPARCHIVE::OVERWRITE);
+        $zip->open($dir . DS . $archiveName, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
         foreach (array('product', 'price', 'stock') as $type) {
             $model = Mage::getModel('factfinder/export_' . $type);
             $filename = $model->getFilenameForStore($storeId);
