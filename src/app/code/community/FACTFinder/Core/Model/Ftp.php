@@ -46,6 +46,7 @@ class FACTFinder_Core_Model_Ftp
      */
     public function connect($host, $port = 21, $secure = false)
     {
+        $port = (int) $port;
         if ($secure) {
             $this->_connection = ftp_ssl_connect($host, $port);
         } else {
