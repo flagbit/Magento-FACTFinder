@@ -23,6 +23,7 @@
  */
 class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Block_Product_List_Toolbar
 {
+    const SORT_PARAM_PATTERN = 'sort([\w\-]*?)';
 
     /**
      * @var bool
@@ -261,7 +262,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
                     }
 
                     $url = $sorting->getUrl();
-                    preg_match('/[\?|\&]{1}sort([a-z0-9\_]*?)=/', $url, $matches);
+                    preg_match('/[\?|\&]{1}'.self::SORT_PARAM_PATTERN.'=/', $url, $matches);
                     if (isset($matches[1])) {
                         return $matches[1];
                     }
@@ -283,12 +284,11 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         if ($this->_handler) {
             if (Mage::helper('factfinder/search')->useSortings()) {
                 foreach ($this->getRequest()->getParams() as $key => $value) {
-                    if (preg_match('/sort[a-z]+/', $key)) {
+                    if (preg_match('/'.self::SORT_PARAM_PATTERN.'/', $key)) {
                         return $key;
                     }
                 }
             }
-
             return 'sort' . $this->getCurrentOrder();
         }
 
