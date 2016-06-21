@@ -120,12 +120,14 @@ class FACTFinder_Core_Model_Ftp
      */
     public function chDir($path)
     {
-        $result = ftp_chdir($this->_connection, $path);
+        if (!empty($path))
+        {
+            $result = ftp_chdir($this->_connection, $path);
 
-        if (!$result) {
-            Mage::throwException('Unable to change FTP directory');
+            if (!$result) {
+                Mage::throwException('Unable to change FTP directory');
+            }
         }
-
         return $this;
     }
 
@@ -146,7 +148,7 @@ class FACTFinder_Core_Model_Ftp
 
 
     /**
-     * Destructor to cloce connection
+     * Destructor to close connection
      */
     public function __destruct()
     {
