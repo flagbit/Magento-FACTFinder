@@ -26,6 +26,8 @@
 class FACTFinder_Core_Model_Export_Price extends Mage_Core_Model_Resource_Db_Abstract
 {
 
+    const FILENAME_PATTERN = 'store_%s_price.csv';
+
     /**
      * defines Export Columns
      * @var array
@@ -54,6 +56,19 @@ class FACTFinder_Core_Model_Export_Price extends Mage_Core_Model_Resource_Db_Abs
 
 
     /**
+     * Get export filename for store
+     *
+     * @param int $storeId
+     *
+     * @return string
+     */
+    public function getFilenameForStore($storeId)
+    {
+        return sprintf(self::FILENAME_PATTERN, $storeId);
+    }
+
+
+    /**
      * Get file handler instance for store
      *
      * @param int $storeId
@@ -65,8 +80,8 @@ class FACTFinder_Core_Model_Export_Price extends Mage_Core_Model_Resource_Db_Abs
     protected function _getFile($storeId)
     {
         if (!$this->_file) {
-            $dir = Mage::getBaseDir('var') . DS . 'factfinder';
-            $fileName = 'store_' . $storeId . '_price.csv';
+            $dir = Mage::helper('factfinder/export')->getExportDirectory();
+            $fileName = $this->getFilenameForStore($storeId);
             $this->_file = Mage::getModel('factfinder/file');
             $this->_file->open($dir, $fileName);
         }
