@@ -26,6 +26,8 @@
 class FACTFinder_Recommendation_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+    const EXPORT_TRIGGER_DELAY = 90;
+
     /**
      * Check if import should be triggered for store
      *
@@ -40,6 +42,26 @@ class FACTFinder_Recommendation_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return Mage::getStoreConfigFlag('factfinder/export/trigger_recommendation_import', $storeId);
+    }
+
+
+    /**
+     * Trigger recommendation import in a separate delayed process
+     *
+     * @param int $storeId
+     *
+     * @return void
+     */
+    public function triggerDelayedImport($storeId)
+    {
+        $pid = pcntl_fork();
+        if (!$pid) {
+            $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
+            $facade = Mage::getModel('factfinder_recommendation/facade');
+            sleep(self::EXPORT_TRIGGER_DELAY);
+            $facade->triggerRecommendationImport($channel);
+            exit(0);
+        }
     }
 
 

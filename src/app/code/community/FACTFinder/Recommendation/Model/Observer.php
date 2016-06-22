@@ -156,11 +156,9 @@ class FACTFinder_Recommendation_Model_Observer
     public function triggerImportAfterExport($observer)
     {
         $storeId = $observer->getStoreId();
-        if (Mage::helper('factfinder_recommendation')->shouldTriggerImport($storeId)) {
-            foreach (Mage::helper('factfinder')->getStoreChannels($storeId) as $channel) {
-                $facade = Mage::getModel('factfinder_recommendation/facade');
-                $facade->triggerRecommendationImport($channel);
-            }
+        $helper = Mage::helper('factfinder_recommendation');
+        if ($helper->shouldTriggerImport($storeId)) {
+            $helper->triggerDelayedImport($storeId);
         }
     }
 

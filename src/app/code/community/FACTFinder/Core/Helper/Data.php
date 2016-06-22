@@ -25,6 +25,8 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
     const SKIP_FF_PARAM_NAME = 'skip_ff';
+    const USE_FALLBACK_CONFIG_PATH = 'factfinder/fallback/use_fallback';
+    const PRIMARY_CHANNEL_CONFIG_PATH = 'factfinder/search/channel';
 
 
     /**
@@ -37,7 +39,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
     public function isEnabled($feature = null)
     {
         if ($this->_getRequest()->getParam(self::SKIP_FF_PARAM_NAME)
-            && Mage::getStoreConfig('factfinder/fallback/use_fallback')
+            && Mage::getStoreConfig(self::USE_FALLBACK_CONFIG_PATH)
         ) {
             return false;
         }
@@ -115,7 +117,7 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
     public function performFallbackRedirect()
     {
         if (!$this->_getRequest()->getParam(self::SKIP_FF_PARAM_NAME)
-            && Mage::getStoreConfig('factfinder/fallback/use_fallback')
+            && Mage::getStoreConfig(self::USE_FALLBACK_CONFIG_PATH)
         ) {
             $url = Mage::helper('core/url')->getCurrentUrl();
             $url .= strpos($url, '?') ? '&' : '?';
@@ -128,19 +130,15 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Get list of channels for store
+     * Get primary channel for store
      *
      * @param null|int $storeId
      *
-     * @return array
+     * @return string|null
      */
-    public function getStoreChannels($storeId = null)
+    public function getPrimaryChannel($storeId = null)
     {
-        $primary = Mage::getStoreConfig('factfinder/search/channel', $storeId);
-        $secondary = Mage::getStoreConfig('factfinder/search/secondary_channels', $storeId);
-        $secondary = explode(';', $secondary);
-
-        return array_merge(array($primary), $secondary);
+        return Mage::getStoreConfig(self::PRIMARY_CHANNEL_CONFIG_PATH, $storeId);
     }
 
 

@@ -25,6 +25,7 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
     const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';
+    const EXPORT_TRIGGER_DELAY = 90;
 
 
     /**
@@ -80,6 +81,26 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return Mage::getStoreConfigFlag('factfinder/export/trigger_suggest_import', $storeId);
+    }
+
+
+    /**
+     * Trigger suggest import in a separate delayed process
+     *
+     * @param int $storeId
+     *
+     * @return void
+     */
+    public function triggerDelayedImport($storeId)
+    {
+        $pid = pcntl_fork();
+        if (!$pid) {
+            $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
+            $facade = Mage::getModel('factfinder_suggest/facade');
+            sleep(self::EXPORT_TRIGGER_DELAY);
+            $facade->triggerSuggestImport($channel);
+            exit(0);
+        }
     }
 
 
