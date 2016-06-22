@@ -162,4 +162,25 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
     }
 
 
+    /**
+     * Pre-Generate all stock exports for all stores
+     *
+     * @return array
+     */
+    public function saveAll()
+    {
+        $paths = array();
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $id => $store) {
+            try {
+                $paths[] = $this->saveExport($id);
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+
+        return $paths;
+    }
+
+
 }
