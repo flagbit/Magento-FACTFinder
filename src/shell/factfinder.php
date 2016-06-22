@@ -68,7 +68,7 @@ USAGE;
             return;
         }
 
-        foreach (array('stock', 'price', 'product') as $type) {
+        foreach (Mage::helper('factfinder/export')->getExportTypes() as $type) {
             $file = Mage::getModel('factfinder/export_' . $type)
                 ->saveExport($this->getArg(self::EXPORT_ALL_TYPES_FOR_STORE));
             printf("Successfully generated %s export to: %s\n", $type, $file);

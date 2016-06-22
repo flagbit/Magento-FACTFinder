@@ -64,7 +64,7 @@
             <factfinder_export_after>
                 <observers>
                     <factfinder_core_import_trigger>
-                        <class>factfinder/observer</class>
+                        <class>factfinder/export_observer</class>
                         <method>triggerImportAfterExport</method>
                     </factfinder_core_import_trigger>
                 </observers>
@@ -186,7 +186,7 @@
         <jobs>
             <factfinder_generate>
                 <run>
-                    <model>factfinder/export_product::saveAll</model>
+                    <model>factfinder/export_observer::exportAll</model>
                 </run>
             </factfinder_generate>
         </jobs>

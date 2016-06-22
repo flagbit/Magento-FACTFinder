@@ -42,6 +42,22 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 
 
     /**
+     * Get array of export types
+     * The order is normally important
+     *
+     * @return array
+     */
+    public function getExportTypes()
+    {
+        return array(
+            'stock',
+            'price',
+            'product',
+        );
+    }
+
+
+    /**
      * Check if FTP upload is enabled for store
      *
      * @param int $storeId
@@ -190,7 +206,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 
         $zip = new ZipArchive();
         $zip->open($dir . DS . $archiveName, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
-        foreach (array('product', 'price', 'stock') as $type) {
+        foreach ($this->getExportTypes() as $type) {
             $model = Mage::getModel('factfinder/export_' . $type);
             $filename = $model->getFilenameForStore($storeId);
             $zip->addFile($dir . DS . $filename, $filename);
