@@ -22,9 +22,9 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
         } elseif ($this->getArg(self::EXPORT_STORE_STOCK)) {
             $this->exportStoreStock();
         } elseif ($this->getArg(self::EXPORT_ALL_TYPES_FOR_STORE)) {
-            $this->expotAllTypesForStore();
+            $this->exportAllTypesForStore();
         } elseif ($this->getArg(self::EXPORT_ALL_TYPES_FOR_ALL_STORES)) {
-            $this->expotAllTypesForAllStores();
+            $this->exportAllTypesForAllStores();
         } else {
             echo $this->usageHelp();
         }
@@ -42,12 +42,12 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
 Usage:  php factfinder.php -- [options]
 
   --exportAll                         Export products for every store
-  --exportStore <storeId>             Show Indexer(s) Index Mode
-  --exportStorePrice <storeId>        Export Price CSV For Store
-  --exportStoreStock <storeId>        Export Stock CSV For Store
+  --exportStore <storeId>             Export Product CSV for store
+  --exportStorePrice <storeId>        Export Price CSV for store
+  --exportStoreStock <storeId>        Export Stock CSV for store
   --exportAllTypesForStore <storeId>  Export Stock, Price and Products for store
   --exportAllTypesForAllStores        Export Stock, Price and Products for all stores
-  exportall                           Export products for every store
+  exportall                           Export Product CSV for all stores
   help                                Show this help message
 
   <storeId>     Id of the store you want to export
@@ -61,7 +61,7 @@ USAGE;
      *
      * @return void
      */
-    private function expotAllTypesForStore()
+    private function exportAllTypesForStore()
     {
         if (!is_numeric($this->getArg(self::EXPORT_ALL_TYPES_FOR_STORE))) {
             echo $this->usageHelp();
@@ -81,7 +81,7 @@ USAGE;
      *
      * @return void
      */
-    private function expotAllTypesForAllStores()
+    private function exportAllTypesForAllStores()
     {
         foreach (array('stock', 'price', 'product') as $type) {
             $files = Mage::getModel('factfinder/export_' . $type)
