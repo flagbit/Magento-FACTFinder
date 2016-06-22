@@ -68,14 +68,15 @@ class FACTFinder_Suggest_Model_Facade extends FACTFinder_Core_Model_Facade
      * Trigger suggest import on FF side
      *
      * @param null|string $channel
+     * @param bool        $download
      *
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      */
-    public function triggerSuggestImport($channel = null)
+    public function triggerSuggestImport($channel = null, $download = true)
     {
         $this->configureImportAdapter(array('channel' => $channel));
 
-        return $this->getImportAdapter($channel)->triggerSuggestImport(true);
+        return $this->getImportAdapter($channel)->triggerSuggestImport($download);
     }
 
 

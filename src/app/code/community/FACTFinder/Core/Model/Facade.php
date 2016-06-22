@@ -694,14 +694,15 @@ class FACTFinder_Core_Model_Facade
      * Trigger data import on FF side
      *
      * @param null|string $channel
+     * @param bool        $download
      *
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      */
-    public function triggerDataImport($channel = null)
+    public function triggerDataImport($channel = null, $download = true)
     {
         $this->configureImportAdapter(array('channel' => $channel));
 
-        return $this->getImportAdapter($channel)->triggerDataImport(true);
+        return $this->getImportAdapter($channel)->triggerDataImport($download);
     }
 
 
