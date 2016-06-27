@@ -12,15 +12,18 @@
 class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 {
 
-    const FTP_CONFIG_PATH = 'factfinder/export';
-    const FTP_HOST        = 'ftp_host';
-    const FTP_PASSWORD    = 'ftp_password';
-    const FTP_USER        = 'ftp_user';
-    const FTP_PORT        = 'ftp_port';
-    const FTP_DIR         = 'ftp_path';
-    const FTP_SECURE      = 'ftp_ssl';
-    const FTP_ENABLED     = 'use_ftp';
-    const ARCHIVE_PATTERN = 'store_%s_export.zip';
+    const EXPORT_CONFIG_PATH   = 'factfinder/export';
+    const FTP_HOST             = 'ftp_host';
+    const FTP_PASSWORD         = 'ftp_password';
+    const FTP_USER             = 'ftp_user';
+    const FTP_PORT             = 'ftp_port';
+    const FTP_DIR              = 'ftp_path';
+    const FTP_SECURE           = 'ftp_ssl';
+    const FTP_ENABLED          = 'use_ftp';
+    const IMPORT_DELAY_ENABLED = 'import_delay_enabled';
+    const IMPORT_DELAY_KEY     = 'factfinder_import_delay';
+    const ARCHIVE_PATTERN      = 'store_%s_export.zip';
+    const EXPORT_TRIGGER_DELAY = 90;
 
     /**
      * @var int
@@ -66,25 +69,25 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function useFtp($storeId = 0)
     {
-        return (bool) $this->getFtpConfigValue(self::FTP_ENABLED, $storeId);
+        return (bool) $this->getExportConfigValue(self::FTP_ENABLED, $storeId);
     }
 
 
     /**
-     * Get FTP config value
+     * Get export config value
      *
      * @param string $field
      * @param int    $storeId
      *
      * @return null|string
      */
-    public function getFtpConfigValue($field, $storeId)
+    public function getExportConfigValue($field, $storeId)
     {
         if (!$storeId) {
             $storeId = $this->_storeId;
         }
 
-        return Mage::app()->getStore($storeId)->getConfig(self::FTP_CONFIG_PATH . '/' . $field);
+        return Mage::app()->getStore($storeId)->getConfig(self::EXPORT_CONFIG_PATH . '/' . $field);
     }
 
 
@@ -97,7 +100,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpHost($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_HOST, $storeId);
+        return $this->getExportConfigValue(self::FTP_HOST, $storeId);
     }
 
 
@@ -110,7 +113,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpPort($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_PORT, $storeId);
+        return $this->getExportConfigValue(self::FTP_PORT, $storeId);
     }
 
 
@@ -123,7 +126,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpPassword($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_PASSWORD, $storeId);
+        return $this->getExportConfigValue(self::FTP_PASSWORD, $storeId);
     }
 
 
@@ -136,7 +139,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpUser($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_USER, $storeId);
+        return $this->getExportConfigValue(self::FTP_USER, $storeId);
     }
 
 
@@ -149,7 +152,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpDirectory($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_DIR, $storeId);
+        return $this->getExportConfigValue(self::FTP_DIR, $storeId);
     }
 
 
@@ -162,7 +165,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getFtpSecure($storeId = 0)
     {
-        return $this->getFtpConfigValue(self::FTP_SECURE, $storeId);
+        return $this->getExportConfigValue(self::FTP_SECURE, $storeId);
     }
 
 
@@ -191,6 +194,25 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 
 
     /**
+     * Check whether import trigger delay is enabled
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function isImportDelayEnabled($storeId)
+    {
+        // this usually returns false for WINDOWS,
+        // since forking processes is not supported there
+        if (!function_exists('pcntl_fork')) {
+            return false;
+        }
+
+        return (bool) $this->getExportConfigValue(self::IMPORT_DELAY_ENABLED, $storeId);
+    }
+
+
+    /**
      * Create archive with export files for store.
      * No archive will be created if no export files exist.
      *
@@ -215,6 +237,37 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         $zip->close();
 
         return $dir . DS . $archiveName;
+    }
+
+
+    /**
+     * Get duration of import delay in seconds for import type
+     *
+     * @param string $type
+     *
+     * @return int
+     */
+    public function getImportDelay($type)
+    {
+        $key = self::IMPORT_DELAY_KEY;
+        $delay = Mage::registry($key);
+
+        // if this type of import was already calculated
+        $typeKey = self::IMPORT_DELAY_KEY . '_' . $type;
+        if (Mage::registry($typeKey)) {
+            return Mage::registry($typeKey);
+        }
+
+        $delay +=self::EXPORT_TRIGGER_DELAY;
+
+        // save the new base value in registry
+        Mage::unregister($key);
+        Mage::register($key, $delay);
+
+        // save type
+        Mage::register($typeKey, $delay);
+
+        return $delay;
     }
 
 

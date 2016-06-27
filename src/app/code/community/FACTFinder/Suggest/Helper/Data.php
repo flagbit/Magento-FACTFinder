@@ -25,7 +25,7 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
     const XML_CONFIG_PATH_USE_PROXY = 'factfinder/config/proxy';
-    const EXPORT_TRIGGER_DELAY = 90;
+    const IMPORT_TYPE = 'suggest';
 
 
     /**
@@ -85,22 +85,29 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Trigger suggest import in a separate delayed process
+     * Trigger suggest import
      *
      * @param int $storeId
      *
      * @return void
      */
-    public function triggerDelayedImport($storeId)
+    public function triggerImport($storeId)
     {
-        $pid = pcntl_fork();
-        if (!$pid) {
-            $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
-            $facade = Mage::getModel('factfinder_suggest/facade');
-            sleep(self::EXPORT_TRIGGER_DELAY);
-            $download = !Mage::helper('factfinder/export')->useFtp($storeId);
+        $exportHelper = Mage::helper('factfinder/export');
+        $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
+        $facade = Mage::getModel('factfinder_suggest/facade');
+        $download = !$exportHelper->useFtp($storeId);
+        $delay = $exportHelper->getImportDelay(self::IMPORT_TYPE);
+
+        if ($exportHelper->isImportDelayEnabled($storeId)) {
+            $pid = pcntl_fork();
+            if (!$pid) {
+                sleep($delay);
+                $facade->triggerSuggestImport($channel, $download);
+                exit(0);
+            }
+        } else {
             $facade->triggerSuggestImport($channel, $download);
-            exit(0);
         }
     }
 

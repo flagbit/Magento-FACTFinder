@@ -210,7 +210,17 @@
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Start FACTFinder data import after each export]]></comment>
                         </trigger_data_import>
-                        <use_ftp translate="label">
+                        <import_delay_enabled translate="label comment">
+                            <label>Import Delay Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[If enabled, imports will be triggered with a delay between each other]]></comment>
+                        </import_delay_enabled>
+                        <use_ftp translate="label comment">
                             <label>Upload files to FTP host</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>

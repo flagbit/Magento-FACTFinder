@@ -158,7 +158,7 @@ class FACTFinder_Recommendation_Model_Observer
         $storeId = $observer->getStoreId();
         $helper = Mage::helper('factfinder_recommendation');
         if ($helper->shouldTriggerImport($storeId)) {
-            $helper->triggerDelayedImport($storeId);
+            $helper->triggerImport($storeId);
         }
     }
 

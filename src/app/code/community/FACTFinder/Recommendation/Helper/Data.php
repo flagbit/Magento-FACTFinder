@@ -27,6 +27,7 @@ class FACTFinder_Recommendation_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
     const EXPORT_TRIGGER_DELAY = 90;
+    const IMPORT_TYPE = 'recommendation';
 
     /**
      * Check if import should be triggered for store
@@ -46,22 +47,29 @@ class FACTFinder_Recommendation_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Trigger recommendation import in a separate delayed process
+     * Trigger recommendation import
      *
      * @param int $storeId
      *
      * @return void
      */
-    public function triggerDelayedImport($storeId)
+    public function triggerImport($storeId)
     {
-        $pid = pcntl_fork();
-        if (!$pid) {
-            $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
-            $facade = Mage::getModel('factfinder_recommendation/facade');
-            sleep(self::EXPORT_TRIGGER_DELAY);
-            $download = !Mage::helper('factfinder/export')->useFtp($storeId);
+        $exportHelper = Mage::helper('factfinder/export');
+        $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
+        $facade = Mage::getModel('factfinder_recommendation/facade');
+        $download = !$exportHelper->useFtp($storeId);
+        $delay = $exportHelper->getImportDelay(self::IMPORT_TYPE);
+
+        if ($exportHelper->isImportDelayEnabled($storeId)) {
+            $pid = pcntl_fork();
+            if (!$pid) {
+                sleep($delay);
+                $facade->triggerRecommendationImport($channel, $download);
+                exit(0);
+            }
+        } else {
             $facade->triggerRecommendationImport($channel, $download);
-            exit(0);
         }
     }
 
