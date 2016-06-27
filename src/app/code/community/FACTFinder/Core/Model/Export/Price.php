@@ -171,7 +171,8 @@ class FACTFinder_Core_Model_Export_Price extends Mage_Core_Model_Resource_Db_Abs
         $stores = Mage::app()->getStores();
         foreach ($stores as $id => $store) {
             try {
-                $paths[] = $this->saveExport($id);
+                $price = Mage::getModel('factfinder/export_price');
+                $paths[] = $price->saveExport($id);
             } catch (Exception $e) {
                 Mage::logException($e);
             }

@@ -171,9 +171,10 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
     {
         $paths = array();
         $stores = Mage::app()->getStores();
-        foreach ($stores as $id => $store) {
+        foreach ($stores as $store) {
             try {
-                $paths[] = $this->saveExport($id);
+                $stock = Mage::getModel('factfinder/export_stock');
+                $paths[] = $stock->saveExport($store->getId());
             } catch (Exception $e) {
                 Mage::logException($e);
             }
