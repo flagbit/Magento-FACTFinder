@@ -193,6 +193,15 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return (bool) Mage::app()->getStore()->getConfig('factfinder/config/use_sortings');
     }
 
+    /**
+     * Check if we should use results per page items delivered from FF
+     *
+     * @return bool
+     */
+    public function useResultsPerPageOptions()
+    {
+        return (bool) Mage::app()->getStore()->getConfig('factfinder/config/use_resultsPerPage');
+    }
 
     /**
      * Redirect to product page

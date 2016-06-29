@@ -123,30 +123,37 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         // Retrieve and merge all suggestions
         // Add a new "channel" field in the process
 
+        $mergedSuggestResults = array();
         $suggestResult = $this->_getAndSanitizeSuggestions();
-
+        if ($suggestResult != null){
+            $mergedSuggestResults = $suggestResult;
+        }
+        
         foreach ($this->_secondaryChannels AS $channel) {
             $params = array('channel' => $channel);
             $this->_getFacade()->configureSuggestAdapter($params, $channel);
 
             $result = $this->_getAndSanitizeSuggestions($channel);
-            $suggestResult = array_merge($suggestResult, $result);
+            if ($result != null){
+                $mergedSuggestResults = array_merge($mergedSuggestResults, $result);
+            }
         }
 
         $resultArray = array();
-        foreach ($suggestResult as $resultQuery) {
-            /** @var $resultQuery FACTFinder\Data\SuggestQuery */
-            $resultArray['suggestions'][] = array(
-                'attributes'   => $resultQuery->getAttributes(),
-                'hitCount'     => $resultQuery->getHitCount(),
-                'image'        => $resultQuery->getImageUrl(),
-                'searchParams' => $resultQuery->getUrl(),
-                'type'         => $resultQuery->getType(),
-                'name'         => $resultQuery->getLabel(),
-                'channel'      => $resultQuery->channel
-            );
+        if ($mergedSuggestResults) {
+            foreach ($mergedSuggestResults as $resultQuery) {
+                /** @var $resultQuery FACTFinder\Data\SuggestQuery */
+                $resultArray['suggestions'][] = array(
+                    'attributes'   => $resultQuery->getAttributes(),
+                    'hitCount'     => $resultQuery->getHitCount(),
+                    'image'        => $resultQuery->getImageUrl(),
+                    'searchParams' => $resultQuery->getUrl(),
+                    'type'         => $resultQuery->getType(),
+                    'name'         => $resultQuery->getLabel(),
+                    'channel'      => $resultQuery->channel
+                );
+            }
         }
-
         return $this->_jqueryCallback . '(' . Zend_Json_Encoder::encode($resultArray) . ');';
     }
 

@@ -671,6 +671,19 @@ class FACTFinder_Core_Model_Facade
     }
 
     /**
+     * Get results per page object (collection)
+     *
+     * @param string $channel
+     * @param int    $id
+     *
+     * @return \FACTFinder\Data\ResultsPerPageOptions
+     */
+    public function getResultsPerPageOptions($channel = null, $id = null)
+    {
+        return $this->_getFactFinderObject('search', 'getResultsPerPageOptions', $channel, $id);
+    }
+
+    /**
      * Log stack trace if there is one in result
      */
     protected function _checkStackTrace($channel, $id)

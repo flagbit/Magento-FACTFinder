@@ -93,7 +93,10 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
             default:
                 // add Default Params
                 $params['idsOnly'] = $this->_getFacade()->getConfiguration()->getIdsOnly() ? 'true' : 'false';
-                $params['productsPerPage'] = $helper->getPageLimit();
+                $count = $searchParams->getProductsPerPage() ? $searchParams->getProductsPerPage() : 0;
+                if ($count <= 0 && !Mage::helper('factfinder/search')->useResultsPerPageOptions()){                    
+                    $params['productsPerPage'] = $helper->getPageLimit();
+                }
 
                 if ($_request->getModuleName() == 'catalogsearch') {
                     $params['query'] = $helper->getQueryText();
@@ -217,6 +220,20 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
         }
 
         return $this->_getFacade()->getSorting();
+    }
+    
+    /**
+     * Get results per page options object from FF
+     *
+     * @return \FACTFinder\Data\ResultsPerPageOptions|null
+     */
+    public function getResultsPerPageOptions()
+    {
+        if (!$this->isSearchHasResult()) {
+            return null;
+        }
+
+        return $this->_getFacade()->getResultsPerPageOptions();
     }
 
 

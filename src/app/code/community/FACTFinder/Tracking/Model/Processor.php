@@ -80,7 +80,7 @@ class FACTFinder_Tracking_Model_Processor
         return $this->_facade;
     }
 
-	 /**
+     /**
      * Bypass app cache.
      *
      * @param string $content
@@ -91,7 +91,7 @@ class FACTFinder_Tracking_Model_Processor
     {
         return false;
     }
-	
+    
     /**
      * handle Requests
      *

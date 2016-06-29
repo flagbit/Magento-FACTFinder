@@ -218,7 +218,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[If enabled, imports will be triggered with a delay between each other]]></comment>
+                            <comment><![CDATA[If enabled, imports will be triggered with a delay between each other. Recommended for FACT-Finder >= 7.1.]]></comment>
                         </import_delay_enabled>
                         <use_ftp translate="label comment">
                             <label>Upload files to FTP host</label>
@@ -297,7 +297,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <personalization translate="label">
-                            <label>Enable Personalization (>= 7.0)</label>
+                            <label>Enable Personalization (>= 6.11)</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>5</sort_order>
@@ -331,7 +331,18 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                   <comment><![CDATA[If enabled, it requires FACT-Finder >= 7.1 and the configuration of the desired sorting options in the FACT-Finder Backend.]]></comment>
                         </use_sortings>
+                        <use_resultsPerPage>
+                            <label>Use results per page options</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                   <comment><![CDATA[If enabled, it requires the configuration of default and alternative results per page options in the FACT-Finder backend.]]></comment>
+                        </use_resultsPerPage>
                         <internal_ip translate="label">
                             <label>Internal IPs</label>
                             <comment>Enter your internal IP addresses. Multiple IP addresses should be separated by semicolons.</comment>
