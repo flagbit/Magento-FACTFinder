@@ -499,5 +499,18 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         }
         return null;
     }
+    
+    /**
+     * Returns the default results per page value.
+     *
+     * @return string
+     */
+    public function getDefaultPerPageValue()
+    {
+        if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions() && $this->_handler->getResultsPerPageOptions() != null){
+            return $this->_handler->getResultsPerPageOptions()->getDefaultOption()->getLabel();
+        }
+        return parent::getDefaultPerPageValue();
+    }
 
 }
