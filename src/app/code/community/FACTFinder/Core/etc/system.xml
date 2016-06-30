@@ -331,7 +331,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                   <comment><![CDATA[If enabled, it requires FACT-Finder >= 7.1 and the configuration of the desired sorting options in the FACT-Finder Backend.]]></comment>
+                            <comment><![CDATA[If enabled, it requires FACT-Finder >= 7.1 and the configuration of the desired sorting options in the FACT-Finder Backend.]]></comment>
                         </use_sortings>
                         <use_resultsPerPage>
                             <label>Use results per page options</label>
@@ -341,7 +341,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                   <comment><![CDATA[If enabled, it requires the configuration of default and alternative results per page options in the FACT-Finder backend.]]></comment>
+                            <comment><![CDATA[If enabled, it requires the configuration of default and alternative results per page options in the FACT-Finder backend.]]></comment>
                         </use_resultsPerPage>
                         <internal_ip translate="label">
                             <label>Internal IPs</label>

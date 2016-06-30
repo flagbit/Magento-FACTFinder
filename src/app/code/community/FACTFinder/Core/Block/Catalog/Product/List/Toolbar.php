@@ -58,7 +58,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         if ($this->_handler && Mage::helper('factfinder/search')->useSortings()) {
             $this->_availableOrder = array();
             $sortItems = $this->_handler->getSorting();
-            if ($sortItems != null){
+            if ($sortItems != null) {
                 foreach ($sortItems as $item) {
                     $this->addOrderToAvailableOrders($item->getLabel(), $item->getLabel());
                 }
@@ -109,10 +109,11 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         $limitUrl = null;
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()) {
             $limitUrl = $this->getResultsPerPageOptionUrl($limit);
-            if ($limitUrl != null){
+            if ($limitUrl != null) {
                 return $limitUrl;
             }
         }
+
         $params = array(
             $this->getLimitVarName() => $limit
         );
@@ -137,6 +138,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
             return parent::getPagerUrl($params);
         }
     }
+
 
     /**
      * Uses a given base URL to remove subfolders from the current request path in case Magento is hosted in a
@@ -260,7 +262,7 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     {
         if ($this->_handler && $this->_handler->getSorting()) {
             $sortings = $this->_handler->getSorting();
-            if ($sortings != null){
+            if ($sortings != null) {
                 $this->getRequest()->getQuery();
                 /** @var \FACTFinder\Data\Item $sorting */
                 foreach ($sortings as $sorting) {
@@ -416,49 +418,56 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         return parent::getOrderUrl($order, $direction);
     }
 
-    
+
     /**
      * Retrieve available results per page values from search response.
      *
      * @return array
      */
     public function getAvailableLimit()
-    {        
+    {
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()) {
             $resultsPerPageOptions = $this->_handler->getResultsPerPageOptions();
-            if ($resultsPerPageOptions != null){
+            if ($resultsPerPageOptions != null) {
                 /** @var \FACTFinder\Data\Item $resultsPerPageOptions */
                 foreach ($resultsPerPageOptions as $option) {
                     $this->_availableLimit[] = $option->getLabel();
                 }
             }
         }
-        if (!empty($this->_availableLimit)){
+
+        if (!empty($this->_availableLimit)) {
             return $this->_availableLimit;
         }
+
         return parent::getAvailableLimit();
     }
 
-    
-    
+
     /**
      * Get specified results per page value.
      *
      * @return string
      */
-    public function getLimit(){
+    public function getLimit()
+    {
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()) {
             $currentLimit = $this->getRequest()->getParam($this->getLimitVarName());
-            if ($currentLimit == null && $this->_handler->getResultsPerPageOptions() != null){
+            if ($currentLimit == null && $this->_handler->getResultsPerPageOptions() != null) {
                 $currentLimit = $this->_handler->getResultsPerPageOptions()->getDefaultOption()->getLabel();
             }
+
             return $currentLimit;
         }
+
         return parent::getLimit();
     }
-    
+
+
     /**
      * Checks if the given results per page value is selected.
+     *
+     * @param string $limit
      *
      * @return bool
      */
@@ -467,39 +476,49 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()) {
             return $this->getResultsPerPageOptionLabel($limit) == $this->getLimit();
         }
+
         return parent::isLimitCurrent($limit);
     }
-    
+
+
     /**
      * Returns the results per page value for a key.
      *
-     * @return string
-     */
-    private function getResultsPerPageOptionLabel($limit){
-        $resultsPerPageOptions = $this->_handler->getResultsPerPageOptions();
-        if ($resultsPerPageOptions != null){
-            if (isset($resultsPerPageOptions[$limit])){
-                return $resultsPerPageOptions[$limit]->getLabel();
-            }
-        }
-        return $limit;
-    }
-    
-    /**
-     * Returns the results per page url for a key.
+     * @param string $limit
      *
      * @return string
      */
-    private function getResultsPerPageOptionUrl($limit){
+    protected function getResultsPerPageOptionLabel($limit)
+    {
         $resultsPerPageOptions = $this->_handler->getResultsPerPageOptions();
-        if ($resultsPerPageOptions != null){
-            if (isset($resultsPerPageOptions[$limit])){
-                return $resultsPerPageOptions[$limit]->getUrl();
+        if ($resultsPerPageOptions != null) {
+            if (isset($resultsPerPageOptions[$limit])) {
+                return $resultsPerPageOptions[$limit]->getLabel();
             }
         }
+
+        return $limit;
+    }
+
+
+    /**
+     * Returns the results per page url for a key.
+     *
+     * @param string $limit
+     *
+     * @return string
+     */
+    protected function getResultsPerPageOptionUrl($limit)
+    {
+        $resultsPerPageOptions = $this->_handler->getResultsPerPageOptions();
+        if ($resultsPerPageOptions != null && isset($resultsPerPageOptions[$limit])) {
+            return $resultsPerPageOptions[$limit]->getUrl();
+        }
+
         return null;
     }
-    
+
+
     /**
      * Returns the default results per page value.
      *
@@ -507,10 +526,14 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
      */
     public function getDefaultPerPageValue()
     {
-        if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions() && $this->_handler->getResultsPerPageOptions() != null){
+        if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()
+            && $this->_handler->getResultsPerPageOptions() != null
+        ) {
             return $this->_handler->getResultsPerPageOptions()->getDefaultOption()->getLabel();
         }
+
         return parent::getDefaultPerPageValue();
     }
+
 
 }
