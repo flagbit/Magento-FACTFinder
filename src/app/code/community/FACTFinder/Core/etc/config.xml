@@ -42,6 +42,11 @@
                     <layer>FACTFinder_Core_Block_CatalogSearch_Layer</layer>
                 </rewrite>
             </catalogsearch>
+            <enterprise_search>
+                <rewrite>
+                    <catalogsearch_layer>FACTFinder_Core_Block_EnterpriseSearch_Layer</catalogsearch_layer>
+                </rewrite>
+            </enterprise_search>
         </blocks>
         <helpers>
             <factfinder>
