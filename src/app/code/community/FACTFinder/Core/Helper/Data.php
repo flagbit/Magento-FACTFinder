@@ -81,35 +81,6 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Update xml file in etc/modules according to backend config
-     * Return true, if the file was written and false if an error occurred
-     *
-     * @param string $module
-     * @param bool   $isActive
-     *
-     * @return bool
-     */
-    public function updateModuleState($module, $isActive = true)
-    {
-        $dir = Mage::getBaseDir('etc') . DS . 'modules' . DS;
-        $file = $dir . $module . '.xml';
-
-        if (!file_exists($file)) {
-            return;
-        }
-
-        $xml = new DOMDocument();
-        $xml->load($file);
-        foreach ($xml->getElementsByTagName('active') as $item) {
-            $item->nodeValue = $isActive ? 'true' : 'false';
-        }
-
-        // silencing is not good, but we only need the result of the operation
-        return (bool) @$xml->save($file);
-    }
-
-
-    /**
      * Redirect to the same url but with the skip parameter
      *
      * @return void

@@ -55,10 +55,6 @@
                         <class>factfinder/autoloader</class>
                         <method>addAutoloader</method>
                     </factfinder>
-                    <factfinder_manage_modules>
-                        <class>factfinder/observer</class>
-                        <method>manageModules</method>
-                    </factfinder_manage_modules>
                 </observers>
             </controller_front_init_before>
             <factfinder_export_after>

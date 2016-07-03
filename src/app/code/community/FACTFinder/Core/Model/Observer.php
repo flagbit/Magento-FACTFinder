@@ -126,6 +126,7 @@ class FACTFinder_Core_Model_Observer
         }
     }
 
+
     /**
      * Disable ConfigurableSwatches observer logic
      */
@@ -141,40 +142,6 @@ class FACTFinder_Core_Model_Observer
             ->setNode('/observers/configurableswatches/type', 'disabled');
 
         $_events->setAccessible(false);
-    }
-
-
-    /**
-     * Manage modules availability
-     * Enable them only if they were enable in core configuration
-     *
-     * @param Varien_Object $observer
-     *
-     * @return void
-     */
-    public function manageModules($observer)
-    {
-        $config = Mage::getConfig();
-        $modules = $config->getNode('modules');
-
-        $isConfigUpdated = false;
-        foreach ($modules->children() as $module => $data) {
-            if (strpos($module, 'FACTFinder_') === 0 && $module !== 'FACTFinder_Core') {
-                $configName = strtolower(str_replace('FACTFinder_', '', $module));
-                $isActivated = Mage::helper('factfinder')->isModuleActivated($configName);
-
-                $currentState = (string) $config->getNode("modules/{$module}/active");
-                if ((bool) $currentState === (bool) $isActivated) {
-                    continue;
-                }
-
-                $isConfigUpdated = Mage::helper('factfinder')->updateModuleState($module, $isActivated);
-            }
-        }
-
-        if ($isConfigUpdated) {
-            Mage::app()->cleanCache();
-        }
     }
 
 
