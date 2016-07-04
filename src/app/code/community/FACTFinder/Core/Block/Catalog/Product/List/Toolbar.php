@@ -406,7 +406,8 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
             && $this->getRequest()->getParam($this->getDirectionVarName())
         ) {
             // we use raw value since the one from magento doesn't use redirect url
-            $request = $_SERVER['REQUEST_URI'];
+            $url = trim(Mage::getBaseUrl('web'), '/');
+            $request = $this->removeBasePathByBaseUrl($_SERVER['REQUEST_URI'], $url);
             $request = preg_replace(
                 "/{$this->getDirectionVarName()}=([^&]+)/",
                 $this->getDirectionVarName() . '=' . $direction,
