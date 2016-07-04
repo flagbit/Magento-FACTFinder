@@ -28,4 +28,17 @@ class FACTFinder_Core_Block_EnterpriseSearch_Layer extends Enterprise_Search_Blo
     }
 
 
+    /**
+     * @return bool
+     */
+    public function canShowBlock()
+    {
+        if (Mage::helper('factfinder')->isEnabled()) {
+            return (bool) $this->getLayer()->getProductCollection()->getSize();
+        }
+
+        return parent::canShowBlock();
+    }
+
+
 }
