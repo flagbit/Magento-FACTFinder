@@ -53,6 +53,16 @@ abstract class AbstractAdapter
      * @var object The processed response content.
      */
     private $responseContent = null;
+    
+    /**
+     * @var string The last error message.
+     */
+    private $error = null;
+    
+    /**
+     * @var string The last stack trace.
+     */
+    private $stackTrace = null;
 
     /**
      * @param string $loggerClass Class name of logger to use. The class should
@@ -98,16 +108,16 @@ abstract class AbstractAdapter
             // stdClass objects don't really have any advantages over plain
             // arrays but miss out on some of the built-in array functions.
             $jsonData = json_decode($string, true);
-
             if (is_null($jsonData))
                 throw new \InvalidArgumentException(
                     "json_decode() raised an error: ".json_last_error()
                 );
-
             if(is_array($jsonData) && isset($jsonData['error'])) {
-                $this->log->error("FACT-Finder returned error: " . strip_tags($jsonData['error']));
+                $this->error = strip_tags($jsonData['error']);
+                $this->log->error("FACT-Finder returned error: " . $this->error);
                 if(isset($jsonData['stacktrace'])) {
-                    $this->log->error("Stacktrace:\n" . $jsonData['stacktrace']);
+                    $this->stackTrace = $jsonData['stacktrace'];
+                    $this->log->error("Stacktrace:\n" . $this->stackTrace);
                 }
             }
             return $jsonData;
@@ -121,9 +131,11 @@ abstract class AbstractAdapter
             // The constructor throws an exception on error
             $response = new \SimpleXMLElement($string);
             if(isset($response->error)) {
-                $this->log->error("FACT-Finder returned error: " . strip_tags($response->error));
+                $this->error = strip_tags($response->error);
+                $this->log->error("FACT-Finder returned error: " . $this->error);
                 if(isset($response->stacktrace)) {
-                    $this->log->error("Stacktrace:\n" . $response->stacktrace);
+                    $this->stackTrace = $response->stacktrace;
+                    $this->log->error("Stacktrace:\n" . $this->stackTrace);
                 }
             }
             return $response;
@@ -191,9 +203,34 @@ abstract class AbstractAdapter
 
         return $this->urlBuilder->generateUrl($parameters);
     }
-
+    
+    /**
+     * Returns true if the response is valid or false if an error occurred.
+     *
+     * @return bool
+     */
     protected function isValidResponse($jsonData)
     {
         return (!empty($jsonData) && !isset($jsonData['error']));
+    }
+    
+    /**
+     * Returns a message if an error occurred.
+     *
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * Returns the stack trace if an error occurred.
+     *
+     * @return string
+     */
+    public function getStackTrace()
+    {
+        return $this->stackTrace;
     }
  }

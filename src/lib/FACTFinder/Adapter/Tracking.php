@@ -68,11 +68,11 @@ class Tracking extends AbstractAdapter
     /**
      * Track a detail click on a product.
      *
-     * @param string $id id of product
+     * @param string $id tracking id of product (see field with the role "Product number for tracking")
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param string $query query which led to the product
      * @param int $pos position of product in the search result
-     * @param string $masterid masterId of product if variant
+     * @param string $masterId master id of the product (see field with the role "Master article number")
      * @param string $cookieId cookie id (optional)
      * @param int $origPos original position of product in the search result. this data is delivered by FACT-Finder (optional - is set equals to $position by default)
      * @param int $page page number where the product was clicked (optional - is 1 by default)
@@ -151,8 +151,8 @@ class Tracking extends AbstractAdapter
     /**
      * Track a product which was added to the cart.
      *
-     * @param string $id id of product
-     * @param string $masterid masterId of product if variant
+     * @param string $id tracking id of product (see field with the role "Product number for tracking")
+     * @param string $masterId master id of the product (see field with the role "Master article number")
      * @param string $tile title of product (optional - is empty by default)
      * @param string $query query which led to the product (only if module Semantic Enhancer is used)
      * @param string $sid session id (if empty, then try to set using the function session_id() )
@@ -215,8 +215,8 @@ class Tracking extends AbstractAdapter
     /**
      * Track a product which was purchased.
      *
-     * @param string $id id of product
-     * @param string $masterid masterId of product if variant
+     * @param string $id tracking id of product (see field with the role "Product number for tracking")
+     * @param string $masterId master id of the product (see field with the role "Master article number")
      * @param string $tile title of product (optional - is empty by default)
      * @param string $query query which led to the product (only if module Semantic Enhancer is used)
      * @param string $sid session id (if empty, then try to set using the function session_id() )
@@ -280,9 +280,9 @@ class Tracking extends AbstractAdapter
     /**
      * Track a click on a recommended product.
      *
-     * @param string $id id of product
+     * @param string $id tracking id of product (see field with the role "Product number for tracking")
      * @param int $mainId ID of the product for which the clicked-upon item was recommended
-     * @param string $masterid masterId of product if variant
+     * @param string $masterId master id of the product (see field with the role "Master article number")
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param string $cookieId cookie id (optional)
      * @param string $userid id of user (optional if modul personalisation is not used)

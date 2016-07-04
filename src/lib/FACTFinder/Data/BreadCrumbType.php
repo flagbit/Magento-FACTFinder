@@ -9,6 +9,7 @@ class BreadCrumbType
 {
     static private $search;
     static private $filter;
+    static private $advisor;
 
     static private $nextID = 0;
     private $id;
@@ -24,6 +25,7 @@ class BreadCrumbType
         {
             self::$search      = new BreadCrumbType();
             self::$filter      = new BreadCrumbType();
+            self::$advisor     = new BreadCrumbType();
 
             self::$initialized = true;
         }
@@ -31,6 +33,7 @@ class BreadCrumbType
 
     static public function Search()      { return self::$search; }
     static public function Filter()      { return self::$filter; }
+    static public function Advisor()     { return self::$advisor; }
 }
 
 BreadCrumbType::initialize();

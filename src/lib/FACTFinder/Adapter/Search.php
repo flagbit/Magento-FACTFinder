@@ -139,7 +139,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) {
+        if ($this->isValidResponse($jsonData)) {
             $searchResultData = $jsonData['searchResult'];
             $refKey = $searchResultData['refKey'];
 
@@ -192,7 +192,7 @@ class Search extends AbstractAdapter
         $singleWordSearch = array();
 
         $jsonData = $this->getResponseContent();
-        if (parent::isValidResponse($jsonData) && !empty($jsonData['searchResult']['singleWordResults']))
+        if ($this->isValidResponse($jsonData) && !empty($jsonData['searchResult']['singleWordResults']))
         {
             foreach ($jsonData['searchResult']['singleWordResults'] as $swsData)
             {
@@ -233,7 +233,7 @@ class Search extends AbstractAdapter
         $status = $searchStatusEnum::NoResult();
                 
         $jsonData = $this->getResponseContent();
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) 
+        if ($this->isValidResponse($jsonData)) 
         {
             switch($jsonData['searchResult']['resultStatus'])
             {
@@ -257,7 +257,7 @@ class Search extends AbstractAdapter
         $status = $articleNumberSearchStatusEnum::IsNoArticleNumberSearch();
         
         $jsonData = $this->getResponseContent();
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult'])) 
+        if ($this->isValidResponse($jsonData)) 
         {
             switch ($jsonData['searchResult']['resultArticleNumberStatus']) 
             {
@@ -278,7 +278,7 @@ class Search extends AbstractAdapter
     public function isSearchTimedOut()
     {
         $jsonData = $this->getResponseContent();
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
+        if ($this->isValidResponse($jsonData))
         {
             return $jsonData['searchResult']['timedOut'];
         }
@@ -305,7 +305,7 @@ class Search extends AbstractAdapter
 
         $filterGroups = array();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']['groups'])) {
+        if ($this->isValidResponse($jsonData) && isset($jsonData['searchResult']['groups'])) {
             foreach ($jsonData['searchResult']['groups'] as $groupData)
                 $filterGroups[] = $this->createFilterGroup($groupData);
         }
@@ -503,7 +503,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
+        if ($this->isValidResponse($jsonData))
         {
             $rppData = $jsonData['searchResult']['resultsPerPageList'];
             if (!empty($rppData))
@@ -559,7 +559,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
+        if ($this->isValidResponse($jsonData))
         {
             $pagingData = $jsonData['searchResult']['paging'];
             if (!empty($pagingData))
@@ -644,7 +644,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
+        if ($this->isValidResponse($jsonData))
         {
             $sortingData = $jsonData['searchResult']['sortsList'];
             if (!empty($sortingData))
@@ -692,7 +692,7 @@ class Search extends AbstractAdapter
 
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']))
+        if ($this->isValidResponse($jsonData))
         {
             $breadCrumbTrailData = $jsonData['searchResult']['breadCrumbTrailItems'];
             if (!empty($breadCrumbTrailData))
@@ -705,11 +705,19 @@ class Search extends AbstractAdapter
                     );
 
                     $breadCrumbTypeEnum = FF::getClassName('Data\BreadCrumbType');
-                    if ($breadCrumbData['type'] == 'filter')
+                    switch ($breadCrumbData['type'])
+                    {
+                    case 'filter':
                         $type = $breadCrumbTypeEnum::Filter();
-                    else
+                        break;
+                    case 'advisor':
+                        $type = $breadCrumbTypeEnum::Advisor();
+                        break;
+                    default:
                         $type = $breadCrumbTypeEnum::Search();
-
+                        break;
+                    }
+                    
                     $breadCrumbs[] = FF::getInstance(
                         'Data\BreadCrumb',
                         $breadCrumbData['text'],
@@ -749,7 +757,7 @@ class Search extends AbstractAdapter
         $campaigns = array();
         $jsonData = $this->getResponseContent();
 
-        if (parent::isValidResponse($jsonData) && isset($jsonData['searchResult']['campaigns'])) {
+        if ($this->isValidResponse($jsonData) && isset($jsonData['searchResult']['campaigns'])) {
             foreach ($jsonData['searchResult']['campaigns'] as $campaignData) {
                 $campaign = $this->createEmptyCampaignObject($campaignData);
 
@@ -940,24 +948,6 @@ class Search extends AbstractAdapter
             $followUpQuestions
         );
     }
-
-    /**
-     * @return string
-     */
-    public function getError()
-    {
-        $jsonData = $this->getResponseContent();
-        return isset($jsonData['error']) ? $jsonData['error'] : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStackTrace()
-    {
-        $jsonData = $this->getResponseContent();
-        return isset($jsonData['stacktrace']) ? $jsonData['stacktrace'] : null;
-    }
     
     /**
      * Value for parameter "followSearch" for followups on initial search like filters, pagination, ...
@@ -970,7 +960,7 @@ class Search extends AbstractAdapter
     {
         $jsonData = $this->getResponseContent();
         //use searchParams of result if available
-        if (parent::isValidResponse($jsonData) && $jsonData['searchResult'] && isset($jsonData['searchResult']['searchParams'])) {
+        if ($this->isValidResponse($jsonData) && isset($jsonData['searchResult']['searchParams'])) {
             $parameters = FF::getInstance(
                 'Util\Parameters',
                 $jsonData['searchResult']['searchParams']
@@ -997,5 +987,15 @@ class Search extends AbstractAdapter
             $followSearch = 0;
         }
         return $followSearch;
+    }
+       
+    /**
+     * Returns true if the search response is valid or false if an error occurred.
+     *
+     * @return bool
+     */
+    protected function isValidResponse($jsonData)
+    {
+        return (!empty($jsonData) && !isset($jsonData['error']) && isset($jsonData['searchResult']));
     }
 }

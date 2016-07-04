@@ -141,7 +141,7 @@ class EasyCurlDataProvider extends AbstractDataProvider
     ) {
         if ($this->configuration->isDebugEnabled()
             && isset($_SERVER['HTTP_REFERER'])
-            && !$connectionData->issetConnectionOptions(CURLOPT_REFERER)
+            && !$connectionData->issetConnectionOption(CURLOPT_REFERER)
         ) {
             $connectionData->setConnectionOption(
                 CURLOPT_REFERER,
