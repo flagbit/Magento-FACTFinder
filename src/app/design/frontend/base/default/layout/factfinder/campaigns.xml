@@ -49,6 +49,22 @@
         </reference>
     </catalogsearch_result_index>
 
+    <catalog_category_default>
+        <reference name="content">
+            <block type="factfinder_campaigns/feedback_search" after="category.products" name="ff.feedback.search.below" as="search_below">
+                <action method="setLabel"><label>below search result</label></action>
+            </block>
+        </reference>
+    </catalog_category_default>
+
+    <catalog_category_layered>
+        <reference name="content">
+            <block type="factfinder_campaigns/feedback_search" after="category.products" name="ff.feedback.search.below" as="search_below">
+                <action method="setLabel"><label>below search result</label></action>
+            </block>
+        </reference>
+    </catalog_category_layered>
+
     <catalog_category_view>
         <reference name="content">
             <block type="factfinder_campaigns/advisory_search" name="ff.search.advisory" before="-" template="factfinder/campaigns/advisory.phtml" />
@@ -66,9 +82,6 @@
             <!-- above and below search result labels-->
             <block type="factfinder_campaigns/feedback_search" after="product_list" name="ff.feedback.search.above" as="search_above">
                 <action method="setLabel"><label>above search result</label></action>
-            </block>
-            <block type="factfinder_campaigns/feedback_search" after="category.products" name="ff.feedback.search.below" as="search_below">
-                <action method="setLabel"><label>below search result</label></action>
             </block>
         </reference>
 
