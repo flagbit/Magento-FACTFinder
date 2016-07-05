@@ -73,10 +73,13 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         } catch (RuntimeException $e) {
             $this->loadLayout()
                 ->renderLayout();
+            Mage::helper('factfinder/debug')->log('Export action was locked', true);
             return;
         }
 
         $resource = Mage::app()->getRequest()->getParam('resource', 'product');
+        Mage::helper('factfinder/debug')->log(
+            'Export action called: resource=' . $resource . ', store='. $this->_getStoreId(), true);
 
         try {
             $exportModel = Mage::getModel('factfinder/export_' . $resource);
@@ -87,6 +90,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
             $this->releaseSemaphore(); // finally-workaround
         } catch (Exception $e) {
             $this->releaseSemaphore(); // finally-workaround
+            Mage::helper('factfinder/debug')->error('Export action ' . $e->__toString());
             throw $e;
         }
 
@@ -103,6 +107,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
         $fileName = 'store_' . $this->_getStoreId() . '_' . $resource . '.csv';
         $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
+        Mage::helper('factfinder/debug')->log('Get action called: ' . $fileName, true);
 
         if (!file_exists($filePath . $fileName)) {
             $this->loadLayout()
@@ -125,6 +130,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
         $fileName = 'store_' . $this->_getStoreId() . '_' . $resource . '.csv';
         $filePath = Mage::getBaseDir() . DS . 'var' . DS . 'factfinder' . DS;
+        Mage::helper('factfinder/debug')->log('Download action called: ' . $fileName, true);
 
         if (!file_exists($filePath . $fileName)) {
             $this->loadLayout()
@@ -147,6 +153,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
      */
     public function scheduleExportAction()
     {
+        Mage::helper('factfinder/debug')->log('ScheduleExport action called', true);
         $schedule = Mage::getModel('cron/schedule');
         $schedule->setJobCode('factfinder_generate')
             ->setCreatedAt(time())
@@ -202,6 +209,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
      */
     protected function _forwardExport($resource)
     {
+        Mage::helper('factfinder/debug')->log($resource . ' export called', true);
         $params = $this->getRequest()->getParams();
         $params = array_merge($params, array(
             'resource' => $resource,
