@@ -24,7 +24,7 @@
             <input id="search" type="search" name="<?php echo $catalogSearchHelper->getQueryParamName() ?>"
                    value="<?php echo $catalogSearchHelper->getEscapedQueryText() ?>" class="input-text required-entry"
                    maxlength="<?php echo $catalogSearchHelper->getMaxQueryLength();?>"
-                   placeholder="<?php echo $this->__('Search entire store here...') ?>" />
+                   placeholder="<?php echo $catalogSearchHelper->getEscapedQueryText() ?>" />
             <button type="submit" title="<?php echo $this->__('Search') ?>" class="button search-button">
                 <span><span><?php echo $this->__('Search') ?></span></span>
             </button>
