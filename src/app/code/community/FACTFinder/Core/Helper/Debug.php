@@ -89,17 +89,18 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      * Debug Log to file var/log/factfinder.log
      *
      * @param mixed $message
+     * @param bool $ignoreDebugConfig pass true if debug mode configuration should be ignored
      *
      * @return $this
      */
-    public function log($message)
+    public function log($message, $ignoreDebugConfig=false)
     {
         if (!Mage::getConfig()) {
             return $this;
         }
 
         try {
-            if ($this->isDebugMode()) {
+            if ($this->isDebugMode() || $ignoreDebugConfig) {
                 Mage::log($message, null, self::LOG_FILE_NAME, true);
             }
         } catch (Exception $e){
@@ -159,7 +160,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      */
     public function warn($message)
     {
-        return $this->log('WARNING: ' . $message);
+        return $this->log('WARNING: ' . $message, true);
     }
 
 
@@ -172,7 +173,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      */
     public function error($message)
     {
-        return $this->log('ERROR: ' . $message);
+        return $this->log('ERROR: ' . $message, true);
     }
 
 
@@ -185,7 +186,7 @@ class FACTFinder_Core_Helper_Debug extends Mage_Core_Helper_Abstract
      */
     public function fatal($message)
     {
-        return $this->log('FATAL ERROR: ' . $message);
+        return $this->log('FATAL ERROR: ' . $message, true);
     }
 
 

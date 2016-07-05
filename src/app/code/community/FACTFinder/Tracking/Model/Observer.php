@@ -95,7 +95,7 @@ class FACTFinder_Tracking_Model_Observer
                 $customerId
             );
         } catch (Exception $e) {
-            Mage::helper('factfinder/debug')->log($e->getMessage());
+            Mage::helper('factfinder/debug')->error($e->getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ class FACTFinder_Tracking_Model_Observer
             );
         }
         catch (Exception $e) {
-            Mage::helper('factfinder/debug')->log($e->getMessage());
+            Mage::helper('factfinder/debug')->error($e->getMessage());
         }
     }
 
