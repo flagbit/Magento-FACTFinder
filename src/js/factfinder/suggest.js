@@ -289,7 +289,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             temp += ' rel="' + this.getItemUrl(item)+ '"';
             temp += '>';
 
-            temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
+            temp += '<span class="amount">' + (item.hitCount == 0 ? '' : '(' + item.hitCount + ')') + '</span>';
             if (item.image) {
                 temp += '<img src="' + item.image + '" title="' + item.name + '" class="thumbnail"/>';
             }
