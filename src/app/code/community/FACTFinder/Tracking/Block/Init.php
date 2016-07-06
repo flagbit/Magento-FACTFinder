@@ -62,19 +62,11 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
         $searchHelper = Mage::helper('factfinder/search');
         $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
 
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-        if ($customerId) {
-            $customerId = md5('customer_' . $customerId);
-        }
-
         $dataTemplate = array(
             'query'         => $searchHelper->getQuery()->getQueryText(),
             'page'          => $searchHelper->getCurrentPage(),
-            'sid'           => Mage::helper('factfinder_tracking')->getSessionId(),
-            'pageSize'      => $searchHelper->getPageLimit(),
             'origPageSize'  => $searchHelper->getDefaultPerPageValue(),
             'channel'       => Mage::getStoreConfig('factfinder/search/channel'),
-            'userId'        => $customerId,
             'event'         => 'click'
         );
 
@@ -87,8 +79,7 @@ class FACTFinder_Tracking_Block_Init extends Mage_Core_Block_Template
                 'masterId' => $product->getData($idFieldName),
                 'pos'      => $product->getPosition(),
                 'origPos'  => $product->getOriginalPosition() ? $product->getOriginalPosition() : $product->getPosition(),
-                'title'    => $product->getName(),
-                'simi'     => $product->getSimilarity()
+                'title'    => $product->getName()
             );
 
             $data[$key] += $dataTemplate;

@@ -101,6 +101,11 @@ class FACTFinder_Tracking_Model_Processor
      */
     public function handleRequest($request)
     {
-       return $this->_getFacade()->getTrackingAdapter()->doTrackingFromRequest();
-     }
+        $sessionId = Mage::helper('factfinder_tracking')->getSessionId();
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        if ($customerId) {
+            $customerId = md5('customer_' . $customerId);
+        }
+        return $this->_getFacade()->getTrackingAdapter()->doTrackingFromRequest($sessionId, $customerId);
+    }
 }

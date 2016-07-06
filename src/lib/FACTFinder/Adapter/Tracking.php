@@ -41,11 +41,12 @@ class Tracking extends AbstractAdapter
      * not available, it will try to use session_id() to fetch one.
      *
      * @param string $sid session id
+     * @param string $userId id of user
      * @return bool Success?
      */
-    public function doTrackingFromRequest($sid = null)
+    public function doTrackingFromRequest($sid = null, $userId = null)
     {
-        $this->setupTrackingFromRequest($sid);
+        $this->setupTrackingFromRequest($sid, $userId);
         return $this->applyTracking();
     }
 
@@ -53,8 +54,11 @@ class Tracking extends AbstractAdapter
      * Use this method directly if you want to separate the setup from sending
      * the request. This is particularly useful when using the
      * MultiCurlRequestFactory.
+     *
+     * @param string $sid session id
+     * @param string $userId id of user
      */
-    public function setupTrackingFromRequest($sid = null)
+    public function setupTrackingFromRequest($sid = null, $userId = null)
     {
         if (strlen($sid) > 0)
             $this->parameters['sid'] = $sid;
@@ -63,6 +67,9 @@ class Tracking extends AbstractAdapter
         ) {
             $this->parameters['sid'] = session_id();
         }
+
+        if (strlen($userId) > 0)
+            $this->parameters['userId'] = $userId;
     }
 
     /**
@@ -80,7 +87,7 @@ class Tracking extends AbstractAdapter
      * @param string $title title of product (optional - is empty by default)
      * @param int $pageSize size of the page where the product was found (optional - is 12 by default)
      * @param int $origPageSize original size of the page before the user could have changed it (optional - is set equals to $page by default)
-     * @param string $userid id of user (optional if modul personalisation is not used)
+     * @param string $userId id of user (optional if modul personalisation is not used)
      * @return boolean $success
      */
     public function trackClick(
@@ -96,10 +103,10 @@ class Tracking extends AbstractAdapter
         $title = '',
         $pageSize = 12,
         $origPageSize = -1,
-        $userid = null
+        $userId = null
     ) {
         $this->setupClickTracking($id, $query, $pos, $masterId, $sid, $cookieId, $origPos, $page,
-                                  $simi, $title, $pageSize, $origPageSize, $userid);
+                                  $simi, $title, $pageSize, $origPageSize, $userId);
         return $this->applyTracking();
     }
 
@@ -121,7 +128,7 @@ class Tracking extends AbstractAdapter
         $title = '',
         $pageSize = 12,
         $origPageSize = -1,
-        $userid = null
+        $userId = null
     ) {
         if (strlen($sid) == 0) $sid = session_id();
         if ($origPos == -1) $origPos = $pos;
@@ -140,7 +147,7 @@ class Tracking extends AbstractAdapter
             'origPageSize'  => $origPageSize,
         );
         
-        if (strlen($userid) > 0) $params['userId'] = $userid;
+        if (strlen($userId) > 0) $params['userId'] = $userId;
         if (strlen($cookieId) > 0) $params['cookieId'] = $cookieId;
         if (strlen($masterId) > 0) $params['masterId'] = $masterId;
         
@@ -159,7 +166,7 @@ class Tracking extends AbstractAdapter
      * @param string $cookieId cookie id (optional)
      * @param int $count number of items purchased for each product (optional - default 1)
      * @param float $price this is the single unit price (optional)
-     * @param string $userid id of user (optional if modul personalisation is not used)
+     * @param string $userId id of user (optional if modul personalisation is not used)
      * @return boolean $success
      */
     public function trackCart(
@@ -171,9 +178,9 @@ class Tracking extends AbstractAdapter
         $cookieId = null,
         $count = 1,
         $price = null,
-        $userid = null
+        $userId = null
     ) {
-        $this->setupCartTracking($id, $masterId, $title, $query, $sid, $cookieId, $count, $price, $userid);
+        $this->setupCartTracking($id, $masterId, $title, $query, $sid, $cookieId, $count, $price, $userId);
         return $this->applyTracking();
     }
 
@@ -191,7 +198,7 @@ class Tracking extends AbstractAdapter
         $cookieId = null,
         $count = 1,
         $price = null,
-        $userid = null
+        $userId = null
     ) {
         if (strlen($sid) == 0) $sid = session_id();
         $params = array(
@@ -203,7 +210,7 @@ class Tracking extends AbstractAdapter
         );
 
         if (strlen($price) > 0) $params['price'] = $price;
-        if (strlen($userid) > 0) $params['userId'] = $userid;
+        if (strlen($userId) > 0) $params['userId'] = $userId;
         if (strlen($cookieId) > 0) $params['cookieId'] = $cookieId;
         if (strlen($masterId) > 0) $params['masterId'] = $masterId;
         if (strlen($query) > 0) $params['query'] = $query;
@@ -223,7 +230,7 @@ class Tracking extends AbstractAdapter
      * @param string $cookieId cookie id (optional)
      * @param int $count number of items purchased for each product (optional - default 1)
      * @param float $price this is the single unit price (optional)
-     * @param string $userid id of user (optional if modul personalisation is not used)
+     * @param string $userId id of user (optional if modul personalisation is not used)
      * @return boolean $success
      */
     public function trackCheckout(
@@ -235,9 +242,9 @@ class Tracking extends AbstractAdapter
         $cookieId = null,
         $count = 1,
         $price = null,
-        $userid = null
+        $userId = null
     ) {
-        $this->setupCheckoutTracking($id, $masterId, $title, $query, $sid, $cookieId, $count, $price, $userid);
+        $this->setupCheckoutTracking($id, $masterId, $title, $query, $sid, $cookieId, $count, $price, $userId);
         return $this->applyTracking();
     }
 
@@ -255,7 +262,7 @@ class Tracking extends AbstractAdapter
         $cookieId = null,
         $count = 1,
         $price = null,
-        $userid = null
+        $userId = null
     ) {
         if (strlen($sid) == 0) $sid = session_id();
         $params = array(
@@ -268,7 +275,7 @@ class Tracking extends AbstractAdapter
         );
 
         if (strlen($price) > 0) $params['price'] = $price;
-        if (strlen($userid) > 0) $params['userId'] = $userid;
+        if (strlen($userId) > 0) $params['userId'] = $userId;
         if (strlen($cookieId) > 0) $params['cookieId'] = $cookieId;
         if (strlen($query) > 0) $params['query'] = $query;
         if (strlen($masterId) > 0) $params['masterId'] = $masterId;
@@ -285,7 +292,7 @@ class Tracking extends AbstractAdapter
      * @param string $masterId master id of the product (see field with the role "Master article number")
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param string $cookieId cookie id (optional)
-     * @param string $userid id of user (optional if modul personalisation is not used)
+     * @param string $userId id of user (optional if modul personalisation is not used)
      * @return boolean $success
      */
     public function trackRecommendationClick(
@@ -294,9 +301,9 @@ class Tracking extends AbstractAdapter
         $masterId = null,
         $sid = null,
         $cookieId = null,
-        $userid = null
+        $userId = null
     ) {
-        $this->setupRecommendationClickTracking($id, $mainId, $masterId, $sid, $cookieId, $userid);
+        $this->setupRecommendationClickTracking($id, $mainId, $masterId, $sid, $cookieId, $userId);
         return $this->applyTracking();
     }
 
@@ -311,7 +318,7 @@ class Tracking extends AbstractAdapter
         $masterId = null,
         $sid = null,
         $cookieId = null,
-        $userid = null
+        $userId = null
     ) {
         if (strlen($sid) == 0) $sid = session_id();
         $params = array(
@@ -323,7 +330,7 @@ class Tracking extends AbstractAdapter
             'event'     => 'recommendationClick'
         );
         
-        if (strlen($userid) > 0) $params['userId'] = $userid;
+        if (strlen($userId) > 0) $params['userId'] = $userId;
         if (strlen($cookieId) > 0) $params['cookieId'] = $cookieId;
         if (strlen($masterId) > 0) $params['masterId'] = $masterId;
         
@@ -336,15 +343,15 @@ class Tracking extends AbstractAdapter
      *
      * @param string $sid session id (if empty, then try to set using the function session_id() )
      * @param string $cookieId cookie id (optional)
-     * @param string $userid id of user who logged in
+     * @param string $userId id of user who logged in
      * @return boolean $success
      */
     public function trackLogin(
         $sid = null,
         $cookieId = null,
-        $userid = null
+        $userId = null
     ) {
-        $this->setupLoginTracking($sid, $cookieId, $userid);
+        $this->setupLoginTracking($sid, $cookieId, $userId);
         return $this->applyTracking();
     }
 
@@ -356,12 +363,12 @@ class Tracking extends AbstractAdapter
     public function setupLoginTracking(
         $sid = null,
         $cookieId = null,
-        $userid = null
+        $userId = null
     ) {
         if (strlen($sid) == 0) $sid = session_id();
         $params = array(
             'sid'       => $sid,
-            'userId'    => $userid,
+            'userId'    => $userId,
             'event'     => 'login'
         );
         
