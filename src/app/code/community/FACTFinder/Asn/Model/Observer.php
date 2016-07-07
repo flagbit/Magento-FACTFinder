@@ -1,4 +1,4 @@
-$filterableAttributes->setStoreId(Mage::app()->getStore()->getStoreId());<?php
+<?php
 /**
  * FACTFinder_Asn
  *
