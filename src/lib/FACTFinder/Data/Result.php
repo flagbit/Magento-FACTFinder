@@ -6,10 +6,6 @@ namespace FACTFinder\Data;
  */
 class Result extends \ArrayIterator
 {
-    /**
-     * @var string
-     */
-    private $refKey;
 
     /**
      * @var int
@@ -18,7 +14,6 @@ class Result extends \ArrayIterator
 
     /**
      * @param Record[] $records The Record objects to add to the result.
-     * @param string $refKey
      * @param int $foundRecordsCount Total number of records found for the
      *        search these records are from. This can be greater than
      *        count($records), because $records may just be the records from a
@@ -27,11 +22,9 @@ class Result extends \ArrayIterator
      */
     public function __construct(
         array $records,
-        $refKey = '',
         $foundRecordsCount = 0
     ) {
         parent::__construct($records);
-        $this->refKey = (string)$refKey;
         $this->foundRecordsCount = (int)$foundRecordsCount;
     }
 
@@ -41,14 +34,6 @@ class Result extends \ArrayIterator
     public function getFoundRecordsCount()
     {
         return $this->foundRecordsCount;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRefKey()
-    {
-        return $this->refKey;
     }
 
 }

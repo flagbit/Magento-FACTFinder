@@ -39,10 +39,10 @@ class XmlConfiguration extends AbstractConfiguration
      *                      configuration data.
      * @return XmlConfiguration
      */
-    public function __construct($fileName, $element)
+    public function __construct($fileName, $element, $data_is_url = true)
     {
         libxml_use_internal_errors(true);
-        $xmlData = new \SimpleXMLElement($fileName, 0, true);
+        $xmlData = new \SimpleXMLElement($fileName, 0, $data_is_url);
         if (!isset($xmlData->$element))
             throw new \Exception("Specified configuration file does not contain section $element");
         $this->configuration = $xmlData->$element;

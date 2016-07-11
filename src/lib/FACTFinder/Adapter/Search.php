@@ -135,13 +135,11 @@ class Search extends AbstractAdapter
         //init default values
         $records      = array();
         $resultCount = 0;
-        $refKey = null;
 
         $jsonData = $this->getResponseContent();
 
         if ($this->isValidResponse($jsonData)) {
             $searchResultData = $jsonData['searchResult'];
-            $refKey = $searchResultData['refKey'];
 
             if (!empty($searchResultData['records']))
             {
@@ -168,7 +166,6 @@ class Search extends AbstractAdapter
         return FF::getInstance(
             'Data\Result',
             $records,
-            $refKey,
             $resultCount
         );
     }
