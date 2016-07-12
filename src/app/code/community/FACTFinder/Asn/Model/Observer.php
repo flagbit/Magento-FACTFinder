@@ -38,7 +38,8 @@ class FACTFinder_Asn_Model_Observer
 
         $block->setChild('layer_state', $stateBlock);
 
-        $filterableAttributes = Mage::getResourceModel('factfinder_asn/product_attribute_collection');
+        $filterableAttributes = Mage::getResourceModel('factfinder_asn/product_attribute_collection')
+			->setStoreId(Mage::app()->getStore()->getId());
         foreach ($filterableAttributes as $index => $attribute) {
             $filter = $block->getLayout()
                 ->createBlock('factfinder_asn/catalog_layer_factfinder')
