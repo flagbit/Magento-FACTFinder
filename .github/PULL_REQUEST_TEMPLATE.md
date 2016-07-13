@@ -1,0 +1,4 @@
+- Solves issue: 
+- Description: 
+- Tested with Magento editions/versions: 
+- Tested with PHP versions: 

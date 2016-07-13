@@ -31,7 +31,7 @@
     <factfinder_export_get>
         <update handle="factfinder_export_default" />
         <reference name="content">
-            <action method="setTemplate"><template>factfinder/core/export/locked.phtml</template></action>
+            <action method="setTemplate"><template>factfinder/core/export/nofile.phtml</template></action>
         </reference>
     </factfinder_export_get>
 
