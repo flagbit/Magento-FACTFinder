@@ -42,6 +42,11 @@ class Search extends AbstractAdapter
     private $sorting;
 
     /**
+     * @var FACTFinder\Data\SortingItems
+     */
+    private $sortingItems;
+
+    /**
      * @var FACTFinder\Data\BreadCrumbTrail
      */
     private $breadCrumbTrail;
@@ -89,12 +94,14 @@ class Search extends AbstractAdapter
     }
     
     /**
-     * Set Value for parameter sid
-     * @param string $sSid session id
+     * Set value for parameter sid for personalization.
+     *
+     * @param string $sid session id
      */
-    public function setSid($sSid)
+    public function setSid($sid)
     {
-        $this->parameters['sid'] = $sSid;
+        $this->parameters['sid'] = $sid;
+        $this->recordsUpToDate = false;
     }
     
     /**
@@ -663,6 +670,70 @@ class Search extends AbstractAdapter
 
             return FF::getInstance(
                 'Data\Sorting',
+                $sortOptions
+            );
+        }
+        return null;
+    }
+
+    /**
+     * @return \FACTFinder\Data\SortingItems
+     */
+    public function getSortingItems()
+    {
+        if (is_null($this->sortingItems))
+            $this->sortingItems = $this->createSortingItems();
+
+        return $this->sortingItems;
+    }
+
+    /**
+     * @return \FACTFinder\Data\SortingItems
+     */
+    private function createSortingItems()
+    {
+        $sortOptions = array();
+
+        $jsonData = $this->getResponseContent();
+
+        if ($this->isValidResponse($jsonData))
+        {
+            $sortingData = $jsonData['searchResult']['sortsList'];
+            if (!empty($sortingData))
+            {
+                $orderEnum = FF::getClassName('Data\SortingDirection');
+                foreach ($sortingData as $optionData)
+                {
+                    $optionLink = $this->convertServerQueryToClientUrl(
+                        $optionData['searchParams']
+                    );
+                    if (isset($optionData['order']))
+                    {
+                        switch ($optionData['order'])
+                        {
+                            case 'asc':
+                                $order = $orderEnum::Ascending();
+                                break;
+                            case 'desc':
+                            default:
+                                $order = $orderEnum::Descending();
+                                break;
+                        }
+                    }
+
+                    $sortOptions[] = FF::getInstance(
+                        'Data\SortingItem',
+                        $optionData['name'],
+                        $order,
+                        $optionData['description'],
+                        $optionLink,
+                        $optionData['selected']
+                    );
+                }
+            }
+
+            return FF::getInstance(
+                'Data\SortingItems',
                 $sortOptions
             );
         }

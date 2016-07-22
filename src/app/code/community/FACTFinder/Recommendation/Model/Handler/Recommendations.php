@@ -70,6 +70,9 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
         $params = array();
         $params['id'] = $this->_getIdParam();
         $params['idsOnly'] = $this->_getFacade()->getConfiguration()->getIdsOnly() ? 'true' : 'false';
+        if(Mage::getStoreConfigFlag('factfinder/config/personalization')) {
+            $params['sid'] = Mage::helper('factfinder_tracking')->getSessionId();
+        }
         $this->_getFacade()->configureRecommendationAdapter($params);
     }
 

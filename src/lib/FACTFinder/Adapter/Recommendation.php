@@ -114,6 +114,17 @@ class Recommendation extends AbstractAdapter
     }
 
     /**
+     * Set value for parameter sid for personalization.
+     *
+     * @param string $sid session id
+     */
+    public function setSid($sid)
+    {
+        $this->parameters['sid'] = $sid;
+        $this->recommendationsUpToDate = false;
+    }
+
+    /**
      * Returns recommendations for IDs previously specified. If no IDs have been
      * set, there will be a warning raised and an empty result will be returned.
      *
