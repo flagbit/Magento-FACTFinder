@@ -32,6 +32,11 @@
                     <query>FACTFinder_Core_Model_CatalogSearch_Query</query>
                 </rewrite>
             </catalogsearch>
+            <catalogsearch_resource>
+                <rewrite>
+                    <fulltext>FACTFinder_Core_Model_Resource_Fulltext</fulltext>
+                </rewrite>
+            </catalogsearch_resource>
         </models>
         <blocks>
             <factfinder>
