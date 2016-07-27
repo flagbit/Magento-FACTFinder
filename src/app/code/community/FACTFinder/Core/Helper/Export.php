@@ -6,7 +6,7 @@
  * @package magento
  * @author Flagbit Magento Team <magento@flagbit.de>
  * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
- * @license GPL
+ * @license https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link http://www.flagbit.de
  */
 class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract

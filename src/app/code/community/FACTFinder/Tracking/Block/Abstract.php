@@ -6,7 +6,7 @@
  * @package FACTFinder_Tracking
  * @author Flagbit Magento Team <magento@flagbit.de>
  * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
- * @license GPL
+ * @license https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link http://www.flagbit.de
  */
 abstract class FACTFinder_Tracking_Block_Abstract extends Mage_Core_Block_Template

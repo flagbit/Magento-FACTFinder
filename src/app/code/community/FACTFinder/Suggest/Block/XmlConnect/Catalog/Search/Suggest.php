@@ -5,8 +5,8 @@
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
  */
@@ -19,8 +19,8 @@
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2015 Flagbit GmbH & Co. KG
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
 class Flagbit_FactFinder_Block_XmlConnect_Catalog_Search_Suggest extends Mage_XmlConnect_Block_Catalog_Search_Suggest

@@ -5,8 +5,8 @@
  * @category Mage
  * @package FACTFinder_Campaigns
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright Copyright (c) 2016, Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
 
@@ -16,8 +16,8 @@
  * @category Mage
  * @package FACTFinder_Campaigns
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2015, Flagbit GmbH & Co. KG
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright Copyright (c) 2016, Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
 class FACTFinder_Campaigns_Block_Pushed_Product extends FACTFinder_Campaigns_Block_Pushed_Abstract
