@@ -73,14 +73,8 @@ class FACTFinder_Tracking_Block_Recommendation extends FACTFinder_Tracking_Block
 
         $dataTemplate = array(
             'mainId' => $mainProduct->getData($idFieldName),
-            'event'  => self::EVENT_NAME,
-            'sid'    => Mage::helper('factfinder_tracking')->getSessionId(),
+            'event'  => self::EVENT_NAME
         );
-
-        $userId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-        if ($userId) {
-            $dataTemplate['userId'] = md5('customer_' . $userId);
-        }
 
         return $dataTemplate;
     }

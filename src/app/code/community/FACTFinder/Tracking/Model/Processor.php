@@ -101,6 +101,9 @@ class FACTFinder_Tracking_Model_Processor
      */
     public function handleRequest($request)
     {
+        if (Mage::helper('factfinder')->isInternal()) {
+            return;
+        }
         $sessionId = Mage::helper('factfinder_tracking')->getSessionId();
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         if ($customerId) {

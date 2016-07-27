@@ -69,6 +69,7 @@ class FACTFinder_Tracking_Model_Observer
     {
         if (!Mage::getStoreConfigFlag('factfinder/export/track_carts')
             || !Mage::helper('factfinder')->isEnabled('tracking')
+            || Mage::helper('factfinder')->isInternal()
         ) {
             return;
         }
@@ -122,6 +123,7 @@ class FACTFinder_Tracking_Model_Observer
 
         if (!Mage::getStoreConfig('factfinder/export/clicktracking')
             || !Mage::helper('factfinder')->isEnabled('tracking')
+            || Mage::helper('factfinder')->isInternal()
         ) {
             return;
         }
@@ -170,6 +172,7 @@ class FACTFinder_Tracking_Model_Observer
     {
         if (!Mage::getStoreConfigFlag('factfinder/export/track_checkout')
             || !Mage::helper('factfinder')->isEnabled('tracking')
+            || Mage::helper('factfinder')->isInternal()
         ) {
             return;
         }
@@ -271,7 +274,9 @@ class FACTFinder_Tracking_Model_Observer
 
     public function loginTracking(Varien_Event_Observer $observer)
     {
-        if(!Mage::getStoreConfigFlag('factfinder/config/personalization')) {
+        if(!Mage::getStoreConfigFlag('factfinder/config/personalization')
+            || Mage::helper('factfinder')->isInternal()
+        ) {
             return;
         }
 
