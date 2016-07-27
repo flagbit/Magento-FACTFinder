@@ -110,6 +110,8 @@ class FACTFinder_Recommendation_Model_Observer
             $collection->addAttributeToFilter($idFieldName, array('in' => array(-1)));
         }
 
+        Mage::register('recommendation_collection', $collection, true);
+
         return $this;
     }
 

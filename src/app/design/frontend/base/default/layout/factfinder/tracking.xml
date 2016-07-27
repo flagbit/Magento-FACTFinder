@@ -18,7 +18,16 @@
             <action method="addJs"><script>factfinder/tracking.js</script></action>
         </reference>
         <reference name="content">
-            <block type="factfinder_tracking/init" name="factfinder.tracking" template="factfinder/tracking/init.phtml"/>
+            <block type="factfinder_tracking/click" name="factfinder.tracking.click" template="factfinder/tracking/click.phtml"/>
         </reference>
     </factfinder_clicktracking_enabled>
+
+    <factfinder_recommendation_tracking>
+        <reference name="head">
+            <action method="addJs"><script>factfinder/tracking.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="factfinder_tracking/recommendation" name="factfinder.tracking.recommendation" template="factfinder/tracking/recommendation.phtml"/>
+        </reference>
+    </factfinder_recommendation_tracking>
 </layout>

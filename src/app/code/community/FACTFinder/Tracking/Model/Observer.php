@@ -36,16 +36,24 @@ class FACTFinder_Tracking_Model_Observer
      */
     public function addTrackingHandles($observer)
     {
-        if (!Mage::getStoreConfig('factfinder/export/clicktracking')
-            || !Mage::helper('factfinder/search')->getIsOnSearchPage()
-            || !Mage::helper('factfinder')->isEnabled('tracking')
-        ) {
+        if (!Mage::helper('factfinder')->isEnabled('tracking')) {
             return;
         }
 
         $layout = $observer->getLayout();
         $update = $layout->getUpdate();
-        $update->addHandle('factfinder_clicktracking_enabled');
+
+        if (Mage::helper('factfinder/search')->getIsOnSearchPage()
+            && Mage::getStoreConfig('factfinder/export/clicktracking')
+        ) {
+            $update->addHandle('factfinder_clicktracking_enabled');
+        }
+
+        if (Mage::registry('current_product')
+            && Mage::helper('factfinder')->isEnabled('recommendation')
+        ) {
+            $update->addHandle('factfinder_recommendation_tracking');
+        }
     }
 
 
