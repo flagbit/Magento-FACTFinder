@@ -73,6 +73,11 @@ class FACTFinder_Core_Model_Observer
             $this->_handleEngine($errors, $this->getScope($request), $this->getScopeId($request));
         }
 
+        // check rewrites and add warnings in case something is wrong
+        foreach (Mage::helper('factfinder/rewrite')->checkRewrites() as $warning) {
+            Mage::getSingleton('adminhtml/session')->addWarning($warning);
+        }
+
         // this also helps with module managing
         Mage::app()->cleanCache();
         if (Mage::helper('core')->isModuleEnabled('Enterprise_PageCache')) {
