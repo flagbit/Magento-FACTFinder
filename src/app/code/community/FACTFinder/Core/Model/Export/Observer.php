@@ -29,6 +29,7 @@ class FACTFinder_Core_Model_Export_Observer
             $channel = $helper->getPrimaryChannel($storeId);
             $download = !Mage::helper('factfinder/export')->useFtp($storeId);
             $facade = Mage::getModel('factfinder/facade');
+            $facade->setStoreId($storeId);
             $facade->triggerDataImport($channel, $download);
         }
     }
