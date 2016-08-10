@@ -13,6 +13,7 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
 
     public function run()
     {
+	ini_set('memory_limit', '4G');
         if ($this->getArg('exportAll') || $this->getArg('exportall')) {
             $this->exportAll();
         } elseif ($this->getArg(self::EXPORT_STORE)) {
@@ -163,3 +164,5 @@ USAGE;
 
 $shell = new Mage_Shell_FactFinder();
 $shell->run();
+unset($shell);
+ini_set('memory_limit', '512M');
