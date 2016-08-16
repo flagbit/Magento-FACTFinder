@@ -95,7 +95,9 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $exportHelper = Mage::helper('factfinder/export');
         $channel = Mage::helper('factfinder')->getPrimaryChannel($storeId);
+        /** @var FACTFinder_Suggest_Model_Facade $facade */
         $facade = Mage::getModel('factfinder_suggest/facade');
+        $facade->setStoreId($storeId);
         $download = !$exportHelper->useFtp($storeId);
         $delay = $exportHelper->getImportDelay(self::IMPORT_TYPE);
 
