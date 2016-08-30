@@ -128,7 +128,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     public function getExportDirectory()
     {
-        return Mage::helper('factfinder/export')->getExportDirectory();
+        return $this->getHelper()->getExportDirectory();
     }
 
 
@@ -396,7 +396,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                                 $this->_formatAttributes('searchable', $productAttr, $storeId),
                                 $this->_formatAttributes('numerical', $productAttr, $storeId),
                             );
-                            if ($this->_getIfExportImageAndDeeplink($storeId)) {
+                            if ($this->getHelper()->shouldExportImagesAndDeeplinks($storeId)) {
                                 //dont need to add image and deeplink to child product, just add empty values
                                 $subProductIndex[] = '';
                                 $subProductIndex[] = '';
@@ -882,50 +882,23 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _exportImageAndDeepLink($productIndex, $productData, $storeId)
     {
-        if ($this->_getIfExportImageAndDeeplink($storeId)) {
-            $baseAdminUrl = Mage::app()->getStore()->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-            if ($storeId !== null) {
-                $currentBaseUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-            }
+        $helper = $this->getHelper();
 
-            $imageType = Mage::getStoreConfig('factfinder/export/suggest_image_type', $storeId);
-            $imageSize = Mage::getStoreConfig('factfinder/export/suggest_image_size', $storeId);
-
-            $product = Mage::getModel('catalog/product');
-            $product->setStoreId($storeId);
-            $product->load($productData['entity_id']);
-
-            $image = $this->_imageHelper->init($product, $imageType);
-            if (isset($imageSize) && $imageSize > 0) {
-                $image->resize($imageSize);
-            }
-
-            $image = (string) $image;
-
-            if ($storeId !== null) {
-                $image = str_replace($baseAdminUrl, $currentBaseUrl, $image);
-            }
-
-            $productIndex[] = $image;
-            $productIndex[] = $product->getProductUrl();
-
-            $product->clearInstance();
+        if (!$helper->shouldExportImagesAndDeeplinks($storeId)) {
+            return $productIndex;
         }
 
+        // emulate store
+        $oldStore = Mage::app()->getStore()->getId();
+        Mage::app()->setCurrentStore($storeId);
+
+        $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
+        $productIndex[] = $this->getProductUrl($productData['entity_id'], $storeId);
+
+        // finish emulation
+        Mage::app()->setCurrentStore($oldStore);
+
         return $productIndex;
-    }
-
-
-    /**
-     * Check of image and deep links should be exported
-     *
-     * @param int $storeId
-     *
-     * @return bool
-     */
-    protected function _getIfExportImageAndDeeplink($storeId)
-    {
-        return Mage::getStoreConfigFlag('factfinder/export/urls', $storeId);
     }
 
 
@@ -1104,6 +1077,80 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);
 
         return $this;
+    }
+
+
+    /**
+     * Get export helper
+     *
+     * @return FACTFinder_Core_Helper_Export
+     */
+    protected function getHelper()
+    {
+        return Mage::helper('factfinder/export');
+    }
+
+
+    /**
+     * Gte product URL for store
+     *
+     * @param int $productId
+     * @param int $storeId
+     *
+     * @return string
+     */
+    protected function getProductUrl($productId, $storeId)
+    {
+        $productUrl = Mage::getModel('catalog/product')
+            ->getCollection()
+            ->addAttributeToFilter('entity_id', $productId)
+            ->setStoreId($storeId)
+            ->addUrlRewrite()
+            ->getFirstItem()
+            ->getProductUrl();
+
+        return $productUrl;
+    }
+
+
+    /**
+     * Get image URL for product
+     *
+     * @param int $productId
+     * @param int $storeId
+     *
+     * @return string
+     */
+    protected function getProductImageUrl($productId, $storeId)
+    {
+        $helper = $this->getHelper();
+
+        $imageType = $helper->getExportImageType();
+        $imageBaseFile = Mage::getResourceSingleton('catalog/product')
+            ->getAttributeRawValue($productId, $imageType, $storeId);
+
+        /** @var Mage_Catalog_Model_Product_Image $imageModel */
+        $imageModel = Mage::getModel('catalog/product_image');
+
+        // if size was set
+        if ($helper->getExportImageWidth($storeId)) {
+            $imageModel
+                ->setWidth($helper->getExportImageWidth($storeId))
+                ->setHeight($helper->getExportImageHeight($storeId));
+        }
+
+        $imageModel
+            ->setDestinationSubdir($imageType)
+            ->setBaseFile($imageBaseFile);
+
+        // if no cache image was generated we should create one
+        if (!$imageModel->isCached()) {
+            $imageModel
+                ->resize()
+                ->saveFile();
+        }
+
+        return $imageModel->getUrl();
     }
 
 

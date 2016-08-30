@@ -24,6 +24,9 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     const IMPORT_DELAY_KEY     = 'factfinder_import_delay';
     const ARCHIVE_PATTERN      = 'store_%s_export.zip';
     const EXPORT_TRIGGER_DELAY = 90;
+    const EXPORT_IMAGE_SIZE    = 'suggest_image_size';
+    const EXPORT_IMAGE_TYPE    = 'suggest_image_type';
+    const EXPORT_URLS_IMAGES   = 'urls';
 
     /**
      * @var int
@@ -268,6 +271,64 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         Mage::register($typeKey, $delay);
 
         return $delay;
+    }
+
+
+    /**
+     * Get width of product images exported
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function getExportImageWidth($storeId = 0)
+    {
+        $width = $this->getExportConfigValue(self::EXPORT_IMAGE_SIZE, $storeId);
+        $width = array_shift(explode('x', $width));
+
+        return $width;
+    }
+
+
+    /**
+     * Get height of images exported. If not set use width
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function getExportImageHeight($storeId = 0)
+    {
+        $height = $this->getExportConfigValue(self::EXPORT_IMAGE_SIZE, $storeId);
+        $height = array_pop(explode('x', $height));
+
+        return $height ? $height : $this->getExportImageWidth();
+    }
+
+
+    /**
+     * Get type of product image to export
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function getExportImageType($storeId = 0)
+    {
+        return $this->getExportConfigValue(self::EXPORT_IMAGE_TYPE, $storeId);
+    }
+
+
+    /**
+     * Check if images and deeplinks should be exported
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function shouldExportImagesAndDeeplinks($storeId = 0)
+    {
+        return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES, $storeId);
     }
 
 
