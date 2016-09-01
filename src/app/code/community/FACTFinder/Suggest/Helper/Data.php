@@ -47,13 +47,13 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
             if (Mage::app()->getStore()->isCurrentlySecure()) {
                 $url = preg_replace('/^http:/', 'https:', $url);
             }
+
+            // remove all parameters except for channel
+            $url = $this->removeUrlParams($url, array('channel'));
         }
 
         // avoid specifying the default port for http
         $url = preg_replace('/^(http:[^\:]+)\:80\//', "$1/", $url);
-
-        // remove param "query"
-        $url = preg_replace('/([&|?])query=[^&]*&?/', "$1", $url);
 
         return $url;
     }
@@ -114,6 +114,32 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
         } else {
             $facade->triggerSuggestImport($channel, $download);
         }
+    }
+
+
+    /**
+     * Remove all parameters from url except for specified
+     *
+     * @param string $url
+     * @param array  $exclude
+     *
+     * @return string
+     */
+    protected function removeUrlParams($url, $exclude = array())
+    {
+        $excludeParams = array();
+
+        foreach ($exclude as $paramName) {
+            preg_match("/[&|?]{$paramName}=([^&]*)&?/", $url, $values);
+            if (isset($values[1])) {
+                $excludeParams[$paramName] = $values[1];
+            }
+        }
+
+        $url = array_shift(explode('?', $url));
+        $query = http_build_query($excludeParams);
+
+        return $url . '?' . $query;
     }
 
 
