@@ -28,6 +28,9 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
 {
 
     const SEARCH_STATUS_REGISTRY_KEY = 'ff_search_status';
+    const ORIGINAL_POSITION_FIELD    = '__ORIG_POSITION__';
+    const CAMPAIGN_NAME_FIELD        = '__FFCampaign__';
+    const INSTOREADS_PRODUCT_FIELD   = '__FFInstoreAds__';
 
     protected $_searchResult;
     protected $_searchResultCount;
@@ -182,7 +185,9 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
                         array(
                             'similarity' => $record->getSimilarity(),
                             'position' => $record->getPosition(),
-                            'original_position' => $record->getField('__ORIG_POSITION__')
+                            'original_position' => $record->getField(self::ORIGINAL_POSITION_FIELD),
+                            'campaign' => $record->getField(self::CAMPAIGN_NAME_FIELD),
+                            'instore_ads' => $record->getField(self::INSTOREADS_PRODUCT_FIELD)
                         )
                     );
                 }

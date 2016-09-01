@@ -92,7 +92,9 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
         $params['do'] = $this->_getDoParam();
         $params['productNumber'] = $this->_getProductNumberParam();
         $params['idsOnly'] = 'true';
-
+        if(Mage::getStoreConfigFlag('factfinder/config/personalization')) {
+            $params['sid'] = Mage::helper('factfinder_tracking')->getSessionId();
+        }
         $this->_getFacade()->configureProductCampaignAdapter($params);
     }
 

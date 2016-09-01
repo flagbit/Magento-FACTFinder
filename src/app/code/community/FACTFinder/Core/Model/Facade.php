@@ -620,26 +620,6 @@ class FACTFinder_Core_Model_Facade
 
 
     /**
-     * Create a new results object
-     *
-     * @param array  $records
-     * @param string $refKey
-     * @param int    $foundRecordsCount
-     *
-     * @return \FACTFinder\Data\Result
-     */
-    public function getNewResultObject($records, $refKey, $foundRecordsCount)
-    {
-        return FF::getInstance(
-            'Data\Result',
-            $records,
-            $refKey,
-            $foundRecordsCount
-        );
-    }
-
-
-    /**
      * Get paging object (collection)
      *
      * @param string $channel
