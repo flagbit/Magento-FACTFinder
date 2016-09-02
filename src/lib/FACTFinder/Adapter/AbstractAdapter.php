@@ -40,6 +40,11 @@ abstract class AbstractAdapter
     protected $urlBuilder;
 
     /**
+     * @var bool
+     */
+    protected $upToDate = false;
+
+    /**
      * @var \FACTFinder\Util\ContentProcessorInterface
      */
     private $responseContentProcessor;

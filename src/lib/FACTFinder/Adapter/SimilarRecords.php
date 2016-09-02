@@ -3,7 +3,7 @@ namespace FACTFinder\Adapter;
 
 use FACTFinder\Loader as FF;
 
-class SimilarRecords extends AbstractAdapter
+class SimilarRecords extends ConfigurableResponse
 {
     /**
      * @var FACTFinder\Util\LoggerInterface
@@ -20,18 +20,6 @@ class SimilarRecords extends AbstractAdapter
      * @var FACTFinder\Data\Result
      */
     private $similarRecords;
-
-    /**
-     * @var bool
-     */
-    private $attributesUpToDate = false;
-    private $recordsUpToDate = false;
-
-    /**
-     * @var bool
-     */
-    private $idsOnly = false;
-
 
     public function __construct(
         $loggerClass,
@@ -74,7 +62,7 @@ class SimilarRecords extends AbstractAdapter
         }
         // Make sure that the records are fetched again. In principle, we only
         // have to do this when recordCount increases.
-        $this->recordsUpToDate = false;
+        $this->upToDate = false;
     }
 
     /**
@@ -86,24 +74,7 @@ class SimilarRecords extends AbstractAdapter
     {
         $parameters = $this->request->getParameters();
         $parameters['id'] = $productID;
-        $this->attributesUpToDate = false;
-        $this->recordsUpToDate = false;
-    }
-
-    /**
-     * Set this to true to only retrieve the IDs of similar products instead
-     * of full Record objects.
-     * @param $idsOnly bool
-     */
-    public function setIDsOnly($idsOnly)
-    {
-        // Reset the similar records, if more detail is wanted than before
-        if($this->idsOnly && !$idsOnly)
-            $this->recordsUpToDate = false;
-
-        $this->idsOnly = $idsOnly;
-        $parameters = $this->request->getParameters();
-        $parameters['idsOnly'] = $idsOnly ? 'true' : 'false';
+        $this->upToDate = false;
     }
 
     /**
@@ -117,10 +88,10 @@ class SimilarRecords extends AbstractAdapter
     public function getSimilarAttributes()
     {
         if (is_null($this->similarAttributes)
-            || !$this->attributesUpToDate
+            || !$this->upToDate
         ) {
             $this->similarAttributes = $this->createSimilarAttributes();
-            $this->attributesUpToDate = true;
+            $this->upToDate = true;
         }
 
         return $this->similarAttributes;
@@ -161,11 +132,11 @@ class SimilarRecords extends AbstractAdapter
     public function getSimilarRecords()
     {
         if (is_null($this->similarRecords)
-            || !$this->recordsUpToDate
+            || !$this->upToDate
         ) {
             $this->request->resetLoaded();
             $this->similarRecords = $this->createSimilarRecords();
-            $this->recordsUpToDate = true;
+            $this->upToDate = true;
         }
 
         return $this->similarRecords;
@@ -189,10 +160,7 @@ class SimilarRecords extends AbstractAdapter
             {
                 foreach($jsonData['records'] as $recordData)
                 {
-                    if ($this->idsOnly)
-                        $records[] = $this->createSparseRecord($recordData);
-                    else
-                        $records[] = $this->createRecord($recordData, $position++);
+                    $records[] = $this->createRecord($recordData, $position++);
                 }
             }
         }
@@ -202,14 +170,6 @@ class SimilarRecords extends AbstractAdapter
             $records,
             null,
             count($records)
-        );
-    }
-
-    private function createSparseRecord($recordData)
-    {
-        return FF::getInstance(
-            'Data\Record',
-            (string)$recordData['id']
         );
     }
 

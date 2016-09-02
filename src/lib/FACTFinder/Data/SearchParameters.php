@@ -12,7 +12,8 @@ class SearchParameters
     /**
      * @var string
      */
-    private $query;
+    private $query;    
+    private $seoPath;
     private $channel;
     private $advisorStatus;
 
@@ -42,6 +43,8 @@ class SearchParameters
         \FACTFinder\Util\Parameters $parameters
     ) {
         $this->query = isset($parameters['query']) ? $parameters['query'] : '';
+
+        $this->seoPath = isset($parameters['seoPath']) ? $parameters['seoPath'] : '';
 
         // Properly prepared server parameters will always have a channel set
         $this->channel = $parameters['channel'];
@@ -78,7 +81,13 @@ class SearchParameters
         }
     }
 
-
+    /**
+     * @return string
+     */
+    public function getSeoPath()
+    {
+        return $this->seoPath;
+    }
 
     /**
      * @return string

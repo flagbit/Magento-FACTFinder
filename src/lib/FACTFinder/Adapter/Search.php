@@ -3,7 +3,7 @@ namespace FACTFinder\Adapter;
 
 use FACTFinder\Loader as FF;
 
-class Search extends AbstractAdapter
+class Search extends PersonalisedResponse
 {
     
     /**
@@ -55,16 +55,6 @@ class Search extends AbstractAdapter
      * @var FACTFinder\Data\CampaignIterator
      */
     private $campaigns;
-    
-    /**
-     * @var bool
-     */
-    private $recordsUpToDate = false;
-    
-    /**
-     * @var bool
-     */
-    private $idsOnly = false;
 
     public function __construct(
         $loggerClass,
@@ -92,43 +82,16 @@ class Search extends AbstractAdapter
     {
         $this->parameters['query'] = $query;
     }
-    
-    /**
-     * Set value for parameter sid for personalization.
-     *
-     * @param string $sid session id
-     */
-    public function setSid($sid)
-    {
-        $this->parameters['sid'] = $sid;
-        $this->recordsUpToDate = false;
-    }
-    
-    /**
-     * Set this to true to only retrieve the IDs of products instead
-     * of full Record objects.
-     * 
-     * @param $idsOnly bool
-     */
-    public function setIDsOnly($idsOnly)
-    {
-        if($this->idsOnly && !$idsOnly)
-            $this->recordsUpToDate = false;
-
-        $this->idsOnly = $idsOnly;
-        $parameters = $this->request->getParameters();
-        $parameters['idsOnly'] = $idsOnly ? 'true' : 'false';
-    }
 
     /**
      * @return \FACTFinder\Data\Result
      */
     public function getResult()
     {
-        if (is_null($this->result) || !$this->recordsUpToDate) {
+        if (is_null($this->result) || !$this->upToDate) {
             $this->request->resetLoaded();
             $this->result = $this->createResult();
-            $this->recordsUpToDate = true;
+            $this->upToDate = true;
         }
 
         return $this->result;

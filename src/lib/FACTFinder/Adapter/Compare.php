@@ -3,7 +3,7 @@ namespace FACTFinder\Adapter;
 
 use FACTFinder\Loader as FF;
 
-class Compare extends AbstractAdapter
+class Compare extends ConfigurableResponse
 {
     /**
      * @var FACTFinder\Util\LoggerInterface
@@ -20,18 +20,6 @@ class Compare extends AbstractAdapter
      * @var FACTFinder\Data\Result
      */
     private $comparedRecords;
-
-    /**
-     * @var bool
-     */
-    private $attributesUpToDate = false;
-    private $recordsUpToDate = false;
-
-    /**
-     * @var bool
-     */
-    private $comparableAttributesOnly = false;
-
 
     public function __construct(
         $loggerClass,
@@ -60,25 +48,7 @@ class Compare extends AbstractAdapter
     {
         $parameters = $this->request->getParameters();
         $parameters['ids'] = implode(';', $productIDs);
-        $this->attributesUpToDate = false;
-        $this->recordsUpToDate = false;
-    }
-
-    /**
-     * Set this to true to only retrieve those attributes that have been used
-     * for comparison instead of full Record objects.
-     *
-     * @param $comparableAttributesOnly bool
-     */
-    public function setComparableAttributesOnly($comparableAttributesOnly)
-    {
-        // Reset the compared products, if more detail is wanted than before
-        if($this->comparableAttributesOnly && !$comparableAttributesOnly)
-            $this->recordsUpToDate = false;
-
-        $this->comparableAttributesOnly = $comparableAttributesOnly;
-        $parameters = $this->request->getParameters();
-        $parameters['idsOnly'] = $comparableAttributesOnly ? 'true' : 'false';
+        $this->upToDate = false;
     }
 
     /**
@@ -92,10 +62,10 @@ class Compare extends AbstractAdapter
     public function getComparableAttributes()
     {
         if (is_null($this->comparableAttributes)
-            || !$this->attributesUpToDate
+            || !$this->upToDate
         ) {
             $this->comparableAttributes = $this->createComparableAttributes();
-            $this->attributesUpToDate = true;
+            $this->upToDate = true;
         }
 
         return $this->comparableAttributes;
@@ -136,10 +106,10 @@ class Compare extends AbstractAdapter
     public function getComparedRecords()
     {
         if (is_null($this->comparedRecords)
-            || !$this->recordsUpToDate
+            || !$this->upToDate
         ) {
             $this->comparedRecords = $this->createComparedRecords();
-            $this->recordsUpToDate = true;
+            $this->upToDate = true;
         }
 
         return $this->comparedRecords;

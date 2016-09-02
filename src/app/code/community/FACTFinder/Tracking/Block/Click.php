@@ -56,6 +56,14 @@ class FACTFinder_Tracking_Block_Click extends FACTFinder_Tracking_Block_Abstract
             'title'    => $product->getName()
         );
 
+        if ($product->getCampaign() !== null) {
+            $data['campaign'] = $product->getCampaign();
+        }
+        
+        if ($product->getInstoreAds() !== null) {
+            $data['instoreAds'] = $product->getInstoreAds();
+        }
+
         return $data;
 
     }
