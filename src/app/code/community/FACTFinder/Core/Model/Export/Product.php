@@ -23,7 +23,7 @@
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Resource_Fulltext
+class FACTFinder_Core_Model_Export_Product extends Mage_Core_Model_Abstract
 {
 
     const FILENAME_PATTERN = 'store_%s_product.csv';
@@ -89,6 +89,22 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         'searchable_attributes',
         'numerical_attributes',
     );
+
+    /**
+     * @var
+     */
+    protected $_engine;
+
+
+    /**
+     * Init resource model
+     *
+     */
+    protected function _construct()
+    {
+        $this->_init('factfinder/export');
+        $this->_engine = Mage::helper('catalogsearch')->getEngine();
+    }
 
 
     /**
@@ -314,14 +330,14 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
         $dynamicFields = $this->_getDynamicFields();
 
         // status and visibility filter
-        $visibility = $this->_getSearchableAttribute('visibility');
-        $status = $this->_getSearchableAttribute('status');
+        $visibility = $this->getResource()->getSearchableAttribute('visibility');
+        $status = $this->getResource()->getSearchableAttribute('status');
         $visibilityVals = Mage::getSingleton('catalog/product_visibility')->getVisibleInSearchIds();
         $statusVals = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
 
         $lastProductId = 0;
         while (true) {
-            $products = $this->_getSearchableProducts($storeId, $staticFields, null, $lastProductId);
+            $products = $this->getResource()->getSearchableProducts($storeId, $staticFields, $lastProductId);
             if (!$products) {
                 break;
             }
@@ -331,7 +347,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
             foreach ($products as $productData) {
                 $lastProductId = $productData['entity_id'];
                 $productAttributes[$productData['entity_id']] = $productData['entity_id'];
-                $productChildren = $this->_getProductChildIds($productData['entity_id'], $productData['type_id']);
+                $productChildren = $this->getResource()
+                    ->getProductChildIds($productData['entity_id'], $productData['type_id']);
                 $productRelations[$productData['entity_id']] = $productChildren;
                 if ($productChildren) {
                     foreach ($productChildren as $productChild) {
@@ -340,7 +357,8 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
                 }
             }
 
-            $productAttributes = $this->_getProductAttributes($storeId, array_keys($productAttributes), $dynamicFields);
+            $productAttributes = $this->getResource()
+                ->getProductAttributes($storeId, array_keys($productAttributes), $dynamicFields);
             foreach ($products as $productData) {
                 if (!isset($productAttributes[$productData['entity_id']])) {
                     continue;
@@ -529,79 +547,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
 
     /**
-     * Retrieve Searchable attributes
-     *
-     * @param string $backendType
-     * @param string $type        possible Types: system, sortable, filterable, searchable
-     * @param int    $storeId
-     *
-     * @return array
-     */
-    protected function _getSearchableAttributes($backendType = null, $type = null, $storeId = null)
-    {
-        if ($this->_searchableAttributes === null) {
-            $this->_searchableAttributes = array();
-            $entityType = $this->getEavConfig()->getEntityType('catalog_product');
-            $entity = $entityType->getEntity();
-
-            $userDefinedAttributes = array_keys(Mage::helper('factfinder/backend')
-                ->unserializeFieldValue(Mage::getStoreConfig('factfinder/export/attributes', $storeId)));
-
-            $whereCond = array(
-                $this->_getWriteAdapter()->quoteInto('additional_table.is_searchable=?', 1),
-                $this->_getWriteAdapter()->quoteInto('additional_table.is_filterable=?', 1),
-                $this->_getWriteAdapter()->quoteInto('additional_table.used_for_sort_by=?', 1),
-                $this->_getWriteAdapter()->quoteInto(
-                    'main_table.attribute_code IN(?)',
-                    array_merge(array('status', 'visibility'), $userDefinedAttributes)
-                )
-            );
-
-            $select = $this->_getWriteAdapter()->select()
-                ->from(array('main_table' => $this->getTable('eav/attribute')))
-                ->join(
-                    array('additional_table' => $this->getTable('catalog/eav_attribute')),
-                    'additional_table.attribute_id = main_table.attribute_id'
-                )
-                ->where('main_table.entity_type_id=?', $entityType->getEntityTypeId())
-                ->where(join(' OR ', $whereCond))
-                ->order('main_table.attribute_id', 'asc');
-
-            $attributesData = $this->_getWriteAdapter()->fetchAll($select);
-            $this->getEavConfig()->importAttributesData($entityType, $attributesData);
-
-            foreach ($attributesData as $attributeData) {
-                $attributeCode = $attributeData['attribute_code'];
-                $attribute = $this->getEavConfig()->getAttribute($entityType, $attributeCode);
-                $attribute->setEntity($entity);
-                $this->_searchableAttributes[$attribute->getId()] = $attribute;
-            }
-        }
-
-        if ($type !== null || $backendType !== null) {
-            $attributes = array();
-            foreach ($this->_searchableAttributes as $attribute) {
-                if ($backendType !== null
-                    && $attribute->getBackendType() != $backendType
-                ) {
-                    continue;
-                }
-
-                if ($this->_checkIfSkipAttribute($attribute, $type)) {
-                    continue;
-                }
-
-                $attributes[$attribute->getId()] = $attribute;
-            }
-
-            return $attributes;
-        }
-
-        return $this->_searchableAttributes;
-    }
-
-
-    /**
      * Get Category Path by Product ID
      *
      * @param int $productId
@@ -613,11 +558,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     {
 
         if ($this->_categoryNames === null) {
-            $this->_loadCategoryNames($storeId);
+            $this->_categoryNames = $this->getResource()->getCategoryNames($storeId);
         }
 
         if ($this->_productsToCategoryPath === null) {
-            $this->_loadCategoryPaths($storeId);
+            $this->_productsToCategoryPath = $this->getResource()->getCategoryPaths($storeId);
         }
 
         $value = '';
@@ -648,43 +593,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
 
     /**
-     * Return all product children ids
-     *
-     * @param int    $productId Product Entity Id
-     * @param string $typeId    Super Product Link Type
-     *
-     * @return array
-     */
-    protected function _getProductChildIds($productId, $typeId)
-    {
-        $typeInstance = $this->_getProductTypeInstance($typeId);
-        $relation = $typeInstance->isComposite()
-            ? $typeInstance->getRelationInfo()
-            : false;
-
-        if ($relation && $relation->getTable() && $relation->getParentFieldName() && $relation->getChildFieldName()) {
-            $select = $this->_getReadAdapter()->select()
-                ->from(
-                    array('main' => $this->getTable($relation->getTable())),
-                    array($relation->getChildFieldName()))
-                ->join(
-                    array('e' => $this->getTable('catalog/product')),
-                    'main.' . $relation->getChildFieldName() . '=e.entity_id',
-                    array('entity_id', 'type_id', 'sku')
-                )
-                ->where("{$relation->getParentFieldName()}=?", $productId);
-            if ($relation->getWhere() !== null) {
-                $select->where($relation->getWhere());
-            }
-
-            return $this->_getReadAdapter()->fetchAll($select);
-        }
-
-        return null;
-    }
-
-
-    /**
      * Retrieve attribute source value for search
      * This method is mostly copied from Mage_CatalogSearch_Model_Resource_Fulltext,
      * but it also retrieves attribute values from non-searchable/non-filterable attributes
@@ -697,7 +605,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
      */
     protected function _getAttributeValue($attributeId, $value, $storeId)
     {
-        $attribute = $this->_getSearchableAttribute($attributeId);
+        $attribute = $this->getResource()->getSearchableAttribute($attributeId);
         if (!$attribute->getIsSearchable() && $attribute->getAttributeCode() == 'visibility') {
             return $value;
         }
@@ -981,106 +889,6 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
 
     /**
-     * Load category names to cache variable
-     *
-     * @param int $storeId
-     *
-     * @return $this
-     */
-    protected function _loadCategoryNames($storeId)
-    {
-        $nameAttribute = $this->_getCategoryNameAttribute();
-        $statusAttribute = $this->_getCategoryStatusAttribute();
-
-        $select = $this->_getReadAdapter()->select()
-            ->from(
-                array('main' => $nameAttribute->getBackendTable()),
-                array('entity_id', 'value')
-            )
-            ->join(
-                array('e' => $statusAttribute->getBackendTable()),
-                'main.entity_id=e.entity_id AND (e.store_id = 0 OR e.store_id = ' . $storeId
-                . ') AND e.attribute_id=' . $statusAttribute->getAttributeId(),
-                null
-            )
-            ->where('main.attribute_id=?', $nameAttribute->getAttributeId())
-            ->where('e.value=?', '1')
-            ->where('main.store_id = 0 OR main.store_id = ?', $storeId);
-
-        $this->_categoryNames = $this->_getReadAdapter()->fetchPairs($select);
-
-        return $this;
-    }
-
-
-    /**
-     * Get category name attribute model
-     *
-     * @return mixed
-     */
-    protected function _getCategoryNameAttribute()
-    {
-        $categoryAttributeCollection = Mage::getResourceModel('catalog/category_attribute_collection');
-        $categoryAttributeCollection->addFieldToFilter('attribute_code', array('eq' => 'name'))
-            ->getSelect()->limit(1);
-
-        return $categoryAttributeCollection->getFirstItem();
-    }
-
-
-    /**
-     * Get category status attribute model (is_active)
-     *
-     * @return mixed
-     */
-    protected function _getCategoryStatusAttribute()
-    {
-        $categoryAttributeCollection = Mage::getResourceModel('catalog/category_attribute_collection');
-        $categoryAttributeCollection->addFieldToFilter('attribute_code', array('eq' => 'is_active'))
-            ->getSelect()->limit(1);
-
-        return $categoryAttributeCollection->getFirstItem();
-    }
-
-
-    /**
-     * Load products to category paths
-     *
-     * @param int $storeId
-     *
-     * @return $this
-     */
-    protected function _loadCategoryPaths($storeId)
-    {
-        $select = $this->_getReadAdapter()->select()
-            ->from(
-                array('main' => $this->getTable('catalog/category_product_index')),
-                array('product_id')
-            )
-            ->join(
-                array('e' => $this->getTable('catalog/category')),
-                'main.category_id=e.entity_id',
-                null
-            )
-            ->columns(array('e.path' => new Zend_Db_Expr('GROUP_CONCAT(e.path)')))
-            ->where(
-                'main.visibility IN(?)',
-                array(
-                    Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH,
-                    Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH
-                )
-            )
-            ->where('main.store_id = ?', $storeId)
-            ->where('e.path LIKE \'1/' . Mage::app()->getStore($storeId)->getRootCategoryId() . '/%\'')
-            ->group('main.product_id');
-
-        $this->_productsToCategoryPath = $this->_getReadAdapter()->fetchPairs($select);
-
-        return $this;
-    }
-
-
-    /**
      * Get export helper
      *
      * @return FACTFinder_Core_Helper_Export
@@ -1155,65 +963,37 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
 
 
     /**
-     * Retrieve searchable products per store
+     * Get searchable attributes by type
      *
-     * @param int $storeId
-     * @param array $staticFields
-     * @param array|int $productIds
-     * @param int $lastProductId
-     * @param int $limit
+     * @param null   $backendType Backend type of the attributes
+     * @param string $type        Possible Types: system, sortable, filterable, searchable
+     * @param int    $storeId
      *
      * @return array
      */
-    protected function _getSearchableProducts($storeId, array $staticFields, $productIds = null, $lastProductId = 0,
-                                              $limit = 100)
+    protected function _getSearchableAttributes($backendType = null, $type = null, $storeId = 0)
     {
-        $websiteId      = Mage::app()->getStore($storeId)->getWebsiteId();
-        $writeAdapter   = $this->_getWriteAdapter();
+        $attributes = array();
 
-        $select = $writeAdapter->select()
-            ->useStraightJoin(true)
-            ->from(
-                array('e' => $this->getTable('catalog/product')),
-                array_merge(array('entity_id', 'type_id'), $staticFields)
-            )
-            ->join(
-                array('website' => $this->getTable('catalog/product_website')),
-                $writeAdapter->quoteInto(
-                    'website.product_id=e.entity_id AND website.website_id=?',
-                    $websiteId
-                ),
-                array()
-            )
-            ->join(
-                array('stock_status' => $this->getTable('cataloginventory/stock_status')),
-                $writeAdapter->quoteInto(
-                    'stock_status.product_id=e.entity_id AND stock_status.website_id=?',
-                    $websiteId
-                ),
-                array('in_stock' => 'stock_status')
-            );
+        if ($type !== null || $backendType !== null) {
+            foreach ($this->getResource()->getSearchableAttributes($storeId) as $attribute) {
+                if ($backendType !== null
+                    && $attribute->getBackendType() != $backendType
+                ) {
+                    continue;
+                }
 
-        if (!is_null($productIds)) {
-            $select->where('e.entity_id IN(?)', $productIds);
+                if ($this->_checkIfSkipAttribute($attribute, $type)) {
+                    continue;
+                }
+
+                $attributes[$attribute->getId()] = $attribute;
+            }
+        } else {
+            $attributes = $this->getResource()->getSearchableAttributes($storeId);
         }
 
-        $select->where('e.entity_id>?', $lastProductId)
-            ->limit($limit)
-            ->order('e.entity_id');
-
-        if (!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
-            Mage::getSingleton('cataloginventory/stock_status')
-                ->prepareCatalogProductIndexSelect(
-                    $select,
-                    new Zend_Db_Expr('e.entity_id'),
-                    new Zend_Db_Expr('website.website_id')
-                );
-        }
-
-        $result = $writeAdapter->fetchAll($select);
-
-        return $result;
+        return $attributes;
     }
 
 
