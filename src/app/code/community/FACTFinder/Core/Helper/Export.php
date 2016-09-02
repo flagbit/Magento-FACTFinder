@@ -27,6 +27,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     const EXPORT_IMAGE_SIZE    = 'suggest_image_size';
     const EXPORT_IMAGE_TYPE    = 'suggest_image_type';
     const EXPORT_URLS_IMAGES   = 'urls';
+    const OUT_OF_STOCK_PRODUCTS = 'out_of_stock_products';
 
     /**
      * @var int
@@ -329,6 +330,19 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function shouldExportImagesAndDeeplinks($storeId = 0)
     {
         return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES, $storeId);
+    }
+
+
+    /**
+     * Check if out of stock products should be exported
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function shouldExportOutOfStock($storeId = 0)
+    {
+        return $this->getExportConfigValue(self::OUT_OF_STOCK_PRODUCTS, $storeId);
     }
 
 

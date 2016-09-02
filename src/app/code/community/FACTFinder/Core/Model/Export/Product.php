@@ -1154,4 +1154,67 @@ class FACTFinder_Core_Model_Export_Product extends Mage_CatalogSearch_Model_Reso
     }
 
 
+    /**
+     * Retrieve searchable products per store
+     *
+     * @param int $storeId
+     * @param array $staticFields
+     * @param array|int $productIds
+     * @param int $lastProductId
+     * @param int $limit
+     *
+     * @return array
+     */
+    protected function _getSearchableProducts($storeId, array $staticFields, $productIds = null, $lastProductId = 0,
+                                              $limit = 100)
+    {
+        $websiteId      = Mage::app()->getStore($storeId)->getWebsiteId();
+        $writeAdapter   = $this->_getWriteAdapter();
+
+        $select = $writeAdapter->select()
+            ->useStraightJoin(true)
+            ->from(
+                array('e' => $this->getTable('catalog/product')),
+                array_merge(array('entity_id', 'type_id'), $staticFields)
+            )
+            ->join(
+                array('website' => $this->getTable('catalog/product_website')),
+                $writeAdapter->quoteInto(
+                    'website.product_id=e.entity_id AND website.website_id=?',
+                    $websiteId
+                ),
+                array()
+            )
+            ->join(
+                array('stock_status' => $this->getTable('cataloginventory/stock_status')),
+                $writeAdapter->quoteInto(
+                    'stock_status.product_id=e.entity_id AND stock_status.website_id=?',
+                    $websiteId
+                ),
+                array('in_stock' => 'stock_status')
+            );
+
+        if (!is_null($productIds)) {
+            $select->where('e.entity_id IN(?)', $productIds);
+        }
+
+        $select->where('e.entity_id>?', $lastProductId)
+            ->limit($limit)
+            ->order('e.entity_id');
+
+        if (!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
+            Mage::getSingleton('cataloginventory/stock_status')
+                ->prepareCatalogProductIndexSelect(
+                    $select,
+                    new Zend_Db_Expr('e.entity_id'),
+                    new Zend_Db_Expr('website.website_id')
+                );
+        }
+
+        $result = $writeAdapter->fetchAll($select);
+
+        return $result;
+    }
+
+
 }
