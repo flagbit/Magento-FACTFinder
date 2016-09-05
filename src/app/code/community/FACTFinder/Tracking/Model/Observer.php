@@ -223,6 +223,9 @@ class FACTFinder_Tracking_Model_Observer
             return;
         }
 
+        // Autoloader is initialized on controller_front_init_before which is NOT called in cron context, load it now
+        Mage::getModel('factfinder/autoloader')->addAutoloader(new Varien_Event_Observer());
+
         $queue = Mage::getModel('factfinder_tracking/queue');
 
         try {
