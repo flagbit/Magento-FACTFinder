@@ -285,7 +285,8 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function getExportImageWidth($storeId = 0)
     {
         $width = $this->getExportConfigValue(self::EXPORT_IMAGE_SIZE, $storeId);
-        $width = array_shift(explode('x', $width));
+        $width = explode('x', $width);
+        $width = array_shift($width);
 
         return $width;
     }
@@ -301,7 +302,8 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function getExportImageHeight($storeId = 0)
     {
         $height = $this->getExportConfigValue(self::EXPORT_IMAGE_SIZE, $storeId);
-        $height = array_pop(explode('x', $height));
+        $height = explode('x', $height);
+        $height = array_pop($height);
 
         return $height ? $height : $this->getExportImageWidth();
     }
