@@ -33,7 +33,13 @@ class FACTFinder_Tracking_Block_Recommendation extends FACTFinder_Tracking_Block
      */
     protected function getProductResultCollection()
     {
-        return Mage::registry('recommendation_collection');
+        $collection = Mage::registry('recommendation_collection');
+
+        if (!$collection instanceof FACTFinder_Core_Model_Resource_Search_Collection) {
+            $collection = Mage::getResourceModel('factfinder/search_collection');
+        }
+
+        return $collection;
     }
 
 
