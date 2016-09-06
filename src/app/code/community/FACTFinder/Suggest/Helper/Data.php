@@ -136,7 +136,7 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        $url = array_shift(explode('?', $url));
+        $url = strtok($url, '?');
         $query = http_build_query($excludeParams);
 
         return $url . '?' . $query;
