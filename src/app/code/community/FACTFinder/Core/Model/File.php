@@ -32,7 +32,23 @@ class FACTFinder_Core_Model_File
     /**
      * @var string
      */
-    protected $_path;
+    protected $_currentPath;
+
+    /**
+     * @var bool
+     */
+    protected $_useTmpFile = true;
+
+    /**
+     * @var string
+     */
+    protected $_dir;
+
+    /**
+     * @var string
+     */
+    protected $_filename;
+
 
     /**
      * Class constructor
@@ -40,6 +56,21 @@ class FACTFinder_Core_Model_File
     public function __construct()
     {
         $this->_file = new Varien_Io_File();
+    }
+
+
+    /**
+     * Set if a temporary file should be used
+     *
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setUseTmpFile($value)
+    {
+        $this->_useTmpFile = $value;
+
+        return $this;
     }
 
 
@@ -70,7 +101,14 @@ class FACTFinder_Core_Model_File
      */
     public function open($dir, $filename)
     {
-        $this->_path = $dir . DS . $filename;
+        $this->_filename = $filename;
+        $this->_dir = $dir;
+
+        if ($this->_useTmpFile) {
+            $filename = $this->getTmpFilename($filename);
+        }
+
+        $this->_currentPath = $dir . DS . $filename;
 
         $this->_file->mkdir($dir);
         $this->_file->open(array('path' => $dir));
@@ -91,12 +129,14 @@ class FACTFinder_Core_Model_File
         return $this->_file->streamWrite($str);
     }
 
+
     /**
      * Write array as comma separated values to file
      *
-     * @param array $data
+     * @param array  $data
      * @param string $delimiter
      * @param string $enclosure
+     *
      * @return bool|int
      */
     public function writeCsv(array $data, $delimiter = ',', $enclosure = '"')
@@ -105,14 +145,16 @@ class FACTFinder_Core_Model_File
     }
 
     /**
-     * Returns path of current file
+     * Returns "proper" path of current file
+     * If a tmp file is used, this still gives the name of the target file
      *
      * @return string
      */
     public function getPath()
     {
-        return $this->_path;
+        return $this->_dir . DS . $this->_filename;
     }
+
 
     /**
      * Close stream
@@ -121,6 +163,11 @@ class FACTFinder_Core_Model_File
      */
     public function close()
     {
+        // rename the temporary file to the regular name and replace the existing file, it it already exists
+        if ($this->_useTmpFile) {
+            rename($this->_currentPath, $this->getPath());
+        }
+
         return $this->_file->streamClose();
     }
 
@@ -132,4 +179,21 @@ class FACTFinder_Core_Model_File
     {
         $this->close();
     }
+
+
+    /**
+     * Get name for temporary file
+     *
+     * @param $filename
+     *
+     * @return string
+     */
+    protected function getTmpFilename($filename)
+    {
+        $filename .= sprintf('.%s%s', 'tmp', time());
+
+        return $filename;
+    }
+
+
 }
