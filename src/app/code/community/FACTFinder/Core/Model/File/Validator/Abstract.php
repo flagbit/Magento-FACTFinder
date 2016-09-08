@@ -26,6 +26,7 @@ abstract class FACTFinder_Core_Model_File_Validator_Abstract
     const DEFAULT_CSV_DELIMITER = ',';
 
     const EXCEPTION_CSV_FIELDS_MISMATCH = 'Number of fields in row %s does not match number fields in the header';
+    const EXCEPTION_SIZE_MISMATCH = 'The actual number of CSV lines does not match the expected one';
     const EXCEPTION_FILE_IS_EMPTY = 'File is empty!';
 
 
@@ -87,6 +88,80 @@ abstract class FACTFinder_Core_Model_File_Validator_Abstract
         if (!filesize($file)) {
             throw new Exception(self::EXCEPTION_FILE_IS_EMPTY);
         };
+    }
+
+
+    /**
+     * Get store ID based on filename and file pattern
+     *
+     * @param $file
+     * @param $filenamePattern
+     *
+     * @return int
+     */
+    protected function getStoreIdFromFile($file, $filenamePattern)
+    {
+        $filenamePattern = str_replace('%s', '([\d]+)', $filenamePattern);
+        if (preg_match("/$filenamePattern/", basename($file), $matches)) {
+            return $matches[1];
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Check if the file contains the expected number of lines
+     *
+     * @param string $file
+     * @param int    $expectedSize
+     *
+     * @throws Exception
+     */
+    protected function checkNumberOfLines($file, $expectedSize)
+    {
+        $actualSize = 0;
+        $h = fopen($file, 'r');
+        while (fgetcsv($h)) {
+            $actualSize++;
+        }
+
+        // one extra line for the header
+        if ($actualSize - $expectedSize !== 1) {
+            throw new Exception(self::EXCEPTION_SIZE_MISMATCH);
+        }
+    }
+
+
+    /**
+     * Process exception
+     *
+     * @param           $file
+     * @param Exception $exception
+     *
+     * @return void
+     */
+    protected function logException($file, Exception $exception)
+    {
+        $helper = Mage::helper('factfinder');
+
+        // log exception as normally
+        Mage::logException($exception);
+
+        $message = $helper->__('Invalid FACT-Finder export file detected: %s', basename($file));
+        $message .= " | " . $exception->getMessage();
+
+        // add an admin notification
+        $notification = Mage::getModel('adminnotification/inbox');
+        $notification->setData(
+            array(
+                'severity'    => 1,
+                'title'       => $helper->__('FACTFINDER EXPORT TROUBLES'),
+                'description' => $message,
+                'url'         => '',
+            )
+        );
+        $notification->save();
     }
 
 
