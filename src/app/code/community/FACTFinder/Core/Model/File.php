@@ -23,6 +23,7 @@
  */
 class FACTFinder_Core_Model_File
 {
+    const BACKUP_DIR = 'bak';
 
     /**
      * @var Varien_Io_File
@@ -51,11 +52,44 @@ class FACTFinder_Core_Model_File
 
 
     /**
+     * @var FACTFinder_Core_Model_File_Validator_Abstract
+     */
+    protected $_validator;
+
+
+    /**
+     * @var null|bool
+     */
+    protected $_isValid = null;
+
+
+    /**
      * Class constructor
      */
     public function __construct()
     {
         $this->_file = new Varien_Io_File();
+    }
+
+
+    /**
+     * Set validator object
+     *
+     * @param FACTFinder_Core_Model_File_Validator_Abstract $validator
+     *
+     * @return $this
+     *
+     * @throws Exception
+     */
+    public function setValidator(FACTFinder_Core_Model_File_Validator_Abstract $validator)
+    {
+        if (!$validator instanceof FACTFinder_Core_Model_File_Validator_Abstract) {
+            throw new Exception('Validator must be an instance of FACTFinder_Core_Model_File_Validator_Abstract!');
+        }
+
+        $this->_validator = $validator;
+
+        return $this;
     }
 
 
@@ -165,7 +199,13 @@ class FACTFinder_Core_Model_File
     {
         // rename the temporary file to the regular name and replace the existing file, it it already exists
         if ($this->_useTmpFile) {
-            rename($this->_currentPath, $this->getPath());
+            if ($this->isValid()) {
+                $this->_file->mv($this->_currentPath, $this->getPath());
+            } else {
+                $this->moveToBackup();
+            }
+
+            $this->_currentPath = $this->getPath();
         }
 
         return $this->_file->streamClose();
@@ -193,6 +233,50 @@ class FACTFinder_Core_Model_File
         $filename .= sprintf('.%s%s', 'tmp', time());
 
         return $filename;
+    }
+
+
+    /**
+     * Check if file is valid
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        if (!$this->_validator) {
+            return true;
+        }
+
+        if ($this->_isValid === null) {
+            $this->_isValid = $this->_validator->validate($this->_currentPath);
+        }
+
+        return $this->_isValid;
+    }
+
+
+    /**
+     * Remove the current file
+     *
+     * @return FACTFinder_Core_Model_File
+     */
+    public function moveToBackup()
+    {
+        $this->_file->mkdir($this->getBackupPath());
+        $this->_file->mv($this->_currentPath, $this->getBackupPath() . DS . basename($this->_currentPath));
+
+        return $this;
+    }
+
+
+    /**
+     * Get backup directory for invalid files
+     *
+     * @return string
+     */
+    protected function getBackupPath()
+    {
+        return $this->_dir . DS . self::BACKUP_DIR;
     }
 
 
