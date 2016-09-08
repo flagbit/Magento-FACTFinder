@@ -27,6 +27,8 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
 {
 
     const FILENAME_PATTERN = 'store_%s_stock.csv';
+    const FILE_VALIDATOR = 'factfinder/file_validator_stock';
+    const CSV_DELIMITER = ';';
 
     /**
      * defines Export Columns
@@ -84,6 +86,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
             $dir = Mage::helper('factfinder/export')->getExportDirectory();
             $fileName = $this->getFilenameForStore($storeId);
             $this->_file = Mage::getModel('factfinder/file');
+            $this->_file->setValidator(Mage::getModel(self::FILE_VALIDATOR));
             $this->_file->open($dir, $fileName);
         }
 
@@ -101,7 +104,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      */
     protected function _addCsvRow($data, $storeId = 0)
     {
-        return $this->_getFile($storeId)->writeCsv($data, ';');
+        return $this->_getFile($storeId)->writeCsv($data, self::CSV_DELIMITER);
     }
 
 
@@ -111,7 +114,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      *
      * @param int $storeId Store Id
      *
-     * @return $this
+     * @return bool|string
      */
     public function saveExport($storeId = null)
     {
@@ -125,7 +128,11 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
                 $this->_addCsvRow($stock, $storeId);
             }
 
-            $stocks = $this->_getStockData($storeId, $page++);
+            $stocks = $this->_getStockData($storeId, ++$page);
+        }
+
+        if (!$this->_getFile($storeId)->isValid()) {
+            return false;
         }
 
         return $this->_getFile($storeId)->getPath();
@@ -143,9 +150,8 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      */
     protected function _getStockData($storeId, $part = 1, $limit = 100)
     {
-
         $store  = Mage::app()->getStore($storeId);
-        $select = $this->_getWriteAdapter()->select()
+        $select = $this->_getReadAdapter()->select()
             ->from(
                 array('e' => $this->getTable('cataloginventory/stock_status')),
                 $this->_exportColumns
@@ -158,7 +164,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
         $select->limitPage($part, $limit)
             ->order('e.product_id');
 
-        return $this->_getWriteAdapter()->fetchAll($select);
+        return $this->_getReadAdapter()->fetchAll($select);
     }
 
 
@@ -174,13 +180,40 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
         foreach ($stores as $store) {
             try {
                 $stock = Mage::getModel('factfinder/export_stock');
-                $paths[] = $stock->saveExport($store->getId());
+                $filePath = $stock->saveExport($store->getId());
+                if ($filePath) {
+                    $paths[] = $filePath;
+                }
             } catch (Exception $e) {
                 Mage::logException($e);
             }
         }
 
         return $paths;
+    }
+
+
+    /**
+     * Get number of rows to be exported
+     *
+     * @param $storeId
+     *
+     * @return int
+     */
+    public function getSize($storeId)
+    {
+        $store  = Mage::app()->getStore($storeId);
+        $select = $this->_getReadAdapter()->select()
+            ->from(
+                array('e' => $this->getTable('cataloginventory/stock_status')),
+                new Zend_Db_Expr('count(*)')
+            );
+
+        if ($storeId !== null) {
+            $select->where('e.website_id = ?', $store->getWebsiteId());
+        }
+
+        return (int) $this->_getReadAdapter()->fetchOne($select);
     }
 
 
