@@ -40,14 +40,14 @@ var FactfinderTracking = Class.create({
 
             if(element.readAttribute('href')) {
                 var match = this.regex.exec(element.readAttribute('href'));
-                if(match && match[1]) {
+                if(match && match[1] && !this.irrelevantLink(element.readAttribute('class'))) {
                     return this.prepareElement(element, match[1], 'click');
                 }
             }
 
             if(element.readAttribute('onclick')) {
                 var match = this.regex.exec(element.readAttribute('onclick'));
-                if(match && match[1]) {
+                if(match && match[1] && !this.irrelevantLink(element.readAttribute('class'))) {
                     return this.prepareElement(element, match[1], 'click');
                 }
             }
@@ -69,6 +69,13 @@ var FactfinderTracking = Class.create({
             method: 'post',
             parameters: data
         });
+        return false;
+    },
+    
+    irrelevantLink: function (classAttribute) {
+        if (classAttribute != null && (classAttribute.indexOf('link-wishlist') != -1 || classAttribute.indexOf('link-compare') != -1)) {
+            return true;
+        }
         return false;
     }
 });

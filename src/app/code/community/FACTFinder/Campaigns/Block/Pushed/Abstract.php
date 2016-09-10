@@ -97,18 +97,6 @@ abstract class FACTFinder_Campaigns_Block_Pushed_Abstract extends Mage_Catalog_B
         return $this->__('Pushed products');
     }
 
-
-    /**
-     * Check if campaigns can be shown
-     *
-     * @return bool
-     */
-    protected function _canBeShown()
-    {
-        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
-    }
-
-
     /**
      * Render html
      * Return empty string if module isn't enabled
@@ -124,5 +112,21 @@ abstract class FACTFinder_Campaigns_Block_Pushed_Abstract extends Mage_Catalog_B
         return parent::_toHtml();
     }
 
+    /**
+     * Check if campaigns can be shown
+     *
+     * @return bool
+     */
+    protected function _canBeShown()
+    {
+        if (Mage::registry('current_category')
+            && !Mage::helper('factfinder_campaigns')->isCatalogNavigationReplaced()
+            || Mage::registry('current_product')
+        ) {
+            return false;
+        }
+
+        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
+    }
 
 }

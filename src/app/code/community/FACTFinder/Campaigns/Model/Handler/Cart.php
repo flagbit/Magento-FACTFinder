@@ -61,9 +61,9 @@ class FACTFinder_Campaigns_Model_Handler_Cart extends FACTFinder_Campaigns_Model
     {
         if (!empty($this->_productIds)) {
             $this->_getFacade()->getProductCampaignAdapter()->makeShoppingCartCampaign();
+            return parent::getCampaigns();
         }
-
-        return parent::getCampaigns();
+        return array();
     }
 
 

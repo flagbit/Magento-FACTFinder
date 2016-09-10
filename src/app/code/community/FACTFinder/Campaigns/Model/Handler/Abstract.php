@@ -35,6 +35,14 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
      * @var array
      */
     protected $_productIds = array();
+    
+    /**
+     * Page IDs
+     *
+     * @var string
+     */
+    protected $_pageId = null;
+
 
     /**
      * Available campaigns
@@ -57,7 +65,7 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
      *
      * @param array $productIds
      */
-    public function __construct($productIds)
+    public function __construct($productIds = null)
     {
         $this->_productIds = $productIds;
         parent::__construct();
@@ -90,7 +98,11 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
         $params = array();
 
         $params['do'] = $this->_getDoParam();
-        $params['productNumber'] = $this->_getProductNumberParam();
+        if ($this instanceof FACTFinder_Campaigns_Model_Handler_Page) {
+            $params['pageId'] = $this->_getPageIdParam();
+        } else {
+            $params['productNumber'] = $this->_getProductNumberParam();
+        }
         $params['idsOnly'] = 'true';
         if(Mage::getStoreConfigFlag('factfinder/config/personalization')) {
             $params['sid'] = Mage::helper('factfinder_tracking')->getSessionId();
@@ -105,15 +117,6 @@ abstract class FACTFinder_Campaigns_Model_Handler_Abstract extends FACTFinder_Co
      * @return string
      */
     abstract protected function _getDoParam();
-
-
-    /**
-     * Get array of product ids
-     *
-     * @return array
-     */
-    abstract protected function _getProductNumberParam();
-
 
     /**
      * Get array of guestions from advisor campaign

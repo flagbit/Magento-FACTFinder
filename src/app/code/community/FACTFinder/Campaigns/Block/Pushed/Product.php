@@ -33,9 +33,12 @@ class FACTFinder_Campaigns_Block_Pushed_Product extends FACTFinder_Campaigns_Blo
      */
     protected function _canBeShown()
     {
-        $enabledOnProduct = Mage::helper('factfinder_campaigns')->canShowCampaignsOnProduct();
-
-        return parent::_canBeShown() && $enabledOnProduct;
+        if (!Mage::registry('current_product')
+            || !Mage::helper('factfinder_campaigns')->canShowCampaignsOnProduct())
+        {
+            return false;
+        }
+        return (bool) Mage::helper('factfinder')->isEnabled('campaigns');
     }
 
 
