@@ -25,22 +25,4 @@ class FACTFinder_Campaigns_Block_Pushed_Search extends FACTFinder_Campaigns_Bloc
 
     protected $_handlerModel = 'factfinder_campaigns/handler_search';
 
-
-    /**
-     * Check if campaigns can be shown
-     *
-     * @return bool
-     */
-    protected function _canBeShown()
-    {
-        if (Mage::registry('current_category')
-            && !Mage::helper('factfinder_campaigns')->isCatalogNavigationReplaced()
-        ) {
-            return false;
-        }
-
-        return parent::_canBeShown();
-    }
-
-
 }

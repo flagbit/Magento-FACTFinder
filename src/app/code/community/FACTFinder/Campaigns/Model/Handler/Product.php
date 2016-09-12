@@ -58,9 +58,9 @@ class FACTFinder_Campaigns_Model_Handler_Product extends FACTFinder_Campaigns_Mo
     {
         if (!empty($this->_productIds)) {
             $this->_getFacade()->getProductCampaignAdapter()->makeProductCampaign();
+            return parent::getCampaigns();
         }
-
-        return parent::getCampaigns();
+        return array();
     }
 
 

@@ -25,6 +25,7 @@ class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
     const CATALOG_NAVIGATION_REPLACED_CONFIG_PATH = 'factfinder/modules/catalog_navigation';
     const CAMPAIGNS_IDENTIFIER_CONFIG_PATH = 'factfinder/config/campaigns_identifier';
     const ENABLE_CAMPAIGNS_ON_PROD_PAGE_CONFIG_PATH = 'factfinder/config/enable_campaigns_on_prod_page';
+    const ENABLE_LANDING_PAGE_CAMPAIGNS_CONFIG_PATH = 'factfinder/config/enable_landing_page_campaigns';
 
 
     /**
@@ -35,6 +36,16 @@ class FACTFinder_Campaigns_Helper_Data extends Mage_Core_Helper_Abstract
     public function canShowCampaignsOnProduct()
     {
         return (bool) Mage::app()->getStore()->getConfig(self::ENABLE_CAMPAIGNS_ON_PROD_PAGE_CONFIG_PATH);
+    }
+    
+    /**
+     * Check config if showing campaigns on product page is enabled
+     *
+     * @return bool
+     */
+    public function canShowLandingPageCampaigns()
+    {
+        return (bool) Mage::app()->getStore()->getConfig(self::ENABLE_LANDING_PAGE_CAMPAIGNS_CONFIG_PATH);
     }
 
 

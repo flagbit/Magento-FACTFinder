@@ -35,8 +35,8 @@ class FACTFinder_Tracking_Block_Recommendation extends FACTFinder_Tracking_Block
     {
         $collection = Mage::registry('recommendation_collection');
 
-        if (!$collection instanceof FACTFinder_Core_Model_Resource_Search_Collection) {
-            $collection = Mage::getResourceModel('factfinder/search_collection');
+        if (empty($collection)) {
+            $collection = array();
         }
 
         return $collection;

@@ -40,6 +40,7 @@ abstract class FACTFinder_Campaigns_Block_Abstract extends Mage_Core_Block_Templ
     {
         if (Mage::registry('current_category')
             && !Mage::helper('factfinder_campaigns')->isCatalogNavigationReplaced()
+            || Mage::registry('current_product')
         ) {
             return false;
         }
