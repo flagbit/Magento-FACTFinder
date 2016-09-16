@@ -267,7 +267,7 @@ class FACTFinder_Core_Model_Resource_Export extends Mage_CatalogSearch_Model_Res
             return $this->_getReadAdapter()->fetchAll($select);
         }
 
-        return null;
+        return array();
     }
 
 

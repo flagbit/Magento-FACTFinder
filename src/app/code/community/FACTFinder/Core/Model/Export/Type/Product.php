@@ -16,6 +16,8 @@
  *
  * This class provides the Product export
  *
+ * @method getResource() FACTFinder_Core_Model_Resource_Export
+ *
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
@@ -28,6 +30,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 {
 
     const FILENAME_PATTERN = 'store_%s_product.csv';
+    const CSV_DELIMITER = ';';
+    const FILE_VALIDATOR = 'factfinder/file_validator_product';
 
     /**
      * Option ID to Value Mapping Array
@@ -122,7 +126,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             $item = str_replace(array("\r", "\n", "\""), array(" ", " ", "\\\""), $item);
         }
 
-        $this->_getFile($storeId)->writeCsv($data, ';');
+        $this->_getFile($storeId)->writeCsv($data, self::CSV_DELIMITER);
         return $this;
     }
 
@@ -251,7 +255,10 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         $stores = Mage::app()->getStores();
         foreach ($stores as $id => $store) {
             try {
-                $paths[] = $this->saveExport($id);
+                $filePath = $this->saveExport($id);
+                if ($filePath) {
+                    $paths[] = $filePath;
+                }
             } catch (Exception $e) {
                 Mage::logException($e);
             }
@@ -270,17 +277,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     public function saveExport($storeId = 0)
     {
-        $fileName = $this->getFilenameForStore($storeId);
-        $dir = $this->getExportDirectory();
-
-        try {
-            $this->doExport($storeId);
-        } catch (Exception $e) {
-            Mage::throwException($e);
-            return '';
-        }
-
-        return $dir . DS . $fileName;
+        return $this->doExport($storeId);
     }
 
 
@@ -299,9 +296,11 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             $dir = $this->getExportDirectory();
             $fileName = $this->getFilenameForStore($storeId);
 
-            $this->_file[$storeId] = Mage::getModel('factfinder/file');
+            $file = Mage::getModel('factfinder/file');
+            $file->setValidator(Mage::getModel(self::FILE_VALIDATOR))
+                ->open($dir, $fileName);
 
-            $this->_file[$storeId]->open($dir, $fileName);
+            $this->_file[$storeId] = $file;
         }
 
         return $this->_file[$storeId];
@@ -314,7 +313,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      *
      * @param int $storeId Store View Id
      *
-     * @return array
+     * @return string|bool
      */
     public function doExport($storeId = null)
     {
@@ -351,10 +350,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $productChildren = $this->getResource()
                     ->getProductChildIds($productData['entity_id'], $productData['type_id']);
                 $productRelations[$productData['entity_id']] = $productChildren;
-                if ($productChildren) {
-                    foreach ($productChildren as $productChild) {
-                        $productAttributes[$productChild['entity_id']] = $productChild;
-                    }
+                foreach ($productChildren as $productChild) {
+                    $productAttributes[$productChild['entity_id']] = $productChild;
                 }
             }
 
@@ -400,35 +397,33 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $this->_writeCsvRow($productIndex, $storeId);
 
                 $productChildren = $productRelations[$productData['entity_id']];
-                if ($productChildren) {
-                    foreach ($productChildren as $productChild) {
-                        if (isset($productAttributes[$productChild['entity_id']])) {
+                foreach ($productChildren as $productChild) {
+                    if (isset($productAttributes[$productChild['entity_id']])) {
 
-                            $productAttr = $productAttributes[$productChild['entity_id']];
+                        $productAttr = $productAttributes[$productChild['entity_id']];
 
-                            $subProductIndex = array(
-                                $productChild['entity_id'],
-                                $productData[$idFieldName],
-                                $productChild['sku'],
-                                $this->_getCategoryPath($productData['entity_id'], $storeId),
-                                $this->_formatAttributes('filterable', $productAttr, $storeId),
-                                $this->_formatAttributes('searchable', $productAttr, $storeId),
-                                $this->_formatAttributes('numerical', $productAttr, $storeId),
-                            );
-                            if ($this->getHelper()->shouldExportImagesAndDeeplinks($storeId)) {
-                                //dont need to add image and deeplink to child product, just add empty values
-                                $subProductIndex[] = '';
-                                $subProductIndex[] = '';
-                            }
-
-                            $subProductIndex = $this->_getAttributesRowArray(
-                                $subProductIndex,
-                                $productAttributes[$productChild['entity_id']],
-                                $storeId
-                            );
-
-                            $this->_writeCsvRow($subProductIndex, $storeId);
+                        $subProductIndex = array(
+                            $productChild['entity_id'],
+                            $productData[$idFieldName],
+                            $productChild['sku'],
+                            $this->_getCategoryPath($productData['entity_id'], $storeId),
+                            $this->_formatAttributes('filterable', $productAttr, $storeId),
+                            $this->_formatAttributes('searchable', $productAttr, $storeId),
+                            $this->_formatAttributes('numerical', $productAttr, $storeId),
+                        );
+                        if ($this->getHelper()->shouldExportImagesAndDeeplinks($storeId)) {
+                            //dont need to add image and deeplink to child product, just add empty values
+                            $subProductIndex[] = '';
+                            $subProductIndex[] = '';
                         }
+
+                        $subProductIndex = $this->_getAttributesRowArray(
+                            $subProductIndex,
+                            $productAttributes[$productChild['entity_id']],
+                            $storeId
+                        );
+
+                        $this->_writeCsvRow($subProductIndex, $storeId);
                     }
                 }
             }
@@ -439,7 +434,11 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             'file'     => $this->_getFile($storeId),
         ));
 
-        return $this->_lines;
+        if (!$this->_getFile($storeId)->isValid()) {
+            return false;
+        }
+
+        return $this->_getFile($storeId)->getPath();
     }
 
 
@@ -861,13 +860,13 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             }
             foreach ($attributeValues as &$attributeValue) {
                 // decode html entities
-               $attributeValue = html_entity_decode($attributeValue, null, 'UTF-8');
-               // Add spaces before HTML Tags, so that strip_tags() does not join word which were in different block elements
-               // Additional spaces are not an issue, because they will be removed in the next step anyway
-               $attributeValue = preg_replace('/</u', ' <', $attributeValue);
-               $attributeValue = preg_replace("#\s+#siu", ' ', trim(strip_tags($attributeValue)));
+                $attributeValue = html_entity_decode($attributeValue, null, 'UTF-8');
+                // Add spaces before HTML Tags, so that strip_tags() does not join word which were in different block elements
+                // Additional spaces are not an issue, because they will be removed in the next step anyway
+                $attributeValue = preg_replace('/</u', ' <', $attributeValue);
+                $attributeValue = preg_replace("#\s+#siu", ' ', trim(strip_tags($attributeValue)));
                 // remove rest html entities
-               $attributeValue = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $attributeValue);
+                $attributeValue = preg_replace("/&(?:[a-z\d]|#\d|#x[a-f\d]){2,8};/i", '', $attributeValue);
             }
             $value = implode("|", $attributeValues);
         }
@@ -1000,6 +999,108 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     public function getSize($storeId)
     {
         // TODO: Implement getSize() method.
+    }
+
+
+    /**
+     * Get number of products that should be exported
+     *
+     * @param int $storeId
+     *
+     * @return int
+     */
+    public function getSize($storeId)
+    {
+        $staticFields = $this->_getStaticFields($storeId);
+        $dynamicFields = $this->_getDynamicFields();
+
+        $count = 0;
+
+        $lastId = 0;
+        while (true) {
+            $products = $this->getResource()->getSearchableProducts($storeId, $staticFields, $lastId);
+            if (!$products) {
+                break;
+            }
+
+            $attributes = array();
+            $relations = array();
+            foreach ($products as $productData) {
+                $attributes[$productData['entity_id']] = $productData['entity_id'];
+                $children = $this->getResource()->getProductChildIds($productData['entity_id'], $productData['type_id']);
+                $relations[$productData['entity_id']] = $children;
+                if ($children) {
+                    foreach ($children as $child) {
+                        $attributes[$child['entity_id']] = $child;
+                    }
+                }
+            }
+
+            $lastId = $productData['entity_id'];
+
+            $attributes = $this->getResource()->getProductAttributes($storeId, array_keys($attributes), $dynamicFields);
+            foreach ($products as $productData) {
+
+                if ($this->shouldSkipProduct($attributes, $productData)) {
+                    continue;
+                }
+
+                $categoryPath = $this->_getCategoryPath($productData['entity_id'], $storeId);
+
+                if ($categoryPath == '' && !$this->_isExportProductsWithoutCategories($storeId)) {
+                    continue;
+                }
+
+                $count++;
+
+
+                $children = $relations[$productData['entity_id']];
+                foreach ($children as $child) {
+                    if (isset($attributes[$child['entity_id']])) {
+                        $count++;
+                    }
+                }
+            }
+        }
+
+
+        return $count;
+    }
+
+
+    /**
+     * Check if product should be skipped in export
+     *
+     * @param $attributes
+     * @param $productData
+     *
+     * @return bool
+     */
+    protected function shouldSkipProduct($attributes, $productData)
+    {
+
+        if (!isset($attributes[$productData['entity_id']])) {
+            return true;
+        }
+
+        // status and visibility filter
+        $visibilityId = $this->getResource()->getSearchableAttribute('visibility')->getId();
+        $statusId = $this->getResource()->getSearchableAttribute('status')->getId();
+
+        $visibilities = Mage::getSingleton('catalog/product_visibility')->getVisibleInSearchIds();
+        $statuses = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
+
+        $productAttributes = $attributes[$productData['entity_id']];
+
+        if (!isset($productAttributes[$visibilityId])
+            || !isset($productAttributes[$statusId])
+            || !in_array($productAttributes[$visibilityId], $visibilities)
+            || !in_array($productAttributes[$statusId], $statuses)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 
