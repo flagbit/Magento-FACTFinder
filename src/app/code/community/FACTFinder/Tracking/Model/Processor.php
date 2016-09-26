@@ -27,6 +27,7 @@ require_once BP . DS . 'lib' . DS . 'FACTFinder' . DS . 'Loader.php';
  */
 class FACTFinder_Tracking_Model_Processor
 {
+    const TRACKING_FRONT_NAME = 'ff_tracking';
 
     /**
      * FactFinder Facade
@@ -80,16 +81,21 @@ class FACTFinder_Tracking_Model_Processor
         return $this->_facade;
     }
 
+
      /**
-     * Bypass app cache.
+     * Bypass app cache if it's a tracking request
      *
      * @param string $content
      *
-     * @return false
+     * @return string|bool
      */
     public function extractContent($content)
     {
-        return false;
+        if (strpos($this->_getRequestPath(), self::TRACKING_FRONT_NAME) !== false) {
+            return false;
+        };
+
+        return $content;
     }
     
     /**
@@ -111,4 +117,33 @@ class FACTFinder_Tracking_Model_Processor
         }
         return $this->_getFacade()->getTrackingAdapter()->doTrackingFromRequest($sessionId, $customerId);
     }
+
+
+    /**
+     * Return current page base url
+     *
+     * @return string
+     */
+    protected function _getRequestPath()
+    {
+        $url = false;
+
+        /**
+         * Define request URI
+         */
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $url = $_SERVER['REQUEST_URI'];
+        } elseif (!empty($_SERVER['IIS_WasUrlRewritten']) && !empty($_SERVER['UNENCODED_URL'])) {
+            $url = $_SERVER['UNENCODED_URL'];
+        } elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
+            $url = $_SERVER['ORIG_PATH_INFO'];
+            if (!empty($_SERVER['QUERY_STRING'])) {
+                $url .= $_SERVER['QUERY_STRING'];
+            }
+        }
+
+        return parse_url($url, PHP_URL_PATH);
+    }
+
+
 }
