@@ -23,6 +23,7 @@
  */
 
 use FACTFinder\Loader as FF;
+use FACTFinder\Data as FFData;
 
 class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler_Abstract
 {
@@ -296,6 +297,23 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     public function isSearchHasResult()
     {
         return $this->getSearchStatus() !== \FACTFinder\Data\SearchStatus::NoResult();
+    }
+
+
+    /**
+     * Get default option for the "items per page" dropdown
+     *
+     * @return bool|FFData\Item
+     */
+    public function getDefaultPerPageOption()
+    {
+        $option = $this->getResultsPerPageOptions()->getDefaultOption();
+
+        if ($option instanceof FFData\Item) {
+            return $option;
+        }
+
+        return false;
     }
 
 

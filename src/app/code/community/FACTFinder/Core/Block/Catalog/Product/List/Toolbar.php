@@ -455,7 +455,11 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()) {
             $currentLimit = $this->getRequest()->getParam($this->getLimitVarName());
             if ($currentLimit == null && $this->_handler->getResultsPerPageOptions() != null) {
-                $currentLimit = $this->_handler->getResultsPerPageOptions()->getDefaultOption()->getLabel();
+                if ($this->_handler->getDefaultPerPageOption()) {
+                    $currentLimit = $this->_handler->getDefaultPerPageOption()->getLabel();
+                } else {
+                    $currentLimit = parent::getLimit();
+                }
             }
 
             return $currentLimit;
@@ -528,9 +532,9 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
     public function getDefaultPerPageValue()
     {
         if ($this->_handler && Mage::helper('factfinder/search')->useResultsPerPageOptions()
-            && $this->_handler->getResultsPerPageOptions() != null
+            && $this->_handler->getDefaultPerPageOption()
         ) {
-            return $this->_handler->getResultsPerPageOptions()->getDefaultOption()->getLabel();
+            return $this->_handler->getDefaultPerPageOption()->getLabel();
         }
 
         return parent::getDefaultPerPageValue();
