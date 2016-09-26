@@ -193,6 +193,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             destinationElement,
             url,
             {
+                frequency: 0.1,
                 parameters: 'format=JSONP',
                 paramName: 'query',
                 method: 'get',
