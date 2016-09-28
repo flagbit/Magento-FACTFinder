@@ -85,7 +85,7 @@ class FACTFinder_Core_Model_Export_Observer
     public function exportAll($observer)
     {
         foreach (Mage::helper('factfinder/export')->getExportTypes() as $type) {
-            Mage::getModel('factfinder/export_' . $type)->saveAll();
+            Mage::getModel('factfinder/export_type_' . $type)->saveAll();
         }
     }
 

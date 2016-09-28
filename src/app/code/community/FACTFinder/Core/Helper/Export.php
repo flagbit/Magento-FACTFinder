@@ -231,9 +231,9 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         $archiveName = sprintf(self::ARCHIVE_PATTERN, $storeId);
 
         $zip = new ZipArchive();
-        $zip->open($dir . DS . $archiveName, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+        $zip->open($dir . DS . $archiveName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
         foreach ($this->getExportTypes() as $type) {
-            $model = Mage::getModel('factfinder/export_' . $type);
+            $model = Mage::getModel('factfinder/export_type_' . $type);
             $filename = $model->getFilenameForStore($storeId);
             $zip->addFile($dir . DS . $filename, $filename);
         }

@@ -14,7 +14,7 @@
 /**
  * Model class
  *
- * This class provides the stock export
+ * This class provides the Price export
  *
  * @category Mage
  * @package FACTFinder_Core
@@ -23,29 +23,29 @@
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abstract
+class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_Db_Abstract
+    implements FACTFinder_Core_Model_Export_Type_Interface
 {
 
-    const FILENAME_PATTERN = 'store_%s_stock.csv';
-    const FILE_VALIDATOR = 'factfinder/file_validator_stock';
+    const FILENAME_PATTERN = 'store_%s_price.csv';
+    const FILE_VALIDATOR = 'factfinder/file_validator_price';
     const CSV_DELIMITER = ';';
 
     /**
      * defines Export Columns
-     *
      * @var array
      */
     protected $_exportColumns = array(
-        'product_id',
-        'qty',
-        'stock_status'
+        'entity_id',
+        'customer_group_id',
+        'final_price',
+        'min_price',
     );
 
     /**
      * @var FACTFinder_Core_Model_File
      */
     protected $_file;
-
 
     /**
      * Resource initialization
@@ -98,7 +98,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      * Write CSV Row
      *
      * @param array $data
-     * @param int   $storeId
+     * @param int $storeId
      *
      * @return bool
      */
@@ -109,26 +109,26 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
 
 
     /**
-     * export Stock Data
+     * Export price data
      * Write the data to file
      *
      * @param int $storeId Store Id
      *
-     * @return bool|string
+     * @return string|bool
      */
     public function saveExport($storeId = null)
     {
         $this->_addCsvRow($this->_exportColumns, $storeId);
 
         $page = 1;
-        $stocks = $this->_getStockData($storeId, $page);
+        $stocks = $this->_getPrices($storeId, $page);
 
         while ($stocks) {
-            foreach($stocks as $stock){
+            foreach ($stocks as $stock) {
                 $this->_addCsvRow($stock, $storeId);
             }
 
-            $stocks = $this->_getStockData($storeId, ++$page);
+            $stocks = $this->_getPrices($storeId, ++$page);
         }
 
         if (!$this->_getFile($storeId)->isValid()) {
@@ -140,7 +140,7 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
 
 
     /**
-     * Get Stocks from Stock Index Table
+     * Get prices from Price Index Table
      *
      * @param int $storeId Store ID
      * @param int $part
@@ -148,28 +148,28 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
      *
      * @return array
      */
-    protected function _getStockData($storeId, $part = 1, $limit = 100)
+    protected function _getPrices($storeId, $part = 1, $limit = 100)
     {
-        $store  = Mage::app()->getStore($storeId);
+
+        $store = Mage::app()->getStore($storeId);
         $select = $this->_getReadAdapter()->select()
             ->from(
-                array('e' => $this->getTable('cataloginventory/stock_status')),
-                $this->_exportColumns
-            );
+                array('e' => $this->getTable('catalog/product_index_price')),
+                $this->_exportColumns);
 
         if ($storeId !== null) {
             $select->where('e.website_id = ?', $store->getWebsiteId());
         }
 
         $select->limitPage($part, $limit)
-            ->order('e.product_id');
+            ->order('e.entity_id');
 
         return $this->_getReadAdapter()->fetchAll($select);
     }
 
 
     /**
-     * Pre-Generate all stock exports for all stores
+     * Pre-Generate all price exports for all stores
      *
      * @return array
      */
@@ -177,10 +177,10 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
     {
         $paths = array();
         $stores = Mage::app()->getStores();
-        foreach ($stores as $store) {
+        foreach ($stores as $id => $store) {
             try {
-                $stock = Mage::getModel('factfinder/export_stock');
-                $filePath = $stock->saveExport($store->getId());
+                $price = Mage::getModel('factfinder/export_type_price');
+                $filePath = $price->saveExport($id);
                 if ($filePath) {
                     $paths[] = $filePath;
                 }
@@ -194,21 +194,21 @@ class FACTFinder_Core_Model_Export_Stock extends Mage_Core_Model_Resource_Db_Abs
 
 
     /**
-     * Get number of rows to be exported
+     * Get number of entries to be exported
      *
-     * @param $storeId
+     * @param int $storeId
      *
      * @return int
      */
     public function getSize($storeId)
     {
-        $store  = Mage::app()->getStore($storeId);
-        $select = $this->_getReadAdapter()->select()
+        $select = $this->_getWriteAdapter()->select()
             ->from(
-                array('e' => $this->getTable('cataloginventory/stock_status')),
+                array('e' => $this->getTable('catalog/product_index_price')),
                 new Zend_Db_Expr('count(*)')
             );
 
+        $store = Mage::app()->getStore($storeId);
         if ($storeId !== null) {
             $select->where('e.website_id = ?', $store->getWebsiteId());
         }

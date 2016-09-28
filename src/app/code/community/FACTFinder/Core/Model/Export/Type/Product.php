@@ -23,7 +23,8 @@
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Core_Model_Export_Product extends Mage_Core_Model_Abstract
+class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
+    implements FACTFinder_Core_Model_Export_Type_Interface
 {
 
     const FILENAME_PATTERN = 'store_%s_product.csv';
@@ -113,7 +114,7 @@ class FACTFinder_Core_Model_Export_Product extends Mage_Core_Model_Abstract
      * @param array $data    Array of data
      * @param int   $storeId
      *
-     * @return FACTFinder_Core_Model_Export_Product
+     * @return FACTFinder_Core_Model_Export_Type_Product
      */
     protected function _writeCsvRow($data, $storeId)
     {
@@ -994,6 +995,11 @@ class FACTFinder_Core_Model_Export_Product extends Mage_Core_Model_Abstract
         }
 
         return $attributes;
+    }
+
+    public function getSize($storeId)
+    {
+        // TODO: Implement getSize() method.
     }
 
 
