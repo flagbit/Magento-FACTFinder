@@ -47,6 +47,7 @@ class FACTFinder_Core_Model_Export_Semaphore
         }
 
         $this->_locksDir = Mage::getBaseDir('var') . DS . 'locks';
+        Mage::getConfig()->createDirIfNotExists($this->_locksDir);
     }
 
 
