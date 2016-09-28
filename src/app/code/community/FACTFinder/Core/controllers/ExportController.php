@@ -49,6 +49,17 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
 
 
     /**
+     * Get instance of export semaphore
+     *
+     * @return FACTFinder_Core_Model_Export_Semaphore
+     */
+    protected function getSemaphore()
+    {
+        return Mage::getSingleton('factfinder/export_semaphore', array('store_id' => $this->_getStoreId()));
+    }
+
+
+    /**
      * Get current Store ID
      *
      * @return int
@@ -69,7 +80,7 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
     public function exportAction()
     {
         try {
-            $this->lockSemaphore();
+            $this->getSemaphore()->lock();
         } catch (RuntimeException $e) {
             $this->loadLayout()
                 ->renderLayout();
@@ -87,9 +98,9 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
                 $this->_getStoreId()
             );
 
-            $this->releaseSemaphore(); // finally-workaround
+            $this->getSemaphore()->release(); // finally-workaround
         } catch (Exception $e) {
-            $this->releaseSemaphore(); // finally-workaround
+            $this->getSemaphore()->release(); // finally-workaround
             Mage::helper('factfinder/debug')->error('Export action ' . $e->__toString());
             throw $e;
         }
@@ -162,41 +173,6 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
             ->save();
 
         $this->_redirectReferer();
-    }
-
-
-    /**
-     * Locks the semaphore
-     * Throws an exception, if semaphore is already locked
-     **/
-    protected function lockSemaphore()
-    {
-        $mtime = @filemtime($this->_getLockFileName());
-        $semaphoreTimeout = FACTFinderCustom_Configuration::DEFAULT_SEMAPHORE_TIMEOUT;
-        if ($mtime && time() - $mtime < $semaphoreTimeout) {
-            throw new RuntimeException();
-        }
-        @touch($this->_getLockFileName());
-    }
-
-
-    /**
-     * Release the semaphore
-     */
-    protected function releaseSemaphore()
-    {
-        @unlink($this->_getLockFileName());
-    }
-
-
-    /**
-     * Retrieve the name of lockfile
-     *
-     * @return string
-     */
-    protected function _getLockFileName()
-    {
-        return Mage::getBaseDir('var') . DS . 'locks' . DS . 'ffexport_' . $this->_getStoreId() . '.lock';
     }
 
 
