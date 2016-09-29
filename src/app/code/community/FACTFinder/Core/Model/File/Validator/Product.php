@@ -18,8 +18,8 @@ class FACTFinder_Core_Model_File_Validator_Product extends FACTFinder_Core_Model
             $this->checkIfEmpty($file);
             $this->checkCsvConsistency($file);
 
-            $storeId = $this->getStoreIdFromFile($file, FACTFinder_Core_Model_Export_Product::FILENAME_PATTERN);
-            $expectedSize = Mage::getModel('factfinder/export_product')->getSize($storeId);
+            $storeId = $this->getStoreIdFromFile($file, FACTFinder_Core_Model_Export_Type_Product::FILENAME_PATTERN);
+            $expectedSize = Mage::getModel('factfinder/export_type_product')->getSize($storeId);
 
             $this->checkNumberOfLines($file, $expectedSize);
         } catch (Exception $e) {
@@ -36,7 +36,7 @@ class FACTFinder_Core_Model_File_Validator_Product extends FACTFinder_Core_Model
      */
     protected function getCsvDelimiter()
     {
-        return FACTFinder_Core_Model_Export_Product::CSV_DELIMITER;
+        return FACTFinder_Core_Model_Export_Type_Product::CSV_DELIMITER;
     }
 
 
