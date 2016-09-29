@@ -10,7 +10,22 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
     const EXPORT_STORE_STOCK              = 'exportStoreStock';
     const EXPORT_STORE                    = 'exportStore';
 
+    /**
+     * Mage_Shell_FactFinder constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
 
+        // Additionally add module autoloader
+        $autoloaderClass = new FACTFinder_Core_Model_Autoloader();
+        $autoloaderClass->addAutoloader(new Varien_Event_Observer());
+    }
+
+
+    /**
+     * @return void
+     */
     public function run()
     {
         if ($this->getArg('exportAll') || $this->getArg('exportall')) {

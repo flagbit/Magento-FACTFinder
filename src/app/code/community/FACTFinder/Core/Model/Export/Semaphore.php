@@ -32,7 +32,12 @@ class FACTFinder_Core_Model_Export_Semaphore
     /**
      * @var int
      */
-    protected $_storeId;
+    protected $_storeId = 0;
+
+    /**
+     * @var string
+     */
+    protected $_type = '';
 
 
     /**
@@ -44,6 +49,10 @@ class FACTFinder_Core_Model_Export_Semaphore
     {
         if (isset($params['store_id'])) {
             $this->setStoreId($params['store_id']);
+        }
+
+        if (isset($params['type'])) {
+            $this->setType($params['type']);
         }
 
         $this->_locksDir = Mage::getBaseDir('var') . DS . 'locks';
@@ -61,6 +70,21 @@ class FACTFinder_Core_Model_Export_Semaphore
     public function setStoreId($storeId)
     {
         $this->_storeId = $storeId;
+
+        return $this;
+    }
+
+
+    /**
+     * Set export type
+     *
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->_type = $type;
 
         return $this;
     }
@@ -93,7 +117,7 @@ class FACTFinder_Core_Model_Export_Semaphore
      */
     public function getLockFileName()
     {
-        return $this->_locksDir . DS . self::LOCK_PREFIX . $this->_storeId . '.lock';
+        return $this->_locksDir . DS . self::LOCK_PREFIX . $this->_type . $this->_storeId . '.lock';
     }
 
 
