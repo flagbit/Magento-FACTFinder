@@ -42,19 +42,9 @@ class FACTFinder_Core_Model_Export_Semaphore
 
     /**
      * FACTFinder_Core_Model_Export_Semaphore constructor.
-     *
-     * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct()
     {
-        if (isset($params['store_id'])) {
-            $this->setStoreId($params['store_id']);
-        }
-
-        if (isset($params['type'])) {
-            $this->setType($params['type']);
-        }
-
         $this->_locksDir = Mage::getBaseDir('var') . DS . 'locks';
         Mage::getConfig()->createDirIfNotExists($this->_locksDir);
     }

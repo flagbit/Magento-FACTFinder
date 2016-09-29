@@ -119,10 +119,9 @@ class FACTFinder_Core_Model_Export_Type_Stock extends Mage_Core_Model_Resource_D
     public function saveExport($storeId = null)
     {
         /** @var FACTFinder_Core_Model_Export_Semaphore $semaphore */
-        $semaphore = Mage::getModel('factfinder/export_semaphore', array(
-            'type'     => 'stock',
-            'store_id' => $storeId,
-        ));
+        $semaphore = Mage::getModel('factfinder/export_semaphore');
+        $semaphore->setStoreId($storeId)
+            ->setType('stock');
 
         try {
             $semaphore->lock();
