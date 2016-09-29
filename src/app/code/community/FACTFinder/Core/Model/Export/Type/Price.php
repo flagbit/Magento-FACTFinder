@@ -110,7 +110,6 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
 
     /**
      * Export price data
-     * Write the data to file
      *
      * @param int $storeId Store Id
      *
@@ -118,17 +117,25 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
      */
     public function saveExport($storeId = null)
     {
-        $this->_addCsvRow($this->_exportColumns, $storeId);
+        /** @var FACTFinder_Core_Model_Export_Semaphore $semaphore */
+        $semaphore = Mage::getModel('factfinder/export_semaphore', array(
+            'type'     => 'price',
+            'store_id' => $storeId,
+        ));
 
-        $page = 1;
-        $stocks = $this->_getPrices($storeId, $page);
 
-        while ($stocks) {
-            foreach ($stocks as $stock) {
-                $this->_addCsvRow($stock, $storeId);
-            }
+        try {
+            $semaphore->lock();
 
-            $stocks = $this->_getPrices($storeId, ++$page);
+            $this->_saveExport($storeId);
+
+            $semaphore->release();
+        } catch (RuntimeException $e) {
+            Mage::helper('factfinder/debug')->log('Export action was locked', true);
+            return false;
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $semaphore->release();
         }
 
         if (!$this->_getFile($storeId)->isValid()) {
@@ -214,6 +221,32 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
         }
 
         return (int) $this->_getReadAdapter()->fetchOne($select);
+    }
+
+
+    /**
+     * Perform export actions and write to file
+     *
+     * @param int $storeId
+     *
+     * @return FACTFinder_Core_Model_Export_Type_Price
+     */
+    protected function _saveExport($storeId)
+    {
+        $this->_addCsvRow($this->_exportColumns, $storeId);
+
+        $page = 1;
+        $stocks = $this->_getPrices($storeId, $page);
+
+        while ($stocks) {
+            foreach ($stocks as $stock) {
+                $this->_addCsvRow($stock, $storeId);
+            }
+
+            $stocks = $this->_getPrices($storeId, ++$page);
+        }
+
+        return $this;
     }
 
 

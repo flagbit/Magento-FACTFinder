@@ -110,10 +110,9 @@ class FACTFinder_Core_Model_Export_Type_Stock extends Mage_Core_Model_Resource_D
 
 
     /**
-     * export Stock Data
-     * Write the data to file
+     * Export Stock Data
      *
-     * @param int $storeId Store Id
+     * @param int $storeId Store ID
      *
      * @return bool|string
      */
