@@ -277,7 +277,27 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     public function saveExport($storeId = 0)
     {
-        return $this->doExport($storeId);
+        $path = '';
+
+        /** @var FACTFinder_Core_Model_Export_Semaphore $semaphore */
+        $semaphore = Mage::getModel('factfinder/export_semaphore');
+        $semaphore->setStoreId($storeId)
+            ->setType('product');
+
+        try {
+            $semaphore->lock();
+
+            $path = $this->doExport($storeId);
+
+            $semaphore->release();
+        } catch (RuntimeException $e) {
+            Mage::helper('factfinder/debug')->log('Export action was locked', true);
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $semaphore->release();
+        }
+
+        return $path;
     }
 
 
@@ -994,11 +1014,6 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         }
 
         return $attributes;
-    }
-
-    public function getSize($storeId)
-    {
-        // TODO: Implement getSize() method.
     }
 
 
