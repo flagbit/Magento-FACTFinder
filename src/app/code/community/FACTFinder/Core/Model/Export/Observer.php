@@ -20,6 +20,12 @@ class FACTFinder_Core_Model_Export_Observer
      */
     public function triggerImportAfterExport($observer)
     {
+        $file = $observer->getFile();
+
+        if (!$file instanceof FACTFinder_Core_Model_File || !$file->isValid()) {
+            return;
+        }
+
         $helper = Mage::helper('factfinder');
         $storeId = $observer->getStoreId();
 

@@ -227,20 +227,27 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function archiveFiles($storeId)
     {
         $dir = $this->getExportDirectory();
-
         $archiveName = sprintf(self::ARCHIVE_PATTERN, $storeId);
+        $archivePath = $dir . DS . $archiveName;
 
         $zip = new ZipArchive();
-        $zip->open($dir . DS . $archiveName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open($archivePath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
         foreach ($this->getExportTypes() as $type) {
             $model = Mage::getModel('factfinder/export_type_' . $type);
             $filename = $model->getFilenameForStore($storeId);
+
+            if (!$this->_validateFile($model, $dir, $filename)) {
+                $zip->close();
+                @unlink($archivePath);
+                break;
+            }
+
             $zip->addFile($dir . DS . $filename, $filename);
         }
 
         $zip->close();
 
-        return $dir . DS . $archiveName;
+        return $archivePath;
     }
 
 
@@ -345,6 +352,30 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function shouldExportOutOfStock($storeId = 0)
     {
         return $this->getExportConfigValue(self::OUT_OF_STOCK_PRODUCTS, $storeId);
+    }
+
+
+    /**
+     * Check if file is valid
+     *
+     * @param FACTFinder_Core_Model_Export_Type_Interface $model
+     * @param string $dir
+     * @param string $filename
+     *
+     * @return bool
+     */
+    protected function _validateFile($model, $dir, $filename)
+    {
+        if (defined($model::FILE_VALIDATOR)) {
+            return true;
+        }
+
+        /** @var FACTFinder_Core_Model_File $file */
+        $file = Mage::getModel('factfinder/file');
+        $file->open($dir, $filename);
+        $file->setValidator(Mage::getModel($model::FILE_VALIDATOR));
+
+        return $file->isValid();
     }
 
 

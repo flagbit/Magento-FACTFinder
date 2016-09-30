@@ -51,6 +51,12 @@ class FACTFinder_Suggest_Model_Observer
      */
     public function triggerImportAfterExport($observer)
     {
+        $file = $observer->getFile();
+
+        if (!$file instanceof FACTFinder_Core_Model_File || !$file->isValid()) {
+            return;
+        }
+
         $storeId = $observer->getStoreId();
         $helper = Mage::helper('factfinder_suggest');
         if ($helper->shouldTriggerImport($storeId)) {
