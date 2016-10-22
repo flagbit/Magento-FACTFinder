@@ -197,9 +197,9 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             $additionalColumns = array();
             if (Mage::getStoreConfigFlag('factfinder/export/urls', $storeId)) {
                 $additionalColumns[] = 'image';
-                $additionalColumns[] = 'deeplink';
                 $this->_imageHelper = Mage::helper('catalog/image');
             }
+            $additionalColumns[] = 'deeplink';
 
             // get dynamic Attributes
             foreach ($this->_getSearchableAttributes(null, 'system', $storeId) as $attribute) {
@@ -431,11 +431,11 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                             $this->_formatAttributes('searchable', $productAttr, $storeId),
                             $this->_formatAttributes('numerical', $productAttr, $storeId),
                         );
-                        if ($this->getHelper()->shouldExportImagesAndDeeplinks($storeId)) {
-                            //dont need to add image and deeplink to child product, just add empty values
-                            $subProductIndex[] = '';
+                        //dont need to add image and deeplink to child product, just add empty values
+                        if ($this->getHelper()->shouldExportImages($storeId)) {
                             $subProductIndex[] = '';
                         }
+                        $subProductIndex[] = '';
 
                         $subProductIndex = $this->_getAttributesRowArray(
                             $subProductIndex,
@@ -812,15 +812,13 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     {
         $helper = $this->getHelper();
 
-        if (!$helper->shouldExportImagesAndDeeplinks($storeId)) {
-            return $productIndex;
-        }
-
         // emulate store
         $oldStore = Mage::app()->getStore()->getId();
         Mage::app()->setCurrentStore($storeId);
 
-        $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
+        if ($helper->shouldExportImages($storeId)) {
+            $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
+        }
         $productIndex[] = $this->getProductUrl($productData['entity_id'], $storeId);
 
         // finish emulation
