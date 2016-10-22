@@ -30,10 +30,9 @@ class FACTFinder_Campaigns_Block_Feedback_Page extends FACTFinder_Campaigns_Bloc
      */
     protected function _canBeShown()
     {
-        if (!Mage::registry('current_category')
-           || Mage::registry('current_category')->getDisplayMode() === Mage_Catalog_Model_Category::DM_PRODUCT
-           || !Mage::helper('factfinder_campaigns')->canShowLandingPageCampaigns())
-        {
+        if (!Mage::helper('factfinder_campaigns')->getIsOnLandingPage()
+            && !Mage::helper('factfinder_campaigns')->getIsOnStartPage()
+        ) {
             return false;
         }
         return (bool) Mage::helper('factfinder')->isEnabled('campaigns');

@@ -48,7 +48,11 @@ class FACTFinder_Campaigns_Model_Handler_Page extends FACTFinder_Campaigns_Model
      */
     protected function _getPageIdParam()
     {
-        $this->_pageId = Mage::registry('current_category')->getId();
+        if (Mage::helper('factfinder_campaigns')->getIsOnLandingPage()) {
+            $this->_pageId = Mage::registry('current_category')->getId();
+        } else if (Mage::helper('factfinder_campaigns')->getIsOnStartPage()) {
+            $this->_pageId = 'start';
+        }
         return $this->_pageId;
     }
 
