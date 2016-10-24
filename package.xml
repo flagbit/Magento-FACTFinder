@@ -7,11 +7,11 @@
     </version_id>
     <summary>Integrates the FACT-Finder for improved product search functionality</summary>
     <description>Integrates the FACT-Finder for improved product search functionality.</description>
-    <license>Open Software License v3.0 (OSL-3.0)</license>
-    <license_uri>http://opensource.org/licenses/OSL-3.0</license_uri>
+    <license>The MIT License (MIT)</license>
+    <license_uri>https://opensource.org/licenses/MIT</license_uri>
     <version>4.1.11</version>
     <stability>stable</stability>
-    <notes>Completely refactored and now supporting FF v6.9-7.1</notes>
+    <notes>Completely refactored and now supporting FF v6.9-7.2</notes>
     <authors>
         <names>
             <name><![CDATA[Flagbit GmbH & Co. KG]]></name>
