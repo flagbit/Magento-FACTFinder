@@ -140,4 +140,19 @@
         </reference>
     </catalog_product_view>
 
+    <cms_page>
+        <reference name="content">
+            <!-- start page pushed products -->
+            <block type="factfinder_campaigns/pushed_page" name="page.pushed" after="page_content_heading">
+                <action method="setMaxColNum"><num>3</num></action>
+                <block type="factfinder_campaigns/feedback_page" before="page.pushed" name="ff.feedback.above.pushed" as="feedback_above">
+                    <action method="setLabel"><label>above pushed product</label></action>
+                </block>
+                <block type="factfinder_campaigns/feedback_page" after="page.pushed" name="ff.feedback.below.pushed" as="feedback_below">
+                    <action method="setLabel"><label>below pushed product</label></action>
+                </block>
+            </block>
+        </reference>
+    </cms_page>
+
 </layout>

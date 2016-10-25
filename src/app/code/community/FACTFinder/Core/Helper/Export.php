@@ -330,13 +330,13 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Check if images and deeplinks should be exported
+     * Check if images should be exported
      *
      * @param int $storeId
      *
      * @return null|string
      */
-    public function shouldExportImagesAndDeeplinks($storeId = 0)
+    public function shouldExportImages($storeId = 0)
     {
         return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES, $storeId);
     }

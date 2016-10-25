@@ -119,10 +119,7 @@ abstract class FACTFinder_Campaigns_Block_Pushed_Abstract extends Mage_Catalog_B
      */
     protected function _canBeShown()
     {
-        if (Mage::registry('current_category')
-            && !Mage::helper('factfinder_campaigns')->isCatalogNavigationReplaced()
-            || Mage::registry('current_product')
-        ) {
+        if (!Mage::helper('factfinder_campaigns')->getIsResultListingPage()) {
             return false;
         }
 
