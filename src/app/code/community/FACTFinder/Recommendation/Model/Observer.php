@@ -104,6 +104,7 @@ class FACTFinder_Recommendation_Model_Observer
                 'find_in_set(`e`.`' . $idFieldName . '`, ?)',
                 implode(',', $recommendations)
             ));
+            $select->reset(Zend_Db_Select::ORDER); // ensure sort order is only determined by FF
             $select->order($order);
         } else {
             // do not load anything
