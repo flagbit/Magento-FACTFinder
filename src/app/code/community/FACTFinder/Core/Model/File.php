@@ -128,12 +128,11 @@ class FACTFinder_Core_Model_File
      *
      * @param string $dir
      * @param string $filename
+     * @param string $mode
      *
      * @return bool
-     *
-     * @throws \Exception
      */
-    public function open($dir, $filename)
+    public function open($dir, $filename, $mode = 'w+')
     {
         $this->_filename = $filename;
         $this->_dir = $dir;
@@ -147,7 +146,7 @@ class FACTFinder_Core_Model_File
         $this->_file->mkdir($dir);
         $this->_file->open(array('path' => $dir));
 
-        return $this->_file->streamOpen($filename);
+        return $this->_file->streamOpen($filename, $mode);
     }
 
 
@@ -197,18 +196,13 @@ class FACTFinder_Core_Model_File
      */
     public function close()
     {
-        // rename the temporary file to the regular name and replace the existing file, it it already exists
-        if ($this->_useTmpFile) {
-            if ($this->isValid()) {
-                $this->_file->mv($this->_currentPath, $this->getPath());
-            } else {
-                $this->moveToBackup();
-            }
+        $success = $this->_file->streamClose();
 
-            $this->_currentPath = $this->getPath();
+        if ($this->_useTmpFile) {
+            $this->_processTmpFile();
         }
 
-        return $this->_file->streamClose();
+        return $success;
     }
 
 
@@ -277,6 +271,30 @@ class FACTFinder_Core_Model_File
     protected function getBackupPath()
     {
         return $this->_dir . DS . self::BACKUP_DIR;
+    }
+
+
+    /**
+     * Rename the temporary file to the regular name and replace the existing file,
+     * if it already exists
+     *
+     * @return $this
+     */
+    protected function _processTmpFile()
+    {
+        if (stripos(PHP_OS, 'win') === 0) {
+            sleep(1); // workaround for windows
+        }
+
+        if ($this->isValid()) {
+            $this->_file->mv($this->_currentPath, $this->getPath());
+        } else {
+            $this->moveToBackup();
+        }
+
+        $this->_currentPath = $this->getPath();
+
+        return $this;
     }
 
 
