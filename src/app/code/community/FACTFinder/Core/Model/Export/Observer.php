@@ -31,7 +31,7 @@ class FACTFinder_Core_Model_Export_Observer
 
         $this->uploadFileToFtp($observer);
 
-        if ($helper->isEnabled() && Mage::helper('factfinder/export')->isImportTriggerEnabled($storeId)) {
+        if (Mage::helper('factfinder/export')->isImportTriggerEnabled($storeId)) {
             $channel = $helper->getPrimaryChannel($storeId);
             $download = !Mage::helper('factfinder/export')->useFtp($storeId);
             $facade = Mage::getModel('factfinder/facade');
