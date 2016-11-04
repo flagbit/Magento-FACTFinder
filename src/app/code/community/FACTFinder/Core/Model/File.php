@@ -174,9 +174,9 @@ class FACTFinder_Core_Model_File
      */
     public function writeCsv(array $data, $delimiter = ',', $enclosure = '"')
     {
-        // sanitize data to avoid double escaped enclosure
+        // sanitize data
         foreach ($data as &$row) {
-            $row = str_replace("\\{$enclosure}", $enclosure, $row);
+            $row = str_replace(array("\r", "\n", "\\{$enclosure}"), array(" ", " ", $enclosure), $row);
         }
 
         return $this->_file->streamWriteCsv($data, $delimiter, $enclosure);

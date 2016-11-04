@@ -122,11 +122,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     protected function _writeCsvRow($data, $storeId)
     {
-        foreach ($data as &$item) {
-            $item = str_replace(array("\r", "\n", "\""), array(" ", " ", "\\\""), $item);
-        }
-
         $this->_getFile($storeId)->writeCsv($data, self::CSV_DELIMITER);
+
         return $this;
     }
 
