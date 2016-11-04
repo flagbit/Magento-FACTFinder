@@ -66,7 +66,7 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
      */
     public function getPagerUrl($params = array())
     {
-        if (!$this->_handler || !$this->_handler->getPaging()) {
+        if (!$this->getPaging()) {
             return parent::getPagerUrl($params);
         }
 
@@ -75,7 +75,7 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
         if (!isset($this->_pagingUrls[$pageNum])) {
             $this->_pagingUrls[$pageNum] = '';
             /** @var \FACTFinder\Data\Page $pageItem */
-            foreach ($this->_handler->getPaging() as $pageItem) {
+            foreach ($this->getPaging() as $pageItem) {
                 if ($pageItem->getPageNumber() == $pageNum) {
                     $this->_pagingUrls[$pageNum] = $pageItem->getUrl();
                     break;
@@ -84,6 +84,81 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
         }
 
         return $this->_pagingUrls[$pageNum];
+    }
+
+
+    /**
+     * Get paging from handler or null
+     *
+     * @return \FACTFinder\Data\Paging|null
+     */
+    protected function getPaging()
+    {
+        if (!$this->_handler || !$this->_handler->getPaging()) {
+            return null;
+        }
+
+        return $this->_handler->getPaging();
+    }
+
+
+    /**
+     * Get last page URL
+     *
+     * @return string
+     */
+    public function getLastPageUrl()
+    {
+        if ($this->getPaging() && $this->getPaging()->getLastPage()) {
+            return $this->getPaging()->getLastPage()->getUrl();
+        }
+
+        return parent::getLastPageUrl();
+    }
+
+
+    /**
+     * Get first page URL
+     *
+     * @return string
+     */
+    public function getFirstPageUrl()
+    {
+        if ($this->getPaging() && $this->getPaging()->getFirstPage()) {
+            return $this->getPaging()->getFirstPage()->getUrl();
+        }
+
+        return parent::getFirstPageUrl();
+    }
+
+
+    /**
+     * Get next page URL
+     *
+     * @return string
+     */
+    public function getNextPageUrl()
+    {
+        if ($this->getPaging() && $this->getPaging()->getNextPage()) {
+            return $this->getPaging()->getNextPage()->getUrl();
+        }
+
+        return parent::getNextPageUrl();
+    }
+
+
+    /**
+     * Get previous page URL
+     *
+     * @return string
+     */
+    public function getPreviousPageUrl()
+    {
+        if ($this->getPaging() && $this->getPaging()->getPreviousPage()) {
+            return $this->getPaging()->getPreviousPage()->getUrl();
+        }
+
+        return parent::getPreviousPageUrl();
     }
 
 
