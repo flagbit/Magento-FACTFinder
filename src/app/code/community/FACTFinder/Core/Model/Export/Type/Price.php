@@ -184,6 +184,10 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
         $paths = array();
         $stores = Mage::app()->getStores();
         foreach ($stores as $id => $store) {
+            if (!Mage::helper('factfinder')->isEnabled(null, $id)) {
+                continue;
+            }
+
             try {
                 $price = Mage::getModel('factfinder/export_type_price');
                 $filePath = $price->saveExport($id);

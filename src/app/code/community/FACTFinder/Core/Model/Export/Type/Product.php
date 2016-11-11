@@ -251,6 +251,10 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         $paths = array();
         $stores = Mage::app()->getStores();
         foreach ($stores as $id => $store) {
+            if (!Mage::helper('factfinder')->isEnabled(null, $id)) {
+                continue;
+            }
+
             try {
                 $filePath = $this->saveExport($id);
                 if ($filePath) {

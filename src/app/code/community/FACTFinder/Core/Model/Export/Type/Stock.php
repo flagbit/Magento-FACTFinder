@@ -184,6 +184,10 @@ class FACTFinder_Core_Model_Export_Type_Stock extends Mage_Core_Model_Resource_D
         $paths = array();
         $stores = Mage::app()->getStores();
         foreach ($stores as $store) {
+            if (!Mage::helper('factfinder')->isEnabled(null, $store->getId())) {
+                continue;
+            }
+
             try {
                 /** @var FACTFinder_Core_Model_Export_Type_Stock $stock */
                 $stock = Mage::getModel('factfinder/export_type_stock');

@@ -33,20 +33,21 @@ class FACTFinder_Core_Helper_Data extends Mage_Core_Helper_Abstract
      * Check if the module is enabled
      *
      * @param string|null $feature
+     * @param null|int    $storeId
      *
      * @return bool
      */
-    public function isEnabled($feature = null)
+    public function isEnabled($feature = null, $storeId = null)
     {
         if ($this->_getRequest()->getParam(self::SKIP_FF_PARAM_NAME)
-            && Mage::getStoreConfig(self::USE_FALLBACK_CONFIG_PATH)
+            && Mage::getStoreConfig(self::USE_FALLBACK_CONFIG_PATH, $storeId)
         ) {
             return false;
         }
 
-        $result = (bool) Mage::app()->getStore()->getConfig('factfinder/search/enabled');
+        $result = (bool) Mage::app()->getStore($storeId)->getConfig('factfinder/search/enabled');
         if ($feature !== null) {
-            $result &= (bool) Mage::app()->getStore()->getConfig('factfinder/modules/' . $feature);
+            $result &= (bool) Mage::app()->getStore($storeId)->getConfig('factfinder/modules/' . $feature);
         }
 
         return $result;
