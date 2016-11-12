@@ -450,14 +450,14 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             }
         }
 
+        if ($this->getHelper()->isValidationEnabled($storeId) && !$this->_getFile($storeId)->isValid()) {
+            return false;
+        }
+        
         Mage::dispatchEvent('factfinder_export_after', array(
             'store_id' => $storeId,
             'file'     => $this->_getFile($storeId),
         ));
-
-        if (!$this->_getFile($storeId)->isValid()) {
-            return false;
-        }
 
         return $this->_getFile($storeId)->getPath();
     }

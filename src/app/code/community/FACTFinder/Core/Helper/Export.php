@@ -28,6 +28,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     const EXPORT_IMAGE_TYPE    = 'suggest_image_type';
     const EXPORT_URLS_IMAGES   = 'urls';
     const OUT_OF_STOCK_PRODUCTS = 'out_of_stock_products';
+    const VALIDATION_DISABLED  = 'disabled_validation';
 
     /**
      * @var int
@@ -236,7 +237,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
             $model = Mage::getModel('factfinder/export_type_' . $type);
             $filename = $model->getFilenameForStore($storeId);
 
-            if (!$this->_validateFile($model, $dir, $filename)) {
+            if ($this->isValidationEnabled($storeId) && !$this->_validateFile($model, $dir, $filename)) {
                 $zip->close();
                 @unlink($archivePath);
                 break;
@@ -376,6 +377,19 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         $file->setValidator(Mage::getModel($model::FILE_VALIDATOR));
 
         return $file->isValid();
+    }
+
+
+    /**
+     * Check if file validation for store is enabled
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function isValidationEnabled($storeId = 0)
+    {
+        return !$this->getExportConfigValue(self::VALIDATION_DISABLED, $storeId);
     }
 
 

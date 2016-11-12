@@ -137,7 +137,7 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
             $semaphore->release();
         }
 
-        if (!$this->_getFile($storeId)->isValid()) {
+        if (Mage::helper('factfinder/export')->isValidationEnabled($storeId) && !$this->_getFile($storeId)->isValid()) {
             return false;
         }
 
