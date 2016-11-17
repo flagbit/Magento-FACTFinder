@@ -118,10 +118,13 @@ class FACTFinder_Recommendation_Model_Handler_Recommendations extends FACTFinder
     public function getRecommendedIds()
     {
         $ids = array();
-        foreach ($this->getRecommendations() as $recommendation) {
+        $recommendations = $this->getRecommendations();
+        if (empty($recommendations)) {
+            return $ids;
+        }   
+        foreach ($recommendations as $recommendation) {
             $ids[] = $recommendation->getId();
         }
-
         return $ids;
     }
 
