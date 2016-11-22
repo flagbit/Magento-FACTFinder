@@ -184,18 +184,19 @@ class FACTFinder_Tracking_Model_Observer
         }
 
         $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
-        if ($idFieldName == 'entity_id') {
-            $idFieldName = 'product_id'; // sales_order_item does not contain a entity_id
-        }
 
+        /** @var Mage_Sales_Model_Order_Item $item */
         foreach ($order->getAllItems() as $item) {
-            if ($item->getParentItem() != null) {
-                continue;
+            $parentProductId = null;
+
+            if ($item->getParentItem()) {
+                $parentProductId = $item->getParentItem()->getProduct()->getData($idFieldName);
             }
 
             try {
                 Mage::getModel('factfinder_tracking/queue')
-                    ->setProductId($item->getData($idFieldName))
+                    ->setProductId($item->getProduct()->getData($idFieldName))
+                    ->setParentProductId($parentProductId)
                     ->setProductName($item->getName())
                     ->setSid(Mage::helper('factfinder_tracking')->getSessionId())
                     ->setUserid($customerId)
@@ -203,8 +204,7 @@ class FACTFinder_Tracking_Model_Observer
                     ->setCount($item->getQtyOrdered())
                     ->setStoreId($order->getStoreId())
                     ->save();
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 Mage::logException($e);
             }
         }
@@ -239,10 +239,11 @@ class FACTFinder_Tracking_Model_Observer
                 $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
                 $tracking->setStoreId($storeId);
 
+                /** @var FACTFinder_Tracking_Model_Queue $item */
                 foreach ($items as $item) {
                     $tracking->setupCheckoutTracking(
                         $item->getProductId(),
-                        $item->getProductId(),
+                        $item->getParentProductId(),
                         $item->getProductName(),
                         null,
                         $item->getSid(),

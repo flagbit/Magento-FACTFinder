@@ -15,7 +15,7 @@
 <config>
     <modules>
         <FACTFinder_Tracking>
-            <version>4.1.11</version>
+            <version>4.1.12</version>
         </FACTFinder_Tracking>
     </modules>
     <global>
