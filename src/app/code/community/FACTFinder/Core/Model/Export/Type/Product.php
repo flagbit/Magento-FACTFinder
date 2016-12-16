@@ -972,9 +972,13 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 
         // if no cache image was generated we should create one
         if (!$imageModel->isCached()) {
-            $imageModel
-                ->resize()
-                ->saveFile();
+            try {
+                $imageModel
+                    ->resize()
+                    ->saveFile();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
         }
 
         return $imageModel->getUrl();

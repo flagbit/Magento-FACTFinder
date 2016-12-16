@@ -22,6 +22,10 @@
  */
 class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * A sequence that is unlikely to occur in an URL
+     */
+    const QUERY_PLACEHOLDER = 'XWPZVYTAQOJ';
 
 
     /**
@@ -36,7 +40,7 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         $queryParams = array();
 
         //conserve url encoded spaces, since parse_str replaces them with underscores
-        $url = str_replace('%20', 'XXXXXXXXXX', $url);
+        $url = str_replace('%20', self::QUERY_PLACEHOLDER, $url);
 
         $parseUrl = parse_url($url);
         if (isset($parseUrl['query'])) {
@@ -47,8 +51,8 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         // we use not encoded values since they will be encoded with Mage::getUrl()
         $result = array();
         foreach ($queryParams as $key => $value) {
-            $key = str_replace('XXXXXXXXXX', ' ', $key);
-            $value = str_replace('XXXXXXXXXX', ' ', $value);
+            $key = str_replace(self::QUERY_PLACEHOLDER, ' ', $key);
+            $value = str_replace(self::QUERY_PLACEHOLDER, ' ', $value);
             $result[$key] = $value;
         }
 
