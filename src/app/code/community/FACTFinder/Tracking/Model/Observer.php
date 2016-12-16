@@ -187,10 +187,20 @@ class FACTFinder_Tracking_Model_Observer
 
         /** @var Mage_Sales_Model_Order_Item $item */
         foreach ($order->getAllItems() as $item) {
-            $parentProductId = null;
+            if ($item->getChildrenItems()) {
+                continue;
+            }
 
-            if ($item->getParentItem()) {
-                $parentProductId = $item->getParentItem()->getProduct()->getData($idFieldName);
+            $parentProductId = null;
+            $price = $item->getPrice();
+
+            $parentItem = $item->getParentItem();
+
+            if ($parentItem) {
+                $parentProductId = $parentItem->getProduct()->getData($idFieldName);
+                if ($parentItem->getProduct()->isConfigurable()) {
+                    $price = $parentItem->getPrice();
+                }
             }
 
             try {
@@ -200,7 +210,7 @@ class FACTFinder_Tracking_Model_Observer
                     ->setProductName($item->getName())
                     ->setSid(Mage::helper('factfinder_tracking')->getSessionId())
                     ->setUserid($customerId)
-                    ->setPrice($item->getPrice())
+                    ->setPrice($price)
                     ->setCount($item->getQtyOrdered())
                     ->setStoreId($order->getStoreId())
                     ->save();
