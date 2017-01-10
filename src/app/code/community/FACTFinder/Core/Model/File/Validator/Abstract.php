@@ -122,7 +122,7 @@ abstract class FACTFinder_Core_Model_File_Validator_Abstract
     {
         $actualSize = 0;
         $h = fopen($file, 'r');
-        while (fgetcsv($h)) {
+        while (fgetcsv($h, null, $this->getCsvDelimiter())) {
             $actualSize++;
         }
 
