@@ -292,7 +292,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
 
             temp += '<span class="amount">' + (item.hitCount == 0 ? '' : item.hitCount) + '</span>';
             if (item.image) {
-                temp += '<img src="' + item.image + '" title="' + item.name + '" class="thumbnail"/>';
+                temp += '<span class="thumbnail"><img src="' + item.image + '" title="' + item.name + '" /></span>';
             }
 
             temp += item.name.replace(new RegExp("("+this.field.value+")","ig"), '<strong>$1</strong>');

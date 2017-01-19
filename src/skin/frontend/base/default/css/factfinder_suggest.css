@@ -7,11 +7,7 @@
     font-weight: bold;
 }
 
-.form-search .search-autocomplete.advanced-suggest img.thumbnail {
+.form-search .search-autocomplete.advanced-suggest span.thumbnail {
     float:left;
-    margin-top: 2px;
-    margin-bottom: 3px;
-    margin-right: 5px;
-    width: 31px;
-    height: 31px;
+    margin-right: .3em;
 }
