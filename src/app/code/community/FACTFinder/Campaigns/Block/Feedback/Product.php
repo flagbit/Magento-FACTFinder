@@ -27,6 +27,21 @@ class FACTFinder_Campaigns_Block_Feedback_Product extends FACTFinder_Campaigns_B
 
 
     /**
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getHandler()
+    {
+        $product = Mage::registry('current_product');
+        if ($product) {
+            $productId = $product->getData(Mage::helper('factfinder_campaigns')->getIdFieldName());
+            return Mage::getSingleton($this->_handlerModel, array($productId));
+        }
+
+        return parent::_getHandler();
+    }
+
+
+    /**
      * Check is the campign can be shown on product page
      *
      * @return bool
