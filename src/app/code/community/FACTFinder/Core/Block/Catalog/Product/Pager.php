@@ -70,7 +70,7 @@ class FACTFinder_Core_Block_Catalog_Product_Pager extends Mage_Page_Block_Html_P
             return parent::getPagerUrl($params);
         }
 
-        $pageNum = $params['p'];
+        $pageNum = (isset($params['p']) ? $params['p'] : 0);
 
         if (!isset($this->_pagingUrls[$pageNum])) {
             $this->_pagingUrls[$pageNum] = '';
