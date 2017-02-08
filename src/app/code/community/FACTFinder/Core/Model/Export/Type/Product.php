@@ -318,8 +318,12 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             $fileName = $this->getFilenameForStore($storeId);
 
             $file = Mage::getModel('factfinder/file');
-            $file->setValidator(Mage::getModel(self::FILE_VALIDATOR))
-                ->open($dir, $fileName);
+
+            if ($this->getHelper()->isValidationEnabled($storeId)) {
+                $file->setValidator(Mage::getModel(self::FILE_VALIDATOR));
+            }
+
+            $file->open($dir, $fileName);
 
             $this->_file[$storeId] = $file;
         }
@@ -450,7 +454,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             }
         }
 
-        if ($this->getHelper()->isValidationEnabled($storeId) && !$this->_getFile($storeId)->isValid()) {
+        if (!$this->_getFile($storeId)->isValid()) {
             return false;
         }
         

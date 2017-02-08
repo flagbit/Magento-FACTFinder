@@ -87,7 +87,11 @@ class FACTFinder_Core_Model_Export_Type_Stock extends Mage_Core_Model_Resource_D
             $dir = Mage::helper('factfinder/export')->getExportDirectory();
             $fileName = $this->getFilenameForStore($storeId);
             $this->_file = Mage::getModel('factfinder/file');
-            $this->_file->setValidator(Mage::getModel(self::FILE_VALIDATOR));
+
+            if (Mage::helper('factfinder/export')->isValidationEnabled($storeId)) {
+                $this->_file->setValidator(Mage::getModel(self::FILE_VALIDATOR));
+            }
+
             $this->_file->open($dir, $fileName);
         }
 
@@ -137,7 +141,7 @@ class FACTFinder_Core_Model_Export_Type_Stock extends Mage_Core_Model_Resource_D
             $semaphore->release();
         }
 
-        if (Mage::helper('factfinder/export')->isValidationEnabled($storeId) && !$this->_getFile($storeId)->isValid()) {
+        if (!$this->_getFile($storeId)->isValid()) {
             return false;
         }
 
