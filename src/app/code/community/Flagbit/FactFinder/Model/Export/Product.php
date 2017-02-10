@@ -249,7 +249,7 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
             foreach ($products as $productData) {
                 $lastProductId = $productData['entity_id'];
                 $productAttributes[$productData['entity_id']] = $productData['entity_id'];
-                $productChilds = $this->_getProductChildIds($productData['entity_id'], $productData['type_id']);
+                $productChilds = $this->_getProductChildIds($productData['entity_id'], $productData['type_id'], $storeId);
                 $productRelations[$productData['entity_id']] = $productChilds;
                 if ($productChilds) {
                     foreach ($productChilds as $productChild) {
@@ -309,11 +309,10 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                 if ($productChilds = $productRelations[$productData['entity_id']]) {
                     foreach ($productChilds as $productChild) {
                         if (isset($productAttributes[$productChild['entity_id']])) {
-                            /* should be used if sub products should not be exported because of their status
                             $subProductAttr = $productAttributes[$productChild[ 'entity_id' ]];
                             if (!isset($subProductAttr[$status->getId()]) || !in_array($subProductAttr[$status->getId()], $statusVals)) {
                                 continue;
-                            } */
+                            }
 
                             $subProductIndex = array(
                                 $productChild['entity_id'],
@@ -592,15 +591,18 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
      * @param string $typeId Super Product Link Type
      * @return array
      */
-    protected function _getProductChildIds($productId, $typeId)
+    protected function _getProductChildIds($productId, $typeId, $storeId)
     {
+        $websiteId = Mage::app()->getStore($storeId)->getWebsiteId();
+        $readAdapter = $this->_getReadAdapter();
+
         $typeInstance = $this->_getProductTypeInstance($typeId);
         $relation = $typeInstance->isComposite()
             ? $typeInstance->getRelationInfo()
             : false;
 
         if ($relation && $relation->getTable() && $relation->getParentFieldName() && $relation->getChildFieldName()) {
-            $select = $this->_getReadAdapter()->select()
+            $select = $readAdapter->select()
                 ->from(
                     array('main' => $this->getTable($relation->getTable())),
                     array($relation->getChildFieldName()))
@@ -610,12 +612,20 @@ class Flagbit_FactFinder_Model_Export_Product extends Mage_CatalogSearch_Model_M
                     'main.'.$relation->getChildFieldName().'=e.entity_id',
                     array('entity_id', 'type_id', 'sku')
                 )
+                ->join(
+                    array('w' => $this->getTable('catalog/product_website')),
+                    $readAdapter->quoteInto(
+                        'w.product_id=e.entity_id AND w.website_id=?',
+                        $websiteId
+                    ),
+                    array()
+                )
 
-                ->where("{$relation->getParentFieldName()}=?", $productId);
+                ->where("main.{$relation->getParentFieldName()}=?", $productId);
             if (!is_null($relation->getWhere())) {
                 $select->where($relation->getWhere());
             }
-            return $this->_getReadAdapter()->fetchAll($select);
+            return $readAdapter->fetchAll($select);
         }
 
         return null;
