@@ -29,6 +29,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     const EXPORT_URLS_IMAGES   = 'urls';
     const OUT_OF_STOCK_PRODUCTS = 'out_of_stock_products';
     const VALIDATION_DISABLED  = 'disabled_validation';
+    const EXPLICIT_ATTRIBUTES  = 'explicit_attributes';
 
     /**
      * @var int
@@ -390,6 +391,19 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function isValidationEnabled($storeId = 0)
     {
         return !$this->getExportConfigValue(self::VALIDATION_DISABLED, $storeId);
+    }
+
+
+    /**
+     * Check if explicit attribute type configuration should be used
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function useExplicitAttributes($storeId = 0)
+    {
+        return (bool) $this->getExportConfigValue(self::EXPLICIT_ATTRIBUTES, $storeId);
     }
 
 

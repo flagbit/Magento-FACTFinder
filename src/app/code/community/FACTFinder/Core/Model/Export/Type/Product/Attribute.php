@@ -2,6 +2,8 @@
 
 /**
  * Class FACTFinder_Core_Model_Export_Type_Product_Attribute
+ * 
+ * @method FACTFinder_Core_Model_Resource_Attribute getResource()
  */
 class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Model_Abstract
 {
@@ -27,6 +29,44 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      * @var array
      */
     protected $_exportAttributes;
+
+    /**
+     * @var array
+     */
+    protected $_configuredAttributes;
+
+    /**
+     * @var array
+     */
+    protected $_attributesByType;
+
+    /**
+     * @param        $storeId
+     * @param string $type
+     *
+     * @return mixed
+     */
+    public function getConfigureAttributes($storeId, $type = null)
+    {
+        if ($this->_configuredAttributes === null) {
+            $configuredAttributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
+            $this->_configuredAttributes = unserialize($configuredAttributes);
+        }
+
+        if (!empty($type)) {
+            $result = array();
+            foreach ($this->_configuredAttributes as $code => $configuredAttribute) {
+                if ($configuredAttribute['type'] == $type) {
+                    $result[$code] = $configuredAttribute;
+                }
+            }
+
+            return $result;
+        }
+
+
+        return $this->_configuredAttributes;
+    }
 
 
     protected function _construct()
@@ -78,6 +118,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     public function getAttributeValue($attributeId, $value, $storeId)
     {
+        /** @var Mage_Catalog_Model_Resource_Eav_Attribute $attribute */
         $attribute = $this->getResource()->getSearchableAttribute($attributeId);
         if (!$attribute->getIsSearchable() && $attribute->getAttributeCode() == 'visibility') {
             return $value;
@@ -170,13 +211,16 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 $headerDynamic[] = $attribute->getAttributeCode();
             }
 
-            $attributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
-            $attributes = unserialize($attributes);
+            $configuredAttributes = array();
+            
+            if (!Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
+                $configuredAttributes = array_keys($this->getConfigureAttributes($storeId));
+            }
 
 
             $this->_exportAttributeCodes[$storeId] = array_unique(array_merge(
                 $headerDynamic,
-                array_keys($attributes)
+                $configuredAttributes
             ));
         }
 
@@ -204,7 +248,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                     continue;
                 }
 
-                if ($this->_checkIfSkipAttribute($attribute, $type)) {
+                if (!$this->_isAttributeOfType($attribute, $type, $storeId)) {
                     continue;
                 }
 
@@ -218,50 +262,52 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     }
 
     /**
-     * Check whether the attribute should be skipped
+     * Check whether the attribute is of the requested type
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
      * @param string                                    $type
+     * @param int                                       $storeId
      *
      * @return bool
      */
-    protected function _checkIfSkipAttribute($attribute, $type)
+    protected function _isAttributeOfType($attribute, $type, $storeId = null)
     {
-        $shouldSkip = false;
+        $isOfType = true;
         switch ($type) {
-            case "system":
+            case 'system':
                 if ($attribute->getIsUserDefined() && !$attribute->getUsedForSortBy()) {
-                    $shouldSkip = true;
+                    $isOfType = false;
                 }
                 break;
-            case "sortable":
+            case 'sortable':
                 if (!$attribute->getUsedForSortBy()) {
-                    $shouldSkip = true;
+                    $isOfType = false;
                 }
                 break;
-            case "filterable":
-                $shouldSkip = $this->_shouldSkipFilterableAttribute($attribute);
+            case 'filterable':
+                $isOfType = $this->_isAttributeFilterable($attribute);
                 break;
             case 'numerical':
-                $shouldSkip = $this->_shouldSkipNumericalAttribute($attribute);
+                $isOfType = $this->_isAttributeNumerical($attribute, $storeId);
                 break;
-            case "searchable":
-                $shouldSkip = $this->_shouldSkipSearchableAttribute($attribute);
+            case 'searchable':
+                $isOfType = $this->_isAttributeSearchable($attribute);
                 break;
             default:;
         }
 
-        return $shouldSkip;
+        return $isOfType;
     }
 
+
     /**
-     * Check if we should skip searchable attribute
+     * Check if attribute is searchable
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
      *
      * @return bool
      */
-    protected function _shouldSkipSearchableAttribute($attribute)
+    protected function _isAttributeSearchable($attribute)
     {
         if (!$attribute->getIsUserDefined()
             || !$attribute->getIsSearchable()
@@ -276,42 +322,50 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
 
     /**
-     * Check if we should skip filterable attribute
+     * Check if attribute is  filterable
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
      *
      * @return bool
      */
-    protected function _shouldSkipFilterableAttribute($attribute)
+    protected function _isAttributeFilterable($attribute)
     {
         if (!$attribute->getIsFilterableInSearch()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
             || $attribute->getBackendType() === 'decimal'
         ) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 
     /**
-     * Check if we should skip numerical attribute
+     * Check if attribute is numerical
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
+     * @param int                                       $storeId
      *
      * @return bool
      */
-    protected function _shouldSkipNumericalAttribute($attribute)
+    protected function _isAttributeNumerical($attribute, $storeId)
     {
+        if (Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
+            $attributes = $this->getConfigureAttributes($storeId, 'number');
+            if (in_array($attribute->getAttributeCode(), array_keys($attributes))) {
+                return true;
+            }
+        }
+
         if (!$attribute->getIsFilterableInSearch()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
             || $attribute->getBackendType() != 'decimal'
         ) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 
@@ -400,7 +454,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     /**
      * Format attributes for csv
      *
-     * @param string   $type
+     * @param string   $type    Possible values: filterable|searchable|numerical
      * @param array    $values
      * @param null|int $storeId
      *
@@ -408,19 +462,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     public function formatAttributes($type, $values, $storeId = null)
     {
-        /**
-         * Get attributes by type
-         *
-         * @param string $type    Possible values: filterable|searchable|numerical
-         *
-         */
-        switch ($type) {
-            case 'numerical':
-                $attributes = $this->getSearchableAttributesByType('decimal', $type, $storeId);
-                break;
-            default:
-                $attributes = $this->getSearchableAttributesByType(null, $type, $storeId);
-        }
+        $attributes = $this->getSearchableAttributesByType(null, $type, $storeId);
 
         $returnArray = array();
         $counter = 0;

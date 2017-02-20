@@ -16,7 +16,7 @@
  *
  * This class provides the Product export
  *
- * @method getResource() FACTFinder_Core_Model_Resource_Export
+ * @method FACTFinder_Core_Model_Resource_Product getResource()
  *
  * @category Mage
  * @package FACTFinder_Core
