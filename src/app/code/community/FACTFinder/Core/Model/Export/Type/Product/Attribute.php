@@ -170,8 +170,14 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 $headerDynamic[] = $attribute->getAttributeCode();
             }
 
+            $attributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
+            $attributes = unserialize($attributes);
 
-            $this->_exportAttributeCodes[$storeId] = $headerDynamic;
+
+            $this->_exportAttributeCodes[$storeId] = array_unique(array_merge(
+                $headerDynamic,
+                array_keys($attributes)
+            ));
         }
 
         return $this->_exportAttributeCodes[$storeId];

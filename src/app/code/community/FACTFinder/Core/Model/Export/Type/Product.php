@@ -153,8 +153,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 
             $this->_headerColumns[$storeId] = array_merge(
                 $this->_defaultHeader,
-                $exportAttributes,
-                $additionalColumns
+                $additionalColumns,
+                $exportAttributes
             );
 
             // apply field limit as required by ff
