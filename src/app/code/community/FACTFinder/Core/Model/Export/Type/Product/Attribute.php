@@ -238,13 +238,17 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     public function getSearchableAttributesByType($backendType = null, $type = null, $storeId = 0)
     {
+        $cacheCode = $backendType . '|' . $type . '|' . $storeId;
+
+        if (isset($this->_attributesByType[$cacheCode])) {
+            return $this->_attributesByType[$cacheCode];
+        }
+
         $attributes = array();
 
         if ($type !== null || $backendType !== null) {
             foreach ($this->getSearchableAttributes($storeId) as $attribute) {
-                if ($backendType !== null
-                    && $attribute->getBackendType() != $backendType
-                ) {
+                if ($backendType !== null && $attribute->getBackendType() != $backendType) {
                     continue;
                 }
 
@@ -257,6 +261,8 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         } else {
             $attributes = $this->getSearchableAttributes($storeId);
         }
+
+        $this->_attributesByType[$cacheCode] = $attributes;
 
         return $attributes;
     }
