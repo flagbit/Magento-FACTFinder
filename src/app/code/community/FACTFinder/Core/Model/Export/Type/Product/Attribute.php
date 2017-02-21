@@ -41,32 +41,9 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     protected $_attributesByType;
 
     /**
-     * @param        $storeId
-     * @param string $type
-     *
-     * @return mixed
+     * @var array
      */
-    public function getConfigureAttributes($storeId, $type = null)
-    {
-        if ($this->_configuredAttributes === null) {
-            $configuredAttributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
-            $this->_configuredAttributes = unserialize($configuredAttributes);
-        }
-
-        if (!empty($type)) {
-            $result = array();
-            foreach ($this->_configuredAttributes as $code => $configuredAttribute) {
-                if ($configuredAttribute['type'] == $type) {
-                    $result[$code] = $configuredAttribute;
-                }
-            }
-
-            return $result;
-        }
-
-
-        return $this->_configuredAttributes;
-    }
+    protected $_searchableAttributes;
 
 
     protected function _construct()
@@ -79,6 +56,38 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
 
     /**
+     * Retrieve attributes configured in FF backend
+     *
+     * @param int    $storeId
+     * @param string $type
+     *
+     * @return mixed
+     */
+    public function getConfiguredAttributes($storeId, $type = null)
+    {
+        if (!isset($this->_configuredAttributes[$storeId])) {
+            $configuredAttributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
+            $this->_configuredAttributes[$storeId] = unserialize($configuredAttributes);
+        }
+
+        if (!empty($type)) {
+            $result = array();
+            foreach ($this->_configuredAttributes[$storeId] as $code => $configuredAttribute) {
+                if ($configuredAttribute['type'] == $type) {
+                    $result[$code] = $configuredAttribute;
+                }
+            }
+
+            return $result;
+        }
+
+        return $this->_configuredAttributes[$storeId];
+    }
+
+
+    /**
+     * Get text of a select option
+     *
      * @param $optionId
      * @param $storeId
      *
@@ -119,7 +128,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     public function getAttributeValue($attributeId, $value, $storeId)
     {
         /** @var Mage_Catalog_Model_Resource_Eav_Attribute $attribute */
-        $attribute = $this->getResource()->getSearchableAttribute($attributeId);
+        $attribute = $this->getSearchableAttribute($attributeId);
         if (!$attribute->getIsSearchable() && $attribute->getAttributeCode() == 'visibility') {
             return $value;
         }
@@ -154,6 +163,8 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
 
     /**
+     * Get attributes that can be used in search
+     *
      * @param null $storeId
      *
      * @return mixed
@@ -162,6 +173,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     {
         return $this->getResource()->getSearchableAttributes($storeId);
     }
+
 
     /**
      * Retrieve searchable attribute by Id or code
@@ -172,8 +184,13 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     public function getSearchableAttribute($attribute)
     {
-        return $this->getResource()->getSearchableAttribute($attribute);
+        if (!isset($this->_searchableAttributes[$attribute])) {
+            $this->_searchableAttributes[$attribute] = $this->getResource()->getSearchableAttribute($attribute);
+        }
+
+        return $this->_searchableAttributes[$attribute];
     }
+
 
     /**
      * Load product(s) attributes
@@ -214,7 +231,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             $configuredAttributes = array();
             
             if (!Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
-                $configuredAttributes = array_keys($this->getConfigureAttributes($storeId));
+                $configuredAttributes = array_keys($this->getConfiguredAttributes($storeId));
             }
 
 
@@ -226,6 +243,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
         return $this->_exportAttributeCodes[$storeId];
     }
+
 
     /**
      * Get searchable attributes by type
@@ -267,6 +285,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         return $attributes;
     }
 
+
     /**
      * Check whether the attribute is of the requested type
      *
@@ -282,7 +301,6 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             return true;
         }
 
-
         $isOfType = true;
         switch ($type) {
             case 'system':
@@ -296,7 +314,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 }
                 break;
             case 'filterable':
-                $isOfType = $this->_isAttributeFilterable($attribute);
+                $isOfType = $this->_isAttributeFilterable($attribute, $storeId);
                 break;
             case 'numerical':
                 $isOfType = $this->_isAttributeNumerical($attribute, $storeId);
@@ -340,11 +358,20 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      * Check if attribute is  filterable
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
+     * @param int                                       $storeId
      *
      * @return bool
      */
-    protected function _isAttributeFilterable($attribute)
+    protected function _isAttributeFilterable($attribute, $storeId)
     {
+
+        if (Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
+            $attributes = $this->getConfiguredAttributes($storeId, 'text');
+            if (in_array($attribute->getAttributeCode(), array_keys($attributes))) {
+                return true;
+            }
+        }
+
         if (!$attribute->getIsFilterableInSearch()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
             || $attribute->getBackendType() === 'decimal'
@@ -367,7 +394,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     protected function _isAttributeNumerical($attribute, $storeId)
     {
         if (Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
-            $attributes = $this->getConfigureAttributes($storeId, 'number');
+            $attributes = $this->getConfiguredAttributes($storeId, 'number');
             if (in_array($attribute->getAttributeCode(), array_keys($attributes))) {
                 return true;
             }
@@ -501,6 +528,8 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 $attributeValue = $this->_removeTags($attributeValue, $storeId);
                 if ($type == 'searchable') {
                     $returnArray[] = $attributeValue;
+                } elseif ($type == 'numerical') {
+                    $returnArray[] = $this->_formatNumericalAttributes($storeId, $attribute, $attributeValue);
                 } else {
                     $attributeCode = $this->_removeTags($attribute->getAttributeCode(), $storeId);
                     $attributeValue = str_replace(array('|', '=', '#'), '', array($attributeCode, $attributeValue));
@@ -566,6 +595,39 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         return array_filter($values, function ($value) {
             return !empty($value);
         });
+    }
+
+
+    /**
+     * Format numerical attribute value
+     *
+     * @param int                                       $storeId
+     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param string                                    $attributeValue
+     *
+     * @return array
+     */
+    protected function _formatNumericalAttributes($storeId, $attribute, $attributeValue)
+    {
+        $attributeCode = $attribute->getAttributeCode();
+        if (Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
+            // make sure attributes are loaded
+            $this->getConfiguredAttributes($storeId);
+
+            // add unit if available
+            if (isset($this->_configuredAttributes[$storeId][$attributeCode])) {
+                $configuredAttribute = $this->_configuredAttributes[$storeId][$attributeCode];
+                if (isset($configuredAttribute['unit'])) {
+                    $unit = $configuredAttribute['unit'];
+                    $attributeCode .= '~~' . $unit;
+                }
+            }
+        }
+
+        $attributeCode = $this->_removeTags($attributeCode, $storeId);
+        $attributeValue = str_replace(array('|', '=', '#'), '', array($attributeCode, $attributeValue));
+
+        return implode('=', $attributeValue);
     }
 
 
