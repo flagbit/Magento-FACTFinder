@@ -270,8 +270,13 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      *
      * @return bool
      */
-    protected function _isAttributeOfType($attribute, $type, $storeId = null)
+    protected function _isAttributeOfType($attribute, $type, $storeId = 0)
     {
+        if ($type && in_array($attribute->getAttributeCode(), $this->_attributesByType[$type][$storeId])) {
+            return true;
+        }
+
+
         $isOfType = true;
         switch ($type) {
             case 'system':
@@ -294,6 +299,10 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 $isOfType = $this->_isAttributeSearchable($attribute);
                 break;
             default:;
+        }
+
+        if ($type && $isOfType) {
+            $this->_attributesByType[$type][$storeId][] = $attribute->getAttributeCode();
         }
 
         return $isOfType;
@@ -413,7 +422,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      *
      * @return array
      */
-    public function addAttributesToRow($dataArray, $values, $storeId = null)
+    public function addAttributesToRow($dataArray, $values, $storeId = 0)
     {
         // get attributes objects assigned to their position at the export
         if ($this->_exportAttributes == null) {
@@ -425,7 +434,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             );
 
             $attributeCodes = array_flip($attributes);
-            $searchableAttributes = $this->getSearchableAttributesByType();
+            $searchableAttributes = $this->getSearchableAttributesByType(null, null, $storeId);
             foreach ($searchableAttributes as $attribute) {
                 if (isset($attributeCodes[$attribute->getAttributeCode()])
                     && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))
