@@ -330,7 +330,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 
                 $productIndex = $this->_exportImageAndDeepLink($productIndex, $productData, $storeId);
                 $productIndex = $this->getAttributeModel()
-                    ->addAttributesToRow($productIndex, $productAttributes, $storeId);
+                    ->addAttributesToRow($productIndex, $productAttributes, $storeId, $productData);
 
                 $this->_writeCsvRow($productIndex, $storeId);
 
@@ -681,7 +681,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             $subProductIndex = $this->getAttributeModel()->addAttributesToRow(
                 $subProductIndex,
                 $attributeValues[$productChild['entity_id']],
-                $storeId
+                $storeId,
+                $productData
             );
 
             $this->_writeCsvRow($subProductIndex, $storeId);

@@ -452,40 +452,42 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      * @param array $dataArray Export row Array
      * @param array $values    Attributes Array
      * @param int   $storeId   Store ID
+     * @param array $productData
      *
      * @return array
      */
-    public function addAttributesToRow($dataArray, $values, $storeId = 0)
+    public function addAttributesToRow($dataArray, $values, $storeId = 0, $productData = array())
     {
         // get attributes objects assigned to their position at the export
         if ($this->_exportAttributes == null) {
             $attributes = $this->getExportAttributes($storeId);
-            $this->_exportAttributes = array_fill(
-                0,
-                count($attributes),
+            $this->_exportAttributes = array_fill_keys(
+                $attributes,
                 null
             );
 
-            $attributeCodes = array_flip($attributes);
             $searchableAttributes = $this->getSearchableAttributesByType(null, null, $storeId);
             foreach ($searchableAttributes as $attribute) {
-                if (isset($attributeCodes[$attribute->getAttributeCode()])
+                if (in_array($attribute->getAttributeCode(), $attributes)
                     && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))
                 ) {
-                    $this->_exportAttributes[$attributeCodes[$attribute->getAttributeCode()]] = $attribute;
+                    $this->_exportAttributes[$attribute->getAttributeCode()] = $attribute;
                 }
             }
         }
 
         // fill dataArray with the values of the attributes that should be exported
-        foreach ($this->_exportAttributes as $attribute) {
+        foreach ($this->_exportAttributes as $code => $attribute) {
             if ($attribute != null) {
                 $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
+                if (empty($value)) {
+                    $value = isset($productData[$code]) ? $productData[$code] : null;
+                }
                 $value = $this->getAttributeValue($attribute->getId(), $value, $storeId);
                 $value = $this->_removeTags($value, $storeId);
-                $dataArray[] = $value;
+                $dataArray[$code] = $value;
             } else {
-                $dataArray[] = null;
+                $dataArray[$code] = null;
             }
         }
 
