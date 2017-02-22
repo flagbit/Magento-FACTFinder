@@ -235,10 +235,10 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             }
 
 
-            $this->_exportAttributeCodes[$storeId] = array_unique(array_merge(
+            $this->_exportAttributeCodes[$storeId] = array_values(array_unique(array_merge(
                 $headerDynamic,
                 $configuredAttributes
-            ));
+            )));
         }
 
         return $this->_exportAttributeCodes[$storeId];
