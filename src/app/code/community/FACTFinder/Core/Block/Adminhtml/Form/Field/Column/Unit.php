@@ -38,7 +38,7 @@ class FACTFinder_Core_Block_Adminhtml_Form_Field_Column_Unit extends Mage_Core_B
             'id'    => 'attribute_unit',
             'name'  => self::COLUMN_NAME,
             'title' => $this->__('Attribute Unit'),
-            'class' => 'attribute_unit',
+            'class' => 'attribute_unit validate-alphanum',
         ));
     }
 

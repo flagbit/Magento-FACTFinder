@@ -320,7 +320,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 $isOfType = $this->_isAttributeNumerical($attribute, $storeId);
                 break;
             case 'searchable':
-                $isOfType = $this->_isAttributeSearchable($attribute);
+                $isOfType = $this->_isAttributeSearchable($attribute, $storeId);
                 break;
             default:;
         }
@@ -340,12 +340,15 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      *
      * @return bool
      */
-    protected function _isAttributeSearchable($attribute)
+    protected function _isAttributeSearchable($attribute, $storeId)
     {
+        if ($this->_isAttributeNumerical($attribute, $storeId)) {
+            return false;
+        }
+
         if (!$attribute->getIsUserDefined()
             || !$attribute->getIsSearchable()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
-            || $attribute->getBackendType() === 'decimal'
         ) {
             return true;
         }
@@ -364,6 +367,9 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     protected function _isAttributeFilterable($attribute, $storeId)
     {
+        if ($this->_isAttributeNumerical($attribute, $storeId)) {
+            return false;
+        }
 
         if (Mage::helper('factfinder/export')->useExplicitAttributes($storeId)) {
             $attributes = $this->getConfiguredAttributes($storeId, 'text');
@@ -374,7 +380,6 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
         if (!$attribute->getIsFilterableInSearch()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
-            || $attribute->getBackendType() === 'decimal'
         ) {
             return false;
         }
@@ -627,6 +632,9 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         $attributeCode = $this->_removeTags($attributeCode, $storeId);
+        // bring it to the en_US format without thousand separator (eg. 2134.763)
+        $attributeValue = rtrim(number_format(floatval($attributeValue), 10, '.', ''), '.0');
+        // remove forbidden symbols
         $attributeValue = str_replace(array('|', '=', '#'), '', array($attributeCode, $attributeValue));
 
         return implode('=', $attributeValue);
