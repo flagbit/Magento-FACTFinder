@@ -337,6 +337,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      * Check if attribute is searchable
      *
      * @param Mage_Catalog_Model_Resource_EAV_Attribute $attribute
+     * @param                                           $storeId
      *
      * @return bool
      */
@@ -348,7 +349,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
         if (!$attribute->getIsUserDefined()
             || !$attribute->getIsSearchable()
-            || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
+            || in_array($attribute->getAttributeCode(), $this->getExportAttributes($storeId))
         ) {
             return true;
         }
@@ -379,7 +380,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         if (!$attribute->getIsFilterableInSearch()
-            || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
+            || in_array($attribute->getAttributeCode(), $this->getExportAttributes($storeId))
         ) {
             return false;
         }
@@ -406,7 +407,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         if (!$attribute->getIsFilterableInSearch()
-            || in_array($attribute->getAttributeCode(), $this->getExportAttributes())
+            || in_array($attribute->getAttributeCode(), $this->getExportAttributes($storeId))
             || $attribute->getBackendType() != 'decimal'
         ) {
             return false;
@@ -464,9 +465,9 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     public function addAttributesToRow($dataArray, $values, $storeId = 0, $productData = array())
     {
         // get attributes objects assigned to their position at the export
-        if ($this->_exportAttributes == null) {
+        if (empty($this->_exportAttributes[$storeId])) {
             $attributes = $this->getExportAttributes($storeId);
-            $this->_exportAttributes = array_fill_keys(
+            $this->_exportAttributes[$storeId] = array_fill_keys(
                 $attributes,
                 null
             );
@@ -476,13 +477,13 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
                 if (in_array($attribute->getAttributeCode(), $attributes)
                     && !in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility'))
                 ) {
-                    $this->_exportAttributes[$attribute->getAttributeCode()] = $attribute;
+                    $this->_exportAttributes[$storeId][$attribute->getAttributeCode()] = $attribute;
                 }
             }
         }
 
         // fill dataArray with the values of the attributes that should be exported
-        foreach ($this->_exportAttributes as $code => $attribute) {
+        foreach ($this->_exportAttributes[$storeId] as $code => $attribute) {
             if ($attribute != null) {
                 $value = isset($values[$attribute->getId()]) ? $values[$attribute->getId()] : null;
                 if (empty($value)) {
