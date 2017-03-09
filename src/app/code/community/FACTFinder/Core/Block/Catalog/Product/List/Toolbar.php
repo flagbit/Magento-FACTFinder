@@ -224,7 +224,9 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
         if (!isset($orders[$defaultOrder])) {
             $keys = array_keys($orders);
-            $defaultOrder = $keys[0];
+            if (isset($keys[0])) {
+                $defaultOrder = $keys[0];
+            }
         }
 
         // the only change of this method is here
