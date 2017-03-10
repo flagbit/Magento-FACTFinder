@@ -625,7 +625,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             // add unit if available
             if (isset($this->_configuredAttributes[$storeId][$attributeCode])) {
                 $configuredAttribute = $this->_configuredAttributes[$storeId][$attributeCode];
-                if (isset($configuredAttribute['unit'])) {
+                if (!empty($configuredAttribute['unit'])) {
                     $unit = $configuredAttribute['unit'];
                     $attributeCode .= '~~' . $unit;
                 }
@@ -633,8 +633,9 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         $attributeCode = $this->_removeTags($attributeCode, $storeId);
-        // bring it to the en_US format without thousand separator (eg. 2134.763)
-        $attributeValue = rtrim(number_format(floatval($attributeValue), 10, '.', ''), '.0');
+
+        // bring it to the en_US format without thousand separator (eg. 2134.7639)
+        $attributeValue = round(number_format(floatval($attributeValue), 4, '.', ''), 4);
         // remove forbidden symbols
         $attributeValue = str_replace(array('|', '=', '#'), '', array($attributeCode, $attributeValue));
 
