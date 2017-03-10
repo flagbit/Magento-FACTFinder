@@ -140,10 +140,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
 
             $attribute->setStoreId($storeId);
             $value = $attribute->getSource()->getOptionText($value);
-
-            if (is_array($value)) {
-                $value = implode('|', $value);
-            } elseif (empty($value)) {
+            if (!is_array($value) && empty($value)) {
                 $inputType = $attribute->getFrontend()->getInputType();
                 if ($inputType == 'select' || $inputType == 'multiselect') {
                     return null;
