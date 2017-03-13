@@ -191,7 +191,8 @@ class FACTFinder_Tracking_Model_Observer
                 continue;
             }
 
-            $parentProductId = null;
+            // use product id as default value in case there's no parent item
+            $parentProductId = $item->getProduct()->getData($idFieldName);
             $price = $item->getPrice();
 
             $parentItem = $item->getParentItem();
