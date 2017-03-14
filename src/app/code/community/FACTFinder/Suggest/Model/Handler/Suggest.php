@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -19,7 +19,7 @@
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -28,7 +28,7 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
 
     protected $_query;
 
-    protected $_jqueryCallback;
+    protected $_jsCallback;
 
     protected $_suggestResult;
 
@@ -50,16 +50,16 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
      * We might need to supply the facade manually, because we might not have a full Magento
      * context and we cannot call Mage::getSingleton().
      * @param string                          $query
-     * @param string                          $jqueryCallback
+     * @param string                          $jsCallback
      * @param FACTFinder_Suggest_Model_Facade $facade
      */
-    public function __construct($query, $jqueryCallback = '', $facade = null)
+    public function __construct($query, $jsCallback = '', $facade = null)
     {
         $this->_facade = $facade;
         $this->_query = $query;
 
         // prevent xss (<script> tags can open a vulnerability)
-        $this->_jqueryCallback = strip_tags($jqueryCallback);
+        $this->_jsCallback = strip_tags($jsCallback);
 
         parent::__construct();
     }
@@ -154,7 +154,7 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
                 );
             }
         }
-        return $this->_jqueryCallback . '(' . Zend_Json_Encoder::encode($resultArray) . ');';
+        return $this->_jsCallback . '(' . Zend_Json_Encoder::encode($resultArray) . ');';
     }
 
 

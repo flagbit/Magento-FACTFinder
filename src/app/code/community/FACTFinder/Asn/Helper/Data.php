@@ -44,7 +44,7 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
 
         $parseUrl = parse_url($url);
         if (isset($parseUrl['query'])) {
-            parse_str($parseUrl['query'], $queryParams);
+             $queryParams = $this->parseStr($parseUrl['query']);
         }
 
         // recover spaces
@@ -91,6 +91,30 @@ class FACTFinder_Asn_Helper_Data extends Mage_Core_Helper_Abstract
         $url = str_replace(array('?&', '&&'), array('?', '&'), $url);
 
         return $url;
+    }
+
+
+    /**
+     * Does practically the same as parse_str
+     * but does NOT underscore parameter names
+     *
+     * @param string $string
+     *
+     * @return array
+     *
+     */
+    public function parseStr($string)
+    {
+        $result = array();
+        $query = trim($string, '?&');
+        $query = explode('&', $query);
+
+        foreach ($query as $item) {
+            $item = explode('=', $item);
+            $result[urldecode(array_shift($item))] = urldecode(array_shift($item));
+        }
+
+        return $result;
     }
 
 

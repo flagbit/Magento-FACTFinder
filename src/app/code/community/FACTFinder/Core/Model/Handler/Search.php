@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -17,7 +17,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG (http://www.flagbit.de)
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -200,11 +200,11 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
     /**
      * Get pagination object from FF
      *
-     * @return \FACTFinder\Data\Paging
+     * @return \FACTFinder\Data\Paging|null
      */
     public function getPaging()
     {
-        if (!$this->isSearchHasResult()) {
+        if (!Mage::helper('factfinder')->isEnabled() || !$this->isSearchHasResult()) {
             return null;
         }
 
@@ -219,7 +219,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
      */
     public function getSorting()
     {
-        if (!$this->isSearchHasResult()) {
+        if (!Mage::helper('factfinder')->isEnabled() || !$this->isSearchHasResult()) {
             return null;
         }
 
@@ -233,7 +233,7 @@ class FACTFinder_Core_Model_Handler_Search extends FACTFinder_Core_Model_Handler
      */
     public function getResultsPerPageOptions()
     {
-        if (!$this->isSearchHasResult()) {
+        if (!Mage::helper('factfinder')->isEnabled() || !$this->isSearchHasResult()) {
             return null;
         }
 

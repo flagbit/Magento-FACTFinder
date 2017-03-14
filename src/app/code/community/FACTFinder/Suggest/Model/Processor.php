@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -21,7 +21,7 @@ require_once BP . DS . 'lib' . DS . 'FACTFinder' . DS . 'Loader.php';
  * @category Mage
  * @package FACTFinder_Suggest
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -168,7 +168,7 @@ class FACTFinder_Suggest_Model_Processor
     {
         $handler = new FACTFinder_Suggest_Model_Handler_Suggest(
             $this->_getRequestParam('query'),
-            $this->_getRequestParam('jquery_callback'),
+            $this->_getJsCallback(),
             $this->_getFacade()
         );
 
@@ -296,6 +296,23 @@ class FACTFinder_Suggest_Model_Processor
     public function getRequestTags()
     {
         return $this->_requestTags;
+    }
+
+
+    /**
+     * Get JS callback from request data
+     *
+     * @return string
+     */
+    protected function _getJsCallback()
+    {
+        $jsCallback = $this->_getRequestParam('jquery_callback');
+
+        if (!$jsCallback) {
+            $jsCallback = $this->_getRequestParam('callback');
+        }
+
+        return $jsCallback;
     }
 
 

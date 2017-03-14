@@ -6,7 +6,7 @@
 * @category Mage
 * @package FACTFinder_Core
 * @author Flagbit Magento Team <magento@flagbit.de>
-* @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+* @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
 * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
 * @link http://www.flagbit.de
 *
@@ -221,11 +221,21 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </attributes>
+                        <explicit_attributes translate="label">
+                            <label>Use explicit attribute types</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Use types from the above table to export attributes in type-specific columns rather than in separate ones]]></comment>
+                        </explicit_attributes>
                         <trigger_data_import translate="label">
                             <label>Trigger Data Import</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>40</sort_order>
+                            <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -235,7 +245,7 @@
                             <label>Import Delay Enabled</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>45</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -245,7 +255,7 @@
                             <label>Upload files to FTP host</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>50</sort_order>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -254,7 +264,7 @@
                         <ftp_host translate="label">
                             <label>FTP Host</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>55</sort_order>
+                            <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -263,7 +273,7 @@
                         <ftp_port translate="label">
                             <label>FTP Port</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>60</sort_order>
+                            <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -272,7 +282,7 @@
                         <ftp_user translate="label">
                             <label>FTP User</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>65</sort_order>
+                            <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -281,7 +291,7 @@
                         <ftp_password translate="label">
                             <label>FTP Password</label>
                             <frontend_type>password</frontend_type>
-                            <sort_order>70</sort_order>
+                            <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -290,7 +300,7 @@
                         <ftp_path translate="label">
                             <label>FTP Path</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>75</sort_order>
+                            <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -300,7 +310,7 @@
                             <label>Use SSL</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>80</sort_order>
+                            <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -309,7 +319,7 @@
                         </ftp_ssl>
                         <export_url translate="label">
                             <frontend_model>factfinder/adminhtml_exportlink</frontend_model>
-                            <sort_order>95</sort_order>
+                            <sort_order>140</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -318,7 +328,7 @@
                             <label>Disable export feed validation</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>120</sort_order>
+                            <sort_order>150</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

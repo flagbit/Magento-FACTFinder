@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -22,7 +22,7 @@ use FACTFinder\Loader as FF;
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG (http://www.flagbit.de)
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -372,6 +372,10 @@ class FACTFinder_Core_Model_Facade
      */
     protected function _getAdapter($type, $channel = null, $id = null)
     {
+        if (!$this->_validateAdapterConfiguration($type)) {
+            Mage::throwException('Invalid search adapter configuration');
+        }
+
         $hashKey = $this->_getAdapterIdentifier($type, $channel, $id);
 
         // get the channel after calculating the adapter identifier
@@ -593,7 +597,7 @@ class FACTFinder_Core_Model_Facade
      * @param string $channel
      * @param int    $id
      *
-     * @return Object|null
+     * @return \FACTFinder\Adapter\AbstractAdapter|null
      */
     protected function _getFactFinderObject($type, $objectGetter, $channel = null, $id = null)
     {
@@ -696,6 +700,26 @@ class FACTFinder_Core_Model_Facade
         $this->configureImportAdapter(array('channel' => $channel));
 
         return $this->getImportAdapter($channel)->triggerDataImport($download);
+    }
+
+
+    /**
+     * Check if all required parameters are set for the adapter
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    protected function _validateAdapterConfiguration($type)
+    {
+        if ($type == 'search') {
+            $params = $this->getClientRequestParams();
+            if (!$params->offsetExists('navigation') && !$params->offsetExists('query')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

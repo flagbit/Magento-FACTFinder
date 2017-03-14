@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Tracking
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -17,7 +17,7 @@
  * @category Mage
  * @package FACTFinder_Tracking
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -191,7 +191,8 @@ class FACTFinder_Tracking_Model_Observer
                 continue;
             }
 
-            $parentProductId = null;
+            // use product id as default value in case there's no parent item
+            $parentProductId = $item->getProduct()->getData($idFieldName);
             $price = $item->getPrice();
 
             $parentItem = $item->getParentItem();

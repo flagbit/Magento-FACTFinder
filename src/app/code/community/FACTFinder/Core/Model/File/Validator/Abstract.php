@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -17,7 +17,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG (http://www.flagbit.de)
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
@@ -122,7 +122,7 @@ abstract class FACTFinder_Core_Model_File_Validator_Abstract
     {
         $actualSize = 0;
         $h = fopen($file, 'r');
-        while (fgetcsv($h)) {
+        while (fgetcsv($h, null, $this->getCsvDelimiter())) {
             $actualSize++;
         }
 

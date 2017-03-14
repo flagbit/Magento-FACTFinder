@@ -5,7 +5,7 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  *
@@ -17,12 +17,26 @@
  * @category Mage
  * @package FACTFinder_Core
  * @author Flagbit Magento Team <magento@flagbit.de>
- * @copyright Copyright (c) 2016 Flagbit GmbH & Co. KG (http://www.flagbit.de)
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG (http://www.flagbit.de)
  * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
  * @link http://www.flagbit.de
  */
-class FACTFinder_Core_Block_Adminhtml_Form_Field_Attribute extends Mage_Core_Block_Html_Select
+class FACTFinder_Core_Block_Adminhtml_Form_Field_Column_Attribute extends Mage_Core_Block_Html_Select
 {
+
+    /**
+     * Set initial options
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+
+        $this->setId('attibute_select')
+            ->setTitle('attribute')
+            ->setClass('attribute_select')
+        ;
+    }
+
 
     /**
      * Attributes cache

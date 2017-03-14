@@ -73,10 +73,11 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
      * Get Attribute Options Array from FactFinder FilterGroupItems
      *
      * @param FACTFinder\Data\FilterGroup $filterGroup
+     * @param string                      $unit
      *
      * @return array
      */
-    protected function _getAttributeOptions(FACTFinder\Data\FilterGroup $filterGroup)
+    protected function _getAttributeOptions(FACTFinder\Data\FilterGroup $filterGroup, $unit = '')
     {
         $attributeOptions = array();
 
@@ -98,7 +99,7 @@ class FACTFinder_Asn_Model_Handler_Search extends FACTFinder_Core_Model_Handler_
             }
 
             if ($filterGroup->isSliderStyle()) {
-                $queryParams['filter' . $option->getFieldName()] = $filterValue;
+                $queryParams[urldecode('filter' . $option->getFieldName())] = $filterValue;
                 $attributeOptions[] = $this->_prepareSliderOption($option, $filterGroup, $queryParams);
             } else {
                 if (!$option->getLabel() || $this->_isTopLevelNavigation($option, $currentCategoryPath)) {
