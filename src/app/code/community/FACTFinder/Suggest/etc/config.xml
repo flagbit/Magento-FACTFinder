@@ -92,6 +92,9 @@
             <config>
                 <proxy>1</proxy>
             </config>
+            <export>
+                <suggest_image_size>60</suggest_image_size>
+            </export>
         </factfinder>
     </default>
 </config>
