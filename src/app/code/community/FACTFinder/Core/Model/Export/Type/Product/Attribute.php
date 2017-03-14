@@ -294,7 +294,10 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
      */
     protected function _isAttributeOfType($attribute, $type, $storeId = 0)
     {
-        if ($type && in_array($attribute->getAttributeCode(), $this->_attributesByType[$type][$storeId])) {
+        if ($type
+            && isset($this->_attributesByType[$type][$storeId])
+            && in_array($attribute->getAttributeCode(), $this->_attributesByType[$type][$storeId])
+        ) {
             return true;
         }
 
