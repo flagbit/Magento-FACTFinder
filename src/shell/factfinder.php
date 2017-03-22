@@ -187,8 +187,13 @@ USAGE;
             return;
         }
 
-        $file = Mage::getModel('factfinder/export_type_cms')->saveExport($this->getArg(self::EXPORT_CMS_FOR_STORE));
-        printf("Successfully generated export to: %s\n", $file);
+        try {
+            $model = Mage::getModel('factfinder/export_config')->getExportModel('cms');
+            $file = $model->saveExport($this->getArg(self::EXPORT_CMS_FOR_STORE));
+            printf("Successfully generated export to: %s\n", $file);
+        } catch (Exception $e) {
+            printf($e->getMessage());
+        }
     }
 
 

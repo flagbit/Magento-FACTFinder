@@ -67,7 +67,7 @@ class FACTFinder_Core_Model_Export_Config
         $types = $this->getTypes();
 
         if (!isset($types[$type])) {
-            Mage::throwException(sprintf('Requested export type %s is not available', $type));
+            Mage::throwException(sprintf('Requested export type "%s" is not available', $type));
         }
 
         return $types[$type];
