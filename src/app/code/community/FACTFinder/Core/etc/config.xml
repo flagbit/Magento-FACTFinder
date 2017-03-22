@@ -208,6 +208,9 @@
             <product>
                 <model>factfinder/export_type_product</model>
             </product>
+            <cms>
+                <model>factfinder/export_type_cms</model>
+            </cms>
         </export>
     </factfinder>
 </config>

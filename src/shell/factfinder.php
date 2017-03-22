@@ -9,6 +9,7 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
     const EXPORT_STORE_PRICE              = 'exportStorePrice';
     const EXPORT_STORE_STOCK              = 'exportStoreStock';
     const EXPORT_STORE                    = 'exportStore';
+    const EXPORT_CMS_FOR_STORE            = 'exportCmsForStore';
 
     /**
      * Mage_Shell_FactFinder constructor.
@@ -40,6 +41,8 @@ class Mage_Shell_FactFinder extends Mage_Shell_Abstract
             $this->exportAllTypesForStore();
         } elseif ($this->getArg(self::EXPORT_ALL_TYPES_FOR_ALL_STORES)) {
             $this->exportAllTypesForAllStores();
+        } elseif ($this->getArg(self::EXPORT_CMS_FOR_STORE)) {
+            $this->exportCmsForStore();
         } else {
             echo $this->usageHelp();
         }
@@ -169,6 +172,23 @@ USAGE;
         foreach ($files as $file) {
             echo $file . "\n";
         }
+    }
+
+
+    /**
+     * Export CMS pages for store
+     *
+     * @return void
+     */
+    private function exportCmsForStore()
+    {
+        if (!is_numeric($this->getArg(self::EXPORT_CMS_FOR_STORE))) {
+            echo $this->usageHelp();
+            return;
+        }
+
+        $file = Mage::getModel('factfinder/export_type_cms')->saveExport($this->getArg(self::EXPORT_CMS_FOR_STORE));
+        printf("Successfully generated export to: %s\n", $file);
     }
 
 
