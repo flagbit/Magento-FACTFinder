@@ -15,7 +15,7 @@
 <config>
     <modules>
         <FACTFinder_Core>
-            <version>4.0.1</version>
+            <version>4.1.14</version>
         </FACTFinder_Core>
     </modules>
     <global>
@@ -76,6 +76,16 @@
                 </observers>
             </factfinder_export_after>
         </events>
+        <resources>
+            <factfinder_core_setup>
+                <setup>
+                    <module>FACTFinder_Core</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </factfinder_core_setup>
+        </resources>
     </global>
     <adminhtml>
         <events>
@@ -87,6 +97,15 @@
                     </factfinder_core_set_search_engine>
                 </observers>
             </controller_action_postdispatch_adminhtml_system_config_save>
+            <adminhtml_cms_page_edit_tab_main_prepare_form>
+                <observers>
+                    <factfinder_page_edit_tab_content>
+                        <type>singleton</type>
+                        <class>factfinder/observer</class>
+                        <method>addFieldToCmsPage</method>
+                    </factfinder_page_edit_tab_content>
+                </observers>
+            </adminhtml_cms_page_edit_tab_main_prepare_form>
         </events>
     </adminhtml>
     <frontend>

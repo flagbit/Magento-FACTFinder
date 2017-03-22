@@ -307,4 +307,32 @@ class FACTFinder_Core_Model_Observer
     }
 
 
+    /**
+     * Add field to cms page edit
+     *
+     * @param $observer
+     */
+    public function addFieldToCmsPage($observer)
+    {
+        if (!Mage::helper('factfinder/export')->isCmsExportEnabled()) {
+            return;
+        }
+
+        /** @var Varien_Data_Form $form */
+        $form = $observer->getForm();
+        $fieldset = $form->addFieldset('factfinder_content_fieldset', array(
+            'legend' => Mage::helper('factfinder')->__('FACT-Finder'),
+            'class'  => 'fieldset-wide'
+        ));
+
+        //add new field
+        $fieldset->addField('skip_ff_export', 'select', array(
+            'name'      => 'skip_ff_export',
+            'label'     => Mage::helper('factfinder')->__('Skip page in export'),
+            'title'     => Mage::helper('factfinder')->__('Skip page in export'),
+            'values'    => Mage::getModel('adminhtml/system_config_source_yesno')->toArray()
+        ));
+    }
+
+
 }

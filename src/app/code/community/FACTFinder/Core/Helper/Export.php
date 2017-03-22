@@ -402,4 +402,17 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * Check if export of CMS pages is enabled
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function isCmsExportEnabled($storeId = 0)
+    {
+        return (bool) $this->getExportConfigValue('export_cms_pages', $storeId);
+    }
+
+
 }

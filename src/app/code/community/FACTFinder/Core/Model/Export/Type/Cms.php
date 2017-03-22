@@ -51,17 +51,6 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
 
 
     /**
-     * Resource initialization
-     *
-     * @return void
-     */
-    protected function _construct()
-    {
-        $this->_setResource('core');
-    }
-
-
-    /**
      * Get export filename for store
      *
      * @param int $storeId
@@ -203,6 +192,10 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
             ->addFieldToFilter('is_active', 1);
 
         foreach ($cmsCollection as $page) {
+            if ($page->getSkipFfExport()) {
+                continue;
+            }
+
             $row = $this->getCmsData($page, $storeId);
             $this->_addCsvRow($row, $storeId);
         }
@@ -218,7 +211,7 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
      */
     public function isEnabled()
     {
-        return true;
+        return Mage::helper('factfinder/export')->isCmsExportEnabled();
     }
 
 
