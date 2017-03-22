@@ -41,4 +41,12 @@ interface FACTFinder_Core_Model_Export_Type_Interface
     public function getFilenameForStore($storeId);
 
 
+    /**
+     * Check if export type is enabled
+     *
+     * @return bool
+     */
+    public function isEnabled();
+
+
 }

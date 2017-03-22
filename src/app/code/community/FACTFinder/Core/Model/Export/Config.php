@@ -29,7 +29,7 @@ class FACTFinder_Core_Model_Export_Config
             foreach ($node as $element) {
                 if (isset($element->model)) {
                     $model = Mage::getModel($element->model[0]);
-                    if ($model instanceof FACTFinder_Core_Model_Export_Type_Interface) {
+                    if ($model instanceof FACTFinder_Core_Model_Export_Type_Interface && $model->isEnabled()) {
                         $this->_types[$element->getName()] = $model;
                     }
                 }

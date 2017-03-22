@@ -257,4 +257,13 @@ class FACTFinder_Core_Model_Export_Type_Price extends Mage_Core_Model_Resource_D
     }
 
 
+    /**
+     * Check if export type is enabled
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return true;
+    }
 }
