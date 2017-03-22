@@ -58,11 +58,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      */
     public function getExportTypes()
     {
-        return array(
-            'stock',
-            'price',
-            'product',
-        );
+        return Mage::getModel('factfinder/export_config')->getTypes();
     }
 
 
@@ -234,8 +230,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 
         $zip = new ZipArchive();
         $zip->open($archivePath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        foreach ($this->getExportTypes() as $type) {
-            $model = Mage::getModel('factfinder/export_type_' . $type);
+        foreach ($this->getExportTypes() as $type => $model) {
             $filename = $model->getFilenameForStore($storeId);
 
             if ($this->isValidationEnabled($storeId) && !$this->_validateFile($model, $dir, $filename)) {

@@ -83,9 +83,8 @@ USAGE;
             return;
         }
 
-        foreach (Mage::helper('factfinder/export')->getExportTypes() as $type) {
-            $file = Mage::getModel('factfinder/export_type_' . $type)
-                ->saveExport($this->getArg(self::EXPORT_ALL_TYPES_FOR_STORE));
+        foreach (Mage::helper('factfinder/export')->getExportTypes() as $type => $model) {
+            $file = $model->saveExport($this->getArg(self::EXPORT_ALL_TYPES_FOR_STORE));
             printf("Successfully generated %s export to: %s\n", $type, $file);
         }
     }
@@ -98,9 +97,8 @@ USAGE;
      */
     private function exportAllTypesForAllStores()
     {
-        foreach (array('stock', 'price', 'product') as $type) {
-            $files = Mage::getModel('factfinder/export_type_' . $type)
-                ->saveAll();
+        foreach (Mage::helper('factfinder/export')->getExportTypes() as $type => $model) {
+            $files = $model->saveAll();
             foreach ($files as $file) {
                 printf("Successfully generated %s export to: %s\n", $type, $file);
             }

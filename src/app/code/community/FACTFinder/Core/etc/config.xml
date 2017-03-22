@@ -197,4 +197,17 @@
             </factfinder_generate>
         </jobs>
     </crontab>
+    <factfinder>
+        <export>
+            <stock>
+                <model>factfinder/export_type_stock</model>
+            </stock>
+            <price>
+                <model>factfinder/export_type_price</model>
+            </price>
+            <product>
+                <model>factfinder/export_type_product</model>
+            </product>
+        </export>
+    </factfinder>
 </config>
