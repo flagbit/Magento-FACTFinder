@@ -49,6 +49,11 @@
             </block>
             <action method="setToolbarBlockName"><name>factfinder_product_list_toolbar</name></action>
         </reference>
+        <!--<reference name="right">
+            <block type="factfinder/channel" name="factfinder.channel.left" template="factfinder/core/channel.phtml">
+                <action method="setChannel"><name>channel_name</name></action>
+            </block>
+        </reference>-->
     </catalogsearch_result_index>
 
 </layout>

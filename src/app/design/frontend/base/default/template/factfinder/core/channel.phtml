@@ -1,0 +1,36 @@
+<?php
+/**
+ * FACTFinder_Core
+ *
+ * @category Mage
+ * @package FACTFinder_Core
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
+ * @link http://www.flagbit.de
+ *
+ */
+?>
+<?php
+/**
+ * This is a sample template to demonstrate a very basic example of using the Channel block
+ */
+?>
+
+<ul>
+<?php /** @var \FACTFinder\Data\Record $result */?>
+<?php foreach ($this->getResults() as $result): ?>
+    <li>
+        <?php
+        /**
+         * Here you can use the data from the objects to build the html you need
+         *
+         * Examples:
+         * echo $result->getField('name');
+         * <img src="<?php echo $result->getField('image'); ?> ">
+         */
+        ?>
+    </li>
+<?php endforeach; ?>
+</ul>
+
