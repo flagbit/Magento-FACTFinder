@@ -348,7 +348,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         if (!$attribute->getIsUserDefined()
-            || !$attribute->getIsSearchable()
+            || $attribute->getIsSearchable()
             || in_array($attribute->getAttributeCode(), $this->getExportAttributes($storeId))
         ) {
             return true;
