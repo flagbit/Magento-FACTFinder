@@ -2,7 +2,7 @@
 <config>
     <modules>
         <FACTFinder_Tracking>
-            <active>1</active>
+            <active>true</active>
             <codePool>community</codePool>
             <depends>
                 <FACTFinder_Core/>
