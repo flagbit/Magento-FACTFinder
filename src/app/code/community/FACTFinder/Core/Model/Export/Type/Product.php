@@ -420,17 +420,17 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     protected function _exportImage($productIndex, $productData, $storeId)
     {
         $helper = $this->getHelper();
-
-        // emulate store
-        $oldStore = Mage::app()->getStore()->getId();
-        Mage::app()->setCurrentStore($storeId);
-
+        
         if ($helper->shouldExportImages($storeId)) {
-            $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
-        }
+            // emulate store
+            $oldStore = Mage::app()->getStore()->getId();
+            Mage::app()->setCurrentStore($storeId);
 
-        // finish emulation
-        Mage::app()->setCurrentStore($oldStore);
+            $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
+
+            // finish emulation
+            Mage::app()->setCurrentStore($oldStore);
+        }
 
         return $productIndex;
     }
