@@ -103,8 +103,11 @@ class FACTFinder_Campaigns_Model_Resource_Pushedproducts_Collection
         foreach ($campaigns->getPushedProducts() as $record) {
             $productIds[$record->getId()] = new Varien_Object(
                 array(
-                    'similarity'        => $record->getSimilarity(),
-                    'position'          => $record->getPosition(),
+                    'similarity'  => $record->getSimilarity(),
+                    'position'    => $record->getPosition(),
+                    'campaign'    => $record->getField(FACTFinder_Core_Model_Handler_Search::CAMPAIGN_NAME_FIELD),
+                    'instore_ads' => $record->getField(FACTFinder_Core_Model_Handler_Search::INSTOREADS_PRODUCT_FIELD),
+                    'variant_id'  => $record->getField(FACTFinder_Core_Model_Handler_Search::VARIANT_ID_FIELD)
                 )
             );
         }
