@@ -328,7 +328,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                     $this->_formatAttributes('numerical', $productAttributes, $storeId),
                 );
 
-                $productIndex = $this->_exportImageAndDeepLink($productIndex, $productData, $storeId);
+                $productIndex = $this->_exportImage($productIndex, $productData, $storeId);
+                $productIndex[] = $this->getProductUrl($productData['entity_id'], $storeId);
                 $productIndex = $this->getAttributeModel()
                     ->addAttributesToRow($productIndex, $productAttributes, $storeId, $productData);
 
@@ -408,7 +409,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 
 
     /**
-     * Add image and deep link information to product row
+     * Add image information to product row
      *
      * @param array $productIndex
      * @param array $productData
@@ -416,21 +417,20 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      *
      * @return array
      */
-    protected function _exportImageAndDeepLink($productIndex, $productData, $storeId)
+    protected function _exportImage($productIndex, $productData, $storeId)
     {
         $helper = $this->getHelper();
-
-        // emulate store
-        $oldStore = Mage::app()->getStore()->getId();
-        Mage::app()->setCurrentStore($storeId);
-
+        
         if ($helper->shouldExportImages($storeId)) {
-            $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
-        }
-        $productIndex[] = $this->getProductUrl($productData['entity_id'], $storeId);
+            // emulate store
+            $oldStore = Mage::app()->getStore()->getId();
+            Mage::app()->setCurrentStore($storeId);
 
-        // finish emulation
-        Mage::app()->setCurrentStore($oldStore);
+            $productIndex[] = $this->getProductImageUrl($productData['entity_id'], $storeId);
+
+            // finish emulation
+            Mage::app()->setCurrentStore($oldStore);
+        }
 
         return $productIndex;
     }
@@ -461,7 +461,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
 
 
     /**
-     * Gte product URL for store
+     * Get product URL for store
      *
      * @param int $productId
      * @param int $storeId
@@ -671,12 +671,12 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $this->_formatAttributes('searchable', $productAttributes, $storeId),
                 $this->_formatAttributes('numerical', $productAttributes, $storeId),
             );
-
-            //no need to add image and deeplink to child product, just add empty values
+            
+            //no need to add image to child product, just add empty value in order to reduce memory usage and execution time
             if ($this->getHelper()->shouldExportImages($storeId)) {
                 $subProductIndex[] = '';
             }
-            $subProductIndex[] = '';
+            $subProductIndex[] = $this->getProductUrl($productChild['entity_id'], $storeId);
 
             $subProductIndex = $this->getAttributeModel()->addAttributesToRow(
                 $subProductIndex,
