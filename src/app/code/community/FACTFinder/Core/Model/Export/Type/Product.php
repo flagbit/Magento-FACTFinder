@@ -661,6 +661,10 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
             }
 
             $productAttributes = $attributeValues[$productChild['entity_id']];
+            // do not export simple products that are deactivated or only visible in catalog
+            if($productAttributes[$this->_statusId] == 2 || $productAttributes[$this->_visibilityId] == 2) {
+                continue;
+            }
 
             $subProductIndex = array(
                 $productChild['entity_id'],
