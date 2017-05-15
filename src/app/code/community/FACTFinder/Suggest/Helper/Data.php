@@ -54,6 +54,16 @@ class FACTFinder_Suggest_Helper_Data extends Mage_Core_Helper_Abstract
 
         // avoid specifying the default port for http
         $url = preg_replace('/^(http:[^\:]+)\:80\//', "$1/", $url);
+		
+		// replace param "query"
+		$urlData = parse_url($url);
+		$queryString = '';
+		if (isset($urlData['query'])) {
+			parse_str($urlData['query'], $urlParams);
+			unset($urlParams['query']);
+			$queryString = http_build_query($urlParams);
+		}
+		$url = sprintf('%s://%s%s?%s', $urlData['scheme'], $urlData['host'], $urlData['path'], $queryString);
 
         return $url;
     }
