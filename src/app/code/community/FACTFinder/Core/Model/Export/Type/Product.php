@@ -593,16 +593,15 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     }
 
 
-    /**
+        /**
      * Check if product should be skipped in export
      *
-     * @param array $attributes
-     * @param array $productData
-     * @param bool  $isChild
+     * @param $attributes
+     * @param $productData
      *
      * @return bool
      */
-    protected function shouldSkipProduct($attributes, $productData, $isChild = false)
+    protected function shouldSkipProduct($attributes, $productData)
     {
         if (!isset($attributes[$productData['entity_id']])) {
             return true;
@@ -615,10 +614,6 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         }
 
         $visibilities = Mage::getSingleton('catalog/product_visibility')->getVisibleInSearchIds();
-        if ($isChild) {
-            $visibilities[] = Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE;
-        }
-        
         $statuses = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
 
         $productAttributes = $attributes[$productData['entity_id']];
@@ -661,11 +656,12 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $productChildren = $productRelations[$productData['entity_id']];
         foreach ($productChildren as $productChild) {
-            if ($this->shouldSkipProduct($attributeValues, $productChild, true)) {
+            if (!isset($attributeValues[$productChild['entity_id']])) {
                 continue;
             }
 
             $productAttributes = $attributeValues[$productChild['entity_id']];
+
             $subProductIndex = array(
                 $productChild['entity_id'],
                 $productData[$idFieldName],
