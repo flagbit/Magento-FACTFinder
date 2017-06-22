@@ -172,6 +172,7 @@ class FACTFinder_Suggest_Model_Processor
             $this->_getFacade()
         );
 
+        $this->_setResponseContentType();
         return $handler->getSuggestions();
     }
 
@@ -313,6 +314,36 @@ class FACTFinder_Suggest_Model_Processor
         }
 
         return $jsCallback;
+    }
+
+
+    /**
+     * Set response Content-Type to meet MIME-Type rules
+     *
+     * @return void
+     */
+    protected function _setResponseContentType()
+    {
+        $format = $this->_getContentType($this->_getRequestParam('format'));
+
+        Mage::app()->getResponse()
+            ->setHeader('Content-Type', $format, true);
+    }
+
+
+    /**
+     * Get Content-Type for request format
+     *
+     * @param string $requestFormat
+     * @return string
+     */
+    protected function _getContentType($requestFormat)
+    {
+        if (strtolower($requestFormat) === 'jsonp') {
+            return 'application/javascript;charset=utf-8';
+        } else {
+            return 'application/json;charset=utf-8';
+        }
     }
 
 
