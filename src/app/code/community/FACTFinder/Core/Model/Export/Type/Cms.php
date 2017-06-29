@@ -27,6 +27,7 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
 {
 
     const FILENAME_PATTERN = 'store_%s_cms.csv';
+    const FILE_VALIDATOR = 'factfinder/file_validator_cms';
     const CSV_DELIMITER = ';';
 
     /**
@@ -78,6 +79,11 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
             $dir = Mage::helper('factfinder/export')->getExportDirectory();
             $fileName = $this->getFilenameForStore($storeId);
             $this->_file = Mage::getModel('factfinder/file');
+
+            if (Mage::helper('factfinder/export')->isValidationEnabled($storeId) ) {
+                $this->_file->setValidator(Mage::getModel(self::FILE_VALIDATOR));
+            }
+
             $this->_file->open($dir, $fileName);
         }
 
