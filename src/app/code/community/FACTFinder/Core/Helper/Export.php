@@ -361,9 +361,9 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      *
      * @return bool
      */
-    protected function _validateFile($model, $dir, $filename)
+    protected function _validateFile(FACTFinder_Core_Model_Export_Type_Interface $model, $dir, $filename)
     {
-        if (!defined($model::FILE_VALIDATOR)) {
+        if (FACTFinder_Core_Model_Export_Type_Interface::FILE_VALIDATOR === $model::FILE_VALIDATOR) {
             return true;
         }
 
