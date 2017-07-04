@@ -231,12 +231,16 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
      */
     private function getCmsData($page, $storeId)
     {
+        $content = $this->removeMagentoTemplateDirectives($page->getContent());
+        $content = $this->removeStyleAndScriptTags($content);
+        $content = $this->consolidateWhitespaces($content);
+        $content = html_entity_decode(strip_tags($content));
         $row = array(
             $page->getId(),
             $page->getIdentifier(),
             $page->getTitle(),
             $page->getContentHeading(),
-            html_entity_decode(strip_tags($page->getContent())),
+            $content,
             Mage::getModel('core/url')->getUrl($page->getIdentifier(), array('_store' => $storeId)),
             $this->findFirstImageInContent($page->getContent(), $storeId),
         );
@@ -273,4 +277,18 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
         return '';
     }
 
+    private function removeStyleAndScriptTags($content)
+    {
+        return preg_replace('#\<(?:style|script)[^\>]*\>[^\<]*\</(?:style|script)\>#siU', '', $content);
+    }
+
+    private function removeMagentoTemplateDirectives($content)
+    {
+        return preg_replace('#{{[^}]*}}#siU', '', $content);
+    }
+
+    private function consolidateWhitespaces($content)
+    {
+        return preg_replace('#\s+#s', ' ', $content);
+    }
 }
