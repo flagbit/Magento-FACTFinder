@@ -1,8 +1,6 @@
 <?php
 interface FACTFinder_Core_Model_Export_Type_Interface
 {
-    const FILE_VALIDATOR = '';
-
     /**
      * Export file for store. Return file path or false
      *
