@@ -46,7 +46,7 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
 
 
     /**
-     * Get id field name for tracking
+     * Get id field name for tracking and recommendation.
      *
      * @return bool
      */

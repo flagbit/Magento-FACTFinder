@@ -50,10 +50,11 @@ class FACTFinder_Recommendation_Model_Observer
             return;
         }
 
-        $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
+        $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
-        $ids = $this->_getProductIds($collection, $idFieldName);
-        $this->_processCollection($collection, $ids, $idFieldName);
+        $ids = $this->_getProductIds($collection, $trackingIdFieldName);
+        $this->_processCollection($collection, $ids, $masterIdFieldName);
 
     }
 
