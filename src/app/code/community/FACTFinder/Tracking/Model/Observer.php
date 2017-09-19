@@ -80,9 +80,10 @@ class FACTFinder_Tracking_Model_Observer
         /** @var Mage_Catalog_Model_Product $product */
         $product = $observer->getProduct();
 
-        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
-        $qty = $quoteItem->getQty();
+        $qty = (Int)$observer->getProduct()->getQty();
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         if ($customerId) {
@@ -93,8 +94,8 @@ class FACTFinder_Tracking_Model_Observer
             /** @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackCart(
-                $quoteItem->getProductId(),
-                $product->getData($idFieldName),
+                $quoteItem->getData($trackingIdFieldName),
+                $product->getData($masterIdFieldName),
                 $product->getName(),
                 null,
                 Mage::helper('factfinder_tracking')->getSessionId(),
@@ -129,7 +130,8 @@ class FACTFinder_Tracking_Model_Observer
         }
 
         try {
-            $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+            $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+            $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
             $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
             if ($customerId) {
@@ -139,10 +141,10 @@ class FACTFinder_Tracking_Model_Observer
             /** @var FACTFinder_Tracking_Model_Handler_Tracking $tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackClick(
-                $product->getData($idFieldName),
+                $product->getData($trackingIdFieldName),
                 $searchHelper->getQuery()->getQueryText(),
                 1, // pos,
-                $product->getData($idFieldName), // master id but there's none on redirect
+                $product->getData($masterIdFieldName), // master id but there's none on redirect
                 Mage::helper('factfinder_tracking')->getSessionId(),
                 null,
                 1, // origPos
@@ -183,7 +185,8 @@ class FACTFinder_Tracking_Model_Observer
             $customerId = md5('customer_' . $customerId);
         }
 
-        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
         /** @var Mage_Sales_Model_Order_Item $item */
         foreach ($order->getAllItems() as $item) {
@@ -192,13 +195,13 @@ class FACTFinder_Tracking_Model_Observer
             }
 
             // use product id as default value in case there's no parent item
-            $parentProductId = $item->getProduct()->getData($idFieldName);
+            $parentProductId = $item->getProduct()->getData($masterIdFieldName);
             $price = $item->getPrice();
 
             $parentItem = $item->getParentItem();
 
             if ($parentItem) {
-                $parentProductId = $parentItem->getProduct()->getData($idFieldName);
+                $parentProductId = $parentItem->getProduct()->getData($masterIdFieldName);
                 if ($parentItem->getProduct()->isConfigurable()) {
                     $price = $parentItem->getPrice();
                 }
@@ -206,7 +209,7 @@ class FACTFinder_Tracking_Model_Observer
 
             try {
                 Mage::getModel('factfinder_tracking/queue')
-                    ->setProductId($item->getProduct()->getData($idFieldName))
+                    ->setProductId($item->getProduct()->getData($trackingIdFieldName))
                     ->setParentProductId($parentProductId)
                     ->setProductName($item->getName())
                     ->setSid(Mage::helper('factfinder_tracking')->getSessionId())

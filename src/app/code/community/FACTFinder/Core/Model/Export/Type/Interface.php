@@ -1,7 +1,6 @@
 <?php
 interface FACTFinder_Core_Model_Export_Type_Interface
 {
-
     /**
      * Export file for store. Return file path or false
      *

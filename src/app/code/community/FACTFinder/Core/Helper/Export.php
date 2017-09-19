@@ -361,9 +361,9 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
      *
      * @return bool
      */
-    protected function _validateFile($model, $dir, $filename)
+    protected function _validateFile(FACTFinder_Core_Model_Export_Type_Interface $model, $dir, $filename)
     {
-        if (!defined($model::FILE_VALIDATOR)) {
+        if (false === $this->hasValidatorModelName($model)) {
             return true;
         }
 
@@ -373,6 +373,17 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         $file->setValidator(Mage::getModel($model::FILE_VALIDATOR));
 
         return $file->isValid();
+    }
+
+    /**
+     * @param FACTFinder_Core_Model_Export_Type_Interface $model
+     * @return bool
+     */
+    private function hasValidatorModelName(FACTFinder_Core_Model_Export_Type_Interface $model)
+    {
+        $className = get_class($model);
+
+        return defined($className.'::FILE_VALIDATOR');
     }
 
 

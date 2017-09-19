@@ -5,9 +5,7 @@
 .project
 .settings
 build
-n98-magerun.phar
-
-src/*
+robo-deployment/*
 
 .idea
 /build.mb.properties

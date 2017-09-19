@@ -65,6 +65,7 @@ Usage:  php factfinder.php -- [options]
   --exportStoreStock <storeId>        Export Stock CSV for store
   --exportAllTypesForStore <storeId>  Export Stock, Price and Products for store
   --exportAllTypesForAllStores        Export Stock, Price and Products for all stores
+  --exportCmsForStore <storeId>       Export CMS Sites for store
   exportall                           Export Product CSV for all stores
   help                                Show this help message
 

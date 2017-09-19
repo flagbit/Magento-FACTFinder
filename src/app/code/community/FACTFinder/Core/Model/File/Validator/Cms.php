@@ -25,8 +25,6 @@ class FACTFinder_Core_Model_File_Validator_Cms extends FACTFinder_Core_Model_Fil
         } catch (Exception $e) {
             $this->logException($file, $e);
             $result = false;
-
-            throw $e;
         }
 
         return $result;
