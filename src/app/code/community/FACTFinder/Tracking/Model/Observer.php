@@ -83,7 +83,7 @@ class FACTFinder_Tracking_Model_Observer
         $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
         $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
-        $qty = $quoteItem->getQty();
+        $qty = (Int)$observer->getProduct()->getQty();
 
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         if ($customerId) {
