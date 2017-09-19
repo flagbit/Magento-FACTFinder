@@ -52,11 +52,12 @@ class FACTFinder_Tracking_Block_Recommendation extends FACTFinder_Tracking_Block
      */
     protected function getProductData($product)
     {
-        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
         $data =  array(
-            'id'       => $product->getData($idFieldName),
-            'masterId' => $product->getData($idFieldName),
+            'id'       => $product->getData($trackingIdFieldName),
+            'masterId' => $product->getData($masterIdFieldName),
         );
 
         return $data;

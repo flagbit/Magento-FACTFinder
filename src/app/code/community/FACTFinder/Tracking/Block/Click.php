@@ -46,11 +46,12 @@ class FACTFinder_Tracking_Block_Click extends FACTFinder_Tracking_Block_Abstract
      */
     protected function getProductData($product)
     {
-        $idFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
+        $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
         $data =  array(
-            'id'       => $product->getData($idFieldName),
-            'masterId' => $product->getData($idFieldName),
+            'id'       => $product->getData($trackingIdFieldName),
+            'masterId' => $product->getData($masterIdFieldName),
             'pos'      => $product->getPosition(),
             'origPos'  => $product->getOriginalPosition() ? $product->getOriginalPosition() : $product->getPosition(),
             'title'    => $product->getName()
