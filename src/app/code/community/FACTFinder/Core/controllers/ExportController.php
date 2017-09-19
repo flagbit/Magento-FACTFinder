@@ -152,7 +152,6 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
         );
     }
 
-
     /**
      * Add export action to cronjob table
      */

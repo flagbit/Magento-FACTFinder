@@ -335,6 +335,8 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
             url += item.searchParams.substring(qPos);
         }
 
+
+
         url += '&userInput='+this.field.value+'&queryFromSuggest=true';
 
         //there's no mapping possibility, so let's hardcode it

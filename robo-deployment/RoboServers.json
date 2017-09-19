@@ -1,0 +1,23 @@
+{
+    "develop" : {
+        "branch" : "develop",
+        "context": "testing",
+        "servers": [
+            {
+                "host"       : "10.10.58.4",
+                "user"       : "user",
+                "port"       : 2022,
+                "path"       : "/var/www/html/",
+                "url"        : "https://fact-finder.dev.flagbit.de",
+                "directories": {
+                    "webroot"  : "public",
+                    "current"  : "current",
+                    "previous" : "previous",
+                    "shared"   : "shared",
+                    "revisions": "releases",
+                    "backup"   : "backups"
+                }
+            }
+        ]
+    }
+}

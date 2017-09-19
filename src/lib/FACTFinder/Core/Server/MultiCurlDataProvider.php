@@ -323,9 +323,9 @@ class MultiCurlDataProvider extends AbstractDataProvider
         if ($httpCode >= 400) {
             $this->log->error("Connection failed. HTTP code: $httpCode");
         } else if ($httpCode == 0) {
-            $this->log->error("Connection refused. cURL error: $curlError");
+            $this->log->error("Connection refused. Do you have a cURL error: $curlError");
         } else if (floor($httpCode / 100) == 2) { // all successful status codes (2**)
-            $this->log->info("Request successful!");
+            $this->log->info("Request bad successful!");
         }
     }
 

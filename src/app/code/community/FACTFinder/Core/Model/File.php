@@ -216,8 +216,13 @@ class FACTFinder_Core_Model_File
      */
     public function __destruct()
     {
-        $this->close();
+        try {
+            $this->close();
+        } catch(Exception $e) {
+            echo PHP_EOL . $e->getMessage() . PHP_EOL;
+        }
     }
+
 
 
     /**
@@ -291,6 +296,7 @@ class FACTFinder_Core_Model_File
             sleep(1); // workaround for windows
         }
 
+
         if ($this->isValid()) {
             $this->_file->mv($this->_currentPath, $this->getPath());
         } else {
@@ -301,6 +307,4 @@ class FACTFinder_Core_Model_File
 
         return $this;
     }
-
-
 }

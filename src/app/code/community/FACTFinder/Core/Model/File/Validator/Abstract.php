@@ -59,7 +59,7 @@ abstract class FACTFinder_Core_Model_File_Validator_Abstract
         while ($row = fgetcsv($file, null, $this->getCsvDelimiter())) {
             $rowNumber++;
             if (!empty($row) && count($row) != $headerSize) {
-                throw new Exception(sprintf(self::EXCEPTION_CSV_FIELDS_MISMATCH, $rowNumber));
+                throw new RuntimeException(sprintf(self::EXCEPTION_CSV_FIELDS_MISMATCH, $rowNumber));
             }
         }
     }

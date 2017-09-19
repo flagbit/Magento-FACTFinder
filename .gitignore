@@ -5,8 +5,16 @@
 .project
 .settings
 build
+n98-magerun.phar
+
+src/*
 
 .idea
 /build.mb.properties
 /build.mb.xml
 /build.properties
+
+robo-deployment
+docker
+sample-data
+docker-compose.yml
