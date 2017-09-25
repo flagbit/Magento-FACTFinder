@@ -176,10 +176,33 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
      */
     public function getSize($storeId)
     {
-        // no validation needed
-        return 0;
+        return count($this->getPages());
     }
 
+
+    /**
+     * @return array
+     */
+    protected function getPages()
+    {
+        $pages = array();
+
+        /** @var Mage_Cms_Model_Resource_Page_Collection $cmsCollection */
+        $cmsCollection = Mage::getModel('cms/page')->getCollection();
+        $cmsCollection->addStoreFilter($storeId)
+            ->addFieldToFilter('is_active', 1);
+
+        foreach ($cmsCollection as $page) {
+            if ($page->getSkipFfExport()) {
+                continue;
+            }
+
+            $pages[] = $page;
+        }
+
+        return $pages;
+
+    }
 
     /**
      * Perform export action and try to write that to file
@@ -192,16 +215,9 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
     {
         $this->_addCsvRow($this->_exportColumns, $storeId);
 
-        /** @var Mage_Cms_Model_Resource_Page_Collection $cmsCollection */
-        $cmsCollection = Mage::getModel('cms/page')->getCollection();
-        $cmsCollection->addStoreFilter($storeId)
-            ->addFieldToFilter('is_active', 1);
+        $pages = $this->getPages();
 
-        foreach ($cmsCollection as $page) {
-            if ($page->getSkipFfExport()) {
-                continue;
-            }
-
+        foreach ($pages as $page) {
             $row = $this->getCmsData($page, $storeId);
             $this->_addCsvRow($row, $storeId);
         }
