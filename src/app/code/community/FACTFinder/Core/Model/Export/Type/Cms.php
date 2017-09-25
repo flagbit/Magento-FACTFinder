@@ -248,6 +248,7 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
     private function getCmsData($page, $storeId)
     {
         $content = $this->removeMagentoTemplateDirectives($page->getContent());
+        $content = $this->replaceReturnToSpace($content);
         $content = $this->removeStyleAndScriptTags($content);
         $content = $this->consolidateWhitespaces($content);
         $content = html_entity_decode(strip_tags($content));
@@ -306,5 +307,10 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
     private function consolidateWhitespaces($content)
     {
         return preg_replace('#\s+#s', ' ', $content);
+    }
+
+    private function replaceReturnToSpace($content)
+    {
+        return preg_replace('#<br\s?\/?>#', ' ', $content);
     }
 }
