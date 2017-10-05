@@ -176,14 +176,15 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
      */
     public function getSize($storeId)
     {
-        return count($this->getPages());
+        return count($this->getPages($storeId));
     }
 
 
     /**
+     * @param $storeId
      * @return array
      */
-    protected function getPages()
+    protected function getPages($storeId)
     {
         $pages = array();
 
@@ -215,7 +216,7 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
     {
         $this->_addCsvRow($this->_exportColumns, $storeId);
 
-        $pages = $this->getPages();
+        $pages = $this->getPages($storeId);
 
         foreach ($pages as $page) {
             $row = $this->getCmsData($page, $storeId);
