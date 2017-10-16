@@ -24,7 +24,6 @@
 class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
 
-
     /**
      * Get rendered link element html
      *
@@ -59,61 +58,177 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
             'store' => $store->getId()
         );
 
-        // Realtime export link
-        $html = $this->_createLink(
-            $store,
-            'factfinder/export/export',
-            'Trigger Realtime Export',
-            $urlParams
-        );
+        $dom = new \DOMDocument();
 
-        // Link to schedule cron export
-        if (Mage::getStoreConfig('factfinder/cron/enabled')) {
-            $html .= $this->_createLink(
-                $store,
-                'factfinder/export/scheduleExport',
-                'Schedule Cron Export (in 1 minute)',
-                $urlParams
-            );
-        }
+        $columns[] = $this->createExportTriggerRow($dom, $store, $urlParams);
 
         // Download link for latest pre-generated product export
         $fileName = 'store_' . $store->getId() . '_product.csv';
         $filePath = Mage::getBaseDir('var') . DS . 'factfinder' . DS;
 
         if (file_exists($filePath . $fileName)) {
-            $html .= $this->_createLink(
-                $store,
-                'factfinder/export/download',
-                'Download Last Pre-Generated Export',
-                $urlParams
-            );
-
-            // Link for FF Backend
-            $html .= $this->_createLink(
-                $store,
-                'factfinder/export/get',
-                'Export Link for FACT-Finder Wizard',
-                $urlParams
-            );
+            $columns[] = $this->createDownloadRow($dom, $store, $urlParams);
+            $columns[] = $this->createExportRow($dom, $store, $urlParams);
         }
 
-        return $html;
+        //Link to schedule cron export
+        if (Mage::getStoreConfig('factfinder/cron/enabled')) {
+            $columns[] = $this->createCronExport($dom, $store, $urlParams);
+        }
+
+        $table = $this->createTable($dom, $columns);
+
+        $dom->appendChild($table);
+
+        return $dom->saveHTML();
     }
 
+    /**
+     * @param DOMDocument $dom
+     * @param array $links
+     * @param $table
+     * @return mixed
+     */
+    private function addRow(\DOMDocument $dom, array $links, $table)
+    {
+        foreach ($links as $columns) {
+            $row = $dom->createElement('tr');
+
+            foreach ($columns as $column) {
+                if(is_object($column) === false) {
+                    $row->appendChild($dom->createElement('td', $column));
+                } else {
+                    $td = $dom->createElement('td');
+                    $td->appendChild($column);
+                    $row->appendChild($td);
+                }
+            }
+
+            $table->appendChild($row);
+        }
+
+        return $table;
+    }
 
     /**
-     * Create html for a hyperlink
-     *
-     * @param Mage_Core_Model_Store $store
-     * @param string                $route
-     * @param string                $text
-     * @param array                 $params
-     *
-     * @return string
+     * @param DOMDocument $dom
+     * @param $columns
+     * @return DOMElement
      */
-    protected function _createLink(Mage_Core_Model_Store $store, $route, $text, $params)
+    private function createTable(\DOMDocument $dom, array $columns)
     {
+        $table = $dom->createElement('table');
+
+        $fullTable = $this->addRow($dom, $columns, $table);
+
+        return $fullTable;
+    }
+
+    /**
+     * @param DOMDocument $dom
+     * @param $store
+     * @param $urlParams
+     * @return array
+     */
+    private function createExportTriggerRow(\DOMDocument $dom, $store, $urlParams)
+    {
+        $exportTrigger[] = "Trigger Realtime Export";
+
+        $exportTrigger[] = $this->createLink(
+            $dom,
+            $store,
+            'factfinder/export/export',
+            'Products',
+            $urlParams
+        );
+
+        $exportTrigger[] = $this->createLink(
+            $dom,
+            $store,
+            'factfinder/export/export',
+            'CMS',
+            $urlParams
+        );
+
+        return $exportTrigger;
+    }
+
+    /**
+     * @param $store
+     * @param $urlParams
+     * @return array
+     */
+    private function createDownloadRow(\DOMDocument $dom, $store, $urlParams)
+    {
+        $downloadExport[] = "Download Last Pre-Generated Export";
+
+        $downloadExport[] = $this->createLink(
+            $dom,
+            $store,
+            'factfinder/export/download',
+            'Products',
+            $urlParams
+        );
+
+        return $downloadExport;
+    }
+
+    /**
+     * @param $store
+     * @param $urlParams
+     * @return array
+     */
+    private function createExportRow(\DOMDocument $dom, $store, $urlParams)
+    {
+
+        $exportLink[] = "Export Link for FACT-Finder Wizard" ;
+
+        // Link for FF Backend
+        $exportLink[] = $this->createLink(
+            $dom,
+            $store,
+            'factfinder/export/get',
+            'Products',
+            $urlParams
+        );
+
+        return $exportLink;
+    }
+
+    /**
+     * @param DOMDocument $dom
+     * @param $store
+     * @param $urlParams
+     * @return array
+     */
+    private function createCronExport(\DOMDocument $dom, $store, $urlParams)
+    {
+
+        $cronExport[] = "Schedule Cron Export (in 1 minute)";
+
+        // CronExport for Products
+        $cronExport[] = $this->createLink(
+            $dom,
+            $store,
+            'factfinder/export/scheduleExport',
+            'Products',
+            $urlParams
+        );
+
+        return $cronExport;
+    }
+
+    /**
+     * @param DOMDocument $dom
+     * @param Mage_Core_Model_Store $store
+     * @param $route
+     * @param $text
+     * @param $params
+     * @return DOMElement
+     */
+    protected function createLink(\DOMDocument $dom, Mage_Core_Model_Store $store, $route, $text, $params)
+    {
+
         $text = Mage::helper('factfinder')->__($text);
 
         $url = Mage::app()->getStore($store)->getBaseUrl() . $route . '?';
@@ -124,8 +239,9 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
 
         $href = rtrim($url, '&');
 
-        return "<a href=\"{$href}\" target=\"_blank\">{$text}</a><br />";
+        $a = $dom->createElement('a', $text);
+        $a->setAttribute('href', $href);
+
+        return $a;
     }
-
-
 }
