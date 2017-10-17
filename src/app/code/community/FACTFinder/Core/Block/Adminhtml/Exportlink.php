@@ -55,7 +55,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
 
         $urlParams = array(
             'key' => $key,
-            'store' => $store->getId()
+            'store' => $store->getId(),
         );
 
         $dom = new \DOMDocument();
@@ -134,6 +134,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
     {
         $exportTrigger[] = "Trigger Realtime Export";
 
+        $urlParams["resource"] = "product";
         $exportTrigger[] = $this->createLink(
             $dom,
             $store,
@@ -142,6 +143,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
             $urlParams
         );
 
+        $urlParams["resource"] = "cms";
         $exportTrigger[] = $this->createLink(
             $dom,
             $store,
@@ -162,6 +164,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
     {
         $downloadExport[] = "Download Last Pre-Generated Export";
 
+        $urlParams["resource"] = "product";
         $downloadExport[] = $this->createLink(
             $dom,
             $store,
@@ -180,8 +183,8 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
      */
     private function createExportRow(\DOMDocument $dom, $store, $urlParams)
     {
-
         $exportLink[] = "Export Link for FACT-Finder Wizard" ;
+        $urlParams["resource"] = "product";
 
         // Link for FF Backend
         $exportLink[] = $this->createLink(
@@ -205,6 +208,7 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
     {
 
         $cronExport[] = "Schedule Cron Export (in 1 minute)";
+        $urlParams["resource"] = "product";
 
         // CronExport for Products
         $cronExport[] = $this->createLink(
@@ -228,7 +232,6 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
      */
     protected function createLink(\DOMDocument $dom, Mage_Core_Model_Store $store, $route, $text, $params)
     {
-
         $text = Mage::helper('factfinder')->__($text);
 
         $url = Mage::app()->getStore($store)->getBaseUrl() . $route . '?';

@@ -99,9 +99,8 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
             throw $e;
         }
 
-        $this->_forward('get');
+        $this->_forward('get', null, null, Mage::app()->getRequest()->getParams());
     }
-
 
     /**
      * Output pre-generated export files for a specific resource and store (for ff import process)
