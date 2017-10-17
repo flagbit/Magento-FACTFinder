@@ -143,14 +143,19 @@ class FACTFinder_Core_Block_Adminhtml_Exportlink extends Mage_Adminhtml_Block_Sy
             $urlParams
         );
 
-        $urlParams["resource"] = "cms";
-        $exportTrigger[] = $this->createLink(
-            $dom,
-            $store,
-            'factfinder/export/export',
-            'CMS',
-            $urlParams
-        );
+        $cmsEnable = Mage::getStoreConfig('factfinder/export');
+
+        if($cmsEnable['export_cms_pages'] === '1') {
+            $urlParams["resource"] = "cms";
+            $exportTrigger[] = $this->createLink(
+                $dom,
+                $store,
+                'factfinder/export/export',
+                'CMS',
+                $urlParams
+            );
+        }
+
 
         return $exportTrigger;
     }
