@@ -318,6 +318,7 @@
                             <comment><![CDATA[Yes for FTPS and No for FTP]]></comment>
                         </ftp_ssl>
                         <export_url translate="label">
+                            <label>Trigger</label>
                             <frontend_model>factfinder/adminhtml_exportlink</frontend_model>
                             <sort_order>140</sort_order>
                             <show_in_default>1</show_in_default>
