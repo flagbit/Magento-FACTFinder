@@ -104,6 +104,9 @@ class FACTFinder_Suggest_Model_Processor
             $request = Mage::app()->loadCache($requestCacheId);
             if ($request) {
                 $content = $this->handleWithoutAppRequest();
+                if ($content) {
+                    Mage::app()->getResponse()->setHeader("Content-Type", "application/javascript;charset=utf-8", true);
+                }
             }
         }
 
