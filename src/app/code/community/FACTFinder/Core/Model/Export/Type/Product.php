@@ -342,7 +342,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
         if (!$this->_getFile($storeId)->isValid()) {
             return false;
         }
-        
+
         Mage::dispatchEvent('factfinder_export_after', array(
             'store_id' => $storeId,
             'file'     => $this->_getFile($storeId),
@@ -420,7 +420,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     protected function _exportImage($productIndex, $productData, $storeId)
     {
         $helper = $this->getHelper();
-        
+
         if ($helper->shouldExportImages($storeId)) {
             // emulate store
             $oldStore = Mage::app()->getStore()->getId();
@@ -671,10 +671,15 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $this->_formatAttributes('searchable', $productAttributes, $storeId),
                 $this->_formatAttributes('numerical', $productAttributes, $storeId),
             );
-            
+
             //no need to add image to child product, just add empty value in order to reduce memory usage and execution time
             if ($this->getHelper()->shouldExportImages($storeId)) {
-                $subProductIndex[] = '';
+                if($this->getHelper()->shouldExportImagesOfChild($storeId)) {
+                    $subProductIndex = $this->_exportImage($subProductIndex, $productChild, $storeId);
+                }
+                else {
+                    $subProductIndex[] = '';
+                }
             }
             $subProductIndex[] = $this->getProductUrl($productChild['entity_id'], $storeId);
 

@@ -12,24 +12,25 @@
 class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
 {
 
-    const EXPORT_CONFIG_PATH   = 'factfinder/export';
-    const FTP_HOST             = 'ftp_host';
-    const FTP_PASSWORD         = 'ftp_password';
-    const FTP_USER             = 'ftp_user';
-    const FTP_PORT             = 'ftp_port';
-    const FTP_DIR              = 'ftp_path';
-    const FTP_SECURE           = 'ftp_ssl';
-    const FTP_ENABLED          = 'use_ftp';
-    const IMPORT_DELAY_ENABLED = 'import_delay_enabled';
-    const IMPORT_DELAY_KEY     = 'factfinder_import_delay';
-    const ARCHIVE_PATTERN      = 'store_%s_export.zip';
-    const EXPORT_TRIGGER_DELAY = 90;
-    const EXPORT_IMAGE_SIZE    = 'suggest_image_size';
-    const EXPORT_IMAGE_TYPE    = 'suggest_image_type';
-    const EXPORT_URLS_IMAGES   = 'urls';
-    const OUT_OF_STOCK_PRODUCTS = 'out_of_stock_products';
-    const VALIDATION_DISABLED  = 'disabled_validation';
-    const EXPLICIT_ATTRIBUTES  = 'explicit_attributes';
+    const EXPORT_CONFIG_PATH         = 'factfinder/export';
+    const FTP_HOST                   = 'ftp_host';
+    const FTP_PASSWORD               = 'ftp_password';
+    const FTP_USER                   = 'ftp_user';
+    const FTP_PORT                   = 'ftp_port';
+    const FTP_DIR                    = 'ftp_path';
+    const FTP_SECURE                 = 'ftp_ssl';
+    const FTP_ENABLED                = 'use_ftp';
+    const IMPORT_DELAY_ENABLED       = 'import_delay_enabled';
+    const IMPORT_DELAY_KEY           = 'factfinder_import_delay';
+    const ARCHIVE_PATTERN            = 'store_%s_export.zip';
+    const EXPORT_TRIGGER_DELAY       = 90;
+    const EXPORT_IMAGE_SIZE          = 'suggest_image_size';
+    const EXPORT_IMAGE_TYPE          = 'suggest_image_type';
+    const EXPORT_URLS_IMAGES         = 'urls';
+    const EXPORT_URLS_IMAGES_CHILD   = 'urls_child';
+    const OUT_OF_STOCK_PRODUCTS      = 'out_of_stock_products';
+    const VALIDATION_DISABLED        = 'disabled_validation';
+    const EXPLICIT_ATTRIBUTES        = 'explicit_attributes';
 
     /**
      * @var int
@@ -338,6 +339,17 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
         return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES, $storeId);
     }
 
+    /**
+     * Check if images should be exported
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function shouldExportImagesOfChild($storeId = 0)
+    {
+        return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES_CHILD, $storeId);
+    }
 
     /**
      * Check if out of stock products should be exported

@@ -93,6 +93,7 @@
                 <proxy>1</proxy>
             </config>
             <export>
+                <urls_child>0</urls_child>
                 <suggest_image_size>60</suggest_image_size>
             </export>
         </factfinder>
