@@ -207,6 +207,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     {
         $path = '';
 
+        Mage::app()->setCurrentStore($storeId);
+
         /** @var FACTFinder_Core_Model_Export_Semaphore $semaphore */
         $semaphore = Mage::getModel('factfinder/export_semaphore');
         $semaphore->setStoreId($storeId)
