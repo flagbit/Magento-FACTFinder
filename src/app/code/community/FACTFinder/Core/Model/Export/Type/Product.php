@@ -580,14 +580,31 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $count++;
 
                 $children = $relations[$productData['entity_id']];
+
+                $statusId = $this->getAttributeModel()->getSearchableAttribute('status')->getId();
+                $statuses = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
+
                 foreach ($children as $child) {
-                    if (isset($attributes[$child['entity_id']])) {
-                        $count++;
+                    $productAttributes = $attributes[$child['entity_id']];
+
+                    if (!isset($attributes[$child['entity_id']])) {
+                        continue;
                     }
+
+                    if(!isset($productAttributes[$statusId]) || !(in_array($productAttributes[$statusId],$statuses))) {
+                        continue;
+                    }
+
+                    if(!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
+                        if(Mage::getModel('cataloginventory/stock_item')->loadByProduct($child['entity_id'])->getData('is_in_stock') == 0) {
+                            continue;
+                        }
+                    }
+
+                    $count++;
                 }
             }
         }
-
         return $count;
     }
 
