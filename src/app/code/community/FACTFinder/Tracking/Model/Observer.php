@@ -196,14 +196,14 @@ class FACTFinder_Tracking_Model_Observer
 
             // use product id as default value in case there's no parent item
             $parentProductId = $item->getProduct()->getData($masterIdFieldName);
-            $price = $item->getPrice();
+            $price = $item->getPriceInclTax();
 
             $parentItem = $item->getParentItem();
 
             if ($parentItem) {
                 $parentProductId = $parentItem->getProduct()->getData($masterIdFieldName);
                 if ($parentItem->getProduct()->isConfigurable()) {
-                    $price = $parentItem->getPrice();
+                    $price = $parentItem->getPriceInclTax();
                 }
             }
 
