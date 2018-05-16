@@ -470,15 +470,14 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     protected function getProductUrl($productId, $storeId)
     {
-        $productUrl = Mage::getModel('catalog/product')
+        $product = Mage::getModel('catalog/product')
             ->getCollection()
             ->addAttributeToFilter('entity_id', $productId)
             ->setStoreId($storeId)
             ->setPage(1, 1)
-            ->addUrlRewrite()
-            ->getFirstItem()
-            ->getProductUrl();
+            ->getFirstItem();
 
+        $productUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . $product->getRequestPath();
         return $productUrl;
     }
 
@@ -581,19 +580,36 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $count++;
 
                 $children = $relations[$productData['entity_id']];
+
+                $statusId = $this->getAttributeModel()->getSearchableAttribute('status')->getId();
+                $statuses = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
+
                 foreach ($children as $child) {
-                    if (isset($attributes[$child['entity_id']])) {
-                        $count++;
+                    $productAttributes = $attributes[$child['entity_id']];
+
+                    if (!isset($attributes[$child['entity_id']])) {
+                        continue;
                     }
+
+                    if(!isset($productAttributes[$statusId]) || !(in_array($productAttributes[$statusId],$statuses))) {
+                        continue;
+                    }
+
+                    if(!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
+                        if(Mage::getModel('cataloginventory/stock_item')->loadByProduct($child['entity_id'])->getData('is_in_stock') == 0) {
+                            continue;
+                        }
+                    }
+
+                    $count++;
                 }
             }
         }
-
         return $count;
     }
 
 
-        /**
+    /**
      * Check if product should be skipped in export
      *
      * @param $attributes
@@ -655,12 +671,24 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     {
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
         $productChildren = $productRelations[$productData['entity_id']];
+
+        $statusId = $this->getAttributeModel()->getSearchableAttribute('status')->getId();
+        $statuses = Mage::getSingleton('catalog/product_status')->getVisibleStatusIds();
         foreach ($productChildren as $productChild) {
             if (!isset($attributeValues[$productChild['entity_id']])) {
                 continue;
             }
 
             $productAttributes = $attributeValues[$productChild['entity_id']];
+            if(!isset($productAttributes[$statusId]) || !(in_array($productAttributes[$statusId],$statuses))) {
+                continue;
+            }
+
+            if(!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
+                if(Mage::getModel('cataloginventory/stock_item')->loadByProduct($productChild['entity_id'])->getData('is_in_stock') == 0) {
+                    continue;
+                }
+            }
 
             $subProductIndex = array(
                 $productChild['entity_id'],
