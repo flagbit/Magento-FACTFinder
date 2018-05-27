@@ -770,20 +770,20 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     protected function addAttributesOfBundledProducts($storeId, $entityId, $dynamicFields, $productAttributes)
     {
-        $bundled_product = new Mage_Catalog_Model_Product();
-        $bundled_product->load($entityId);
+        $bundledProduct = new Mage_Catalog_Model_Product();
+        $bundledProduct->load($entityId);
 
-        $selectionCollection = $bundled_product->getTypeInstance(true)->getSelectionsCollection(
-            $bundled_product->getTypeInstance(true)->getOptionsIds($bundled_product), $bundled_product
+        $selectionCollection = $bundledProduct->getTypeInstance(true)->getSelectionsCollection(
+            $bundledProduct->getTypeInstance(true)->getOptionsIds($bundledProduct), $bundledProduct
         );
 
-        $bundled_items_ids = array();
+        $bundledItemsIds = array();
         foreach ($selectionCollection as $option) {
-            $bundled_items_ids[] = $option->getId();
+            $bundledItemsIds[] = $option->getId();
         }
 
         $optionValues = $this->getAttributeModel()
-            ->getProductAttributes($storeId, $bundled_items_ids, $dynamicFields);
+            ->getProductAttributes($storeId, $bundledItemsIds, $dynamicFields);
 
         foreach ($optionValues as $optionId => $optionAttributeValues) {
             foreach ($optionAttributeValues as $optionAttributeId => $optionAttributeValue) {
