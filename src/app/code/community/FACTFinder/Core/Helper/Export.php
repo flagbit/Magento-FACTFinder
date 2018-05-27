@@ -28,6 +28,7 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     const EXPORT_IMAGE_TYPE          = 'suggest_image_type';
     const EXPORT_URLS_IMAGES         = 'urls';
     const EXPORT_URLS_IMAGES_CHILD   = 'urls_child';
+    const EXPORT_BUNDLE_WITH_CHILD   = 'suggest_export_bundle_with_child_attributes';
     const OUT_OF_STOCK_PRODUCTS      = 'out_of_stock_products';
     const VALIDATION_DISABLED        = 'disabled_validation';
     const EXPLICIT_ATTRIBUTES        = 'explicit_attributes';
@@ -349,6 +350,18 @@ class FACTFinder_Core_Helper_Export extends Mage_Core_Helper_Abstract
     public function shouldExportImagesOfChild($storeId = 0)
     {
         return $this->getExportConfigValue(self::EXPORT_URLS_IMAGES_CHILD, $storeId);
+    }
+
+    /**
+     * Check if child attributes of bundles should be exported
+     *
+     * @param int $storeId
+     *
+     * @return null|string
+     */
+    public function shouldExportBundleWithChildAttributes($storeId = 0)
+    {
+        return $this->getExportConfigValue(self::EXPORT_BUNDLE_WITH_CHILD, $storeId);
     }
 
     /**

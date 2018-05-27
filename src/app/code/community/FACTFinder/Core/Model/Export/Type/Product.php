@@ -271,6 +271,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     {
         $this->_resetInternalState();
 
+        $exportBundle = $this->getHelper()->shouldExportBundleWithChildAttributes($storeId);
+
         $idFieldName = Mage::helper('factfinder/search')->getIdFieldName();
 
         $header = $this->_getHeader($storeId);
@@ -311,11 +313,19 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 $productId = $productData['entity_id'];
 
                 $productAttributes = $attributeValues[$productId];
-
                 $categoryPath = $this->_getCategoryPath($productId, $storeId);
 
                 if ($categoryPath == '' && !$this->_isExportProductsWithoutCategories($storeId)) {
                     continue;
+                }
+
+                if($exportBundle && $productData['type_id'] == 'bundle' ) {
+                    $productAttributes = $this->addAttributesOfBundledProducts(
+                        $storeId,
+                        $productData['entity_id'],
+                        $dynamicFields,
+                        $productAttributes
+                    );
                 }
 
                 $productIndex = array(
@@ -327,6 +337,8 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                     $this->_formatAttributes('searchable', $productAttributes, $storeId),
                     $this->_formatAttributes('numerical', $productAttributes, $storeId),
                 );
+
+                $productAttributes = $attributeValues[$productId];
 
                 $productIndex = $this->_exportImage($productIndex, $productData, $storeId);
                 $productIndex[] = $this->getProductUrl($productData['entity_id'], $storeId);
@@ -747,5 +759,42 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     public function isEnabled()
     {
         return true;
+    }
+
+    /**
+     * @param $storeId
+     * @param $entityId
+     * @param $dynamicFields
+     * @param $productAttributes
+     * @return mixed
+     */
+    protected function addAttributesOfBundledProducts($storeId, $entityId, $dynamicFields, $productAttributes)
+    {
+        $bundled_product = new Mage_Catalog_Model_Product();
+        $bundled_product->load($entityId);
+
+        $selectionCollection = $bundled_product->getTypeInstance(true)->getSelectionsCollection(
+            $bundled_product->getTypeInstance(true)->getOptionsIds($bundled_product), $bundled_product
+        );
+
+        $bundled_items_ids = array();
+        foreach ($selectionCollection as $option) {
+            $bundled_items_ids[] = $option->getId();
+        }
+
+        $optionValues = $this->getAttributeModel()
+            ->getProductAttributes($storeId, $bundled_items_ids, $dynamicFields);
+
+        foreach ($optionValues as $optionId => $optionAttributeValues) {
+            foreach ($optionAttributeValues as $optionAttributeId => $optionAttributeValue) {
+                if (!is_array($productAttributes[$optionAttributeId])) {
+                    $productAttributes[$optionAttributeId] = array($productAttributes[$optionAttributeId]);
+                }
+                if (!in_array($optionAttributeValue, $productAttributes[$optionAttributeId])) {
+                    array_push($productAttributes[$optionAttributeId], $optionAttributeValue);
+                }
+            }
+        }
+        return $productAttributes;
     }
 }

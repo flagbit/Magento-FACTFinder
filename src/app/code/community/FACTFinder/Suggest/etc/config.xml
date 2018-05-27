@@ -94,6 +94,7 @@
             </config>
             <export>
                 <urls_child>0</urls_child>
+                <suggest_export_bundle_with_child_attributes>0</suggest_export_bundle_with_child_attributes>
                 <suggest_image_size>60</suggest_image_size>
             </export>
         </factfinder>
