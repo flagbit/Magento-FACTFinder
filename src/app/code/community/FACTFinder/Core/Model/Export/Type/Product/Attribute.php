@@ -38,6 +38,11 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     /**
      * @var array
      */
+    protected $_configuredEavAttributes = array();
+
+    /**
+     * @var array
+     */
     protected $_attributesByType;
 
     /**
@@ -82,6 +87,37 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
         }
 
         return $this->_configuredAttributes[$storeId];
+    }
+
+
+    /**
+     * Retrieve eav attributes configured in FF backend
+     *
+     * @param int    $storeId
+     *
+     * @return Mage_Eav_Model_Entity_Attribute[]
+     */
+    public function getConfiguredEavAttributes($storeId)
+    {
+        if(!isset($this->_configuredEavAttributes[$storeId])) {
+
+            $this->_configuredEavAttributes[$storeId] = array();
+
+            $codes = array();
+            foreach ($this->getConfiguredAttributes($storeId) as $attribute) {
+                $codes[] = $attribute['attribute'];
+            }
+
+            if (count($codes) > 0) {
+                $eavAttributes = Mage::getResourceModel('eav/entity_attribute_collection')->setCodeFilter($codes);
+
+                foreach ($eavAttributes as $eavAttribute) {
+                    $this->_configuredEavAttributes[$storeId][$eavAttribute->getName()] = $eavAttribute;
+                }
+            }
+        }
+
+        return $this->_configuredEavAttributes[$storeId];
     }
 
 
@@ -513,6 +549,7 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     public function formatAttributes($type, $values, $storeId = null)
     {
         $attributes = $this->getSearchableAttributesByType(null, $type, $storeId);
+        $configuredAttributes = $this->getConfiguredEavAttributes($storeId);
 
         $returnArray = array();
         $counter = 0;
@@ -522,6 +559,11 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             if (!$attributeValue
                 || in_array($attribute->getAttributeCode(), array('sku', 'status', 'visibility', 'price'))
             ) {
+                continue;
+            }
+
+            //skip attributes with configured row
+            if (isset($configuredAttributes[$attribute->getName()]) && $type == 'searchable') {
                 continue;
             }
 
