@@ -304,7 +304,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 ->getProductAttributes($storeId, $productIds, $dynamicFields); // store, ids, codes
 
             foreach ($products as $productData) {
-                if ($this->shouldSkipProduct($attributeValues, $productData)) {
+                if ($this->shouldSkipProduct($attributeValues, $productData, $storeId)) {
                     continue;
                 }
 
@@ -567,7 +567,7 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
                 ->getProductAttributes($storeId, array_keys($attributes), $dynamicFields);
             foreach ($products as $productData) {
 
-                if ($this->shouldSkipProduct($attributes, $productData)) {
+                if ($this->shouldSkipProduct($attributes, $productData, $storeId)) {
                     continue;
                 }
 
@@ -614,13 +614,21 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      *
      * @param $attributes
      * @param $productData
+     * @param $storeId
      *
      * @return bool
      */
-    protected function shouldSkipProduct($attributes, $productData)
+    protected function shouldSkipProduct($attributes, $productData, $storeId = null)
     {
         if (!isset($attributes[$productData['entity_id']])) {
             return true;
+        }
+
+        // check if product is in stock
+        if(!Mage::helper('factfinder/export')->shouldExportOutOfStock($storeId)) {
+            if($productData['in_stock'] == 0) {
+                return true;
+            }
         }
 
         // status and visibility filter
