@@ -72,7 +72,11 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
     {
         if (!isset($this->_configuredAttributes[$storeId])) {
             $configuredAttributes = Mage::getStoreConfig('factfinder/export/attributes', $storeId);
-            $this->_configuredAttributes[$storeId] = unserialize($configuredAttributes);
+            $unserializeConfiguredAttributes = unserialize($configuredAttributes);
+            if (!is_array($unserializeConfiguredAttributes)) {
+                $unserializeConfiguredAttributes = array();
+            }
+            $this->_configuredAttributes[$storeId] = $unserializeConfiguredAttributes;
         }
 
         if (!empty($type)) {
