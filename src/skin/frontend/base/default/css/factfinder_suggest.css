@@ -11,3 +11,7 @@
     float:left;
     margin-right: .3em;
 }
+
+.toggle-item-hidden {
+    display: none;
+}

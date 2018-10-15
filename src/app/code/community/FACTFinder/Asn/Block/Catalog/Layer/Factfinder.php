@@ -56,6 +56,7 @@ class FACTFinder_Asn_Block_Catalog_Layer_Factfinder extends Mage_Catalog_Block_L
             $this->setUnit($attribute->getUnit());
             $this->setLinkCount($attribute->getLinkCount());
         } else {
+            $this->setTemplate('factfinder/asn/layer/filter/filter.phtml');
             $this->setUnit($attribute->getUnit());
             $this->setLinkCount($attribute->getLinkCount());
             $this->setIsMultiselect($attribute->getIsMultiselect());
