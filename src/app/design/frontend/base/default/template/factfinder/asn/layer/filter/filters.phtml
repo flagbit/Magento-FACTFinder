@@ -1,0 +1,53 @@
+<?php
+/**
+ * FACTFinder_Asn
+ *
+ * @category Mage
+ * @package FACTFinder_Asn
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2018, Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
+ * @link http://www.flagbit.de
+ */
+/**
+ * Filters HTML Template
+ */
+?>
+<?php /** @var FACTFinder_Asn_Block_Catalog_Layer_Factfinder $this */ ?>
+
+<ol class="filters-items">
+    <?php /** @var FACTFinder_Asn_Model_Layer_Filter_Item $_item */ ?>
+    <?php $items = $this->getItems(); ?>
+    <?php $i = 0; ?>
+    <?php $limit = $this->getLinkCount(); ?>
+    <?php foreach ($items as $_item): ?>
+        <?php $isDisplayed = $i < $limit; ?>
+        <li class="toggle-item<?php echo ($isDisplayed ? '' : '-hidden'); ?>">
+            <?php if ($_item->getCount() > 0): ?>
+                <a rel="nofollow" href="<?php echo $this->escapeUrl($_item->getUrl()) ?>">
+                    <?php echo $_item->getLabel(); ?>
+                </a>
+            <?php else: ?>
+                <?php echo $_item->getLabel() ?>
+            <?php endif; ?>
+            (<?php echo $_item->getCount() ?>)
+        </li>
+        <?php $i++; ?>
+    <?php endforeach ?>
+    <?php if ($this->getLinkCount() < count($items)): ?>
+        <li class="toggle-refinements">
+            <a href="#"
+               class="nav-attribute more-refinements"
+               rel="nofollow">
+                <?php echo $this->__('View more'); ?>
+            </a>
+        </li>
+        <li class="toggle-refinements" style="display:none">
+            <a href="#"
+               class="nav-attribute less-refinements"
+               rel="nofollow">
+                <?php echo $this->__('View less'); ?>
+            </a>
+        </li>
+    <?php endif; ?>
+</ol>
