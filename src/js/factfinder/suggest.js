@@ -144,7 +144,7 @@ var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {
     },
 
     updateChoices: function(choices) {
-        if(!this.changed && this.hasFocus) {
+        if(this.hasFocus) {
             this.update.innerHTML = choices;
             Element.cleanWhitespace(this.update);
             Element.cleanWhitespace(this.update.down());
