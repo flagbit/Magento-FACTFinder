@@ -12,6 +12,21 @@
 class FACTFinder_Core_Model_Export_Observer
 {
 
+    public function __construct()
+    {
+        $this->_initFFAutoloader();
+    }
+
+    /**
+     * Init fact-finder lib autoloader
+     *
+     * @return void
+     */
+    protected function _initFFAutoloader()
+    {
+        $autoloaderClass = new FACTFinder_Core_Model_Autoloader();
+        $autoloaderClass->addAutoloader(new Varien_Event_Observer());
+    }
 
     /**
      * @param Varien_Object $observer
