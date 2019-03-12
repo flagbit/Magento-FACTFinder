@@ -30,4 +30,13 @@
             <block type="factfinder_tracking/recommendation" name="factfinder.tracking.recommendation" template="factfinder/tracking/recommendation.phtml"/>
         </reference>
     </factfinder_recommendation_tracking>
+
+    <factfinder_tracking_navigation_enabled>
+        <reference name="head">
+            <action method="addJs"><script>factfinder/tracking.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="factfinder_tracking/navigation" name="factfinder.tracking.navigation" template="factfinder/tracking/navigation.phtml"/>
+        </reference>
+    </factfinder_tracking_navigation_enabled>
 </layout>

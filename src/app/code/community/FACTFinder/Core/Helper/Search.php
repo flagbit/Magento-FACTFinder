@@ -173,6 +173,24 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
 
 
     /**
+     * Get if curent page is product catalog page
+     *
+     * @return bool
+     */
+    public function getIsCategoryPage()
+    {
+        $moduleName = Mage::app()->getRequest()->getModuleName();
+        $controllerName = Mage::app()->getRequest()->getControllerName();
+        $actionName = Mage::app()->getRequest()->getActionName();
+
+        if ($moduleName == 'catalog' && $controllerName == 'category' && $actionName == 'view') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Check if redirect to product page for single result
      *
      * @return bool

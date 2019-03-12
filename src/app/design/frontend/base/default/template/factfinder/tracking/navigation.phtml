@@ -1,0 +1,27 @@
+<?php
+/**
+ * FACTFinder_Tracking
+ *
+ * @category Mage
+ * @package FACTFinder_Tracking
+ * @author Flagbit Magento Team <magento@flagbit.de>
+ * @copyright Copyright (c) 2017 Flagbit GmbH & Co. KG
+ * @license https://opensource.org/licenses/MIT  The MIT License (MIT)
+ * @link http://www.flagbit.de
+ *
+ */
+?>
+<script type="text/javascript">
+    var factfinderNavigationTracking = new FactfinderTracking(
+        '.col-main',
+        $H(<?php echo $this->getJsonDataObject();?>),
+        $H(<?php echo $this->getJsonUrlToIdMappingObject();?>),
+        '<?php echo $this->getUrl(Mage::helper('factfinder_tracking')->getTrackingUrlPath()) ?>',
+        false,
+        true
+    );
+
+    Event.observe(document, 'dom:loaded', function (event) {
+        factfinderNavigationTracking.init();
+    });
+</script>

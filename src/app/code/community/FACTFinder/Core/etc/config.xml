@@ -15,7 +15,7 @@
 <config>
     <modules>
         <FACTFinder_Core>
-            <version>4.2.0</version>
+            <version>4.2.0.1</version>
         </FACTFinder_Core>
     </modules>
     <global>
@@ -202,6 +202,7 @@
                 <suggest>1</suggest>
                 <campaigns>1</campaigns>
                 <tracking>1</tracking>
+                <tracking_navigation>0</tracking_navigation>
                 <recommendation>1</recommendation>
                 <tagcloud>1</tagcloud>
             </ff_modules>
