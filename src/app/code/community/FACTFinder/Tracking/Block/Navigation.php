@@ -54,9 +54,9 @@ class FACTFinder_Tracking_Block_Navigation extends FACTFinder_Tracking_Block_Abs
 
         $data = array();
         foreach ($this->getProductResultCollection() as $product) {
-            //canonical product url
+            // canonical product url
             $data[$product->getProductUrl()] = $product->getId();
-            //product url including category path
+            // product url including category path
             $category_category_url = $product_id_to_url[$product->getId()];
             $data[$category_category_url] = $product->getId();
         }
