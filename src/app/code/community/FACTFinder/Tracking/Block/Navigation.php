@@ -29,16 +29,40 @@ class FACTFinder_Tracking_Block_Navigation extends FACTFinder_Tracking_Block_Abs
     /**
      * Get Product Result Collection
      *
-     * @return FACTFinder_Core_Model_Resource_Search_Collection
+     * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     protected function getProductResultCollection()
     {
-        /** @var Mage_Catalog_Model_Category $_current_category */
-        $_current_category = Mage::registry('current_category');
-        $_product_collection = $_current_category->getProductCollection();
-        return $_product_collection;
+        return Mage::getSingleton('factfinder/catalogSearch_layer')->getProductCollection();
     }
 
+    /**
+     * Get Product URL to ID Mapping JSON Object
+     *
+     * @return string
+     */
+    public function getJsonUrlToIdMappingObject()
+    {
+
+        $_current_category = Mage::registry('current_category');
+
+        //collect urls with category path
+        $product_id_to_url = array();
+        foreach ($_current_category->getProductCollection() as $product) {
+            $product_id_to_url[$product->getId()] = $product->getProductUrl();
+        }
+
+        $data = array();
+        foreach ($this->getProductResultCollection() as $product) {
+            //canonical product url
+            $data[$product->getProductUrl()] = $product->getId();
+            //product url including category path
+            $category_category_url = $product_id_to_url[$product->getId()];
+            $data[$category_category_url] = $product->getId();
+        }
+
+        return Mage::helper('core')->jsonEncode($data);
+    }
 
     /**
      * Get product specific data array
@@ -51,6 +75,8 @@ class FACTFinder_Tracking_Block_Navigation extends FACTFinder_Tracking_Block_Abs
     {
         $trackingIdFieldName = Mage::helper('factfinder_tracking')->getIdFieldName();
         $masterIdFieldName = Mage::helper('factfinder/search')->getIdFieldName();
+
+        /** @var Mage_Catalog_Model_Category $_current_category */
         $_current_category = Mage::registry('current_category');
 
         $query = Mage::helper('factfinder_tracking')->getCategoryTrackingPath($_current_category);
@@ -75,7 +101,6 @@ class FACTFinder_Tracking_Block_Navigation extends FACTFinder_Tracking_Block_Abs
         return $data;
 
     }
-
 
     /**
      * Get common data for all products

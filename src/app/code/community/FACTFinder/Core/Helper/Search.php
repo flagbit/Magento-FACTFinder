@@ -171,6 +171,22 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         return false;
     }
 
+    /**
+     * Get if curent page is product catalog page
+     *
+     * @return bool
+     */
+    public function getIsCategoryPageWithProducts()
+    {
+        if ($this->getIsCategoryPage()) {
+            $category = Mage::registry('current_category');
+            $display_mode = $category->getDisplayMode();
+            if ($display_mode == Mage_Catalog_Model_Category::DM_MIXED || $display_mode == Mage_Catalog_Model_Category::DM_PRODUCT) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Get if curent page is product catalog page
@@ -184,7 +200,10 @@ class FACTFinder_Core_Helper_Search extends Mage_Core_Helper_Abstract
         $actionName = Mage::app()->getRequest()->getActionName();
 
         if ($moduleName == 'catalog' && $controllerName == 'category' && $actionName == 'view') {
-            return true;
+            $category = Mage::registry('current_category');
+            if($category instanceof Mage_Catalog_Model_Category) {
+                return true;
+            }
         }
 
         return false;

@@ -55,8 +55,9 @@ class FACTFinder_Tracking_Model_Observer
             $update->addHandle('factfinder_recommendation_tracking');
         }
 
-        if (Mage::helper('factfinder/search')->getIsCategoryPage()
+        if (Mage::helper('factfinder/search')->getIsCategoryPageWithProducts()
             && Mage::getStoreConfig('factfinder/export/tracking_navigation')
+            && Mage::getStoreConfig('factfinder/modules/catalog_navigation')
         ) {
             $update->addHandle('factfinder_tracking_navigation_enabled');
         }
