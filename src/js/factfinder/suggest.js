@@ -144,7 +144,7 @@ var FactFinderAutocompleter = Class.create(Ajax.Autocompleter, {
     },
 
     updateChoices: function(choices) {
-        if(!this.changed && this.hasFocus) {
+        if(this.hasFocus) {
             this.update.innerHTML = choices;
             Element.cleanWhitespace(this.update);
             Element.cleanWhitespace(this.update.down());
@@ -248,7 +248,7 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
     },
 
     loadDataCallback: function (data) {
-        if (data.suggestions) {
+        if (typeof data.suggestions !== 'undefined') {
             data = data.suggestions;
         }
 
@@ -295,7 +295,9 @@ var FactFinderSuggest = Class.create(Varien.searchForm, {
                 temp += '<span class="thumbnail"><img src="' + item.image + '" title="' + item.name + '" /></span>';
             }
 
-            temp += item.name.replace(new RegExp("("+this.field.value+")","ig"), '<strong>$1</strong>');
+            var searchString = this.field.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+            temp += item.name.replace(new RegExp("(" + searchString + ")", "ig"), '<strong>$1</strong>');
 
             if (item.attributes.parentCategory) {
                 temp += ' (' + decodeURIComponent(item.attributes.parentCategory) + ')';

@@ -101,7 +101,7 @@ class FACTFinder_Tracking_Model_Observer
             /** @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackCart(
-                $quoteItem->getData($trackingIdFieldName),
+                $product->getData($trackingIdFieldName),
                 $product->getData($masterIdFieldName),
                 $product->getName(),
                 null,
