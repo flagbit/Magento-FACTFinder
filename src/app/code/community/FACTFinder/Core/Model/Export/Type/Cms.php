@@ -41,6 +41,8 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
         'title',
         'content_heading',
         'content',
+        'meta_keywords',
+        'meta_description',
         'link',
         'image',
     );
@@ -194,7 +196,8 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
             ->addFieldToFilter('is_active', 1);
 
         foreach ($cmsCollection as $page) {
-            if ($page->getSkipFfExport()) {
+            /** var $page Mage_Cms_Model_Page */
+            if ($page->getSkipFfExport() || !$page->getIsActive()) {
                 continue;
             }
 
@@ -252,13 +255,15 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
         $content = $this->replaceReturnToSpace($content);
         $content = $this->removeStyleAndScriptTags($content);
         $content = $this->consolidateWhitespaces($content);
-        $content = html_entity_decode(strip_tags($content));
+        $content = trim(html_entity_decode(strip_tags($content)));
         $row = array(
             $page->getId(),
             $page->getIdentifier(),
             $page->getTitle(),
             $page->getContentHeading(),
             $content,
+            trim($page->getMetaKeywords()),
+            trim($page->getMetaDescription()),
             Mage::getModel('core/url')->getUrl($page->getIdentifier(), array('_store' => $storeId)),
             $this->findFirstImageInContent($page->getContent(), $storeId),
         );
@@ -307,7 +312,7 @@ class FACTFinder_Core_Model_Export_Type_Cms implements FACTFinder_Core_Model_Exp
 
     private function consolidateWhitespaces($content)
     {
-        return preg_replace('#\s+#s', ' ', $content);
+        return preg_replace('#(\s|&nbsp;)+#s', ' ', $content);
     }
 
     private function replaceReturnToSpace($content)

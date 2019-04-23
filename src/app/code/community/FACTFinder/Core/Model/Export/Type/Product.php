@@ -270,6 +270,9 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
     public function doExport($storeId = null)
     {
         $this->_resetInternalState();
+        if(!is_null($storeId)) {
+            Mage::app()->setCurrentStore($storeId);
+        }
 
         $exportBundle = $this->getHelper()->shouldExportBundleWithChildAttributes($storeId);
 
@@ -482,14 +485,15 @@ class FACTFinder_Core_Model_Export_Type_Product extends Mage_Core_Model_Abstract
      */
     protected function getProductUrl($productId, $storeId)
     {
-        $product = Mage::getModel('catalog/product')
+        $productUrl = Mage::getModel('catalog/product')
             ->getCollection()
             ->addAttributeToFilter('entity_id', $productId)
             ->setStoreId($storeId)
             ->setPage(1, 1)
-            ->getFirstItem();
+            ->addUrlRewrite()
+            ->getFirstItem()
+            ->getProductUrl(false);
 
-        $productUrl = Mage::app()->getStore($storeId)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK) . $product->getRequestPath();
         return $productUrl;
     }
 

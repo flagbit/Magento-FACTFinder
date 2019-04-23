@@ -363,17 +363,25 @@ class FACTFinder_Core_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bl
 
         $sortings = $this->_handler->getSorting();
 
-        // relevance default and has no directions
-        if ($sortingId == $this->_orderField) {
-            $sorting = $sortings[0];
-            $this->_sortings[$sortingId] = $sorting->getUrl();
-        } elseif (!isset($this->_sortings[$sortingId])) {
-            /** @var \FACTFinder\Data\Item $sorting */
-            foreach ($sortings as $sorting) {
-                $url = $sorting->getUrl();
-                if (strpos($url, $sortingId) !== false) {
-                    $this->_sortings[$sortingId] = $sorting->getUrl();
-                    break;
+
+        if ($sortings instanceof \FACTFinder\Data\Sorting) {
+            // relevance default and has no directions
+            if ($sortingId == $this->_orderField) {
+                $sortings->rewind();
+                if ($sortings->count() > 0) {
+                    $sorting = $sortings->current();
+                    if ($sorting instanceof \FACTFinder\Data\Item) {
+                        $this->_sortings[$sortingId] = $sorting->getUrl();
+                    }
+                } elseif (!isset($this->_sortings[$sortingId])) {
+                    /** @var \FACTFinder\Data\Item $sorting */
+                    foreach ($sortings as $sorting) {
+                        $url = $sorting->getUrl();
+                        if (strpos($url, $sortingId) !== false) {
+                            $this->_sortings[$sortingId] = $sorting->getUrl();
+                            break;
+                        }
+                    }
                 }
             }
         }

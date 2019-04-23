@@ -56,4 +56,58 @@ class FACTFinder_Tracking_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
 
+    /**
+     * @param $category Mage_Catalog_Model_Category
+     * @param int|null $storeId
+     * @return null|string
+     * @throws Mage_Core_Model_Store_Exception
+     */
+    public function getCategoryTrackingPath($category, $storeId = null)
+    {
+        $categoryNames = array();
+
+        $storeId = $this->getStoreIdOrDefault($storeId);
+
+        $parentCategories = $category->getParentCategories();
+
+        if (is_array($parentCategories) && count($parentCategories) > 0) {
+            foreach ($parentCategories as $parentCategory) {
+
+                if ($storeId == Mage::app()->getStore()->getId()) {
+                    $categoryInDefaultStore = $parentCategory;
+                } else {
+                    $categoryInDefaultStore = Mage::getModel('catalog/category')
+                        ->setStoreId($storeId)
+                        ->load($parentCategory->getId());
+                }
+
+                if ($categoryInDefaultStore instanceof Mage_Catalog_Model_Category) {
+                    array_push($categoryNames, $categoryInDefaultStore->getName());
+                }
+            }
+
+            $path = implode($categoryNames, '/');
+
+            return $path;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $storeId int|null
+     * @return int
+     * @throws Mage_Core_Model_Store_Exception
+     */
+    protected function getStoreIdOrDefault($storeId)
+    {
+        if (is_null($storeId)) {
+            $storeId = Mage::app()->getStore()->getId();
+
+            if (is_null($storeId)) {
+                $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+            }
+        }
+        return $storeId;
+    }
 }

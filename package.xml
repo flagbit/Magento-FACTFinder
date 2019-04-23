@@ -9,7 +9,7 @@
     <description>Integrates the FACT-Finder for improved product search functionality.</description>
     <license>The MIT License (MIT)</license>
     <license_uri>https://opensource.org/licenses/MIT</license_uri>
-    <version>4.1.14</version>
+    <version>4.2.0</version>
     <stability>stable</stability>
     <notes>Completely refactored and now supporting FF v6.9-7.3</notes>
     <authors>

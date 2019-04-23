@@ -54,6 +54,13 @@ class FACTFinder_Tracking_Model_Observer
         ) {
             $update->addHandle('factfinder_recommendation_tracking');
         }
+
+        if (Mage::helper('factfinder/search')->getIsCategoryPageWithProducts()
+            && Mage::getStoreConfig('factfinder/export/tracking_navigation')
+            && Mage::getStoreConfig('factfinder/modules/catalog_navigation')
+        ) {
+            $update->addHandle('factfinder_tracking_navigation_enabled');
+        }
     }
 
 
@@ -94,7 +101,7 @@ class FACTFinder_Tracking_Model_Observer
             /** @var $tracking FACTFinder_Tracking_Model_Handler_Tracking */
             $tracking = Mage::getModel('factfinder_tracking/handler_tracking');
             $tracking->trackCart(
-                $quoteItem->getData($trackingIdFieldName),
+                $product->getData($trackingIdFieldName),
                 $product->getData($masterIdFieldName),
                 $product->getName(),
                 null,

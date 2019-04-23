@@ -215,4 +215,12 @@ class FACTFinder_Core_ExportController extends Mage_Core_Controller_Front_Action
     }
 
 
+    /**
+     * Wrapper for cms export
+     */
+    public function cmsAction()
+    {
+        $this->_forwardExport('cms');
+    }
+
 }

@@ -128,7 +128,7 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
         if ($suggestResult != null){
             $mergedSuggestResults = $suggestResult;
         }
-        
+
         foreach ($this->_secondaryChannels AS $channel) {
             $params = array('channel' => $channel);
             $this->_getFacade()->configureSuggestAdapter($params, $channel);
@@ -139,7 +139,7 @@ class FACTFinder_Suggest_Model_Handler_Suggest extends FACTFinder_Core_Model_Han
             }
         }
 
-        $resultArray = array();
+        $resultArray = array('suggestions' => array());
         if ($mergedSuggestResults) {
             foreach ($mergedSuggestResults as $resultQuery) {
                 /** @var $resultQuery FACTFinder\Data\SuggestQuery */
