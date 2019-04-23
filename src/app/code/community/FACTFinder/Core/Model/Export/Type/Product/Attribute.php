@@ -2,7 +2,7 @@
 
 /**
  * Class FACTFinder_Core_Model_Export_Type_Product_Attribute
- * 
+ *
  * @method FACTFinder_Core_Model_Resource_Attribute getResource()
  */
 class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Model_Abstract
@@ -175,7 +175,15 @@ class FACTFinder_Core_Model_Export_Type_Product_Attribute extends Mage_Core_Mode
             }
 
             $attribute->setStoreId($storeId);
-            $value = $attribute->getSource()->getOptionText($value);
+            if(is_array($value)) {
+                foreach ($value as $k => $val) {
+                    $value[$k] = $attribute->getSource()->getOptionText($val);
+                }
+            }
+            else {
+                $value = $attribute->getSource()->getOptionText($value);
+            }
+
             if (!is_array($value) && empty($value)) {
                 $inputType = $attribute->getFrontend()->getInputType();
                 if ($inputType == 'select' || $inputType == 'multiselect') {
