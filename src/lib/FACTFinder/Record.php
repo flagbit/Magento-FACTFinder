@@ -217,7 +217,7 @@ class FACTFinder_Record
         } else if (is_string($field)) {
             if (!isset($this->fieldNames[$field])) {
                 // create a new field
-                $this->fieldNames[$field] = sizeof($this->fieldValues);
+                $this->fieldNames[$field] = is_countable($this->fieldValues) ? sizeof($this->fieldValues) : 0;
                 $this->fieldValues[] = $value;
             } else {
                 $this->fieldValues[$this->fieldNames[$field]] = $value;
